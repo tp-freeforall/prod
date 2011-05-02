@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2011, Eric B. Decker
  * Copyright (c) 2005-2006 Arch Rock Corporation
  * All rights reserved.
  *
@@ -59,20 +60,17 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
+ *
  * @author Ben Greenstein <ben@cs.ucla.edu>
  * @author Jonathan Hui <jhui@archrock.com>
  * @author Joe Polastre <info@moteiv.com>
- * @version $Revision: 1.8 $ $Date: 2010-06-29 22:07:45 $
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 module HplMsp430DmaP {
-
   provides interface HplMsp430DmaControl as DmaControl;
   provides interface HplMsp430DmaInterrupt as Interrupt;
-
+  provides interface Init as HWInit @exactlyonce();
 }
 
 implementation {
@@ -82,6 +80,13 @@ implementation {
 
   TOSH_SIGNAL( DACDMA_VECTOR ) {
     signal Interrupt.fired();
+  }
+
+  command error_t HWInit.init() {
+    DMA0CTL = 0;
+    DMA1CTL = 0;
+    DMA2CTL = 0;
+    return SUCCESS;
   }
 
   async command void DmaControl.setOnFetch(){
@@ -121,6 +126,4 @@ implementation {
     DMACTL0 = 0;
     DMACTL1 = 0;
   }
-
 }
-

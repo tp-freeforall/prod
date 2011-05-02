@@ -1,6 +1,6 @@
-// $Id: PlatformC.nc,v 1.6 2010-06-29 22:07:55 scipio Exp $
-
-/* Copyright (c) 2000-2005 The Regents of the University of California.  
+/*
+ * Copyright (c) 2011, Eric B. Decker
+ * Copyright (c) 2000-2005 The Regents of the University of California.  
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,24 +29,24 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author Joe Polastre and Cory Sharp
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
-/**
- * @author Joe Polastre and Cory Sharp
- * @version $Revision: 1.6 $ $Date: 2010-06-29 22:07:55 $
- */
 #include "hardware.h"
 
 configuration PlatformC
 {
   provides interface Init;
+  uses     interface Init as HWInit;
 }
 implementation
 {
   components PlatformP, MotePlatformC, MoteClockC;
 
-  Init = PlatformP;
+  Init = PlatformP.Init;
+  HWInit = PlatformP.HWInit;
   PlatformP.MoteClockInit -> MoteClockC;
   PlatformP.MoteInit -> MotePlatformC;
 }
-

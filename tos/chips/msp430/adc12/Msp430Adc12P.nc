@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2011, Eric B. Decker
  * Copyright (c) 2006, Technische Universitaet Berlin
  * All rights reserved.
  *
@@ -26,11 +27,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * - Revision -------------------------------------------------------------
- * $Revision: 1.7 $
- * $Date: 2008-05-15 23:57:13 $
- * @author: Jan Hauer <hauer@tkn.tu-berlin.de>
- * ========================================================================
+ * @author Jan Hauer <hauer@tkn.tu-berlin.de>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include <Msp430Adc12.h> 
@@ -44,7 +42,7 @@ configuration Msp430Adc12P
     interface AsyncStdControl as DMAExtension[uint8_t id];
   }
 } implementation { 
-  components Msp430Adc12ImplP, HplAdc12P, MainC, 
+  components Msp430Adc12ImplP, HplAdc12P, MainC, PlatformC,
              new SimpleRoundRobinArbiterC(MSP430ADC12_RESOURCE) as Arbiter;
 
   Resource = Arbiter;
@@ -54,6 +52,7 @@ configuration Msp430Adc12P
   DMAExtension = Msp430Adc12ImplP.DMAExtension;
   
   Msp430Adc12ImplP.Init <- MainC;
+  HplAdc12P.HWInit      <- PlatformC;
   Msp430Adc12ImplP.ADCArbiterInfo -> Arbiter;
   Msp430Adc12ImplP.HplAdc12 -> HplAdc12P;
 
@@ -78,4 +77,3 @@ configuration Msp430Adc12P
   Msp430Adc12ImplP.CompareA1 -> Msp430TimerC.CompareA1;
 #endif
 }
-

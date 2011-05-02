@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2011, Eric B. Decker
  * Copyright (c) 2005-2006 Arch Rock Corporation
  * All rights reserved.
  *
@@ -59,26 +60,22 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
+ *
  * @author Ben Greenstein <ben@cs.ucla.edu>
  * @author Jonathan Hui <jhui@archrock.com>
- * @version $Revision: 1.7 $ $Date: 2010-06-29 22:07:45 $
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 configuration HplMsp430DmaC {
-
   provides interface HplMsp430DmaControl as Control;
   provides interface HplMsp430DmaChannel as Channel0;
   provides interface HplMsp430DmaChannel as Channel1;
   provides interface HplMsp430DmaChannel as Channel2;
-
 }
 
 implementation {
 
-  components HplMsp430DmaP;
+  components HplMsp430DmaP, PlatformC;
   components new HplMsp430DmaXP( DMA0CTL_, DMA0SA_, DMA0DA_,
 				 DMA0SZ_, DMA0TSEL_MASK, 
 				 DMA0TSEL_SHIFT ) as Dma0;
@@ -93,9 +90,8 @@ implementation {
   Channel0 = Dma0;
   Channel1 = Dma1;
   Channel2 = Dma2;
+  HplMsp430DmaP.HWInit <- PlatformC;
   Dma0.Interrupt -> HplMsp430DmaP;
   Dma1.Interrupt -> HplMsp430DmaP;
   Dma2.Interrupt -> HplMsp430DmaP;
-
 }
-

@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2011, Eric B. Decker
  * Copyright (c) 2004, Technische Universitaet Berlin
  * All rights reserved.
  *
@@ -26,24 +27,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE 
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * - Revision -------------------------------------------------------------
- * $Revision: 1.9 $
- * $Date: 2009-10-17 11:48:33 $
- * @author: Jan Hauer <hauer@tkn.tu-berlin.de>
- * ========================================================================
- */
-
-/**
+ * @author Jan Hauer <hauer@tkn.tu-berlin.de>
+ * @author Eric B. Decker <cire831@gmail.com>
+ *
  * The HplAdc12 interface exports low-level access to the ADC12 registers
  * of the MSP430 MCU.
  *
- * @author Jan Hauer
  * @see  Please refer to TEP 101 for more information about this component and its
  *          intended use.
  */
 
 module HplAdc12P {
   provides interface HplAdc12;
+  provides interface Init as HWInit @exactlyonce();
 }
 implementation
 {
@@ -117,8 +113,20 @@ implementation
     
   async command bool HplAdc12.isBusy(){ return (ADC12CTL1 & ADC12BUSY); }
 
+  /*
+   * HWInit is responsible for h/w reset duing a PUR to support
+   * SWReset.  (see PlatformP).
+   */
+  command error_t HWInit.init() {
+    ADC12CTL0 = 0;
+    ADC12CTL1 = 0;
+    ADC12IE   = 0;
+    ADC12IFG  = 0;
+    ADC12IV   = 0;
+    return SUCCESS;
+  }
+
   TOSH_SIGNAL(ADC_VECTOR) {
     signal HplAdc12.conversionDone(ADC12IV);
   }
 }
-
