@@ -114,8 +114,9 @@ implementation
   async command bool HplAdc12.isBusy(){ return (ADC12CTL1 & ADC12BUSY); }
 
   /*
-   * HWInit is responsible for h/w reset duing a PUR to support
-   * SWReset.  (see PlatformP).
+   * HWInit is responsible for h/w reset after a PUC.  SWReset (possibly others)
+   * uses a WatchDog violation (which causes a PUC) to force the reset.   This
+   * doesn't clean out any hardware so we have to.   That's okay.
    */
   command error_t HWInit.init() {
     ADC12CTL0 = 0;
