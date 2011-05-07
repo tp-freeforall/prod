@@ -90,7 +90,7 @@ implementation {
   Channel0 = Dma0;
   Channel1 = Dma1;
   Channel2 = Dma2;
-  HplMsp430DmaP.HWInit <- PlatformC;
+  HplMsp430DmaP.SWResetInit <- PlatformC;
   Dma0.Interrupt -> HplMsp430DmaP;
   Dma1.Interrupt -> HplMsp430DmaP;
   Dma2.Interrupt -> HplMsp430DmaP;

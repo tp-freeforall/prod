@@ -39,14 +39,14 @@
 configuration PlatformC
 {
   provides interface Init;
-  uses     interface Init as HWInit;
+  uses     interface Init as SWResetInit;
 }
 implementation
 {
   components PlatformP, MotePlatformC, MoteClockC;
 
   Init = PlatformP.Init;
-  HWInit = PlatformP.HWInit;
+  SWResetInit = PlatformP.SWResetInit;
   PlatformP.MoteClockInit -> MoteClockC;
   PlatformP.MoteInit -> MotePlatformC;
 }

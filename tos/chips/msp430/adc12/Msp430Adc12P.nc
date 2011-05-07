@@ -52,7 +52,7 @@ configuration Msp430Adc12P
   DMAExtension = Msp430Adc12ImplP.DMAExtension;
   
   Msp430Adc12ImplP.Init <- MainC;
-  HplAdc12P.HWInit      <- PlatformC;
+  HplAdc12P.SWResetInit <- PlatformC;
   Msp430Adc12ImplP.ADCArbiterInfo -> Arbiter;
   Msp430Adc12ImplP.HplAdc12 -> HplAdc12P;
 

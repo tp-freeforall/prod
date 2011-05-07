@@ -70,7 +70,7 @@
 module HplMsp430DmaP {
   provides interface HplMsp430DmaControl as DmaControl;
   provides interface HplMsp430DmaInterrupt as Interrupt;
-  provides interface Init as HWInit @exactlyonce();
+  provides interface Init as SWResetInit @atmostonce();
 }
 
 implementation {
@@ -82,7 +82,7 @@ implementation {
     signal Interrupt.fired();
   }
 
-  command error_t HWInit.init() {
+  command error_t SWResetInit.init() {
     DMA0CTL = 0;
     DMA1CTL = 0;
     DMA2CTL = 0;

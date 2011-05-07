@@ -39,7 +39,7 @@
 
 module HplAdc12P {
   provides interface HplAdc12;
-  provides interface Init as HWInit @exactlyonce();
+  provides interface Init as SWResetInit @atmostonce();
 }
 implementation
 {
@@ -114,11 +114,11 @@ implementation
   async command bool HplAdc12.isBusy(){ return (ADC12CTL1 & ADC12BUSY); }
 
   /*
-   * HWInit is responsible for h/w reset after a PUC.  SWReset (possibly others)
-   * uses a WatchDog violation (which causes a PUC) to force the reset.   This
-   * doesn't clean out any hardware so we have to.   That's okay.
+   * SWResetInit is responsible resetting the h/w as needed when a SWReset.reset is performed.
+   * SWReset (possibly others) can use a WatchDog violation (which causes a PUC) to force the reset.
+   * This doesn't clean out any hardware so SWResetInit takes care of this when needed.
    */
-  command error_t HWInit.init() {
+  command error_t SWResetInit.init() {
     ADC12CTL0 = 0;
     ADC12CTL1 = 0;
     ADC12IE   = 0;

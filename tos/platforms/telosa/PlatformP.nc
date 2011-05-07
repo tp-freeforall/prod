@@ -3,7 +3,7 @@
 /*
  * PlatformP is responsible for initilizing the h/w.
  *
- * HWInit is responsible for h/w reset duing a PUC to support
+ * SWResetInit is responsible for h/w reset duing a PUC to support
  * SWReset.  (see below).
  *
  * ClockInit sets up any h/w clocks used to clock the CPU and
@@ -24,20 +24,20 @@
 
 module PlatformP @safe() {
   provides interface Init;
-  uses interface Init as HWInit;
+  uses interface Init as SWResetInit;
   uses interface Init as MoteClockInit;
   uses interface Init as MoteInit;
   uses interface Init as LedsInit;
 }
 implementation {
   command error_t Init.init() {
-    call HWInit.init();			/* clean out h/w incase of PUC */
+    call SWResetInit.init();		/* clean out any left overs from PUC */
     call MoteClockInit.init();
     call MoteInit.init();
     call LedsInit.init();
     return SUCCESS;
   }
 
-  default command error_t HWInit.init()   { return SUCCESS; }
-  default command error_t LedsInit.init() { return SUCCESS; }
+  default command error_t SWResetInit.init() { return SUCCESS; }
+  default command error_t LedsInit.init()    { return SUCCESS; }
 }
