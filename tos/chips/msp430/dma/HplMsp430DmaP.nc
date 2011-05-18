@@ -82,7 +82,14 @@ implementation {
     signal Interrupt.fired();
   }
 
+  /*
+   * SWResetInit is used by older cpus to clean out state following a PUC
+   * this can occur for example following a WatchDog violation which is used
+   * by SWReset on the older chips.
+   */
   command error_t SWResetInit.init() {
+    DMACTL0 = 0;
+    DMACTL1 = 0;
     DMA0CTL = 0;
     DMA1CTL = 0;
     DMA2CTL = 0;

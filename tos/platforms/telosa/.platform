@@ -5,6 +5,7 @@
 
 push( @includes, qw(
 
+  %T/interfaces/platform
   %T/platforms/telosa
   %T/platforms/telosa/chips/cc2420
   %T/platforms/telosa/chips/s1087
@@ -75,4 +76,3 @@ $ENV{'CIL_MACHINE'} =
     "underscore_name=false " .
     "__builtin_va_list=true " .
     "__thread_is_keyword=true";
-    

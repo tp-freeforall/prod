@@ -1,0 +1,27 @@
+
+tos/interfaces/platform is used to hold interface files that define parts of 
+the TinyOS to Platform interface.  The intent is these interfaces form a
+common set of platform interfaces across cpus and platforms.  A roadmap of
+consistent functionality potentially provided by the platforms.
+
+For example, the msp430 provides at least two mechanisms for generating a
+swreset, watchdog violation (x1 and x2 families) and via PMMSWPOR in the
+power management module (x5 family).   The watchdog violation however
+doesn't produce a clean h/w reset and auxiliary code must be executed to clean
+the h/w up prior to restarting (SWResetInit).
+
+Code for the msp430 families is provided by tos/chips/msp430/SWReset{C,P}.nc.
+It is simple enough that these files provide a unified SWReset driver for all 
+three major msp430 families.
+
+tos/chips/msp430/SWReset{C,P}.nc handles SWReset for the msp430 platforms,
+while SWReset (the interface) is intended to be used not only on the msp430
+platforms but other platforms that provides SWReset.
+
+SWReset.nc: defines reset (SWReset.reset)  Cause the software system to reset.
+
+SWResetInit: uses the standard Init (../Init.nc) interface.   Under certain
+    circumstances, the h/w may not be returned to a pristine reset state.
+    (see early msp430 code).   SWResetInit is used in those situations to
+    allow a platform to wire in code that will clear these conditions out
+    from start up code.   (SWResetInit is wired in via Platform{C,P}.nc).

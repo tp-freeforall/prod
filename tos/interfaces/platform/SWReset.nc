@@ -37,5 +37,9 @@
  */
 
 interface SWReset {
+
+  /*
+   * Force the system to reset.
+   */
   async command void reset();
 }
