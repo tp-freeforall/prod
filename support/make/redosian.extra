@@ -1,0 +1,32 @@
+# Add the paths required to build an OSIAN application
+PFLAGS += -DWITH_OSIAN
+
+# Non-TinyOS OSIAN material
+PFLAGS += -I$(TOSROOT)/support/sdk/c/osian/include
+
+# OSIAN-specific interfaces - not sure if it should be is a sub directory???
+PFLAGS += -I$(TOSDIR)/interfaces/osian
+
+# OSIAN general components - again not sure this should be here????
+PFLAGS += -I$(TOSDIR)/system/osian
+
+# PPP support - need to use msp430-int ppp
+PFLAGS += -I$(TOSDIR)/lib/osian/ppp
+
+# OSIAN network support
+PFLAGS += -I$(TOSDIR)/lib/net/oip
+PFLAGS += -I$(TOSDIR)/lib/net/oip/net
+PFLAGS += -I$(TOSDIR)/lib/net/oip/services
+
+# need to see what is common with msp430-int branch
+PFLAGS += -I$(TOSDIR)/lib/osian/leds
+PFLAGS += -I$(TOSDIR)/lib/osian/utils/crcx
+PFLAGS += -I$(TOSDIR)/lib/osian/utils/ewma
+PFLAGS += -I$(TOSDIR)/lib/osian/utils/average
+PFLAGS += -I$(TOSDIR)/lib/osian/utils/fragpool
+PFLAGS += -I$(TOSDIR)/lib/osian/timer
+PFLAGS += -I$(TOSDIR)/lib/osian/debug
+PFLAGS += -I$(TOSDIR)/lib/osian/lpm
+PFLAGS += -I$(TOSDIR)/lib/osian/rtc
+
+
