@@ -76,9 +76,10 @@ repository.  Some of the features include:
   which lives at ~/.gitconfig)
 
   o To avoid problems with DOS EOL sequences, we always store in the
-    repository using UNIX EOL sequences.   Turn on autocrlf to avoid problems.
+    repository using UNIX EOL sequences.   Set autocrlf to input to
+    avoid these problems.
 
-    $ git config --global core.autocrlf true
+    $ git config --global core.autocrlf input
 
   o It is handy to set up local copies of remote branches automatically.
 
