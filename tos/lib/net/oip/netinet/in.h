@@ -136,8 +136,9 @@ struct ipv6_mreq {
 })
 
 #define IN6_IS_ADDR_MULTICAST(_a) (0xff == (_a)->s6_addr[0])
-  
-#define IN6_IS_ADDR_LINKLOCAL(_a) (0xfe80 == (0xffc0 & ntohs((_a)->s6_addr16[0])))
+
+//#define IN6_IS_ADDR_LINKLOCAL(_a) (0xfe80 == (0xffc0 & ntohs((_a)->s6_addr16[0])))  
+#define IN6_IS_ADDR_LINKLOCAL(_a) (0xfe80 == (0xff80 & ntohs((_a)->s6_addr16[0])))		
 #define IN6_IS_ADDR_SITELOCAL(_a) (0xfec0 == (0xffc0 & ntohs((_a)->s6_addr16[0])))
 
 #define IN6_IS_ADDR_V4MAPPED(_a) ({ \

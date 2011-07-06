@@ -112,8 +112,13 @@ module Ipv6Ieee154P {
     dest_saddr = IEEE154_BROADCAST_ADDR;
     if (d6p) {
       const struct in6_addr* i6p = &d6p->sin6_addr;
-      
-      if (IN6_IS_ADDR_MULTICAST(i6p)) {
+
+      //if (IN6_IS_ADDR_MULTICAST(i6p)) {  
+      //Not very elegant!! but allows the node to be accessed from a remote network via the OSIAN PppBridge
+      //so if a node replies to an address that is not a linklocal or sitelocal address the ieee packet is broadcast,
+      //the Pppbridge will then bridge the packet and from there it can be routed back to the calling host.    
+      //When routing is added to OSIAN this can be removed!!.
+      if (IN6_IS_ADDR_MULTICAST(i6p) || !IN6_IS_ADDR_LINKLOCAL(i6p) || !IN6_IS_ADDR_SITELOCAL(i6p)) {
       } else {
         dest_saddr = ntohs(*(uint16_t*)(d6p->sin6_addr.s6_addr + 14));
       }
@@ -141,7 +146,7 @@ module Ipv6Ieee154P {
     memcpy(dp, data, len);
     rc = call Ieee154Send.send(dest_saddr, &message, len);
     inUse_ = (SUCCESS == rc);
-    //printf("Transmit %d bytes at %p to %04x got %d\r\n", len, data, dest_saddr, rc);
+    // printf("Transmit %d bytes at %p to %04x got %d\r\n", len, data, dest_saddr, rc);
     return rc;
   }
 
