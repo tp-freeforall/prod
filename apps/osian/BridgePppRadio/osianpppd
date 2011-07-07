@@ -1,0 +1,133 @@
+#!/usr/bin/python
+#
+# Invoke the PPP daemon on a serial port to provide an IPv6 link for an
+# OSIAN device.
+#
+# Put the following in your /etc/hosts (excluding the # comment characters):
+# fe80::fd41:4442:e88:2 host.ppp.osian
+# fe80::fd41:4442:e88:3 device.ppp.osian
+#
+# By default this uses /usr/sbin/pppd.  Depending on your application,
+# you may want to use the modified PPP daemon that supports diagnostic
+# information from OSIAN.  See
+# ${OSIAN_ROOT}/tinyos/tos/lib/ppp/PppPrintfC.nc for details.  Set the
+# OSIAN_PPPD environment variable to the full path to your PPP daemon,
+# if it is not /usr/sbin/pppd.  For sudo, you probably want something
+# like:
+#
+#  sudo OSIAN_PPPD=/usr/local/ppp-osian/sbin/pppd ./linkup.py
+#
+
+import socket
+import sys
+import getopt
+import select
+import pty
+import os
+import fcntl
+
+# Force use of IPv6 UDP sockets
+socket_params = (socket.AF_INET6, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+
+# The host (local) side of the PPP link
+host_ppp_fqdn = 'host.ppp.osian'
+# The device (peer/remote) side of the PPPlink
+device_ppp_fqdn = 'device.ppp.osian'
+# The device over which PPP will run
+osian_device = os.environ.get('OSIAN_PPP_DEVICE', '/dev/ttyUSB0')
+# Where the PPP daemon lives.  You may prefer to use /usr/sbin/pppd
+pppd_path = os.environ.get('OSIAN_PPPD', '/usr/sbin/pppd')
+# Generally, pppd must run as root.  If this variable is True, the
+# program will abort with a descriptive error message if the effective
+# UID is not privileged,
+pppd_requires_root = True
+
+try:
+    opts, args = getopt.getopt(sys.argv[1:], 'H:D:P:', ('host-ppp-fqdn=', 'device-ppp-fqdn=', 'tty=', 'pppd-path='))
+except getopt.GetoptError, e:
+    print e
+    sys.exit(1)
+for opt, arg in opts:
+    if opt in ('-H', '--host-ppp-fqdn'):
+        host_ppp_fqdn = arg
+    elif opt in ('-D', '--device-ppp-fqdn'):
+        device_ppp_fqdn = arg
+    elif opt in ('-P', '--pppd-path'):
+        pppd_path = arg
+    elif opt in ('--tty',):
+        osian_device = arg
+if args:
+    osian_device = args.pop(0)
+
+print "# %s -H %s -D %s -P %s %s\n" % (sys.argv[0], host_ppp_fqdn, device_ppp_fqdn, pppd_path, osian_device)
+
+def fqdnToIpv6Addr (fqdn):
+    """Convert a host name to an IPv6 address
+
+    @param fqdn : A CIDR or fully-qualified domain name"""
+    global socket_params
+    rv = socket.getaddrinfo(fqdn, 0, *socket_params)
+    rv = rv[0]
+    addr = rv[4]
+    return addr
+
+def fqdnToIID (fqdn):
+    """Convert a host name to the IID portion of its IPv6 address."""
+    addrstr = fqdnToIpv6Addr(fqdn)[0]
+    if addrstr.startswith('fe80::'):
+        return addrstr[4:]
+    return None
+
+host_ppp_iid = fqdnToIID(host_ppp_fqdn)
+device_ppp_iid = fqdnToIID(device_ppp_fqdn)
+
+if pppd_requires_root and (0 != os.geteuid()):
+    print "ERROR: Running pppd requires root, and you aren't."
+    sys.exit(1)
+
+pppd_args = [
+    # Log control packets so we see what happens
+    'debug',
+    # Wait for connection if OSIAN device not responding
+    'passive',
+    # OSIAN PPP does not support authentication
+    'noauth',
+    # Keep running in foreground.  Inconvenient, but the daemon will go away
+    # if you unplug the board, and this makes it a bit more obvious when
+    # that happens.
+    'nodetach',
+    # OSIAN defaults to this baud rate.  If the baud rate is wrong, you
+    # won't connect.
+    '115200',
+    # What to connect
+    osian_device,
+    # Some distributions apparently default hardware flow control on.
+    # Chances are, you don't really have either form.
+    'nocrtscts', 'nocdtrcts','local',
+    # Some distributions expect LCP echo to be implemented, and will shut
+    # down the connection if no response is received (pppd doesn't seem to
+    # recognize the Code-Reject that implies the remote is present even when
+    # echo isn't working).  OSIAN doesn't currently support LCP echo.
+    'lcp-echo-interval', '0',
+    # OSIAN doesn't support any of the IP compression protocols that
+    # run over PPP
+    'noccp',
+    # OSIAN doesn't support IPv4 (though it could...)
+    'noip',
+    # Configure the IPv6 endpoints
+    'ipv6', '%s,%s' % (host_ppp_iid, device_ppp_iid),
+    ]
+
+pppd_cmd = '%s %s' % (pppd_path, ' '.join(pppd_args))
+print '# %s' % (pppd_cmd,)
+pppd_fd = os.popen(pppd_cmd)
+fcntl.fcntl(pppd_fd, fcntl.F_SETFL, os.O_NONBLOCK | fcntl.fcntl(pppd_fd, fcntl.F_GETFL))
+
+poller = select.poll()
+poller.register(pppd_fd.fileno(), select.POLLIN)
+
+timeout_ms = 1000
+while True:
+    for (_, events) in poller.poll(timeout_ms):
+        sys.stdout.write(pppd_fd.read())
+    

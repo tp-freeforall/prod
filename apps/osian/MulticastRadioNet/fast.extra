@@ -1,0 +1,4 @@
+ifeq ($(FAST),)
+FAST=1
+endif
+PFLAGS += -DFAST_MULTICAST=$(FAST)

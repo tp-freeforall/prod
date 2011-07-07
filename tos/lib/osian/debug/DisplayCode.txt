@@ -1,0 +1,40 @@
+Specification for the DisplayCode capability
+============================================
+
+A one-byte value indicates a specific code.  Each code is tied to a
+particular condition, such as UART overflow, framing error, lack of
+available transmission memory, etc.
+
+The description here assumes five LEDs are available for display: one is
+used as a signal, while four indicate a binary value.
+
+A task associated with a timer is normally used to display the active
+codes.  For each code that is enabled, the behavior is:
+ + Alternately flash a marker LED and the code value at [4] Hz for [2]
+   seconds
+ + Display the value one nybble at a time, starting from the highest nybble
+   to be displayed.  When a high-order nybble within a byte is displayed,
+   the marker LED is lit.  Each nybble is displayed for a duration of [2]
+   seconds
+
+As a special case, the "lock" method invoked on a particular code executes
+the display sequence for that code alone, in asynchronous (but non-atomic)
+context.  Invocation of this command does not return.  This is suitable to
+mark fatal conditions.
+
+Code attributes are:
+ + enabled : boolean indicating whether the code should be displayed.
+ + displayLimit : integer indicating the number of times the code should be
+      displayed before it is automatically disabled.  A value of zero
+      indicates the code is displayed until manually disabled.
+ + valueLength : the number of octets of the associated value that should be
+      displayed.  The default is zero, which is appropriate for codes with
+      no associated value.
+ + value : the value currently associated with the code
+
+Code behaviors are:
+ + enable (bool) : change the state of the enabled attribute
+ + showLimited (int limit) : Set the display limit and enable the display
+ + setValueLength (int length) : Change the value length
+ + value (int value) : Set the associated value
+ + lock () : Display the code continuously in asynchronous context

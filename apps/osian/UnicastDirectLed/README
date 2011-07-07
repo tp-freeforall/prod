@@ -1,0 +1,40 @@
+This application demonstrates basic UDP monitoring and control over a direct
+PPP link to an OSIAN device.
+
+The application generically maintains a counter, which it increments once
+per second, reflecting the lower four bits of the counter value in the LEDs.
+When the lower four bits are zero, it generates a Counter Rollover event.
+It also generates a Button event when button zero is pressed.  It can
+receive a Reset Counter command over the network; upon receipt, it does
+reset its counter, and generates a Reset Counter event.
+
+Each event is converted to a UDP packet and transmitted to the remote
+address of the PPP connection.  The event structure comprises the current
+application uptime in milliseconds, the current counter value, and the event
+tag.
+
+Led4 is lit while the PPP link is active.  If the link is down, events are
+not sent over the network.
+
+There is an accompanying python program, test.py, which receives events from
+the application, displaying them on the screen.  Periodically it will send a
+reset command.
+
+How to use:
+
+1. Build and install the application:
+
+  make surf osian install
+
+2. In one terminal, bring up the PPP link.  It is suggested you use a PPP
+   daemon with OSIAN printf support enabled.
+
+  sudo OSIAN_PPPD=${OSIAN_PPPD} ${OSIAN_ROOT}/bin/osianpppd
+
+   Wait until the link is established (
+
+3. In another window, run the Python program which monitors events and
+generates commands:
+
+  python test.py
+

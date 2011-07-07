@@ -1,0 +1,6 @@
+COMPONENT=TestAppC
+TOSMAKE_PATH += .
+PFLAGS += -I$(TOSDIR)/lib/serialprintf
+PFLAGS += -DTOSH_DATA_LENGTH=255
+PFLAGS += $(XPFLAGS)
+include $(MAKERULES)

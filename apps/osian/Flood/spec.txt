@@ -1,0 +1,48 @@
+The Flood application is used for high-traffic network testing.  It
+transmits UDP packets direct to a gateway node at a specified rate.  The
+length of the packets and the rate is dynamically controllable.  The
+transmission can be inhibited.
+
+Each transmitted packet contains:
+- Time since boot in binary milliseconds
+- Total number of transmission since boot
+
+In addition to its primary function, the application responds to ping and to
+UDP echo requests.
+
+B0 -- Toggle to enable/disable transmission of packets
+B1 -- Press to cycle through inter-packet transmission delays
+B2 -- Press to cycle through packet payload lengths
+B3 -- Press to display system status
+
+Green -- Toggles on transmission of a packet
+Red -- Lit if EBUSY is returned for a transmission
+Blue -- Lit if transmission is enabled
+
+Extras:
+
+ipi[,7] -- Set default inter-packet interval exponent (7 = 128bms)
+multicast -- Transmit to multicast address instead of unicast
+
+Future Variation points
+- Randomize inter-packet delay
+- Randomize packet length
+
+Visualization:
+ip-address 
+uptime (sec) : Uptime
+tx attempt : TxAtt
+tx succeed : TxSuc
+last retry : TxR
+rx succeed : RxCnt
+tx success rate : TxRt
+rx success rate : RxRt
+last packet size : LPS
+average packet size : APS
+total bytes received :Bytes
+last inter-packet delay : XPDelay
+average inter-packet delay :AvXPDel
+time since last packet : LastRx
+
+xxxx::aaaa:bbbb:cccc:dddd    HH:MM:SS.SSS  AAAAA  BBBBB  RR  RRRRR  TTT.T  RRR.R
+                             MM:SS.SSS  DDD.DDD AAA.AAA  LLL  AAA.A  BBBBBBB

@@ -1,0 +1,4 @@
+ifeq ($(PRINTF),)
+PRINTF=1
+endif
+PFLAGS += -DWITH_PRINTF=$(PRINTF)

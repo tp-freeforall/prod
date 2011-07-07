@@ -1,0 +1,44 @@
+Demonstrate point-to-point radio communications over UDP.
+
+This application round-robins through a list of known devices, and send
+direct UDP messages to each one in turn.  It maintains a record of received
+packets from all nodes that have transmitted to it.
+
+Because this test uses unicast IPv6 addresses that are based on the unique
+device identifiers, a table of these addresses must be provided.  That table
+is stored in the file "known_iids.h", and will have to be modified for the
+boards you have available.
+
+Build and install this application, and connect to the serial port:
+
+  make surf osian install
+  stty 115200 min 1 time 5 -parenb cs8 < /dev/ttyUSB0
+  cat /dev/ttyUSB0
+
+Press the reset button on the board.  You should see something like the
+following in the output:
+
+  Known IID entry for this board:
+     { { b2, c8, ad, 64, 03, 05, 8a, b9,} } // serial number
+
+Edit the known_iids.h file and replace its content with this value.  Repeat
+the process with one or more additional boards, adding their entries to
+known_iids.h.
+
+After all boards have been re-installed, re-initialize the serial ports for
+each and monitor the results.  Each time a complete sequence of
+transmissions has completed, you should se a summary indicating the
+neighbors that have been heard from, including how many receptions, the last
+sequence number, and the age of the last reception.
+
+As the application runs, the blue LED will toggle each time a transmission
+event occurs.  The red LED will be lit if the transmission event failed
+(generally due to clear-channel assessment failure).  The green LED toggles
+on each received packet.
+
+To monitor the traffic on a PC, install the BridgePppRadio application on
+a board and configure a PPP link for it, then run:
+
+  python bridgemon.py
+
+seqno 33 eui b0c8ad640306993f from fe80::b2c8:ad64:306:993f%ppp0

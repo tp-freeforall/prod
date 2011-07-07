@@ -1,0 +1,20 @@
+For full tests, do:
+
+1) Test builds of all variants for different alarm counts:
+
+  sh buildset.sh
+
+   This also shows that only four timers are available when usemux is off,
+   and displays the size in ROM and RAM for each configuration.
+
+2) Test multiple millisecond timers:
+
+  make surf osian usemux,1 install
+
+   Led N should toggle at 8/(2^N) times per second
+
+3) Test multiple whole-second timers
+
+  make surf osian usemux,1 useprec,Second install
+
+   Led N should toggle at 2^N second intervals

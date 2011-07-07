@@ -1,0 +1,11 @@
+This directory contains a collection of components that aid in debugging
+TinyOS programs.
+
+Each capability is made available through a standard component.  The
+implementation of the component is replaced by a stub with the NDEBUG
+preprocessor symbol is defined to a non-zero value.
+
+DisplayCode - Infrastructure to display an error code on the device LEDs,
+either in the background or as a sort of kernel-panic.  Each code provides
+its own interface to control it.  Codes may be associated with values, which
+are also displayed through the LEDs.

@@ -1,0 +1,4 @@
+ifeq ($(GW),)
+GW = 1
+endif
+PFLAGS += -DBUILD_FOR_GATEWAY=$(GW)

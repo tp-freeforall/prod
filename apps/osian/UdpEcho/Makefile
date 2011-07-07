@@ -1,0 +1,5 @@
+COMPONENT=TestAppC
+PFLAGS += -ggdb
+TOSMAKE_PATH += .
+include $(MAKERULES)
+

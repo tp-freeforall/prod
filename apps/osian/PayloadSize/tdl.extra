@@ -1,0 +1,4 @@
+ifeq ($(TDL),)
+TDL=255
+endif
+PFLAGS += -DTOSH_DATA_LENGTH=$(TDL)

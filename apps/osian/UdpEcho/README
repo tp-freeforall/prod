@@ -1,0 +1,44 @@
+This is a primary test for OSIAN IP.  It is a simple application that
+supports ping and the UDP echo service.
+
+1. Add the following lines to your /etc/hosts.  This allows you to reference
+   the PPP endpoints by name.
+
+  fe80::fd41:4242:e88:2 host.ppp.osian
+  fe80::fd41:4242:e88:3 device.ppp.osian
+
+2. Build and install the application on a device:
+
+  make surf osian dco,16 install bsl,/dev/ttyUSB0
+
+   Changing the DCO to 16MHz avoids periodic UART overruns at 115200 which
+   can cause roughly 3% UDP packet drops on this test.
+
+3. Run the osianpppd script which will build a command line for the PPP
+   daemon and invoke it.  Note that since pppd requires root privileges,
+   this must be run as root.
+
+  sudo OSIAN_PPPD=${OSIAN_PPPD} ${OSIAN_ROOT}/bin/osianpppd
+
+4. Use the IPv6 version of the ping command to test network connectivity.
+   Note that, since the device is assigned a link-local address, you may
+   need to tell ping6 which interface to use:
+
+  ping6 -I ppp0 device.ppp.osian
+
+5. Basic test of the echo service.  This requires the netcat program, and
+   sends the standard input to nc over UDP using Ipv6 (-6u) to echo service
+   running on port 7 of the device.  netcat doesn't seem to use hostname
+   lookup properly, so we use the scope-qualified address:
+
+  echo This is a test | nc -6u fe80::fd41:4242:e88:3%ppp0 7
+
+6. Finally, use the echoperf.py Python program to determine the overall
+   performance of the echo service.  This program repeatedly transmits
+   packets to the service, recording how many are transmitted and received,
+   and periodically printing a summary of results.
+
+  python echoperf.py -l 120
+
+   Packets smaller than 120 octets will work; larger than that may run up
+   against MTU limits within the default PPP configuration.

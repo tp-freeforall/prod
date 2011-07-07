@@ -1,0 +1,55 @@
+Bridge the PPP and Radio Links
+
+This application serves as a network bridge, making nodes on a radio link
+appear as though they were directly connected to a PC via the PPP link.
+
+The application contains interfaces for both PPP and the OIP radio link.  It
+assigns to the radio NIC the unicast address of the PC-side of the PPP link.
+Consequently, the radio nodes believe they are talking directly to the host;
+the host talks to individual radio nodes without being aware of the bridge.
+
+The host can talk directly to the bridge through the address assigned to the
+bridge's end of the ppp link.
+
+The blue LED will be lit whenever the PPP link is active.  The red LED
+toggles upon receipt of a packet on the PPP link; the green LED toggles on
+receipt of a packet on the Ieee154 radio link.
+
+WARNING: If you use the Ieee154 link layer, the link layer address is
+normally derived from the IID of the link-local address.  Consequently, the
+PC side of the PPP link must be assigned an address in which the low 16 bits
+are different from the low 16 bits of any ODI of any device in the radio
+network (except the bridge device).  The recommended address for the PC side
+of the PPP link is fe80::fd41:4242:e88:2, so if any device on the radio
+network has 0x0002 as the low 16 bits of its ODI, either replace it or pick
+a different PC-side IID.
+
+To use this:
+
+* Build and install the bridge software on one node:
+
+  make surf osian install
+
+* Start up the PPP link:
+
+  sudo OSIAN_PPPD=${OSIAN_PPPD} ${OSIAN_ROOT}/bin/osianpppd
+
+* Install the MulticastRadioNet application on a separate node and start it
+  running.
+
+  Use tcpdump to verify that the multicasts are reaching the host computer:
+
+  sudo tcpdump -i ppp0 -vX
+
+  11:37:01.625091 IP6 (hlim 64, next-header UDP (17) payload length: 18) fe80::b2c8:ad64:306:993f.50386 > ff02::1.50386: [udp sum ok] UDP, length 10
+        0x0000:  6000 0000 0012 1140 fe80 0000 0000 0000  `......@........
+        0x0010:  b2c8 ad64 0306 993f ff02 0000 0000 0000  ...d...?........
+        0x0020:  0000 0000 0000 0001 c4d2 c4d2 0012 4aba  ..............J.
+        0x0030:  b0c8 ad64 0306 993f 3700                 ...d...?7.
+
+  Using the source address of the multicast, verify connectivity by pinging
+  the node over the radio through the PPP interface:
+
+  ping6 -I ppp0 fe80::b2c8:ad64:306:993f
+
+64 bytes from fe80::b2c8:ad64:306:993f: icmp_seq=1 ttl=64 time=229 ms

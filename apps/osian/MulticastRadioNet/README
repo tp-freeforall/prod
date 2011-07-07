@@ -1,0 +1,43 @@
+Demonstrate multicast radio communications over UDP.
+
+UnicastRadioNet requires a list of board addresses, and round-robins among
+them.  This application multicasts its presence information, and records
+that information for the multicasts of other instances on the link.
+
+Build and install this application, and connect to the serial port:
+
+  make surf osian install
+  stty 115200 min 1 time 5 -parenb cs8 < /dev/ttyUSB0
+  cat /dev/ttyUSB0
+
+Repeat with additional boards.
+
+As the application runs, the blue LED will toggle each time a transmission
+event occurs.  The red LED will be lit if the transmission event failed
+(generally due to repeated clear-channel assessment failure).  The green LED
+toggles on each received packet.
+
+The inter-packet times are randomized to avoid consistent loss due to
+collisions should nodes happen to be synchronized.
+
+By default, the application multicasts at a sedate rate of roughly one
+packet per second.  A very stressful test of the network environment can be
+executed by applying the "fast" extra during the build:
+
+  make surf osian fast install
+
+With this extra in place, packets are transmitted on average every 175
+milliseconds.  The number of transmission attempts made before failure due
+to lack of a clear channel is increased.  The frequency of summary
+information is decreased.  If three or more nodes are involved, various
+problems with the IP stack or the underlying link layer could be revealed,
+if any existed.  At the time of writing, the application has successfully
+run for over a half hour with five nodes active in fast mode.
+
+To monitor the traffic on a PC, install the BridgePppRadio application on
+a board and configure a PPP link for it, then run:
+
+  python bridgemon.py
+
+seqno 286 eui b0c8ad640306993f from fe80::b2c8:ad64:306:993f%ppp0
+seqno 287 eui b0c8ad640306993f from fe80::b2c8:ad64:306:993f%ppp0

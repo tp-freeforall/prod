@@ -1,0 +1,298 @@
+OIP is the OSIAN Internet Protocol stack.
+
+ULA for OSIAN development: fd41:4242:e88::/48 
+
+Status
+======
+
+OIP is under active development.
+
+20100907
+--------
+
+Working:
+ - The PPP NIC
+ - ICMPv6 echo
+ - UDP stack with address and port validation
+ - Complete POSIX socket API
+ - RF1A NIC support
+ - Multicast support within a link
+
+Planned for future releases:
+ - Multicast Listener Discovery for cross-link multicast
+ - cross-NIC routing
+ - 6lowpan address family support
+
+Examples
+========
+
+The tests subdirectory contains a variety of examples and unit tests.  In
+general, run the ./test.sh script in each one to build and install an
+application that tests a particular feature.
+
+More stable applications are in the OSIAN apps/examples/OIP directory.
+In particular, see UdpEcho there for basic functionality testing.
+
+Use tcpdump or wireshark on the ppp0 interface to examine the packets:
+
+  sudo tcpdump -i ppp0 -vX
+
+If you run on a Red Hat based linux, remember to disable the ip6tables
+firewall rules that by default will prevent most networking code from
+working.
+
+  sudo service ip6tables stop
+
+Vision
+======
+
+The following high level requirements were imposed on the IPv6 stack for
+OSIAN:
+
+* The stack must be capable of operating on multiple IP-capable network
+  interfaces, including one based on the 802.15.4 radio network and one
+  based on the PPP link through the UART.
+
+* All nesC interfaces for IP shall be as close as possible to standard POSIX
+  syntax and semantics as possible.
+
+* Constant and structure names shall conform as closely as possible to those
+  used in POSIX and Linux.  For 802.15.4 support, the lowpan branch of Linux
+  described at http://sourceforge.net/apps/trac/linux-zigbee/wiki shall be
+  considered part of Linux.
+
+* Each interface shall support multiple addresses in different families,
+  including multiple IPv6 addresses.
+
+* There shall be a clear separation between the IP stack and the link layer,
+  so as to enable changing the link layer implementation
+
+* IP interfaces based on IEEE 802.15.4 shall restrict their dependence to
+  the standard TinyOS Ieee154Packet, Ieee154Send, and Receive interfaces.
+  Other link-layer capabilities shall be exposed through non-layer means
+  such as socket options.
+
+* The interface shall not assume that the link layer traffics in TinyOS
+  message_t structures.
+
+Roadmap
+=======
+
+The following sections describe the key architectural concepts in the OSIAN
+IP stack.  For specific details, consult the referred-to interfaces.
+
+Address Families
+----------------
+
+AddressFamily refers to a representation of IP addresses in one-to-one
+correspondence with specific overlayable structures that represent socket
+addresses (e.g., sockaddr_in6).  All address families are made visible
+through a generic AddressFamilies interface and its aggregating component,
+which also publishes a parameterized AddressFamily interface.  AfInet6C is
+the component that implements the AF_INET6 address family support.
+
+Note that a particular IP domain, such as IPv6 packets, may be supported by
+multiple address families which use different encodings for "on-the-wire"
+packet representations, but provide identical functionality.  Thus, for
+example, a node within a wireless network may support AF_6LOWPAN_IPHC as an
+address family but not AF_INET6 directly, while a node that serves as a
+gateway between the radio network and a network that uses standard AF_INET6
+packets will need to support both.  This is done simply by including (or
+excluding) the corresponding family support configuration from the
+application.
+
+Network Interfaces
+------------------
+
+A network interface represents the bridge between a link layer (such as PPP
+or an IEEE 802.15.4 MAC) and the IP stack.  An application can support
+multiple interfaces linked to the same stack, enabling routing across
+interfaces.  Each interface configuration publishes NetworkInterface, which
+allows the interface to be bound to multiple addresses, including multicast
+addresses and one which specifies the link-layer address.  These addresses,
+which include multicast addresses, are used to filter out packets not
+destined for this node.  The NetworkInterfacesC component supports address
+operations for all interfaces in the system via a parameterized
+NetworkInterface interface.
+
+Each interface configuration instantiates an instance of NetworkInterfaceC
+to obtain its unique identifier and to link itself into the
+NetworkInterfacesC aggregator.  The configuration should also include one or
+more implementations of IpEntry which can be used within link-layer
+components to introduce a network packet into the IP stack.  Finally, each
+interface implements a transmit command used to send outgoing IP packets,
+exposed via the NetworkInterfaceSpecific interface, which must be wired to
+the NetworkInterfaceC for the interface.
+
+(WhiteboxNetworkInterface is a debug interface used for introspecting the
+NetworkInterfacesP implementation during unit testing.  It should not be
+used in applications, and is excluded when NDEBUG is defined during
+compilation.)
+
+Network Stack
+-------------
+
+At the moment, only IPv6-based communication is supported, though the
+infrastructure is designed to permit IPv4 to be linked in if necessary.  The
+bulk of the IP-level processing is done in the IpSocketsP component, with
+entry into the infrastructure supported by the IpEntry interface which
+is used by network interfaces to deliver a raw link-layer packet payload to
+a component that can extract IP-relevant data from it.
+
+IPv6
+^^^^
+
+IPv6 support is implemented in the Ipv6C component.  It supplies the
+IpEntry interface.  It also ensures that the basic support for AF_INET6
+and ICMPv6 are loaded into the application.
+
+Upon receipt of a packet via the IpEntry interface, Ipv6P allocates an
+internal datastructure to hold the network interface and other relevant
+information associated with the packet.  It allocates IPv6 sockaddr
+structures for the source and destination addresses,  It processes the
+hop-by-hop header (if present), then the remaining headers.
+
+Whether a header is recognized by the IPv6 stack depends on whether an
+implementation of Ipv6Header is linked, with the appropraite header code,
+into the corresponding parameterized interface used by Ipv6P.  This
+interface updates the internal data structure based on header information,
+and locates the next header in the chain.
+
+Leaf headers, which correspond to IP protocols like ICMP and UDP, leverage
+the Ipv6ProtocolC infrastructure to convert the header processing activity
+into delivery via the IpSocketEntry interface into the sockets layer.
+Addition of support for a new protocol is accomplished by using this
+infrastructure.  See the `Protocols`_ section for details.
+
+Note: An IPv6 link-local address is automatically assigned to each interface
+in the system if IPv6 is enabled for the application; this depends on the
+interface presenting an acceptable identifier through the
+NetworkInterfaceIdentifier interface.
+
+Sockets
+-------
+
+The OSIAN API to Internet Protocol networking is modelled on POSIX sockets.
+OSIAN does not support dynamic creation of sockets; rather, a socket is
+instantiated at build time as an instance of the IpSocketC component.  The
+IpSocket interface is then used to send and receive messages, bind
+addresses, and do whatever else would be done in normal POSIX networking
+software.
+
+All API calls except those specifically related to sending and receiving
+data are implemented once, in the IpSocketsP module, which provides
+parameterized interfaces for IpSocket and uses parameterized interfaces for
+AddressFamily, IpProtocol, and NetworkInterface to adjust its behavior to
+meet the requirements of a specific operation.  See below for details on the
+send and receive interfaces.
+
+Incoming messages are delivered by a domain-specific component like Ipv6C
+through the IpSocketEntry interface.  The properties of the incoming packet
+are compared with each socket in the system, and the packet is delivered to
+the sockets that are compatible with it in terms of destination address and
+protocol.
+
+Udp6SocketC is a generic component which creates a socket for IPPROTO_UDP
+and ensures protocol support for UDP under IPv6 is linked into the
+application.  Most application level networking will use the standard
+IpSocket interface associated with a Udp6SocketC instance.
+
+POSIX.1-2008 is available at: http://www.opengroup.org/onlinepubs/9699919799/
+
+IpSocketMsg
+^^^^^^^^^^^
+
+This interface provides the sendmsg/recvmsg POSIX calls.  It should be used
+when operating on raw sockets or when the application requires full control
+of the transmission process, or complete details on the received data
+including internal network state.  Generally, you won't want to use this.
+
+Be aware that if you wire in this interface for a particular socket, the
+higher-level send and receive interfaces described below will not signal
+message reception.
+
+IpDatagramSocket
+^^^^^^^^^^^^^^^^
+
+This interface provides the sendto/recvfrom POSIX calls.  It is probably the
+most useful when using multicast or other connectionless communications.
+
+IpConnectedSocket
+^^^^^^^^^^^^^^^^^
+
+This interface provides the send/recv POSIX calls.  It is only appropriate
+for use with connected sockets: e.g., a UDP socket for which the local
+address has been provided via bind(2), and the peer address has been
+provided via connect(2).
+
+
+Protocols
+---------
+
+IP supports a variety of protocols which can be expressed in different
+socket domains.  The IpProtocol interface allows their differences to be
+abstracted.  This interface specifies whether and where the standard
+upper-layer IP checksum is stored within the network packet, and process the
+transport-layer header when receiving and transmitting packets in the
+protocol.
+
+Support for a specific protocol is enabled by linking the base protocol
+configuration into the application.  Specific base protocols are described
+below.  Services that use those protocols can be independently enabled and
+disabled simply by whether they do or do not appear in the application
+configuration.
+
+Icmp6C
+^^^^^^
+
+The Icmp6 interface provides convenience functions to generate ICMP messages
+for various error conditions without having to construct the packets
+directly.  It is provided by the Icmp6C component, which itself registers
+the IPPROTO_ICMP6 protocol with OIP and provides the fundamental
+infrastructure for processing ICMPv6 packets.
+
+The Icmp6Dispatch interface is implemented by components that can process
+incoming ICMP messages of a particular type.  Although the data passes
+through a raw socket in Icmp6C, the process command in this interface
+traffics in sk_buff structures, since ICMP messages are likely to need
+access to things like the originating network interface and full socket
+source/destination information. 
+
+An example of a component that supports an ICMP service is
+Icmp6EchoRequestC, which recognizes incoming echo messages and transmits the
+matching echo reply.  Ping support in an OSIAN application can be obtained
+simply by referencing Icmp6EchoRequestC in the application configuration.
+
+
+Udp6C
+^^^^^
+
+Most application programs are expected to be written using UDP sockets.  The
+Udp6SocketC generic component provides an instance of IpSocket presenting (an
+approximation to) the standard POSIX API.  Instantiating a Udp6SocketC pulls
+in the Udp6C protocol support.
+
+A trivial example of a UDP-based service is the Udp6EchoC component.
+Further examples will be forthcoming as OIP evolves.
+
+
+Socket Options
+===============
+
+Options in each section are those available at the specified socket option
+level (the first parameter to IpSocket.getsockopt).
+
+Currently supported options appear at the following levels:
+
+SOL_SOCKET -- none
+IPPROTO_IPV6 -- multicast support, hop count setting
+IPPROTO_UDP -- none
+
+
+IPPROTO_IPV6 
+------------
+
+IPV6_MULTICAST_IF
+IPV6_JOIN_GROUP
+IPV6_LEAVE_GROUP
+

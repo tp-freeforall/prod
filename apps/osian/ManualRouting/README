@@ -1,0 +1,71 @@
+Demonstrate discovery of manual routing between radio nodes and a host
+computer.
+
+**WARNING**: This application is a work in progress.  At this time, the
+memory requirements of PPP and Ieee154 make it difficult to accomplish the
+task, and the demonstration uses only link-local addresses.
+
+In a full OSIAN IP solution, a node that provides both a PPP and an Ieee154
+interface would be configured to route between those two links, allowing
+(for example) a control program running on a Linux host to directly contact
+nodes in the radio network.
+
+In the absence of OSIAN routing support, the same effect can be done
+manually.  This application assumes the following IP addresses:
+
+fe80::fd41:4242:e88:2 host.ppp.osian host.ppp.osian
+fe80::fd41:4242:e88:3 device.ppp.osian device.ppp.osian
+
+One node is configured as dual-homed, by building it with the gw extra.
+This is the node assigned the "device.*" names listed above.  Its address on
+the ieee154.osian network is statically configured from its ODI.
+
+Additionally, an arbitrary number of nodes can exist only on the radio
+network, with static addresses autoconfigured in the fd41:4242:e88:2::/64
+network in the ieee154.osian domain.
+
+Multicast group ff02::1 is the pre-defined all-hosts group for the local
+link.  Multicast group ff02::2 is the pre-defined all-routers group for the
+local link.  See RFC4291.
+
+The gateway node is dual-homed.  At any time that the PPP network is up, the
+blue LED is lit.  Periodically the node multicasts on the radio network the
+status of the PPP link.  If that link (bridge) is up, the message includes
+the IID for the host computer's interface as bridged to to the radio
+network.  This can be used by radio-only nodes to send unicast messages
+directly to the host computer.
+
+Standard nodes use only the radio network.  When a node comes on-line, it
+multicasts a message to port 50133 on the all-routers group.  If a gateway
+node is available, it replies to this with a unicast message indicating the
+gateway status.  The source address will subsequently be used as the
+gateway.  The standard node processes both multicast and unicast gateway
+status messages and reflects the gateway status in its blue LED as well.
+
+Process:
+
+* Program a gateway node:
+  
+  make surf osian gw install bsl,/dev/ttyUSB0
+
+* Program a remote node:
+
+  make surf osian install bsl,/dev/ttyUSB1
+
+* Bring up the PPP connection to the gateway node
+
+  sudo OSIAN_PPPD=${OSIAN_PPPD} ${OSIAN_ROOT}/bin/osianpppd
+
+The blue LEDs on both boards should be lit.
+
+* Observe the console of the remote node
+
+  stty 115200 min 1 time 5 -parenb cs8 < /dev/ttyUSB1
+  cat /dev/ttyUSB1
+
+* Reset the remote node.
+
+  You should see log messages indicating how it joins the network,
+  multicasts for the gateway, and reeceives a response from the gateway.
+  LEDs on the gateway will indicate the request and response processed from
+  the radio messages.
