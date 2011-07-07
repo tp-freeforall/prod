@@ -41,7 +41,8 @@
 configuration PppIpv6DaemonC {
   uses {
     interface PppProtocol[ uint16_t protocol ];
-    interface DisplayCode as DisplayCodeLcpState;
+  //This is not supported in new ppp Demon
+  //interface DisplayCode as DisplayCodeLcpState;
   }
   provides {
     interface SplitControl;
@@ -72,7 +73,9 @@ configuration PppIpv6DaemonC {
   SplitControl = PppDaemonC;
   PppLcpAutomaton = PppDaemonC;
   Ppp = PppDaemonC;
-  DisplayCodeLcpState = PppDaemonC;
+
+  //This is not supported in new ppp Demon
+  //DisplayCodeLcpState = PppDaemonC;
 
   // Hook up the generic PPP IPv6 interface
   components PppIpv6C;
@@ -98,8 +101,13 @@ configuration PppIpv6DaemonC {
   components Ipv6C;
   PppIpv6DaemonP.IpEntry -> Ipv6C;
 
+  // Provide the standard serial interface over which PPP will run (OSIAN Orginal)
+  //components PlatformSerialHdlcUartC;
+  //PppDaemonC.HdlcUart -> PlatformSerialHdlcUartC;
+  //PppDaemonC.UartControl -> PlatformSerialHdlcUartC;
+
   // Provide the standard serial interface over which PPP will run
-  components PlatformSerialHdlcUartC;
-  PppDaemonC.HdlcUart -> PlatformSerialHdlcUartC;
-  PppDaemonC.UartControl -> PlatformSerialHdlcUartC;
+  components DefaultHdlcUartC;
+  PppDaemonC.HdlcUart -> DefaultHdlcUartC;
+  PppDaemonC.UartControl -> DefaultHdlcUartC;
 }
