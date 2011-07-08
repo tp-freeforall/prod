@@ -49,8 +49,8 @@
  * values provided by TI for msp430x2xx processors.
  */
 
-#ifndef MS430DCOSPEC_H
-#define MS430DCOSPEC_H
+#ifndef MSP430DCOSPEC_H
+#define MSP430DCOSPEC_H
 
 /* 8 MIHZ */
 #define TARGET_DCO_HZ   8388608UL
