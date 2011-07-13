@@ -1,4 +1,6 @@
 
+Getting Started.
+
 Git is great.    Git is good.    Git is powerful.
 
 Alas, that makes it a little daunting getting started.   This document should
@@ -11,7 +13,7 @@ to the TinyProd TinyOS repository structure.
 
 Contents:
 
-- About TinyProd
+- Why Git?
 - GitHub
 - Set up Git
 - Set up your working repository
@@ -19,26 +21,51 @@ Contents:
 - Guidelines
 
 
-* About TinyProd:
+* Why Git?
 
-TinyProd is a GIT based TinyOS repository that is immediately downstream from
-the main SVN based TinyOS repository that is maintained by the academic TinyOS
-community.
+The main reason behind the selection of GIT is it's fully distributed nature,
+fast branching, and associated merge magic.  The TinyOS development community
+is essentially world wide and we want to make encourage the rate of development
+by making the contribution process very easy as well as accessable.
 
-TinyProd is intended to be a more vibrant, developer/production orientated
-repository.  Some of the features include:
+  o Fully distributed.
 
-  o organize git based TinyOS development.
-  o More vibrant, higher rate of change for the community.
-  o Encourage collaboration
-  o Optimize developer resources.  (Streamline the development process).
-    Developer centric rather than academic centric.
-  o Peer driven code review, norm rather than the exception.
-  o real issue and bug tracking
-  o tracking changes to TinyProd managed pieces of the source tree
-    and linking to appropriate tracking documents.
-  o stable mainline.
-  o Continuous release cycle.
+  o Everything is local.   No need of a centralized server for anything.
+    (note our workflow does require integration repositories but this isn't
+    implicit in GIT), nor does it impact the contribution process.
+
+  o Cheap local branching.  This is important.  We want to foster faster
+    development.  Try something out while still staying in touch with what
+    is happening in the mainline.  This is much more difficult with rTinyOS's
+    (research TinyOS) CVS contrib and SVN based repositories.
+
+    Note, branching in GIT is fundamentally different than pretty much any
+    other SCM system and is responsbile for much of the productivity of projects
+    using GIT.
+
+  o GITHUB.  When coupled with github, git provides very powerful visibility tools
+    (what is being changed and by whom).  Code review becomes very easy when
+    using GIT and github.
+
+  o Git is Small
+
+  o Git is Fast
+
+  o Support for any workflow.  Although we are using the Integration Manager
+    Workflow.   This also promotes code review.
+
+  o Allows gradual reintegration of currently active contrib source bodies.
+    Currently the contrib source body is maintained in CVS and is rather
+    cumbersome to use.   Bringing active contrib code into the TinyProd
+    github realm would provide the same mechanism for accessing and using
+    active contrib code as the main TinyOS body.
+
+    Using TinyProd hosted contrib code would be as simple as merging two
+    git branches or possibly two branches in different git repositories.
+
+  o Other DVCS could also have been chosen (SVN is not a DVCS), such as Hg
+    or Bzr but I happened to be a fan of GIT.   And it seems to be working
+    well for what we are trying to do.
 
 
 * GitHub
@@ -49,7 +76,7 @@ repository.  Some of the features include:
 * Go to github.com and get yourself a logon.  Choose your login name
   carefully.   You can rename it once (but only once).
   
-  Once you are logged in, You'll be presented a page start up page which
+  Once you are logged in, You'll be presented a start up page which
   includes things like "Set Up Git", "Create a Repository", "Fork a
   Repository", etc.   We will be using existing repositories.
 

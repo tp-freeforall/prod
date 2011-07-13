@@ -1,17 +1,68 @@
 
-* Toolchain:
+Welcome to TinyProd (TinyOS Production)
 
-The focus is on getting the new toolchain verified.  As such this repo is
-intended to be tested using the new toolchain (mspgcc 4.5, uniarch, ti headers).
+* About TinyProd:
+
+TinyProd is a GIT based TinyOS repository that is immediately downstream from
+the main SVN based TinyOS repository that is maintained by the academic TinyOS
+community.
+
+TinyProd is intended to be a more vibrant, developer/production orientated
+repository.  Some of the features include:
+
+  o organize git based TinyOS development.
+  o More vibrant, higher rate of change for the community.
+  o Encourage collaboration
+  o Optimize developer resources.  (Streamline the development process).
+    Developer centric rather than academic centric.
+  o Peer driven code review, norm rather than the exception.
+  o real issue and bug tracking
+  o tracking changes to TinyProd managed pieces of the source tree
+    and linking to appropriate tracking documents.
+  o stable mainline.
+  o Continuous release cycle.
+
+The intent is to keep the structure as simple as possible while allowing
+for reasonable levels of contribution.   We want a forum where developers
+can make their code easily accessible, mechanisms for real code review and
+feedback, and a reasonable level of stability in the releases.
+
+The assumption is that developer resources are scarce and should be optimized
+while still maintaining good development practices.
+
+If a developer takes the time to put a reasonable piece of code together, gets
+it reviewed, then they should have a place where it can live and contribute
+to the mainline.   The critical resource for getting development done is the
+developers time and effort.   We should be making their life easier and
+providing a mechanism for their code to become part of the whole.
+
+If you have something to contribute we will find a reasonable way to get it
+published and easy to find as part of the TinyOS community.
+
+
+* Msp430 Toolchain:
+
+The initial major feature of the TinyProd repository is the creation of a more
+complete TI Msp430 core.   This requires use of an updated TI msp430 toolchain.
+The new toolchain is being worked on by Peter Bigot and is in active development
+and needs to be verified.   While this repository supports old TI processors (x1
+family) its primary focus is on the newer processors which requires the newer
+toolchain.   The intent is that all processors (original, x1 as well as the newer
+x2 and x5 families) should be tested with the newer toolchain.
+
+An interium installation tarball can be found at
+http://tinyprod.net/cire/msp430-20110612.tgz.   It should be installed in root (/).
+Debian packages are being built for Ubuntu Oneiric (11.10).
 
 Some testing with the old 3.2.3 toolchain (original tinyos and z1 varient) has
-also been done for simple function (ie. does it compile).
+also been done for basic functionality (ie. does it compile).
 
 
 * Repo Structure
 
 github.com/tinyprod/prod: main TinyProd repo.
-  The VeryBless repo.  Hold the stable mainline (master)
+  The VeryBlessed repo.  Holds the stable mainline (master).   Releases
+  come off this repo and the master branch.
 
 github.com/tp-freeforall/prod: working fork.
   Blessed repo.  Holds consolidated integration branches and
@@ -22,6 +73,16 @@ github.com/<github_user>/prod: user's tinyprod working fork.
   should be branched off the tp-freeforall/prod(branch)
   that the user is working on.
 
+The general form for a repository/branch is: <github_context>/<repo>(branch)
+ie. tp-freeforall/prod(msp430-int-pu) is the msp430-int-pu branch in the
+tp-freeforall/prod repository.
+
+Local repositories are referenced using local(branch).   local(remote/branch).
+
+
+See 00_Getting_Started for more details on how to contribute to the TinyProd
+repositories.
+
 
 
 main persistent branches:
@@ -29,16 +90,15 @@ main persistent branches:
 svn/upstream: svn tinyos tracking branch.
 
 master: the main tinyprod release line.
-
-next: integration branch for next release on master.
-
-pu:   integration branch for proposed updates.
+next:   integration branch for next release on master.
+pu:     integration branch for proposed updates.
 
 <feature>-int: integration branch for feature
 <feature>-int-pu: proposed update.
 <feature>-int-next: accepted updates.
 
 (some of these branches may be skipped depending on need).
+
 
 
 
@@ -84,8 +144,8 @@ svn t2 mainline ---|
                 svn-vhsb ---------------------
                       |		|	     |
 	  	       --------------------------msp430-int ----------------
-						    |
-       	       	       	       	       	       	    ----- z1-pu ----
+				|		    |           |
+				---- msp430-int-pu ------------------
 
 
 * Branches:
@@ -98,13 +158,14 @@ svn-vhsb: (vogon hyper-spatial bypass)  Bypass the Z1 commits on the main
 	mm_core.  This collapsage forms the majority of the work of merging
 	the trees and there isn't much sense in reinventing the wheel.
 
-msp430-int: main consolidation branch for the msp430 core.   It represents the
+msp430-int: main integration branch for the msp430 core.   It represents the
 	current released version of the branch.
 
-       includes all three major families (x1, x2, and x5).  Major cpu dependancies
-       held in tos/chips/msp430/{x1xxx,x2xxx,x5xxx}
+	includes all three major families (x1, x2, and x5).  Major cpu dependancies
+	held in tos/chips/msp430/{x1xxx,x2xxx,x5xxx}
 
-z1-pu: working directory for Zolertia modifications.
+msp430-int-pu: new proposed changes to msp430-int are first integrated here.
+	When verified these get merged into msp430-int.
 
 
 
@@ -113,31 +174,39 @@ Workflow:  (github user: Robert Hunter)
     on github, fork github.com/tp-freeforall/prod  (as Robert Hunter)
        (this creates the github repo, github.com/roberthunter/prod)
 
-    mkdir -p ~/working/msp430
-    cd ~/working/msp430
+    Assumes that the main feature integration branch on tp-freeforall is
+    msp430-int and its pu branch (proposed updates) is msp430-int-pu.
+
+    When the initial workinig repository is created the remote origin
+    is created.  In the example below this refers to git@github.com:
+    roberthunter/prod.git.   We also want a remote for the upstream called
+    "up".
+
+    mkdir -p ~/w/rh
+    cd ~/w/rh
     git clone git@github.com:roberthunter/prod.git tinyos-2.x
     cd tinyos-2.x
     git remote add up git://github.com/tp-freeforall/prod.git
     git fetch up
-    git checkout msp430-int               # make sure on the msp430-int branch
-    git checkout -b rh                    # create the rh branch off msp430-int
+    git checkout -t up/msp430-int-pu      # create a local tracking branch
+    git checkout -b rh                    # create the rh branch off msp430-int-pu
 
 
 
-tinyprod/prod
+tp-freeforall/prod
 
     fork -> tp-freeforall/prod.git
-                    msp430-int branch
+                    msp430-int-pu branch
 
              roberthunter/prod.git
-	            msp430-int branch
+	            msp430-int-pu branch
 		           rh branch
 			       ......  rh changes ---
 						     |
-						     |
+						     | integration step
 		     tp-freeforall/prod.git	     |
 		              msp430-int-pu -------------
-							 |
+							 |integration step
 							 |
 		                     msp430-int -------------
 
@@ -151,21 +220,31 @@ tp-freeforall/prod(msp430-int-pu) branch.   After other changes from other
 developers comes in and msp430-int-pu has sufficiently matured, msp430-int-pu
 is merged into tp-freeforall/prod(msp430-int).
 
+Testing of the integration branches happens on tp-freeforall/prod(feature-int).
+Groups of features are combined on tp-freeforall/prod(pu) [tp-freeforall/prod
+repository on github, pu (proposed updates) branch] which migrates to the
+next branch as the branch matures and the changes are accepted.
+
 When all integration branches have matured sufficiently, they are merged
-together, tested, and becomes tinyprod/prod(master).
+together, tested, and becomes tinyprod/prod(master) as a new release.   The
+intent is to release features as they become available using a continuous
+release process.
 
 
 While various integration work is being done, working branches should be
-refreshed with more current content from the integration repositories.
+refreshed with more current content from the integration repositories.  This
+is referred to as a backmerge.
 
 For example, Robert wants to make sure that his changes are consistent with
 what is happening on the tp-freeforall/prod(msp430-int-pu) branch.  He
 accomplishes this by the following commands:
 
-    cd ~/working/msp430/tinyos-2.x
+    cd ~/w/rh/tinyos-2.x
     git fetch up                         # get current information from
     	      				 # tp-freeforall
 
     git checkout rh                      # make sure on rh branch
     git merge up/msp430-int-pu           # merge in the current
                                          # proposed integration branch
+					 # which is the feature Robert is
+					 # working on.
