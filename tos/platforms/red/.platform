@@ -8,10 +8,12 @@ for (split(/\n/, <<'EOText'
   %P/hardware/pins
   %P/hardware/leds
   %P/hardware/usci
-  %P/hardware/onewire			
   %P/hardware/radio
   %P/hardware/clock
-  %P/hardware/IPV6/Identity
+  %P/hardware/rtc
+  %P/hardware/sensors/MLX90614
+  %P/hardware/storage/MC24XX1025
+  %P/Ieee/Identity
   %P/compatibility/system
 
   %T/chips/msp430/x5xxx

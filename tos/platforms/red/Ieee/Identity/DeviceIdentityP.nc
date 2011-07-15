@@ -7,31 +7,28 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- *
  * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- *
  * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
- *
- * - Neither the name of the copyright holders nor the names of
+ * - Neither the name of the People Power Company nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
- * THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE
+ * PEOPLE POWER CO. OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * OF THE POSSIBILITY OF SUCH DAMAGE
  */
 
 #include "odi.h"
@@ -40,16 +37,13 @@
  * @author David Moss
  * @author Peter Bigot
  */
-
 module DeviceIdentityP {
   provides {
     interface Init;
     interface DeviceIdentity;
   }
-  uses {
-    interface I2CPacket<TI2CBasicAddr>;
-    interface StdControl;
-  }
+  uses interface I2CPacket<TI2CBasicAddr>;
+  uses interface StdControl;
 } implementation {
 
 /* Set default metadata values */
@@ -69,21 +63,20 @@ module DeviceIdentityP {
 #define OSIAN_DEVICE_TYPE 1
 #endif /* OSIAN_DEVICE_TYPE */
 
-  /**
-   * OSIAN Device Identifier, basically an EUI-64 with extra info.
+  /** OSIAN Device Identifier, basically an EUI-64 with extra info.
    *
    * @note Don't bother trying to initialize this at compile-time.
    * nx_structs with bit fields don't translate into something that
-   * can be statically initialized.
-   */
+   * can be statically initialized. */
   odi_t odi;
 
-  command error_t Init.init () {
+  command error_t Init.init ()
+  {
     static bool done;
     error_t rc = SUCCESS;
-
-    if (done)
+    if (done) {
       return SUCCESS;
+    }
     done = TRUE;
     odi.oui = OSIAN_DEVICE_OUI;
     odi.reserved = 0;
@@ -92,8 +85,14 @@ module DeviceIdentityP {
     odi.deviceClass = OSIAN_DEVICE_CLASS;
     odi.deviceType = OSIAN_DEVICE_TYPE;
     {
+
       uint32_t id = 0;
       uint8_t EE_senddata[5],EE_recdata[5];
+
+      #ifdef OSIAN_DEVICE_ID
+        odi.id = OSIAN_DEVICE_ID;
+	return rc;
+      #endif
 
       call StdControl.start();
 
@@ -113,14 +112,13 @@ module DeviceIdentityP {
     return rc;
   }
 
-  command const odi_t* DeviceIdentity.get () {
+  command const odi_t* DeviceIdentity.get ()
+  {
     call Init.init();
     return &odi;
   }
 
-  command const ieee_eui64_t* DeviceIdentity.getEui64 () {
-    return (const ieee_eui64_t*)call DeviceIdentity.get();
-  }
+  command const ieee_eui64_t* DeviceIdentity.getEui64 () { return (const ieee_eui64_t*)call DeviceIdentity.get(); }
 
   command const char * DeviceIdentity.getDescription () { return 0; }
 

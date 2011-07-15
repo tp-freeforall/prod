@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2009-2010 People Power Company
+/* Copyright (c) 2010 People Power Co.
  * All rights reserved.
  *
  * This open source code was developed with funding from People Power Company
@@ -34,67 +33,27 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * OSIAN Device Identifier
- * @author David Moss
- * @author Peter Bigot
+/** Provide the RealTimeClock interface, but only when building under
+ * OSIAN since the interface is not in TinyOS proper.  Otherwise,
+ * provide it, but the StdControl functions always fail.
+ *
+ * Note that this component does not require boot-time initialization,
+ * so is not linked to PlatformC.
+ *
+ * @author Peter A. Bigot <pab@peoplepowerco.com>
  */
 
-#ifndef OSIAN_odi_h
-#define OSIAN_odi_h
-
-/* Constant class tag values */
-typedef enum ODI_Class_e {
-  ODI_CLS_Unregistered = 0,
-  ODI_CLS_Communications = 1,
-  ODI_CLS_Energy = 2,
-  // Class 3 is reserved
-  ODI_CLS_HealthAndSafety = 4,
-  // Class 5 is reserved
-  ODI_CLS_Environment = 6,
-  // Class 7 is reserved
-} ODI_Class_e;
-
-#ifdef NESC
-#define NX_(_t) nx_##_t
-#else /* NESC */
-#define NX_(_t) _t
-#endif /* NESC */
-
-/** An ODI is the equivalent of an EUI-64, with extra information to
- * help identify the functionality on the device.  Note that, to be
- * layout-compatible with the EUI-64, this must be a network-endian
- * structure. */
-typedef NX_(struct) odi_t {
-  /** Organizationally unique identifier obtained from IANA */
-  NX_(uint64_t) oui : 24;
-
-  /** 1 bit reserved */
-  NX_(uint64_t) reserved : 1;
-
-  /** 1 if this device can sense something */
-  NX_(uint64_t) sensor : 1;
-
-  /** 1 if this device can control something */
-  NX_(uint64_t) actuator : 1;
-
-  /** The device class, one of ODI_Class_e */
-  NX_(uint64_t) deviceClass : 3;
-
-  /** The device type, defined in odi_types.h */
-  NX_(uint64_t) deviceType : 10;
-
-  /** The unique ID of this device instance  */
-  NX_(uint64_t) id : 24;
-
-} odi_t;
-
-typedef NX_(union) odi_u {
-  odi_t odi;
-  NX_(uint64_t) value;
-} odi_u;
-
-/* Include the current set of defined devices */
-#include "odi_types.h"
-
-#endif /* OSIAN_odi_h */
+configuration PlatformRealTimeClockC {
+  provides {
+    interface StdControl;
+#if WITH_OSIAN
+    interface RealTimeClock;
+#endif /* WITH_OSIAN */
+  }
+} implementation {
+  components PlatformRealTimeClockP;
+  StdControl = PlatformRealTimeClockP;
+#if WITH_OSIAN
+  RealTimeClock = PlatformRealTimeClockP;
+#endif /* WITH_OSIAN */
+}

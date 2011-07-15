@@ -1,8 +1,6 @@
 /*
- * Copyright (c) 2009-2010 People Power Company
+ * Copyright (c) 2011 Redslate Ltd.
  * All rights reserved.
- *
- * This open source code was developed with funding from People Power Company
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,24 +30,35 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author Derek Baker <derek@red-slate.co.uk>
  */
 
+//Melexis MLX90614ESF-BAA single zone IR thermometer, with on board ambient temperature sensor.
+//This driver has been tested with the MLX90614ESF-BAA only but should work with the full range.
 
-/**
- * @author David Moss
- */
-configuration DeviceIdentityC {
-  provides interface DeviceIdentity;
-}
-implementation {
+interface MLX90614{
+  
+  //Read RAM/EEPROM location from MLX90614 device with address 'Address' and places in data
+  //Returns SUCCESS or FAIL
+  async command error_t read(uint8_t Address,uint8_t Reg,uint16_t *data);
 
-  components PlatformI2CC;
-  DeviceIdentityP.I2CPacket -> PlatformI2CC;
-  DeviceIdentityP.StdControl -> PlatformI2CC;
-
-  components DeviceIdentityP;
-  DeviceIdentity = DeviceIdentityP;
-
-  components MainC;
-  MainC.SoftwareInit -> DeviceIdentityP;
+  //Write to RAM/EEPROM of MLX90614 device with address 'Address' the value of data
+  //Returns SUCCESS or FAIL
+  async command error_t write(uint8_t Address,uint8_t Reg,uint16_t data);  
+  
+  //Read the status FLAGS from MLX90614 device with address 'Address' and returns in Status 8bit value
+  //Returns in Status
+  //bit 7 6 5 4 3 2 1 0
+  //    | | | | | 0 0 0
+  //    | | | | Not implemented
+  //    | | | INIT POR initialization routine is still ongoing, Active Low
+  //    | | EE_DEAD - EEPROM double error has occurred, Active High
+  //    | Not used
+  //    EEBUSY - the previous write/erase EEPROM access is still in progress, Active High
+  //Returns SUCCESS or FAIL
+  async command error_t status(uint8_t Address, uint8_t *Status);
+  
+  //Put the MLX90614 into sleep mode
+  async command error_t sleep(uint8_t Address);
 }

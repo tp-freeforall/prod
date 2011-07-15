@@ -1,8 +1,6 @@
-/* 
- * Copyright (c) 2009-2010 People Power Company
+/*
+ * Copyright (c) 2011 Redslate Ltd.
  * All rights reserved.
- *
- * This open source code was developed with funding from People Power Company
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,25 +30,20 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author Derek Baker <derek@red-slate.co.uk>
  */
 
-/**
- * @author David Moss
- */
-
-module PlatformOneWireInitP {
-  provides { 
-    interface Init;
-  }
-  uses {
-    interface HplMsp430GeneralIO as Ds1825IO;
-  }
-}
-
-implementation {
-  command error_t Init.init() {
-    call Ds1825IO.setResistor(MSP430_PORT_RESISTOR_OFF);
-    call Ds1825IO.makeInput();
-    return SUCCESS;
-  }
+interface MC24XX1025{
+  //Reads from Address 'address' x 'len' data 'data' bytes and placing in buffer pointed to by data
+  //read will access automatically up to 4 24XX1025
+  //No device/memory boundary checking is done, reading over devices/boundary will not work
+  //returns SUCCESS/FAIL
+  async command error_t read(uint32_t address, uint8_t *data, uint8_t len);
+  
+  //write to Address 'address' data for len bytes
+  //write will access automatically up to 4 24XX1025
+  //No device/memory boundary checking is done, writing over devices/boundary will not work
+  //returns SUCCESS/FAIL
+  async command error_t write(uint32_t address, uint8_t *data, uint8_t len);
 }

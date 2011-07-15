@@ -1,8 +1,6 @@
-/* 
- * Copyright (c) 2009-2010 People Power Company
+/*
+ * Copyright (c) 2011 Redslate Ltd.
  * All rights reserved.
- *
- * This open source code was developed with funding from People Power Company
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,29 +30,11 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author Derek Baker <derek@red-slate.co.uk>
  */
 
-/**
- * Platform hardware presentation layer for the DS1825 one-wire chip
- * @author David Moss
- */
+#ifndef MC24_LC1025_H
+#define MC24_LC1025_H
 
-configuration PlatformOneWireInitC {
-  provides {
-    interface Init;
-    interface HplMsp430GeneralIO as Ds1825IO;
-  }
-} implementation {
-
-  components PlatformOneWireInitP;
-  Init = PlatformOneWireInitP;
-
-  components HplMsp430GeneralIOC as GeneralIOC;
-#if defined(SURF_REV_A)
-  Ds1825IO = GeneralIOC.Port35;
-  PlatformOneWireInitP.Ds1825IO -> GeneralIOC.Port35;
-#else
-  Ds1825IO = GeneralIOC.Port37;
-  PlatformOneWireInitP.Ds1825IO -> GeneralIOC.Port37;
-#endif
-}
+#endif /* MC24_LC1025_H */
