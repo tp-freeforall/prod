@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 DEXMA SENSORS SL
+ * Copyright (c) 20011 ZOLERTIA LABS
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,30 +33,68 @@
  */
 
 /*
- * Implementation of a simple read interface for the TMP102 temperature
- * sensor built-in Zolertia Z1 motes
+ * Simple test application to read at the same time all axis of the 
+ * ADXL345 Accelerometer built-in Zolertia Z1 motes
  *
- * @author: Xavier Orduna <xorduna@dexmatech.com>
- * @author: Jordi Soucheiron <jsoucheiron@dexmatech.com>
+ * @author: Antonio Linan <alinan@zolertia.com>
  */
 
-generic configuration SimpleTMP102C() {
-  provides interface Read<uint16_t>;
+#include "PrintfUART.h"
+#include "ADXL345.h"
+
+module TestADXL345C {
+  uses {
+    interface Leds;
+    interface Boot;
+    interface Timer<TMilli> as TestTimer;	
+    interface Read<adxl345_readxyt_t> as axis;
+    interface HplMsp430GeneralIO as PinTest1;
+    interface HplMsp430GeneralIO as PinTest2;
+    interface SplitControl as AccelControl;
+  }
 }
-implementation {
-  components SimpleTMP102P;
-  Read = SimpleTMP102P;
+implementation {  
+  void printTitles(){
+    printfUART("\n\n");
+    printfUART("   ###############################\n");
+    printfUART("   #       Z1 ADXL345 Test       #\n");
+    printfUART("   ###############################\n");
+    printfUART("\n");
+  }
 
-  components new TimerMilliC() as TimerSensor;
-  SimpleTMP102P.TimerSensor -> TimerSensor;
+  event void Boot.booted() {
+    uint8_t state = 0;
+    printfUART_init();
+    printTitles();
+    call TestTimer.startPeriodic(1024);
+  }
+  
+  event void TestTimer.fired(){
+    call AccelControl.start();
+  }
 
-  components new TimerMilliC() as TimerFail;
-  SimpleTMP102P.TimerFail -> TimerFail;
-
-#warning TMP102 using generic wiring (usciB1).   Platform specific wiring is preferred.
-  components new Msp430I2CB1C() as I2C;
-  SimpleTMP102P.Resource -> I2C;
-  SimpleTMP102P.ResourceRequested -> I2C;
-  SimpleTMP102P.I2CBasicAddr -> I2C;    
+  event void AccelControl.startDone(error_t err) {
+    if (err == SUCCESS){
+      call axis.read();
+    } else {
+      printfUART("Bad start\n");
+    }
+  }
+  
+  event void AccelControl.stopDone(error_t err) {}
+  
+  event void axis.readDone(error_t result, adxl345_readxyt_t data){
+    if (result == SUCCESS){
+      call Leds.led0Toggle();
+      printfUART("X [%d] Y [%d] Z [%d]\n", data.x_axis, data.y_axis, data.z_axis);     
+    } else {
+      printfUART("Error reading axis\n");
+    }
+  }
   
 }
+
+
+
+
+

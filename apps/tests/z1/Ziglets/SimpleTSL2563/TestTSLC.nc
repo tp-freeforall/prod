@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 DEXMA SENSORS SL
+ * Copyright (c) 20011 ZOLERTIA LABS
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,30 +33,48 @@
  */
 
 /*
- * Implementation of a simple read interface for the TMP102 temperature
- * sensor built-in Zolertia Z1 motes
+ * Simple test application to poll data from the ZIG-LIGHT Ziglet, based
+ * on the TAOS TSL2563 digital light sensor.
  *
- * @author: Xavier Orduna <xorduna@dexmatech.com>
- * @author: Jordi Soucheiron <jsoucheiron@dexmatech.com>
+ * @author: Antonio Linan <alinan@zolertia.com>
  */
+ 
+#include "Timer.h"
+#include "PrintfUART.h"
 
-generic configuration SimpleTMP102C() {
-  provides interface Read<uint16_t>;
+module TestTSLC {
+  uses {
+    interface Leds;
+    interface Boot;
+    interface Timer<TMilli> as TestTimer;	
+    interface Read<uint16_t> as Light;
+  }
 }
-implementation {
-  components SimpleTMP102P;
-  Read = SimpleTMP102P;
-
-  components new TimerMilliC() as TimerSensor;
-  SimpleTMP102P.TimerSensor -> TimerSensor;
-
-  components new TimerMilliC() as TimerFail;
-  SimpleTMP102P.TimerFail -> TimerFail;
-
-#warning TMP102 using generic wiring (usciB1).   Platform specific wiring is preferred.
-  components new Msp430I2CB1C() as I2C;
-  SimpleTMP102P.Resource -> I2C;
-  SimpleTMP102P.ResourceRequested -> I2C;
-  SimpleTMP102P.I2CBasicAddr -> I2C;    
+implementation {  
+  void printTitles(){
+    printfUART("\n\n");
+    printfUART("   ###############################\n");
+    printfUART("   #         Light TEST          #\n");
+    printfUART("   ###############################\n");
+    printfUART("\n");
+  }
+ 
+  event void Boot.booted() {
+    printfUART_init();
+    printTitles();
+    call TestTimer.startPeriodic(1024);
+  }  
+    
+  event void TestTimer.fired(){
+    call Light.read();
+  }
   
+  event void Light.readDone(error_t error, uint16_t data){
+    if (error == SUCCESS){
+      printfUART("Light: %d\n", data);
+      call Leds.led2Toggle();
+    }
+  }
+
 }
+

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 DEXMA SENSORS SL
+ * Copyright (c) 20011 ZOLERTIA LABS
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,30 +33,76 @@
  */
 
 /*
- * Implementation of a simple read interface for the TMP102 temperature
- * sensor built-in Zolertia Z1 motes
+ * Simple test application to read Temp & Humidity values from the ZIGTH11
+ * Ziglet, based on the SHT1X sensor.  
  *
- * @author: Xavier Orduna <xorduna@dexmatech.com>
- * @author: Jordi Soucheiron <jsoucheiron@dexmatech.com>
+ * @author: Antonio Linan <alinan@zolertia.com>
  */
+ 
+#include "Timer.h"
+#include "PrintfUART.h"
 
-generic configuration SimpleTMP102C() {
-  provides interface Read<uint16_t>;
+module TestSht11C {
+  uses {
+    interface Leds;
+    interface Boot;
+    interface Timer<TMilli> as TestTimer;	
+    interface Read<uint16_t> as Temperature;
+    interface Read<uint16_t> as Humidity;
+  
+  }
 }
-implementation {
-  components SimpleTMP102P;
-  Read = SimpleTMP102P;
+implementation {  
 
-  components new TimerMilliC() as TimerSensor;
-  SimpleTMP102P.TimerSensor -> TimerSensor;
+  uint8_t pass;
 
-  components new TimerMilliC() as TimerFail;
-  SimpleTMP102P.TimerFail -> TimerFail;
+  void printTitles(){
+    printfUART("\n\n");
+  	printfUART("   ###############################\n");
+  	printfUART("   #           TEST SHT1X        #\n");
+  	printfUART("   ###############################\n");
+  	printfUART("\n");
+  }
 
-#warning TMP102 using generic wiring (usciB1).   Platform specific wiring is preferred.
-  components new Msp430I2CB1C() as I2C;
-  SimpleTMP102P.Resource -> I2C;
-  SimpleTMP102P.ResourceRequested -> I2C;
-  SimpleTMP102P.I2CBasicAddr -> I2C;    
+  event void Boot.booted() {
+    printfUART_init();
+	printTitles();
+	call TestTimer.startPeriodic(1024);
+  }
+  
+  event void TestTimer.fired(){
+    pass++;
+    if (pass % 2 == 0){ 
+      call Temperature.read();
+    } else {
+      call Humidity.read();
+    }
+  }
+
+  event void Temperature.readDone(error_t error, uint16_t data){
+    uint16_t temp;
+    if (error == SUCCESS){
+     call Leds.led2Toggle();
+     temp = (data/10) -400;
+    	printfUART("Temp: %d.%d\n", temp/10, temp>>2);
+    }
+  }
+
+  event void Humidity.readDone(error_t error, uint16_t data){
+    uint16_t hum;
+    if (error == SUCCESS){
+        hum = data*0.0367;
+        hum -= 2.0468;
+        if (hum>100) hum = 100;
+	call Leds.led2Toggle();
+    	printfUART("Hum: %d\n", hum);
+    }
+  }
+
   
 }
+
+
+
+
+

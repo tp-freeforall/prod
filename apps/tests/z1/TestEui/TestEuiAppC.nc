@@ -1,5 +1,6 @@
+// $Id: TestEuiAppC.nc,v 1.2 2010-06-29 22:07:22 scipio Exp $
 /*
- * Copyright (c) 2009 DEXMA SENSORS SL
+ * Copyright (c) 2007, Vanderbilt University
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -8,12 +9,10 @@
  *
  * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- *
  * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
- *
  * - Neither the name of the copyright holders nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
@@ -30,33 +29,24 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/*
- * Implementation of a simple read interface for the TMP102 temperature
- * sensor built-in Zolertia Z1 motes
  *
- * @author: Xavier Orduna <xorduna@dexmatech.com>
- * @author: Jordi Soucheiron <jsoucheiron@dexmatech.com>
+ * Author: Janos Sallai
  */
 
-generic configuration SimpleTMP102C() {
-  provides interface Read<uint16_t>;
-}
+/**
+ * This application reads the 64-bit EUI of the device at initialization time
+ * and then periodically prints it out using printf.
+ *
+ */
+configuration TestEuiAppC{}
 implementation {
-  components SimpleTMP102P;
-  Read = SimpleTMP102P;
+  components MainC, TestEuiC, LedsC, LocalIeeeEui64C, new TimerMilliC();
 
-  components new TimerMilliC() as TimerSensor;
-  SimpleTMP102P.TimerSensor -> TimerSensor;
+  MainC.Boot <- TestEuiC;
+  TestEuiC.Timer -> TimerMilliC;
 
-  components new TimerMilliC() as TimerFail;
-  SimpleTMP102P.TimerFail -> TimerFail;
+  TestEuiC -> LedsC.Leds;
 
-#warning TMP102 using generic wiring (usciB1).   Platform specific wiring is preferred.
-  components new Msp430I2CB1C() as I2C;
-  SimpleTMP102P.Resource -> I2C;
-  SimpleTMP102P.ResourceRequested -> I2C;
-  SimpleTMP102P.I2CBasicAddr -> I2C;    
-  
+  TestEuiC.LocalIeeeEui64 -> LocalIeeeEui64C;
 }
+

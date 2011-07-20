@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 DEXMA SENSORS SL
+ * Copyright (c) 20011 ZOLERTIA LABS
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,30 +33,58 @@
  */
 
 /*
- * Implementation of a simple read interface for the TMP102 temperature
- * sensor built-in Zolertia Z1 motes
+ * Simple test application to test the TMP102 temperature sensor 
+ * built-in Zolertia Z1 motes
  *
- * @author: Xavier Orduna <xorduna@dexmatech.com>
- * @author: Jordi Soucheiron <jsoucheiron@dexmatech.com>
+ * @author: Antonio Linan <alinan@zolertia.com>
  */
+ 
+ #include "Timer.h"
+ #include "PrintfUART.h"
 
-generic configuration SimpleTMP102C() {
-  provides interface Read<uint16_t>;
+module TestTmp102C {
+  uses {
+    interface Leds;
+    interface Boot;
+    interface Timer<TMilli> as TestTimer;	
+    interface Read<uint16_t> as TempSensor;
+  
+  }
 }
-implementation {
-  components SimpleTMP102P;
-  Read = SimpleTMP102P;
+implementation {  
 
-  components new TimerMilliC() as TimerSensor;
-  SimpleTMP102P.TimerSensor -> TimerSensor;
+  void printTitles(){
+    printfUART("\n\n");
+    printfUART("   ###############################\n");
+    printfUART("   #                             #\n");
+    printfUART("   #          TMP102 TEST        #\n");
+    printfUART("   #                             #\n");
+    printfUART("   ###############################\n");
+    printfUART("\n");
+  }
 
-  components new TimerMilliC() as TimerFail;
-  SimpleTMP102P.TimerFail -> TimerFail;
+  event void Boot.booted() {
+    printfUART_init();
+    printTitles();
+    call TestTimer.startPeriodic(1024);
+  }
+  
+  event void TestTimer.fired(){
+    call TempSensor.read();
+  }
 
-#warning TMP102 using generic wiring (usciB1).   Platform specific wiring is preferred.
-  components new Msp430I2CB1C() as I2C;
-  SimpleTMP102P.Resource -> I2C;
-  SimpleTMP102P.ResourceRequested -> I2C;
-  SimpleTMP102P.I2CBasicAddr -> I2C;    
+  event void TempSensor.readDone(error_t error, uint16_t data){
+    if (error == SUCCESS){
+      call Leds.led2Toggle();
+      if (data > 2047) data -= (1<<12);
+      data *=0.625; 
+      printfUART("Temp: %2d.%1.2d\n", data/10, data>>2);
+    }
+  }
   
 }
+
+
+
+
+

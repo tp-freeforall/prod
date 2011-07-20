@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 DEXMA SENSORS SL
+ * Copyright (c) 20011 ZOLERTIA LABS
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,30 +33,28 @@
  */
 
 /*
- * Implementation of a simple read interface for the TMP102 temperature
- * sensor built-in Zolertia Z1 motes
+ * Simple test application to test the interruptions (single and 
+ * double tap, free fall) of the ADLX345 Accelerometer built-in 
+ * Zolertia Z1 motes
  *
- * @author: Xavier Orduna <xorduna@dexmatech.com>
- * @author: Jordi Soucheiron <jsoucheiron@dexmatech.com>
+ * @author: Antonio Linan <alinan@zolertia.com>
  */
 
-generic configuration SimpleTMP102C() {
-  provides interface Read<uint16_t>;
-}
-implementation {
-  components SimpleTMP102P;
-  Read = SimpleTMP102P;
+configuration TestIntADXLAppC { }
 
-  components new TimerMilliC() as TimerSensor;
-  SimpleTMP102P.TimerSensor -> TimerSensor;
+implementation{
 
-  components new TimerMilliC() as TimerFail;
-  SimpleTMP102P.TimerFail -> TimerFail;
-
-#warning TMP102 using generic wiring (usciB1).   Platform specific wiring is preferred.
-  components new Msp430I2CB1C() as I2C;
-  SimpleTMP102P.Resource -> I2C;
-  SimpleTMP102P.ResourceRequested -> I2C;
-  SimpleTMP102P.I2CBasicAddr -> I2C;    
+  components MainC, TestIntADXLC as App;
+  App -> MainC.Boot;
   
+  components LedsC;
+  App.Leds -> LedsC;
+  
+  components new ADXL345C();
+  App.IntSource -> ADXL345C.IntSource;
+  App.AccelControl -> ADXL345C.SplitControl;
+  App.IntAccel1 -> ADXL345C.Int1;
+  App.IntAccel2 -> ADXL345C.Int2;
+  App.ADXLControl -> ADXL345C.ADXL345Control;
+
 }

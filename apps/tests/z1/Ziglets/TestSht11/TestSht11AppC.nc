@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 DEXMA SENSORS SL
+ * Copyright (c) 20011 ZOLERTIA LABS
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,30 +33,28 @@
  */
 
 /*
- * Implementation of a simple read interface for the TMP102 temperature
- * sensor built-in Zolertia Z1 motes
+ * Simple test application to read Temp & Humidity values from the ZIGTH11
+ * Ziglet, based on the SHT1X sensor.  
  *
- * @author: Xavier Orduna <xorduna@dexmatech.com>
- * @author: Jordi Soucheiron <jsoucheiron@dexmatech.com>
+ * @author: Antonio Linan <alinan@zolertia.com>
  */
+ 
+#include "PrintfUART.h"
 
-generic configuration SimpleTMP102C() {
-  provides interface Read<uint16_t>;
-}
+configuration TestSht11AppC {}
 implementation {
-  components SimpleTMP102P;
-  Read = SimpleTMP102P;
-
-  components new TimerMilliC() as TimerSensor;
-  SimpleTMP102P.TimerSensor -> TimerSensor;
-
-  components new TimerMilliC() as TimerFail;
-  SimpleTMP102P.TimerFail -> TimerFail;
-
-#warning TMP102 using generic wiring (usciB1).   Platform specific wiring is preferred.
-  components new Msp430I2CB1C() as I2C;
-  SimpleTMP102P.Resource -> I2C;
-  SimpleTMP102P.ResourceRequested -> I2C;
-  SimpleTMP102P.I2CBasicAddr -> I2C;    
+  components MainC, TestSht11C as App, LedsC;
+  App.Leds -> LedsC;
+  App.Boot -> MainC.Boot;
+  components new TimerMilliC() as TestTimer;
+  App.TestTimer -> TestTimer;
   
+  components new SensirionSht11C() as Temperature;
+  App.Temperature -> Temperature.Temperature;  
+
+  components new SensirionSht11C() as Humidity;
+  App.Humidity -> Humidity.Humidity;  
+
 }
+
+
