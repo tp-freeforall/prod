@@ -1,2 +1,0 @@
-COMPONENT=SenderAppC
-include $(MAKERULES)
