@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 DEXMA SENSORS SL
+ * Copyright (c) 2007  Vanderbilt University
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,20 +33,33 @@
  */
 
 /*
- * @author: Xavier Orduna <xorduna@dexmatech.com>
- * @author: Jordi Soucheiron <jsoucheiron@dexmatech.com>
+ * Dummy, forked from MicaZ implementation
+ * 
+ * @author: Stephen Dawson-Haggerty <stevedh@eecs.berkeley.edu>
+ * @author: Antonio Linan <alinan@zolertia.com>
  */
 
-#include "hardware.h"
- 
-configuration PlatformC{
-  provides interface Init;
-}
+#include "IeeeEui64.h"
 
-implementation{
+module LocalIeeeEui64C {
+  provides interface LocalIeeeEui64;
+} implementation {
+  command ieee_eui64_t LocalIeeeEui64.getId() {
+    ieee_eui64_t id;
+    /* this is UCB's OUI */
+    id.data[0] = 0x00;
+    id.data[1] = 0xC1;
+    id.data[2] = 0xA1;
 
-  components PlatformP, Msp430ClockC;
- 
-  Init = PlatformP;
-  PlatformP.Msp430ClockInit -> Msp430ClockC.Init; 
+    /* UCB will let anyone use this OUI so long as these two octets
+       are 'LO' -- "local".  All other octets are reserved.  */
+    /* SDH -- 9/10/2010 */
+    id.data[3] = 'L';
+    id.data[4] = 'O';
+
+    id.data[5] = 0;
+    id.data[6] = TOS_NODE_ID >> 8;
+    id.data[7] = TOS_NODE_ID & 0xff;
+    return id;
+  }
 }
