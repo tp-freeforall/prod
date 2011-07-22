@@ -1,0 +1,15 @@
+README for test button app
+Author/Contact: Antonio Linan <alinan@zolertia.com>
+
+Description:
+
+This application simple test the user button of the Zolertia
+Z1 mote by toggling the red led when the button is pressed
+
+Tools:
+
+None
+
+Known bugs/limitations:
+
+None.

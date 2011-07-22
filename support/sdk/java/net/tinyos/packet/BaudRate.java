@@ -22,5 +22,6 @@ class BaudRate {
 	Platform.add(Platform.x, "intelmote2", 115200);
 	Platform.add(Platform.x, "iris",      57600);
 	Platform.add(Platform.x, "shimmer",      115200);
+	Platform.add(Platform.x, "z1",      115200);
     }
 }
