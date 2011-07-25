@@ -80,8 +80,8 @@ tp-freeforall/prod repository.
 Local repositories are referenced using local(branch).   local(remote/branch).
 
 
-See 00_Getting_Started for more details on how to contribute to the TinyProd
-repositories.
+Also see 00_Getting_Started and 00a_Contribution_Process for more details on
+getting started and using git to contribute.
 
 
 
@@ -119,7 +119,13 @@ msp430-int, svn-vhsb, swreset, and motenet-rel).
 
 
 
-user branches are working branches in user working forks.
+user branches are working branches in user working forks.  ie.
+
+    local(msp430-int-pu)	refers to the msp430-int-pu branch in the
+				local working repository.
+
+    github:roberthunter/prod(rh) refers to the branch rh (a developer branch)
+				 in the developer repository at github.
 
 
 
@@ -169,82 +175,4 @@ msp430-int-pu: new proposed changes to msp430-int are first integrated here.
 
 
 
-Workflow:  (github user: Robert Hunter)
-
-    on github, fork github.com/tp-freeforall/prod  (as Robert Hunter)
-       (this creates the github repo, github.com/roberthunter/prod)
-
-    Assumes that the main feature integration branch on tp-freeforall is
-    msp430-int and its pu branch (proposed updates) is msp430-int-pu.
-
-    When the initial workinig repository is created the remote origin
-    is created.  In the example below this refers to git@github.com:
-    roberthunter/prod.git.   We also want a remote for the upstream called
-    "up".
-
-    mkdir -p ~/w/rh
-    cd ~/w/rh
-    git clone git@github.com:roberthunter/prod.git tinyos-2.x
-    cd tinyos-2.x
-    git remote add up git://github.com/tp-freeforall/prod.git
-    git fetch up
-    git checkout -t up/msp430-int-pu      # create a local tracking branch
-    git checkout -b rh                    # create the rh branch off msp430-int-pu
-
-
-
-tp-freeforall/prod
-
-    fork -> tp-freeforall/prod.git
-                    msp430-int-pu branch
-
-             roberthunter/prod.git
-	            msp430-int-pu branch
-		           rh branch
-			       ......  rh changes ---
-						     |
-						     | integration step
-		     tp-freeforall/prod.git	     |
-		              msp430-int-pu -------------
-							 |integration step
-							 |
-		                     msp430-int -------------
-
-
-Robert Hunter makes changes and commits his working branch (rh) on his local
-repo (local).  This gets pushed to github/roberthunter/prod.git and lives as
-the rh branch in that repo.
-
-The integrator pulls these changes after review into the
-tp-freeforall/prod(msp430-int-pu) branch.   After other changes from other
-developers comes in and msp430-int-pu has sufficiently matured, msp430-int-pu
-is merged into tp-freeforall/prod(msp430-int).
-
-Testing of the integration branches happens on tp-freeforall/prod(feature-int).
-Groups of features are combined on tp-freeforall/prod(pu) [tp-freeforall/prod
-repository on github, pu (proposed updates) branch] which migrates to the
-next branch as the branch matures and the changes are accepted.
-
-When all integration branches have matured sufficiently, they are merged
-together, tested, and becomes tinyprod/prod(master) as a new release.   The
-intent is to release features as they become available using a continuous
-release process.
-
-
-While various integration work is being done, working branches should be
-refreshed with more current content from the integration repositories.  This
-is referred to as a backmerge.
-
-For example, Robert wants to make sure that his changes are consistent with
-what is happening on the tp-freeforall/prod(msp430-int-pu) branch.  He
-accomplishes this by the following commands:
-
-    cd ~/w/rh/tinyos-2.x
-    git fetch up                         # get current information from
-    	      				 # tp-freeforall
-
-    git checkout rh                      # make sure on rh branch
-    git merge up/msp430-int-pu           # merge in the current
-                                         # proposed integration branch
-					 # which is the feature Robert is
-					 # working on.
+Please see 00a_Contribution_Process for typical workflows.

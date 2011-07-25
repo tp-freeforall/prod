@@ -83,6 +83,10 @@ by making the contribution process very easy as well as accessable.
 
 * Set Up Git.
 
+  This section details items that only need to be when first getting started.
+  For more information on using git and contributing to the project please
+  see 00a_Contribution_Process.
+
  o set up SSH keys.  If you have an existing SSH key you can use it.
    Existing keys can typically be found in ~/.ssh.   The instructions have
    you backup and remove and then regenerating a new ssh key.  You don't
@@ -168,6 +172,9 @@ redacted)...
   See 00_Repo_Notes for the structure of the repositories and their
   relationships.
 
+  Also see 00a_Contribution_Process for examples of how to interacte with the
+  various branches and repositories.
+
   The main repo is https://github.com/tinyprod/prod with an integration repo
   at https://github.com/tp-freeforall/prod.  (The later is a fork off
   tinyprod/prod).
@@ -177,73 +184,14 @@ redacted)...
   between different developers.
 
   Contributors work initially on a contributor branch in their local
-  repository.  After these changes have been vetted they will be brought over
-  to an integration branch in tp-freeforall/prod.  After integration, these
-  changes will be pulled into the mainline (master) in tinyprod/prod where
-  they will be part of the next release.
+  repository.  When a contributor is happy with the work they have done,
+  they will integrate their changes into a local copy of the integration
+  branch.   This integration branch is pushed back to the contributor's
+  github fork and a request for a pull is made between the contributor's
+  branch and the main integration branch.
 
-
-  o Log in to your github account
-
-  o Create a working fork.  Working repos are forked off the main working
-    repository located at:
-
-        https://github.com/tp-freeforall/prod
-
-    This will bring up the main page for the tp-freeforall/prod repo.
-
-    To create a working repo, click on the fork button.   This will create a
-    fork of tp-freeforall/prod in your local context (your login context).
-
-    This will create the repository github.com/<github_username>/prod
-    which is forked off github.com/tp-freeforall/prod.  All working repos are
-    forked off the tp-freeforall/prod repo.  This is to keep the amount of
-    extra data in the main repository down to a minimum.
-
-  o Create your local repo.
-
-    mkdir -p w/prod                     # create working directory
-    cd w/prod
-    git clone git@github.com:<github_username>/prod.git tinyos-2.x
-    cd tinyos-2.x
-
-    # you will now have w/prod/tinyos-2.x populated with the default branch
-    # of the fork.  Your fork will inherit the default branch from
-    # tp-freeforall/prod repo.
-    #
-    # this will create the remote origin linked to your working fork on github
-
-    # you will also want to track changes coming into tp-freeforall, so
-    # create a remote that will be used for tracking.   And pull in information
-    # from the repository.
-
-    git remote add up git://github.com/tp-freeforall/prod.git
-    git fetch up
-
-  o Create your working branch.
-
-    git branch                        # make sure on the appropriate branch
-    				      # should show msp430-int-pu which is the
-				      # current default branch.
-    git checkout -b gu                # create the working branch
-    		    		      # gu are your initials or another
-				      # meaningful name.  gu is used here
-				      # as an example, it stands for
-				      # github_user but should 
-    <make changes>
-
-    git add -u                        # add changed files that are tracked.
-    git commit			      # commit.  editor will get invoked
-    				      # for the commit message.
-				      #
-				      # please see Guidelines for a guide
-				      # on how to write good commit messages
-
-    # when you are ready to publish your changes, push the changes back to
-    # your working fork on github.
-
-    git push
-
+  Please refer to 00a_Contribution_Process for details on how to set up
+  your working repository.
 
 
 * Further Reading
@@ -277,7 +225,8 @@ redacted)...
 
     In particular, please read Integration-Manger Workflow (its what we are
     using).   And we have added one more repository to the left of the
-    Blessed Repository which is VeryBlessed.  :-)
+    Blessed Repository which is VeryBlessed.  :-)   [VeryBlessed is the
+    github:TinyProd/prod repository].
 
     Also please read, Contributing to a Project.   Some of what is written there
     is also summarized in the Guidelines section below.

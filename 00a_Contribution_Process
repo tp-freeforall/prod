@@ -1,0 +1,466 @@
+00a_Contribution_Process
+
+This document describes and give details for how to contribute to the TinyProd
+repositories.
+
+1) Notation:
+
+  * We reference a fictional developer throughout this document, Robert Hunter,
+    whose initials are rh.
+
+  * Github has a notion of context and repositories are owned by that context.
+    Contexts maybe a github owner or maybe a github organization which can
+    associate owners and contributors and associate them to a repository.
+
+    github:<context>/<repo> is used to refer to a repository hosted on
+    github.com.
+
+    local: refers to your local working repository.
+
+  * Branch names are presented in parentheses.
+    ie: "github:tp-freeforall/prod(msp430-int-pu)" is the msp430-int-pu branch
+    in the tp-freeforall/prod.git repository (on github.com).
+    "local(msp430-int-pu)" refers to the msp430-int-pu branch in your local
+    working repository.
+
+    Note: local(msp430-int-pu) and github:tp-freeforall/prod(msp430-int-pu)
+    are not necessarily the same git object.   If the local repository has
+    diverged (or conversly if tp-freeforall/prod has diverged) then these
+    object will most certainly not be the same.
+
+  * Remote branch names.
+
+    Remote branches take the form "remotes/<remote>/<branch_name>".   A local
+    git repository can be configured to refer to remote git repositories using
+    the "git remote add" command.  When data is fetched from that repository
+    the branches references will be prepended with the "remotes/<remote>"
+    prefix.
+
+    Remote branches when unique may be referenced using any of the following
+    forms:
+
+        remotes/<remote>/<branch_name>	full specification.
+
+	<remote>/<branch_name>
+
+	<branch_name			needs to be unique
+
+
+2) Where do you work?
+
+    We are using Github to coordinate and host our main repositories.  Each contributor
+    has access to the following:
+
+    github:tinyprod/prod	main release repository for TinyProd.
+
+    github:tp-freeforall/prod	integration repository.	 Intended to be open
+				season for commits.  Integration branches
+				are used to bring different development threads
+				together.
+
+    github:<github_user>/prod	developer fork of tp-freeforall.  Used to host
+				published developer branches.  Refered to as the
+				developer repo.
+
+    local			local developer repository.  Located on the
+				development system.  Where the actual work
+				gets done.  Refered to as Developer Local or
+				just "local".
+
+				pushes and pulls to github:<github_user>/prod
+
+3) Common Branch Names.
+
+   There are several persistent branches in the tinyprod and tp-freeforall
+   repositories.  Also persistent branches will be created for ongoing
+   integration efforts for various features or efforts.
+
+VeryBlessed (release) repository:  (github:tinyprod/prod)
+
+   master:	The main release line in TinyProd.   Current stable point.
+   master-pu:	proposed updates for next release, accepted and integrated.
+   master-next: 1st stage updates for next release.
+
+   svn/upstream: tracks the upstream SVN T2 trunk.  This is manually updated
+		 to schedule potential impact on downstream development.
+
+   master-next feeds master-pu which feeds master.   When the next release
+   is done, master-pu becomes master and new master-pu and master-next
+   branches are started.
+
+
+Blessed (integration) repository: (github:tp-freeforall/prod)
+
+   Typically branches from the TinyProd repository will be tracked in the
+   tp-freeforall/prod repository.   In addition, feature integration and other
+   integration branches will exist to facilitate cooperation/convergence
+   between distributed developers.
+
+   integration:		If multiple features need to be merged into a single
+			whole this is where that happens.
+
+   <feature>-int:	main integration branch for a feature.	ie.
+			github:tp-freeforall/prod(msp430-int) is the
+			integration branch for the new msp430 core
+			being brought into tinyos.
+
+    <feature>-int-next: ie. github:tp-freeforall/prod(msp430-int-next)
+			Accepted changes updates for the feature.  Will
+			get merged into <feature>-int.
+
+    <feature>-int-pu:	ie. github:tp-freeforall/prod(msp430-int-pu)
+			proposed updates for the feature.
+
+    Note that branches are only created if the complexity of the development
+    structure warrants the complexity.	This is left up to the discretion
+    of the integration manager.
+
+
+Local repository:
+
+    The above branches will show up in the local repository based off remotes.
+
+    Typically there will be an origin remote ("origin") for the developers
+    repo from github, and an upstream remote ("up") for the source repo that
+    the developer forked, (github:tp-freeforall/prod).	The upstream tracks
+    changes as they become integrated and allows the developer to track these
+    changes locally.
+
+    For example, we might see the following (assuming the developer Robert
+    Hunter):
+
+    bash(30): git remote -v show
+    origin	git@github.com:roberthunter/prod.git
+    up		git://github.com/tp-freeforall/prod.git
+
+    remotes/up/master		    current branch values from the upstream
+    remotes/up/svn/upstream	    tp-freeforall/prod at the time of the last
+    remotes/up/msp430-int	    fetch.
+    remotes/up/msp430-int-pu
+
+    remotes/origin/rh		    branch values from the developers published
+    remotes/origin/master	    repository at the time the repository was
+    remotes/origin/svn/upstream	    originally forked or if the branches are
+    remotes/origin/msp430-int	    updated by the developer.  (not automatic).
+    remotes/origin/msp430-int-pu
+
+
+    Typically, the developer will only update origin branches for those
+    branches of immediate concern.  Typically, the working branch (rh) and the
+    feature branch being integrated with.
+
+
+4) Creating your published and working repositories and associated working branches.
+
+  o Log in to your github account
+
+  o Create a working fork.  Working repos are forked off the integration
+  repository, github:tp-freeforall/prod.   See the url:
+
+	https://github.com/tp-freeforall/prod
+
+    This will bring up the main page for the tp-freeforall/prod repo.
+
+    To create a working repo, click on the fork button.	  This will create a
+    fork of tp-freeforall/prod in your local context (your login context).
+
+    This will create the repository github.com/<github_username>/prod
+    which is forked off github.com/tp-freeforall/prod.	All working repos are
+    forked off the tp-freeforall/prod repo.  This is to keep the amount of
+    extra data in the main repository down to a minimum.
+
+    For our virtual user this will create the repository
+    github:roberthunter/prod
+
+  o Create your local repo.
+
+    mkdir -p w/rh		# create working directory
+    cd w/rh
+    git clone git@github.com:roberthunter/prod.git tinyos-2.x
+    cd tinyos-2.x
+
+    # you will now have w/rh/tinyos-2.x populated with the default branch
+    # of the fork.  Your fork will inherit the default branch from
+    # tp-freeforall/prod repo.	Currently this is msp430-int-pu.  But you
+    # will want to check to see where you are.
+    #
+    # this will create the remote origin linked to your working fork on github.
+
+    # you will also want to track changes coming into tp-freeforall, so
+    # create a remote that will be used for tracking.	And pull in information
+    # from the repository.
+
+    git remote add up git://github.com/tp-freeforall/prod.git
+    git fetch up
+
+  o Create your working branch.	 For Robert Hunter we use his initials
+    as the working branch name.	 This will be published as
+    github:roberthunter/prod(rh) if this branch is pushed (published)
+    to Robert Hunter's Developer Repository (on github).
+
+    git branch				# make sure on the appropriate branch
+					# should show msp430-int-pu which is the
+					# current default branch.
+    git checkout -t up/msp430-int-pu	# create a tracking branch.
+    git checkout -b rh			# create the working branch off the
+					# current branch (msp430-int-pu)
+
+    <make changes>
+
+    git add -u				# add changed files that are tracked.
+    git commit				# commit.  editor will get invoked
+					# for the commit message.
+
+    # please see Guidelines in 00_Getting_Started for a guide on how to write
+    # good commit messages.   It really is important to write decent commit
+    # messages.
+
+    # when you are ready to publish your changes, push the changes back to
+    # your working fork on github.
+
+    git push origin rh
+
+
+5) Workflow:  (simulated github user: Robert Hunter)
+
+    on github, fork github.com/tp-freeforall/prod  (as Robert Hunter)
+    (this creates the developer repo on github, github.com/roberthunter/prod)
+
+    The feature branch that Robert is working on is msp430 core integration.
+    The main branch is msp430-int and updates get brought in via msp430-int-pu,
+    (proposed updates).
+
+    Robert's working branch (rh) starts off msp430-int-pu.
+
+    When the initial local repository is created (via cloning) the remote
+    "origin" is created.  In the example below this refers to git@github.com:
+    roberthunter/prod.git and is read/write (assuming Robert set up his github
+    account properly with his SSH key).
+
+    We also want a remote for the upstream called "up", for upstream.  In this
+    example the upstream is always the repository Robert forked from,
+    github:tp-freeforall/prod.
+
+    mkdir -p ~/w/rh
+    cd ~/w/rh
+    git clone git@github.com:roberthunter/prod.git tinyos-2.x
+    cd tinyos-2.x
+    git remote add up git://github.com/tp-freeforall/prod.git
+    git fetch up
+    git checkout -t up/msp430-int-pu	  # create a local tracking branch
+    git checkout -b rh			  # create the rh branch off msp430-int-pu
+
+    # We are publishing the new values for the branches rh and msp430-int-pu
+    # in github:roberthunter/prod.  The values of these branches in the local
+    # repository are remotes/origin/rh and remotes/origin/msp430-int-pu.  Not
+    # to be confused with remotes/up/msp430-int-pu which is the branch state
+    # as currently known locally from the upstream.
+
+    git push origin rh
+    git push origin msp430-int-pu
+
+
+Robert Hunter makes changes and commits his working branch (rh) to his local
+repository.
+
+He may also publish his working branch to his developer repository
+on github (github:roberthunter/prod(rh)) to allow others to observe what
+he is doing.
+
+He will also want to keep his working branch (rh) up to date with the
+main branch he cares about, msp430-int-pu from the upstream.
+(github:tp-freeforall/prod(msp430-int-pu)).
+
+When he is happy with the state of his development, he brings his commits
+into his local copy of the msp430-int-pu branch, (he first needs to make
+sure that local(msp430-int-pu) is up to date wrt the upstream,
+github:tp-freeforall/prod(msp430-int-pu)).
+
+The new local version of the integration branch (local(msp430-int-pu)) should
+be constructed to be the new upstream msp430-int-pu.  This local copy gets
+published to the developer's repository at github
+(github:roberthunter/prod(msp430-int-pu) and a pull request is generated.
+The upstream (github:tp-freeforall/prod(msp430-int-pu)) pulls the changes
+yielding the new upstream.
+
+
+Succinctly:
+
+* Making changes to the local working area and repository (local(rh)).
+
+    mkdir -p ~/w/rh
+    cd ~/w/rh/tinyos-2.x		   # inside existing local repo
+    git checkout rh			   # branch off msp430-int-pu
+
+       work work work, busy little bee
+       keep commits small and logical
+       use good commit messages.
+
+    git add -u <blah> <blah> <blah>	   # add to index
+    git commit				   # check the changes in, msg in editor
+
+
+
+Another operation routinely done is updating working branches from the
+integration master (ie. msp430-int-pu).
+
+For example, Robert wants to make sure that his changes are consistent with
+what is happening on the tp-freeforall/prod(msp430-int-pu) branch.  He
+accomplishes this by the following commands:
+
+    cd ~/w/rh/tinyos-2.x
+    git fetch up			 # get current information from
+					 # tp-freeforall
+
+    git checkout rh			 # make sure on rh branch
+    git merge up/msp430-int-pu		 # merge in the current
+					 # proposed integration branch
+					 # which is the feature Robert is
+					 # working on.
+* refreshing the local copy of msp430-int-pu
+
+    git checkout msp430-int-pu		   # integration branch is msp430-int-pu
+    git fetch up			   # update from the upstream
+    git merge up/msp430-int-pu		   # make sure our local is up to date
+
+
+* Update local branch with upstream changes.
+
+  Integrate changes from up/msp430-int-pu into the working repository.	One
+  mechanism assumes relatively simple changes so uses "git-rebase" to move
+  the working branch on to the new tip of msp430-int-pu.
+
+  WARNING: This is only recommended here because the local(rh) branch is
+  intended to be private and not a published branch used by others to base
+  their work on.  In other words, it is expressly assumed that others will
+  not be forking or basing their work on branch names (git objects) inherited
+  from a private developer repository.
+
+  If people will be sharing state from your private developer repository don't
+  use rebase.  Rather all of your repository branch manipulation should be
+  done using "git merge" rather than "git rebase".
+
+  "git rebase" is suggested because it's result in some what cleaner and
+  easier to read histories.
+
+    git checkout msp430-int-pu		# refresh local copy
+    git fetch up
+    git merge up/msp430-int-pu
+    git checkout rh			# switch back to working
+    git rebase msp430-int-pu
+
+    # rh has now been rewritten to be on the new tip of msp430-int-pu as
+    # imported from the upstream.
+
+
+* Move the current local(rh) branch to the tip of the updated msp430-int-pu
+  and publish the result.
+
+    # the simplest method assumes that all of the most current changes on the
+    # rh branch are getting pulled over into msp430-int-pu.   We first rebase
+    # the rh branch onto the tip of the msp430-int-pu to clean up the history
+    # and then simply fast forward msp430-int-pu
+
+    # first make sure msp430-int-pu is current
+
+    git checkout msp430-int-pu
+    git fetch up
+    git merge up/msp430-int-pu
+
+    git checkout rh
+    git rebase msp430-int-pu		   # move rh to tip of map430-int-pu
+    git checkout msp430-int-pu
+    git merge rh			   # advance msp430-int-pu to include rh
+					   # should be a fast-forward
+
+    # if you have published rh at github:roberthunter/prod(rh) then you will have
+    # to override the remote branch when you push.   This is because the SHAs of
+    # rh change when you rebase.  It is rewriting the history of the change set
+    # to be based off the current version of msp430-int-pu.
+    #
+    # If you don't publish your current working branch you don't need to do this
+    # because the branch rh doesn't exist or isn't being moved.
+
+    git push origin +rh			# only if you publish.
+    git push origin msp430-int-pu	# publish the new version of msp430-int-pu
+
+
+* Complicated move of particular commits from working branch to local int-pu
+
+    # If the change set is complicated or if only pieces of the change set
+    # needs to be brought over, then cherry-pick should be used.
+
+    git checkout msp430-int-pu
+    git fetch up
+    git merge up/msp430-int-pu
+
+    # for each commit on rh that needs to be included in msp430-int-pu
+    git cherry-pick <sha-of-commit-on-rh>
+
+
+* Looking at differences between working branch and integration branch
+
+    # To see what changes you are bringing over use the following:
+    git log --oneline up/msp430-int-pu..msp430-int-pu
+
+    # to see the changes you are bringing over
+    git diff up/msp430-int-pu msp430-int-pu
+
+
+* Publishing.
+
+When the new msp430-int-pu is ready, push it back to your published fork on
+github: ie. github:roberthunter/prod(msp430-int-pu).
+
+    git push origin msp430-int-pu
+
+Robert then requests a pull from his repositories main page.
+
+    https://github.com/roberthunter/prod/pull/new/msp430-int-pu
+
+This requests a pull from github:roberthunter/prod(msp430-int-pu) to
+github:tp-freeforall/prod(msp430-int-pu).
+
+
+* Further Integration
+
+The integration master for msp430-int-pu reviews the changes and when approved
+will pull the changes into github:tp-freeforall/prod(msp430-int-pu).
+
+After the upstream merge is complete, developers using msp430-int-pu should
+refresh their local copies of the upstream branch.
+
+After other changes from other developers comes in and msp430-int-pu has
+sufficiently matured, msp430-int-pu is merged into tp-freeforall/prod(msp430-int).
+
+Testing of the integration branches happens on tp-freeforall/prod(feature-int).
+Groups of features are combined on github:tp-freeforall/prod(pu) [proposed updates],
+which migrates to the next branch as the branch matures and the changes are accepted.
+
+When all integration branches have matured sufficiently, they are merged
+together, tested, and becomes tinyprod/prod(master) as a new release.   The
+intent is to release features as they become available using a continuous
+release process.
+
+
+* Backmerging
+
+While various integration work is being done, working branches should be
+refreshed with more current content from the integration repositories.  This
+is referred to as a backmerge.
+
+After a proposal has been accepted and integrated into the integration branch,
+it is important to update the state of the local and working repos with the
+new integration branch data.   This will effectively move the working branches
+onto the tip of the new integration branch (msp430-int-pu).
+
+    cd ~/w/rh/tinyos-2.x
+    git fetch up			# get current upstream data
+    git checkout msp430-int-pu		# update local copy
+    git merge up/msp430-int-pu
+    git checkout rh			# switch to working branch
+    git rebase msp430-int-pu		# move to tip of integration
+
+	or
+
+    git merge msp430-int-pu		# depending.
