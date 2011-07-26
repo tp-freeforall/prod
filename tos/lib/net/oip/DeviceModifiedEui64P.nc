@@ -30,7 +30,14 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE
  *
  */
-
+//
+//This module take the device identity and modifies it as follows
+//this identity is created in tos/lib/osian/identity/DeviceIdentityP 'B0C8:AD00:01XX:XXXX' 
+//and is modified into 'B2C8:AD00:01XX:XXXX' which ultimatly turns into local-link address 'FE80::B2C8:AD00:01XX:XXXX'
+//the XX:XXXX part is the device unique id(odi.id) again created in tos/lib/osian/identity/DeviceIdentityP
+//the last two bytes (YYYY) of the unique id XX:YYYY are also used as the IEEE154 Pan addr, any other address added
+//using NetworkInterface.bindAddress in your code must have the same last two bytes else the IEEE154 layer simply drops them.
+//
 module DeviceModifiedEui64P {
   uses {
     interface DeviceIdentity;
@@ -41,7 +48,7 @@ module DeviceModifiedEui64P {
 } implementation {
 
   enum {
-    /** Bit 7 of the EUI64 is set to indicate a modified EUI64 as used
+    /** Bit 2 of Byte 0 (Byte 7 of the local-link address) of the EUI64 is set to indicate a modified EUI64 as used
      * as an IPv6 interface identifier */
     MODIFIED_EUI64_MARKER = 0x02,
   };
