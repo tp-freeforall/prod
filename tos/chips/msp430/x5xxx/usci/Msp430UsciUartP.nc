@@ -81,7 +81,6 @@ generic module Msp430UsciUartP () @safe() {
     interface ResourceConfigure[ uint8_t client ];
     interface Msp430UsciError[ uint8_t client ];
   }
-
   uses {
     interface HplMsp430Usci as Usci;
     interface HplMsp430UsciInterrupts as Interrupts;
@@ -92,7 +91,8 @@ generic module Msp430UsciUartP () @safe() {
     interface ArbiterInfo;
     interface LocalTime<TMilli> as LocalTime_bms;
   }
-} implementation {
+}
+implementation {
 
   norace uint16_t m_tx_len, m_rx_len;
   norace uint8_t * COUNT_NOK(m_tx_len) m_tx_buf, * COUNT_NOK(m_rx_len) m_rx_buf;

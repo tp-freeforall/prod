@@ -50,7 +50,6 @@ generic module Msp430UsciSpiP () @safe() {
     interface Msp430UsciError;
     interface ResourceConfigure[ uint8_t client ];
   }
-
   uses {
     interface HplMsp430Usci as Usci;
     interface HplMsp430UsciInterrupts as Interrupts;
@@ -62,7 +61,8 @@ generic module Msp430UsciSpiP () @safe() {
     interface ArbiterInfo;
     interface Leds;
   }
-} implementation {
+}
+implementation {
 
   /** The SPI is busy if it's actively transmitting/receiving, or if
    * there is an active buffered I/O operation.

@@ -1,0 +1,2 @@
+COMPONENT=I2CAppC
+include $(MAKERULES)

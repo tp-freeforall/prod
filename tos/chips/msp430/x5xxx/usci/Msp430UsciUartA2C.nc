@@ -48,7 +48,8 @@ generic configuration Msp430UsciUartA2C() {
     interface UartByte;
     interface Msp430UsciError;
   }
-} implementation {
+}
+implementation {
   enum {
     CLIENT_ID = unique(MSP430_USCI_A2_RESOURCE),
   };

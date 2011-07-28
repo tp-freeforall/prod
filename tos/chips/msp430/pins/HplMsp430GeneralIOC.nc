@@ -335,19 +335,19 @@ configuration HplMsp430GeneralIOC {
   provides interface HplMsp430GeneralIO as UCB0SDA;
   provides interface HplMsp430GeneralIO as UCB0CLK;
 
- provides interface HplMsp430GeneralIO as UCA1CLK;
- provides interface HplMsp430GeneralIO as UCA1STE;
- provides interface HplMsp430GeneralIO as UCA1TXD;
- provides interface HplMsp430GeneralIO as UCA1RXD;
- provides interface HplMsp430GeneralIO as UCA1SIMO;
- provides interface HplMsp430GeneralIO as UCA1SOMI;
+  provides interface HplMsp430GeneralIO as UCA1CLK;
+  provides interface HplMsp430GeneralIO as UCA1STE;
+  provides interface HplMsp430GeneralIO as UCA1TXD;
+  provides interface HplMsp430GeneralIO as UCA1RXD;
+  provides interface HplMsp430GeneralIO as UCA1SIMO;
+  provides interface HplMsp430GeneralIO as UCA1SOMI;
 
- provides interface HplMsp430GeneralIO as UCB1CLK;
- provides interface HplMsp430GeneralIO as UCB1STE;
- provides interface HplMsp430GeneralIO as UCB1SIMO;
- provides interface HplMsp430GeneralIO as UCB1SOMI;
- provides interface HplMsp430GeneralIO as UCB1SDA;
- provides interface HplMsp430GeneralIO as UCB1SCL;
+  provides interface HplMsp430GeneralIO as UCB1CLK;
+  provides interface HplMsp430GeneralIO as UCB1STE;
+  provides interface HplMsp430GeneralIO as UCB1SIMO;
+  provides interface HplMsp430GeneralIO as UCB1SOMI;
+  provides interface HplMsp430GeneralIO as UCB1SDA;
+  provides interface HplMsp430GeneralIO as UCB1SCL;
 
 // Pins left to map of modules: UCB2/UCB3 and UCA2/UCA3
 
@@ -928,7 +928,7 @@ implementation {
    UCB1SCL = P54;
    UCB1CLK = P55;
 
-   // Pins left to map of modules: UCB2/UCB3 and UCA2/UCA3
+// Pins left to map of modules: UCB2/UCB3 and UCA2/UCA3
 
    ADC0 = P60;
    ADC1 = P61;
@@ -940,7 +940,9 @@ implementation {
    ADC7 = P67;
    ADC8 = P50;
    ADC9 = P51;
+
 // there are no ADC's 10 and 11 according to datasheet
+
    ADC12 = P74;
    ADC13 = P75;
    ADC14 = P76;

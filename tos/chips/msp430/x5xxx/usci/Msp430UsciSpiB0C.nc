@@ -44,7 +44,6 @@
  * @author João Gonçalves <joao.m.goncalves@ist.utl.pt>
  */
 
-
 generic configuration Msp430UsciSpiB0C() {
   provides {
     interface Resource;
@@ -52,8 +51,8 @@ generic configuration Msp430UsciSpiB0C() {
     interface SpiByte;
     interface Msp430UsciError;
   }
-
-} implementation {
+}
+implementation {
   enum {
     CLIENT_ID = unique(MSP430_USCI_B0_RESOURCE),
   };
@@ -68,9 +67,9 @@ generic configuration Msp430UsciSpiB0C() {
 
   UsciC.ResourceConfigure[CLIENT_ID] -> SpiC.ResourceConfigure[CLIENT_ID];
 
-   components HplMsp430GeneralIOC as GIO;
+  components HplMsp430GeneralIOC as GIO;
 
-   SpiC.SIMO -> GIO.UCB0SIMO;
-   SpiC.SOMI -> GIO.UCB0SOMI;
-   SpiC.CLK -> GIO.UCB0CLK;
+  SpiC.SIMO -> GIO.UCB0SIMO;
+  SpiC.SOMI -> GIO.UCB0SOMI;
+  SpiC.CLK -> GIO.UCB0CLK;
 }

@@ -158,7 +158,7 @@ enum {
     return 0;
   }
   
-  async event void DMAChannel.transferDone(error_t success)
+  async event void DMAChannel.transferDone()
   {
     uint16_t* next;
     uint8_t oldMode = mode;

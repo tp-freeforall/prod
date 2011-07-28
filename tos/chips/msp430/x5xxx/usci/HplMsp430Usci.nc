@@ -1,4 +1,6 @@
 /**
+ * Copyright (c) 2011 Eric B. Decker
+ * Copyright (c) 2011 Redslate Ltd.
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -51,6 +53,9 @@
  * set without simultaneously setting the other.
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * @author Derek Baker <derek@red-slate.co.uk>
+ *   I2C support
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include "msp430usci.h"
@@ -59,7 +64,8 @@ interface HplMsp430Usci {
 
   /* ----------------------------------------
    * Introspection to identify a module when given a reference to its
-   * component */
+   * component
+   */
 
   /**
    * Return a unique identifier for this module among all USCI modules on the chip.
@@ -77,14 +83,29 @@ interface HplMsp430Usci {
   /**
    * Reads the UCmxCTLW0 Control register.
    * This register is present on all USCI modules, and is used in all modes.
+   *
+   * CTLW0 is the 16 bit concatenation of CTL0 and CTL1.  Note on the x5
+   * CTL1 is at offset 0 (x5 is base register based) and CTL0 is the msb.
+   *
+   * This is swapped with respect to where CTL0 and CTL1 live on the x2 processors,
+   * CTL0 is at 0 and CTL1 is at 1 (not base register but relative to where the
+   * registers are defined).  This makes config block platform/cpu dependent (which
+   * they are anyway because of clocking issues).
+   *
+   * {get,set}Ctlw0: gets or sets the 16 bit version of the control register.
+   * {get,set}Ctl{0,1}: gets or sets the 8 bit version of the 0 or 1 register.
    */
   async command uint16_t getCtlw0();
+  async command uint8_t  getCtl0();
+  async command uint8_t  getCtl1();
 
   /**
    * Writes the UCmxCTLW0 Control register.
    * This register is present on all USCI modules.
    */
   async command void setCtlw0(uint16_t v);
+  async command void setCtl0(uint8_t v);
+  async command void setCtl1(uint8_t v);
 
   /**
    * Reads the UCmxBRW Baud Rate Control registers.
@@ -159,18 +180,6 @@ interface HplMsp430Usci {
   async command void setAbctl(uint8_t v);
 
   /**
-   * Read the UCmxI2COA I2C Own Address register.
-   * This register is present only on USCI_B modules in I2C mode.
-   */
-  async command uint16_t getI2coa();
-
-  /**
-   * Write the UCmxI2COA I2C Own Address register.
-   * This register is present only on USCI_B modules in I2C mode.
-   */
-  async command void setI2coa(uint16_t v);
-
-  /**
    * Read the UCmxIRCTL IrDA Control register.
    * This register is present only on USCI_A modules in UART mode.
    */
@@ -207,16 +216,28 @@ interface HplMsp430Usci {
   async command void setIrrctl(uint8_t v);
 
   /**
+   * Read the UCmxI2COA I2C Own Address register.
+   * This register is present only on USCI_B modules in I2C mode.
+   */
+  async command uint16_t getI2Coa();
+
+  /**
+   * Write the UCmxI2COA I2C Own Address register.
+   * This register is present only on USCI_B modules in I2C mode.
+   */
+  async command void setI2Coa(uint16_t v);
+
+  /**
    * Read the UCmxI2CSA I2C Slave Address register.
    * This register is present only on USCI_B modules in I2C mode.
    */
-  async command uint16_t getI2csa();
+  async command uint16_t getI2Csa();
 
   /**
    * Write the UCmxI2CSA I2C Slave Address register.
    * This register is present only on USCI_B modules in I2C mode.
    */
-  async command void setI2csa(uint16_t v);
+  async command void setI2Csa(uint16_t v);
 
   /**
    * Reads the UCmxICTL Interrupt Control register.
@@ -227,6 +248,9 @@ interface HplMsp430Usci {
   /**
    * Writes the UCmxICTL Interrupt Control register.
    * This register is present on all USCI modules.
+   *
+   * ICTL is the 16 bit concatenation of IE (interrupt enable) and IFG
+   * (interrupt flag).
    */
   async command uint16_t setIctl(uint16_t v);
 
@@ -254,12 +278,88 @@ interface HplMsp430Usci {
    */
   async command void setIfg(uint8_t v);
 
+  /*
+   * using setIfg and setIe to control interrupt state requires something like
+   *
+   *     setIe(getIe() & ~UCTXIE)          // turn of TX ie.
+   *
+   * The following provide a more optimized interface that directly references
+   * the bit in question.  Generates better code.   Also some drivers have been
+   * written using these interface specs while others with the direct register
+   * access specs.
+   */
+
+  async command bool isRxIntrPending();
+  async command void clrRxIntr();
+  async command void disableRxIntr();
+  async command void enableRxIntr();
+
+  async command bool isTxIntrPending();
+  async command void clrTxIntr();
+  async command void disableTxIntr();
+  async command void enableTxIntr();
+
+  /*
+   * The following are being deprecated.   They existed in the x1 USART
+   * definitions and also the original x2 definitions.  They are broken
+   * because the semantic is unclear.
+   *
+   *   async command void disableIntr();
+   *   async command void enableIntr();
+   *   async command void clrIntr();
+   *
+   * As the USCI modules became more sophisticated what interrupt is being
+   * enabled or disabled.   This then warped into being simply a set/get
+   * on the appropriate register.   So why have the sugar?
+   */
+
+
+  /*
+   * TI h/w provides a busy bit.  return tx or rx is doing something
+   *
+   * This isn't really that useful.  This used to be called txEmpty on the x1
+   * USART (where it really did represent that the tx path was empty) but that
+   * isn't true on USCI modules.  Rather it indicates that tx, rx, or both are
+   * active.  These paths are double buffered.
+   *
+   * For TX state machines (packet based etc), we want to know that all the bytes
+   * went out, typically when switching resources.  For RX, we will have received
+   * all the bytes we are interested in, so don't really care that the RX buffers in
+   * the h/w are empty.
+   *
+   * In other words TI exchanged the txEmpty which worked for the isBusy which
+   * doesn't really work.  Thanks, but no thanks, TI!
+   */
+  async command bool isBusy();
+
+
   /**
    * Reads the UCmxIV Interrupt Vector register.
    * This register is present on all USCI modules, and is used in all modes.
    * It is read-only.
    */
   async command uint8_t getIv();
+
+  /* I2C bits
+   *
+   * set direction of the bus
+   */
+  async command void setTransmitMode();
+  async command void setReceiveMode();
+
+  /* Various I2C bits */
+  async command bool getStopBit();
+  async command bool getStartBit();
+  async command bool getNackBit();
+  async command bool getTransmitReceiveMode();
+
+  /* transmit NACK, Stop, or Start condition, automatically cleared */
+  async command void setTXNACK();
+  async command void setTXStop();
+  async command void setTXStart();
+
+  async command bool isNackIntrPending();
+  async command void clrNackIntr();
 
   /* ----------------------------------------
    * Higher-level operations consistent across all modes.

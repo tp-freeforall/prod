@@ -1,0 +1,15 @@
+Derek Baker (derek@red-slate.co.uk)
+
+I2C test app for use with cc430f5137, this app give a very simple CLI on the serial port and allows you to test the I2C bus,
+The test circuit includes a microchip 24lv1025 I2C eeprom, pull up resistors are 4.7k on both SCL & SDA.
+The 24lc1025 has pins 1&2 held low and pin 3 high.
+
+serial setup is default , 115K 8,n,1
+I2C is 7 bit master running at ~100khz
+
+from the command line commands are
+
+1. 'hi' the CLI simply returns the text 'hello back'
+2. 'testsend' writes 'ABCDEFG' to the eeprom at address 0x0050
+3. 'testset' set the eeprom address to 0x0050
+4. 'testrec' read 7 bytes 'ABCDEFG' from the current address (if you comment out the line in testrec the address is set before read)
