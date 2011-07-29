@@ -32,7 +32,7 @@
  */
 //
 //This module take the device identity and modifies it as follows
-//this identity is created in tos/lib/osian/identity/DeviceIdentityP 'B0C8:AD00:01XX:XXXX' 
+//this identity is created in tos/lib/osian/identity/DeviceIdentityP 'B0C8:AD00:01XX:XXXX' by default
 //and is modified into 'B2C8:AD00:01XX:XXXX' which ultimatly turns into local-link address 'FE80::B2C8:AD00:01XX:XXXX'
 //the XX:XXXX part is the device unique id(odi.id) again created in tos/lib/osian/identity/DeviceIdentityP
 //the last two bytes (YYYY) of the unique id XX:YYYY are also used as the IEEE154 Pan addr, any other address added
@@ -48,11 +48,32 @@ module DeviceModifiedEui64P {
 } implementation {
 
   enum {
-    /** Bit 2 of Byte 0 (Byte 7 of the local-link address) of the EUI64 is set to indicate a modified EUI64 as used
-     * as an IPv6 interface identifier */
     MODIFIED_EUI64_MARKER = 0x02,
   };
-
+  //
+  // call DeviceIdentity.getEui64() returns via odip pointer :-
+  // byte 0  1  2  3  4  5  6  7
+  //      B0 C8 AD 00 01 XX XX XX
+  // Then data copyed to static ieee_eui64_t iid
+  // iid.data - byte 0  1  2  3  4  5  6  7
+  //                 B0 C8 AD 00 01 XX XX XX
+  // Byte 0 of the iid.data is modified by the MODIFIED_EUI64_MARKER (bit 1)
+  // Byte 0 bits 7 6 5 4 3 2 1 0
+  //             1 0 1 1 0 0 1 0 (B2)
+  // Which ultimatly forms local link address
+  // Byte number local link  15 14 13 12 11 10 9  8 (7) 6  5  4  3  2  1  0
+  // Byte in memory          0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
+  //                         FE 80 00 00 00 00 00 00 B2 C8 AD 00 01 XX XX XX
+  //                                                 <------>                Organizationally unique identifier obtained from IANA (OSIAN)
+  //                                                          <--->          Bit 7 6 5 4 3 2 1 0 7 6 5 4 3 2 1 0
+  //                                                                                         <-----------------> The device type, defined in odi_types.h (OSIAN)
+  //                                                                                   <--->                     The device class, one of ODI_Class_e (OSIAN)
+  //                                                                                 ^                           1 if this device can control something (OSIAN)
+  //                                                                               ^                             1 if this device can sense something (OSIAN)
+  //                                                                             ^                               bit reserved (OSIAN)
+  //                                                                <------> The unique ID of this device instance (OSIAN)
+  //                                                                   <---> Also forms the IEEE154 device identifier (PAN Address)
+  //
   command const uint8_t* NetworkInterfaceIdentifier.interfaceIdentifier ()
   {
     static ieee_eui64_t iid;
