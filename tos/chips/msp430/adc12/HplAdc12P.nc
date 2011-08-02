@@ -52,7 +52,7 @@
 #endif
 
 #if defined(__MSP430_HAS_ADC12_PLUS__)
-#warn "HplAdc12P: processor uses ADC12_PLUS (may not work correctly)"
+#warning "HplAdc12P: processor uses ADC12_PLUS (may not work correctly)"
 #endif
 
 module HplAdc12P {

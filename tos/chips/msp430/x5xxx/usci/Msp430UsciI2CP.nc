@@ -37,6 +37,7 @@
 
 #include "msp430usci.h"
 #include <I2C.h>
+#include <stdio.h>
 
 /**
  * Implement the I2C-related interfaces for a MSP430 USCI module
@@ -69,6 +70,7 @@ implementation {
 
   enum {
     TIMEOUT = 1000,
+    WRITETIMEOUT = 100000,
   };
 
   /**
@@ -252,19 +254,10 @@ implementation {
    * @return SUCCESS if bus available and request accepted. 
    */
   async command error_t I2CPacket.write[uint8_t client] (i2c_flags_t flags, uint16_t addr, uint8_t length, uint8_t* data) {
-    uint16_t i = 0;
+    uint32_t i = 0;
     uint8_t m_tx_len = length;
     uint8_t * m_tx_buf = data;
     uint16_t m_tx_addr = addr;
-
-    while ((call Usci.getStat() & UCBBUSY)) {
-      if (i >= TIMEOUT) {
-	m_tx_len = 0;
-	signal I2CPacket.writeDone[client](FAIL,m_tx_addr,m_tx_len,m_tx_buf);
-	return FAIL;
-      }
-      i++;
-    }
 
     if(flags & I2C_START) {
       call Usci.setTransmitMode();				/*set transmit mode on i2c*/
@@ -278,16 +271,15 @@ implementation {
 	}
 	i++;
       }
-      i=0;
-      while ((call Usci.getStat() & UCBBUSY)) {
-	if (i >= TIMEOUT) {
-	  m_tx_len = 0;
+      call Usci.setTXStart();					/*Set the uart to generate a repeat/start condition in transmit mode*/
+      while (call Usci.getStopBit()) {				/*the STOP bit is cleared when the slave acks the address*/
+	if(i >= TIMEOUT+WRITETIMEOUT) {				/*Some devices use a start with no data to test if the device is ready for write*/
+	  m_tx_len -= length;
 	  signal I2CPacket.writeDone[client](FAIL,m_tx_addr,m_tx_len,m_tx_buf);
 	  return FAIL;
 	}
 	i++;
       }
-      call Usci.setTXStart();					/*Set the uart to generate a repeat/start condition in transmit mode*/
     } else
       call Usci.setTransmitMode();				/*Make sure the uart is in transmit mode*/
 
@@ -300,31 +292,31 @@ implementation {
 	  signal I2CPacket.writeDone[client](FAIL,m_tx_addr,m_tx_len,m_tx_buf);
 	  return FAIL;
 	}
-	if ((call Usci.getStat()) == (UCBBUSY | UCNACKIFG | UCSCLLOW)) {
+	if ((call Usci.getIe()) == UCNACKIFG) {
 	  m_tx_len -= length;
 	  signal I2CPacket.writeDone[client](FAIL,m_tx_addr,m_tx_len,m_tx_buf);
 	  return FAIL;
 	}
 	i++;
+      }
+      if((flags & I2C_STOP) && length == 1) {			/*if we are sending the last byte and we want to end send STOP*/
+	call Usci.setTXStop();					/*Set the uart to generate a STOP*/
+	i=0;
+	while (call Usci.getStopBit()) {
+	  if (i >= TIMEOUT) {
+	    m_tx_len -= length;
+	    signal I2CPacket.readDone[client](FAIL,m_tx_addr,m_tx_len,m_tx_buf);
+	    return FAIL;
+	  }
+	  i++;
+	}
       }
       length--;
     }
 
-    if (flags & I2C_STOP) {
-      call Usci.setTXStop();					/*Set the uart to generate a STOP*/
-      i=0;
-      while (call Usci.getStopBit()) {
-	if(i >= TIMEOUT) {
-	  m_tx_len -= length;
-	  signal I2CPacket.writeDone[client](FAIL,m_tx_addr,m_tx_len,m_tx_buf);
-	  return FAIL;
-	}
-	i++;
-      }
-    }
-
     m_tx_len -= length;
     signal I2CPacket.writeDone[client](SUCCESS,m_tx_addr,m_tx_len,m_tx_buf);
+
     return SUCCESS;
   }
 

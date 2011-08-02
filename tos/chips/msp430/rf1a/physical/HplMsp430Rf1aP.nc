@@ -1523,6 +1523,22 @@ generic module HplMsp430Rf1aP () @safe() {
     return rv;
   }
 
+  async command int Rf1aPhysical.lqi[uint8_t client] () {
+    int rv;
+
+    /* Radio must be assigned */
+    if (! call ArbiterInfo.inUse()) {
+      return EOFF;
+    }
+    /* This must be the right client */
+    if (client != call ArbiterInfo.userId()) {
+      return EBUSY;
+    }
+    atomic {
+      rv = call Rf1aIf.readRegister(LQI);
+    }
+    return ((rv & 0x7F)*-1);
+  }
   async command void Rf1aPhysicalMetadata.store (rf1a_metadata_t* metadatap) {
     atomic {
       metadatap->rssi = rx_rssi_raw;
