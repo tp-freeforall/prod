@@ -37,7 +37,6 @@ configuration PlatformHdlcUartC {
     interface HdlcUart;
   }
 } implementation {
-#warning Enabling DMA on UART1RX
 
   components NoLedsC as Leds;
   components PlatformHdlcUartP as HdlcUartC;
@@ -54,6 +53,7 @@ configuration PlatformHdlcUartC {
 
   HdlcUartC.Msp430UartConfigure -> TelosSerialP;
 
+#warning Enabling DMA on UART1RX (Channel 2)
   components Msp430DmaC as DmaC;
   HdlcUartC.DmaChannel -> DmaC.Channel2;
 

@@ -547,4 +547,21 @@ enum {
 #define STATIC_ARRAY_SIZE(_s) (_s)
 #endif	/* STATIC_ARRAY_SIZE */
 
+/* 
+ * Define the following ADC12 registers for the x5xxx chip set,
+ * the x5xxx header file does not have the older register names
+ *
+ */
+#ifndef ENC
+#define ENC ADC12ENC
+#endif
+
+#ifndef CONSEQ0
+#define CONSEQ0 ADC12CONSEQ0
+#endif
+
+#ifndef CONSEQ1
+#define CONSEQ1 ADC12CONSEQ1
+#endif
+
 #endif		// _H_msp430hardware_h

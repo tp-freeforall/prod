@@ -10,16 +10,27 @@
 # that template.
 #
 # @author Peter A. Bigot <pab@peoplepowerco.com>
+# @author Eric B. Decker <cire831@gmail.com>
+#
+# UART is implemented in USCI_A modules
+# I2C  is implemented in USCI_B modules
+# SPI  is implemented in USCI_A and USCI_B modules
 
-# List of tags for USCI_Ax modules.  The first is the template.
+# List of tags for USCI_Ax modules.  A0 is the master for A
+# modules and Uart.
+
 A_MODULES='A0 A1 A2 A3'
-# List of tags for USCI_Bx modules.  The first is the template.
+
+# List of tags for USCI_Ax modules.  B0 is the master for B
+# modules and Spi (B and A) and I2C modules.
+
 B_MODULES='B0 B1 B2 B3'
 
 # Initialize a file that will contain a list of all generated files,
 # so we can remove them during basic maintenance.  Their presence
 # clutters the directory and makes it difficult to see what's really
 # important.
+
 rm -f generated.lst
 
 clone_module () {
@@ -62,4 +73,4 @@ clone_mode_modules () {
 # Clone the mode-specific configurations
 clone_mode_modules Uart ${A_MODULES}
 clone_mode_modules Spi ${B_MODULES} ${A_MODULES}
-# clone_mode_modules I2c ${B_MODULES}
+clone_mode_modules I2C ${B_MODULES}

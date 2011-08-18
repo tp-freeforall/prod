@@ -7,14 +7,13 @@
  */
 
 module HplMsp430UsciInterruptsB1P {
-  provides {
-    interface HplMsp430UsciInterrupts as Interrupts;
-  }
+  provides interface HplMsp430UsciInterrupts as Interrupts;
   uses {
     interface HplMsp430Usci as Usci;
     interface Leds;
   }
-} implementation {
+}
+implementation {
   TOSH_SIGNAL(USCI_B1_VECTOR) {
     signal Interrupts.interrupted((call Usci.getIv()));
   }

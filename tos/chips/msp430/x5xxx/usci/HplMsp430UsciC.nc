@@ -49,10 +49,17 @@
  */
 
 generic configuration HplMsp430UsciC(
-  /** Offset of UCmxCTLW0_ register for m=module_type and x=module_instance */
+
+  /**
+   * Offset of UCmxCTLW0_ register for m=module_type and x=module_instance
+   *
+   * UCmxCTLW0 is the base address for the module.
+   */
   unsigned int UCmxCTLW0_,
+
   /** Name of resource used to arbitrate modes of this USCI instance */
   char RESOURCE_NAME[]
+
 ) @safe() {
   provides {
     interface HplMsp430Usci as Usci;
@@ -66,7 +73,8 @@ generic configuration HplMsp430UsciC(
     interface HplMsp430UsciInterrupts as RawInterrupts;
     interface ResourceConfigure[uint8_t client];
   }
-} implementation {
+}
+implementation {
 
   enum {
     USCI_ID = unique(MSP430_USCI_RESOURCE),

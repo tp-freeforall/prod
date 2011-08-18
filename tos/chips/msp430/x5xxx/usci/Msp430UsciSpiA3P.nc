@@ -13,7 +13,8 @@ configuration Msp430UsciSpiA3P {
     interface HplMsp430GeneralIO as SOMI;
     interface HplMsp430GeneralIO as CLK;
  }
-} implementation {
+}
+implementation {
 
   components Msp430UsciA3P as UsciC;
 

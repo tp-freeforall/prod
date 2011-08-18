@@ -1,0 +1,9 @@
+#-*-Makefile-*- vim:syntax=make
+
+PLATFORM = MoteISTx5
+MSP_MCU = msp430x5438
+
+$(call TOSMake_include_platform,msp)
+
+MoteISTx5: $(BUILD_DEPS)
+        @:

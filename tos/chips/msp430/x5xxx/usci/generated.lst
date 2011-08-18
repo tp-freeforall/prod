@@ -32,3 +32,9 @@ Msp430UsciSpiA0P.nc
 Msp430UsciSpiA1P.nc
 Msp430UsciSpiA2P.nc
 Msp430UsciSpiA3P.nc
+Msp430UsciI2CB1C.nc
+Msp430UsciI2CB2C.nc
+Msp430UsciI2CB3C.nc
+Msp430UsciI2CB1P.nc
+Msp430UsciI2CB2P.nc
+Msp430UsciI2CB3P.nc

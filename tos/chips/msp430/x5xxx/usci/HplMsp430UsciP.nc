@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2011 Redslate Ltd.
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -45,6 +46,8 @@
  * module.
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * @author Derek Baker <derek@red-slate.co.uk>
+ *   I2C support
  */
 
 generic module HplMsp430UsciP(
@@ -63,7 +66,6 @@ generic module HplMsp430UsciP(
     interface Leds;
   }
 }
-
 implementation {
 
 #define UCmxCTLW0 (*TCAST(volatile uint16_t* ONE, UCmxCTLW0_))
@@ -87,8 +89,14 @@ implementation {
 
   async command uint8_t Usci.getModuleIdentifier() { return USCI_ID; }
 
-  async command uint16_t Usci.getCtlw0() { return UCmxCTLW0; }
-  async command void Usci.setCtlw0(uint16_t v) { UCmxCTLW0 = v; }
+  async command uint16_t Usci.getCtlw0()            { return UCmxCTLW0; }
+  async command uint8_t  Usci.getCtl0()             { return UCmxCTL0; }
+  async command uint8_t  Usci.getCtl1()             { return UCmxCTL1; }
+
+  async command void     Usci.setCtlw0(uint16_t v)  { UCmxCTLW0 = v; }
+  async command void     Usci.setCtl0(uint8_t v)    { UCmxCTL0 = v; }
+  async command void     Usci.setCtl1(uint8_t v)    { UCmxCTL1 = v; }
+
   async command uint16_t Usci.getBrw() { return UCmxBRW; }
   async command void Usci.setBrw(uint16_t v) { UCmxBRW = v; }
   async command uint8_t Usci.getMctl() { return UCmxMCTL; }
@@ -101,23 +109,74 @@ implementation {
   async command void Usci.setTxbuf(uint8_t v) { UCmxTXBUF = v; }
   async command uint8_t Usci.getAbctl() { return UCmxABCTL; }
   async command void Usci.setAbctl(uint8_t v) { UCmxABCTL = v; }
-  async command uint16_t Usci.getI2coa() { return UCmxI2COA; }
-  async command void Usci.setI2coa(uint16_t v) { UCmxI2COA = v; }
   async command uint16_t Usci.getIrctl() { return UCmxIRCTL; }
   async command void Usci.setIrctl(uint16_t v) { UCmxIRCTL = v; }
   async command uint8_t Usci.getIrtctl() { return UCmxIRTCTL; }
   async command void Usci.setIrtctl(uint8_t v) { UCmxIRTCTL = v; }
   async command uint8_t Usci.getIrrctl() { return UCmxIRRCTL; }
   async command void Usci.setIrrctl(uint8_t v) { UCmxIRRCTL = v; }
-  async command uint16_t Usci.getI2csa() { return UCmxI2CSA; }
-  async command void Usci.setI2csa(uint16_t v) { UCmxI2CSA = v; }
+
+  async command uint16_t Usci.getI2Coa()           { return UCmxI2COA; }
+  async command void     Usci.setI2Coa(uint16_t v) { UCmxI2COA = v; }
+
+  async command uint16_t Usci.getI2Csa()           { return UCmxI2CSA; }
+  async command void     Usci.setI2Csa(uint16_t v) { UCmxI2CSA = v; }
+
   async command uint16_t Usci.getIctl() { return UCmxICTL; }
   async command uint16_t Usci.setIctl(uint16_t v) { UCmxICTL = v; }
   async command uint8_t Usci.getIe() { return UCmxIE; }
   async command void Usci.setIe(uint8_t v) { UCmxIE = v; }
   async command uint8_t Usci.getIfg() { return UCmxIFG; }
   async command void Usci.setIfg(uint8_t v) { UCmxIFG = v; }
+
+  async command bool Usci.isRxIntrPending()	{ return (UCmxIFG & UCRXIFG); }
+  async command void Usci.clrRxIntr()		{ UCmxIFG &= ~UCRXIFG; }
+  async command void Usci.disableRxIntr()	{ UCmxIE  &= ~UCRXIE;  }
+  async command void Usci.enableRxIntr()	{ UCmxIE  |=  UCRXIE;  }
+
+  async command bool Usci.isTxIntrPending()	{ return (UCmxIFG & UCTXIFG); }
+  async command void Usci.clrTxIntr()		{ UCmxIFG &= ~UCTXIFG; }
+  async command void Usci.disableTxIntr()	{ UCmxIE  &= ~UCTXIE;  }
+  async command void Usci.enableTxIntr()	{ UCmxIE  |=  UCTXIE;  }
+
+  async command bool Usci.isBusy()		{ return (UCmxSTAT & UCBUSY); }
+
   async command uint8_t Usci.getIv() { return UCmxIV; }
+
+  /* I2C bits
+   *
+   * set direction of the bus
+   */
+  async command void Usci.setTransmitMode() { UCmxCTL1 |=  UCTR; }
+  async command void Usci.setReceiveMode()  { UCmxCTL1 &= ~UCTR; }
+
+  /* Various i2c bits */
+  async command bool Usci.getStopBit()             { return (UCmxCTL1 & UCTXSTP);  }
+  async command bool Usci.getStartBit()            { return (UCmxCTL1 & UCTXSTT);  }
+  async command bool Usci.getNackBit()             { return (UCmxCTL1 & UCTXNACK); }
+  async command bool Usci.getTransmitReceiveMode() { return (UCmxCTL1 & UCTR);     }
+
+  /* set NACK, Stop condition, or Start condition, automatically cleared */
+  async command void Usci.setTXNACK()  { UCmxCTL1 |= UCTXNACK; }
+  async command void Usci.setTXStop()  { UCmxCTL1 |= UCTXSTP;  }
+  async command void Usci.setTXStart() { UCmxCTL1 |= UCTXSTT;  }
+
+  async command bool Usci.isNackIntrPending() { return (UCmxIFG & UCNACKIFG); }
+  async command void Usci.clrNackIntr()       { UCmxIFG &= ~UCNACKIFG; }
+
+  async command void Usci.configure (const msp430_usci_config_t* config,
+                                     bool leave_in_reset) {
+    if (! config) {
+      return;
+    }
+    call Usci.enterResetMode_();
+    UCmxCTLW0 = config->ctlw0 + UCSWRST;
+    UCmxBRW = config->brw;
+    UCmxMCTL = config->mctl;
+    if (! leave_in_reset) {
+      call Usci.leaveResetMode_();
+    }
+  }
 
   async command void Usci.enterResetMode_ () {
 #if defined(WITH_IAR)
@@ -135,19 +194,6 @@ implementation {
 #endif
   }
 
-  async command void Usci.configure (const msp430_usci_config_t* config,
-                                     bool leave_in_reset) {
-    if (! config) {
-      return;
-    }
-    call Usci.enterResetMode_();
-    UCmxCTLW0 = config->ctlw0 + UCSWRST;
-    UCmxBRW = config->brw;
-    UCmxMCTL = config->mctl;
-    if (! leave_in_reset) {
-      call Usci.leaveResetMode_();
-    }
-  }
 
   async command uint8_t Usci.currentMode () {
     atomic {
@@ -160,6 +206,7 @@ implementation {
       return MSP430_USCI_SPI;
     }
   }
+
 
   /*
    * Upon receipt of an interrupt, if the USCI is active then demux

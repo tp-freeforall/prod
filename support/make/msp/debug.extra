@@ -1,4 +1,11 @@
 #-*-Makefile-*- vim:syntax=make
 #$Id: debug.extra,v 1.4 2006-12-12 18:22:59 vlahan Exp $
 
-OPTFLAGS = -O1 -g -fnesc-no-inline
+# Modern GDB debuggers can handle optimized code pretty well so
+# we no longer specify -O1 to turn optimization off to simplify
+# debugging.  Rather use the default optimization level which is -Os
+# for size.
+#
+# OPTFLAGS = -O1 -g -fnesc-no-inline
+
+OPTFLAGS += -g -fnesc-no-inline

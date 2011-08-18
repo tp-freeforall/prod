@@ -54,6 +54,7 @@
 #define _Rf1aPacket_H_
 
 #include "Ieee154.h"
+#include "Ieee154PacketLayer.h"
 
 enum {
   /** NALP code for ActiveMessage type field */

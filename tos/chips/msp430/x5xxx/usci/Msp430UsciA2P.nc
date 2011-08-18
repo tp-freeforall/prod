@@ -10,11 +10,9 @@ configuration Msp430UsciA2P {
     interface ArbiterInfo;
     interface HplMsp430UsciInterrupts as Interrupts[uint8_t mode];
   }
-  uses {
-    interface ResourceConfigure[uint8_t client];
- }
-
-} implementation {
+  uses interface ResourceConfigure[uint8_t client];
+}
+implementation {
 
   components new HplMsp430UsciC(UCA2CTLW0_, MSP430_USCI_A2_RESOURCE) as UsciC;
   USCI  = UsciC;

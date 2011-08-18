@@ -59,6 +59,21 @@ typedef struct {
 #define i_saddr ieee_addr.saddr
 #define i_laddr ieee_addr.laddr
 
+#ifdef notdef
+/*
+ * The intent was to consolidate all ieee154 packet definitions
+ * in this file.  However a couple of things got in the way.
+ *
+ * 1) when compiling with blip, for some reason the compile blows
+ *    up on the nx_struct ieee154_simple_header_t definition below.
+ *    Did look at the resultant C code generated and wasn't able to
+ *    figure it out.
+ *
+ * 2) Miklos is starting a new addressing mechanism for both 16 and
+ *    64 bit ieee154 addresses using accessors and packer routines.
+ *    That renders this whole thing moot so why bother changing code
+ *    to consolidate.
+ */
 typedef nx_struct ieee154_simple_header_t {
   nxle_uint16_t fcf;
   nxle_uint8_t  dsn;
@@ -78,6 +93,7 @@ typedef nx_struct ieee154_fcf_t {
   nxle_uint16_t frame_version: 2;
   nxle_uint16_t src_addr_mode: 2;
 } ieee154_fcf_t;
+#endif
 
 enum {
   IEEE154_BROADCAST_ADDR = 0xffff,

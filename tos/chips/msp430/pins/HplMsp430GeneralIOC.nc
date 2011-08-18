@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2011 João Gonçalves
  * Copyright (c) 2011 Eric B. Decker
  * Copyright (c) 2009 DEXMA SENSORS SL
  * Copyright (c) 2000-2003 The Regents of the University of California.  
@@ -33,17 +34,21 @@
  */
 
 /**
- * HPL for the TI MSP430 family of microprocessors. This provides an
- * abstraction for general-purpose I/O.
+ * Digital pin i/o abstraction, TI MSP430 processors.
  *
  * @author Joe Polastre
  * @author Xavier Orduna <xorduna@dexmatech.com>
  * @author Peter A. Bigot <pab@peoplepowerco.com>
  * @author Eric B. Decker <cire831@gmail.com>
+ * @author João Gonçalves <joao.m.goncalves@ist.utl.pt>
+ *
+ * - Mapped Pins for msp430x543x, msp430x541x.
+ *   The duplicate functionality on different pins is not implemented
+ *   because of the duplicate names.
+ * - Added ports 7,8,9,10,11
  */
 
-configuration HplMsp430GeneralIOC
-{
+configuration HplMsp430GeneralIOC {
   // provides all the ports as raw ports
 #if defined(__msp430_have_port1) || defined(__MSP430_HAS_PORT1__) || defined(__MSP430_HAS_PORT1_R__)
   provides interface HplMsp430GeneralIO as Port10;
@@ -109,6 +114,60 @@ configuration HplMsp430GeneralIOC
   provides interface HplMsp430GeneralIO as Port65;
   provides interface HplMsp430GeneralIO as Port66;
   provides interface HplMsp430GeneralIO as Port67;
+#endif
+
+#if defined(__msp430_have_port7) || defined(__MSP430_HAS_PORT7__) || defined(__MSP430_HAS_PORT7_R__)
+  provides interface HplMsp430GeneralIO as Port70;
+  provides interface HplMsp430GeneralIO as Port71;
+  provides interface HplMsp430GeneralIO as Port72;
+  provides interface HplMsp430GeneralIO as Port73;
+  provides interface HplMsp430GeneralIO as Port74;
+  provides interface HplMsp430GeneralIO as Port75;
+  provides interface HplMsp430GeneralIO as Port76;
+  provides interface HplMsp430GeneralIO as Port77;
+#endif
+
+#if defined(__msp430_have_port8) || defined(__MSP430_HAS_PORT8__) || defined(__MSP430_HAS_PORT8_R__)
+  provides interface HplMsp430GeneralIO as Port80;
+  provides interface HplMsp430GeneralIO as Port81;
+  provides interface HplMsp430GeneralIO as Port82;
+  provides interface HplMsp430GeneralIO as Port83;
+  provides interface HplMsp430GeneralIO as Port84;
+  provides interface HplMsp430GeneralIO as Port85;
+  provides interface HplMsp430GeneralIO as Port86;
+  provides interface HplMsp430GeneralIO as Port87;
+#endif
+
+#if defined(__msp430_have_port9) || defined(__MSP430_HAS_PORT9__) || defined(__MSP430_HAS_PORT9_R__)
+  provides interface HplMsp430GeneralIO as Port90;
+  provides interface HplMsp430GeneralIO as Port91;
+  provides interface HplMsp430GeneralIO as Port92;
+  provides interface HplMsp430GeneralIO as Port93;
+  provides interface HplMsp430GeneralIO as Port94;
+  provides interface HplMsp430GeneralIO as Port95;
+  provides interface HplMsp430GeneralIO as Port96;
+  provides interface HplMsp430GeneralIO as Port97;
+#endif
+
+#if defined(__msp430_have_port10) || defined(__MSP430_HAS_PORT10__) || defined(__MSP430_HAS_PORT10_R__)
+  provides interface HplMsp430GeneralIO as Port100;
+  provides interface HplMsp430GeneralIO as Port101;
+  provides interface HplMsp430GeneralIO as Port102;
+  provides interface HplMsp430GeneralIO as Port103;
+  provides interface HplMsp430GeneralIO as Port104;
+  provides interface HplMsp430GeneralIO as Port105;
+  provides interface HplMsp430GeneralIO as Port106;
+  provides interface HplMsp430GeneralIO as Port107;
+#endif
+#if defined(__msp430_have_port11) || defined(__MSP430_HAS_PORT11__) || defined(__MSP430_HAS_PORT11_R__)
+  provides interface HplMsp430GeneralIO as Port110;
+  provides interface HplMsp430GeneralIO as Port111;
+  provides interface HplMsp430GeneralIO as Port112;
+  provides interface HplMsp430GeneralIO as Port113;
+  provides interface HplMsp430GeneralIO as Port114;
+  provides interface HplMsp430GeneralIO as Port115;
+  provides interface HplMsp430GeneralIO as Port116;
+  provides interface HplMsp430GeneralIO as Port117;
 #endif
 
   // provides special ports explicitly 
@@ -198,7 +257,6 @@ configuration HplMsp430GeneralIOC
   provides interface HplMsp430GeneralIO as UCB0SDA;
   provides interface HplMsp430GeneralIO as UCB0SCL;
 
-
   provides interface HplMsp430GeneralIO as UCA1CLK;
   provides interface HplMsp430GeneralIO as UCA1STE;
   provides interface HplMsp430GeneralIO as UCA1TXD;
@@ -229,7 +287,90 @@ configuration HplMsp430GeneralIOC
   provides interface HplMsp430GeneralIO as SVSOUT;
 #endif
 
-  // x5 family: cc430f5137, msp430f5438{,a}
+  // x5 family: cc430f5137, msp430x541x, msp430f5438{,a}
+
+#if defined(__msp430x543x) || defined(__msp430x541x)
+
+//duplicate ouputs on different pins from the ones mapped are not defined yet
+
+  provides interface HplMsp430GeneralIO as TA0CCR0;
+  provides interface HplMsp430GeneralIO as TA0CCR1;
+  provides interface HplMsp430GeneralIO as TA0CCR2;
+  provides interface HplMsp430GeneralIO as TA0CCR3;
+  provides interface HplMsp430GeneralIO as TA0CCR4;
+  provides interface HplMsp430GeneralIO as TA0CLK;
+
+  provides interface HplMsp430GeneralIO as TA1CCR0;
+  provides interface HplMsp430GeneralIO as TA1CCR1;
+  provides interface HplMsp430GeneralIO as TA1CCR2;
+  provides interface HplMsp430GeneralIO as TA1CLK;
+
+  provides interface HplMsp430GeneralIO as TB0CCR0;
+  provides interface HplMsp430GeneralIO as TB0CCR1;
+  provides interface HplMsp430GeneralIO as TB0CCR2;
+  provides interface HplMsp430GeneralIO as TB0CCR3;
+  provides interface HplMsp430GeneralIO as TB0CCR4;
+  provides interface HplMsp430GeneralIO as TB0CCR5;
+  provides interface HplMsp430GeneralIO as TB0CCR6;
+  provides interface HplMsp430GeneralIO as TB0CLK;
+
+  provides interface HplMsp430GeneralIO as RTCCLK;
+  provides interface HplMsp430GeneralIO as MCLK;
+  provides interface HplMsp430GeneralIO as SMCLK;
+  provides interface HplMsp430GeneralIO as ACLK;
+  provides interface HplMsp430GeneralIO as ADC12CLK;
+  provides interface HplMsp430GeneralIO as DMAE0;
+
+  provides interface HplMsp430GeneralIO as UCA0RXD;
+  provides interface HplMsp430GeneralIO as UCA0SOMI;
+  provides interface HplMsp430GeneralIO as UCA0TXD;
+  provides interface HplMsp430GeneralIO as UCA0SIMO;
+  provides interface HplMsp430GeneralIO as UCA0CLK;
+  provides interface HplMsp430GeneralIO as UCA0STE;
+
+  provides interface HplMsp430GeneralIO as UCB0STE;
+  provides interface HplMsp430GeneralIO as UCB0SOMI;
+  provides interface HplMsp430GeneralIO as UCB0SCL;
+  provides interface HplMsp430GeneralIO as UCB0SIMO;
+  provides interface HplMsp430GeneralIO as UCB0SDA;
+  provides interface HplMsp430GeneralIO as UCB0CLK;
+
+  provides interface HplMsp430GeneralIO as UCA1CLK;
+  provides interface HplMsp430GeneralIO as UCA1STE;
+  provides interface HplMsp430GeneralIO as UCA1TXD;
+  provides interface HplMsp430GeneralIO as UCA1RXD;
+  provides interface HplMsp430GeneralIO as UCA1SIMO;
+  provides interface HplMsp430GeneralIO as UCA1SOMI;
+
+  provides interface HplMsp430GeneralIO as UCB1CLK;
+  provides interface HplMsp430GeneralIO as UCB1STE;
+  provides interface HplMsp430GeneralIO as UCB1SIMO;
+  provides interface HplMsp430GeneralIO as UCB1SOMI;
+  provides interface HplMsp430GeneralIO as UCB1SDA;
+  provides interface HplMsp430GeneralIO as UCB1SCL;
+
+// Pins left to map of modules: UCB2/UCB3 and UCA2/UCA3
+
+  provides interface HplMsp430GeneralIO as ADC0;
+  provides interface HplMsp430GeneralIO as ADC1;
+  provides interface HplMsp430GeneralIO as ADC2;
+  provides interface HplMsp430GeneralIO as ADC3;
+  provides interface HplMsp430GeneralIO as ADC4;
+  provides interface HplMsp430GeneralIO as ADC5;
+  provides interface HplMsp430GeneralIO as ADC6;
+  provides interface HplMsp430GeneralIO as ADC7;
+  provides interface HplMsp430GeneralIO as ADC8;
+  provides interface HplMsp430GeneralIO as ADC9;
+
+// there are no ADC's 10 and 11 according to datasheet
+
+  provides interface HplMsp430GeneralIO as ADC12;
+  provides interface HplMsp430GeneralIO as ADC13;
+  provides interface HplMsp430GeneralIO as ADC14;
+  provides interface HplMsp430GeneralIO as ADC15;
+
+#endif
+
 #if defined(__cc430x513x) || defined(__cc430x612x) || defined(__cc430x613x)
   provides interface HplMsp430GeneralIO as CBOUT0;
   provides interface HplMsp430GeneralIO as TA0CLK;
@@ -280,8 +421,7 @@ configuration HplMsp430GeneralIOC
 #endif /* cc430x513x || cc430x612x || cc430x613x */
 
 }
-implementation
-{
+implementation {
   components 
 #if defined(__MSP430_HAS_PORT1_R__)
     new HplMsp430GeneralIORenP(P1IN_, P1OUT_, P1DIR_, P1SEL_, P1REN_, 0) as P10,
@@ -403,6 +543,106 @@ implementation
     new HplMsp430GeneralIOP(P6IN_, P6OUT_, P6DIR_, P6SEL_, 7) as P67,
 #endif
 
+#if defined(__MSP430_HAS_PORT7_R__)
+    new HplMsp430GeneralIORenP(P7IN_, P7OUT_, P7DIR_, P7SEL_, P7REN_, 0) as P70,
+    new HplMsp430GeneralIORenP(P7IN_, P7OUT_, P7DIR_, P7SEL_, P7REN_, 1) as P71,
+    new HplMsp430GeneralIORenP(P7IN_, P7OUT_, P7DIR_, P7SEL_, P7REN_, 2) as P72,
+    new HplMsp430GeneralIORenP(P7IN_, P7OUT_, P7DIR_, P7SEL_, P7REN_, 3) as P73,
+    new HplMsp430GeneralIORenP(P7IN_, P7OUT_, P7DIR_, P7SEL_, P7REN_, 4) as P74,
+    new HplMsp430GeneralIORenP(P7IN_, P7OUT_, P7DIR_, P7SEL_, P7REN_, 5) as P75,
+    new HplMsp430GeneralIORenP(P7IN_, P7OUT_, P7DIR_, P7SEL_, P7REN_, 6) as P76,
+    new HplMsp430GeneralIORenP(P7IN_, P7OUT_, P7DIR_, P7SEL_, P7REN_, 7) as P77,
+#elif defined(__msp430_have_port7) || defined(__MSP430_HAS_PORT7__)
+    new HplMsp430GeneralIOP(P7IN_, P7OUT_, P7DIR_, P7SEL_, 0) as P70,
+    new HplMsp430GeneralIOP(P7IN_, P7OUT_, P7DIR_, P7SEL_, 1) as P71,
+    new HplMsp430GeneralIOP(P7IN_, P7OUT_, P7DIR_, P7SEL_, 2) as P72,
+    new HplMsp430GeneralIOP(P7IN_, P7OUT_, P7DIR_, P7SEL_, 3) as P73,
+    new HplMsp430GeneralIOP(P7IN_, P7OUT_, P7DIR_, P7SEL_, 4) as P74,
+    new HplMsp430GeneralIOP(P7IN_, P7OUT_, P7DIR_, P7SEL_, 5) as P75,
+    new HplMsp430GeneralIOP(P7IN_, P7OUT_, P7DIR_, P7SEL_, 6) as P76,
+    new HplMsp430GeneralIOP(P7IN_, P7OUT_, P7DIR_, P7SEL_, 7) as P77,
+#endif
+
+#if defined(__MSP430_HAS_PORT8_R__)
+    new HplMsp430GeneralIORenP(P8IN_, P8OUT_, P8DIR_, P8SEL_, P8REN_, 0) as P80,
+    new HplMsp430GeneralIORenP(P8IN_, P8OUT_, P8DIR_, P8SEL_, P8REN_, 1) as P81,
+    new HplMsp430GeneralIORenP(P8IN_, P8OUT_, P8DIR_, P8SEL_, P8REN_, 2) as P82,
+    new HplMsp430GeneralIORenP(P8IN_, P8OUT_, P8DIR_, P8SEL_, P8REN_, 3) as P83,
+    new HplMsp430GeneralIORenP(P8IN_, P8OUT_, P8DIR_, P8SEL_, P8REN_, 4) as P84,
+    new HplMsp430GeneralIORenP(P8IN_, P8OUT_, P8DIR_, P8SEL_, P8REN_, 5) as P85,
+    new HplMsp430GeneralIORenP(P8IN_, P8OUT_, P8DIR_, P8SEL_, P8REN_, 6) as P86,
+    new HplMsp430GeneralIORenP(P8IN_, P8OUT_, P8DIR_, P8SEL_, P8REN_, 7) as P87,
+#elif defined(__msp430_have_port8) || defined(__MSP430_HAS_PORT8__)
+    new HplMsp430GeneralIOP(P8IN_, P8OUT_, P8DIR_, P8SEL_, 0) as P80,
+    new HplMsp430GeneralIOP(P8IN_, P8OUT_, P8DIR_, P8SEL_, 1) as P81,
+    new HplMsp430GeneralIOP(P8IN_, P8OUT_, P8DIR_, P8SEL_, 2) as P82,
+    new HplMsp430GeneralIOP(P8IN_, P8OUT_, P8DIR_, P8SEL_, 3) as P83,
+    new HplMsp430GeneralIOP(P8IN_, P8OUT_, P8DIR_, P8SEL_, 4) as P84,
+    new HplMsp430GeneralIOP(P8IN_, P8OUT_, P8DIR_, P8SEL_, 5) as P85,
+    new HplMsp430GeneralIOP(P8IN_, P8OUT_, P8DIR_, P8SEL_, 6) as P86,
+    new HplMsp430GeneralIOP(P8IN_, P8OUT_, P8DIR_, P8SEL_, 7) as P87,
+#endif
+
+#if defined(__MSP430_HAS_PORT9_R__)
+    new HplMsp430GeneralIORenP(P9IN_, P9OUT_, P9DIR_, P9SEL_, P9REN_, 0) as P90,
+    new HplMsp430GeneralIORenP(P9IN_, P9OUT_, P9DIR_, P9SEL_, P9REN_, 1) as P91,
+    new HplMsp430GeneralIORenP(P9IN_, P9OUT_, P9DIR_, P9SEL_, P9REN_, 2) as P92,
+    new HplMsp430GeneralIORenP(P9IN_, P9OUT_, P9DIR_, P9SEL_, P9REN_, 3) as P93,
+    new HplMsp430GeneralIORenP(P9IN_, P9OUT_, P9DIR_, P9SEL_, P9REN_, 4) as P94,
+    new HplMsp430GeneralIORenP(P9IN_, P9OUT_, P9DIR_, P9SEL_, P9REN_, 5) as P95,
+    new HplMsp430GeneralIORenP(P9IN_, P9OUT_, P9DIR_, P9SEL_, P9REN_, 6) as P96,
+    new HplMsp430GeneralIORenP(P9IN_, P9OUT_, P9DIR_, P9SEL_, P9REN_, 7) as P97,
+#elif defined(__msp430_have_port9) || defined(__MSP430_HAS_PORT9__)
+    new HplMsp430GeneralIOP(P9IN_, P9OUT_, P9DIR_, P9SEL_, 0) as P90,
+    new HplMsp430GeneralIOP(P9IN_, P9OUT_, P9DIR_, P9SEL_, 1) as P91,
+    new HplMsp430GeneralIOP(P9IN_, P9OUT_, P9DIR_, P9SEL_, 2) as P92,
+    new HplMsp430GeneralIOP(P9IN_, P9OUT_, P9DIR_, P9SEL_, 3) as P93,
+    new HplMsp430GeneralIOP(P9IN_, P9OUT_, P9DIR_, P9SEL_, 4) as P94,
+    new HplMsp430GeneralIOP(P9IN_, P9OUT_, P9DIR_, P9SEL_, 5) as P95,
+    new HplMsp430GeneralIOP(P9IN_, P9OUT_, P9DIR_, P9SEL_, 6) as P96,
+    new HplMsp430GeneralIOP(P9IN_, P9OUT_, P9DIR_, P9SEL_, 7) as P97,
+#endif
+
+#if defined(__MSP430_HAS_PORT10_R__)
+    new HplMsp430GeneralIORenP(P10IN_, P10OUT_, P10DIR_, P10SEL_, P10REN_, 0) as P100,
+    new HplMsp430GeneralIORenP(P10IN_, P10OUT_, P10DIR_, P10SEL_, P10REN_, 1) as P101,
+    new HplMsp430GeneralIORenP(P10IN_, P10OUT_, P10DIR_, P10SEL_, P10REN_, 2) as P102,
+    new HplMsp430GeneralIORenP(P10IN_, P10OUT_, P10DIR_, P10SEL_, P10REN_, 3) as P103,
+    new HplMsp430GeneralIORenP(P10IN_, P10OUT_, P10DIR_, P10SEL_, P10REN_, 4) as P104,
+    new HplMsp430GeneralIORenP(P10IN_, P10OUT_, P10DIR_, P10SEL_, P10REN_, 5) as P105,
+    new HplMsp430GeneralIORenP(P10IN_, P10OUT_, P10DIR_, P10SEL_, P10REN_, 6) as P106,
+    new HplMsp430GeneralIORenP(P10IN_, P10OUT_, P10DIR_, P10SEL_, P10REN_, 7) as P107,
+#elif defined(__msp430_have_port10) || defined(__MSP430_HAS_PORT10__)
+    new HplMsp430GeneralIOP(P10IN_, P10OUT_, P10DIR_, P10SEL_, 0) as P100,
+    new HplMsp430GeneralIOP(P10IN_, P10OUT_, P10DIR_, P10SEL_, 1) as P101,
+    new HplMsp430GeneralIOP(P10IN_, P10OUT_, P10DIR_, P10SEL_, 2) as P102,
+    new HplMsp430GeneralIOP(P10IN_, P10OUT_, P10DIR_, P10SEL_, 3) as P103,
+    new HplMsp430GeneralIOP(P10IN_, P10OUT_, P10DIR_, P10SEL_, 4) as P104,
+    new HplMsp430GeneralIOP(P10IN_, P10OUT_, P10DIR_, P10SEL_, 5) as P105,
+    new HplMsp430GeneralIOP(P10IN_, P10OUT_, P10DIR_, P10SEL_, 6) as P106,
+    new HplMsp430GeneralIOP(P10IN_, P10OUT_, P10DIR_, P10SEL_, 7) as P107,
+#endif
+
+#if defined(__MSP430_HAS_PORT11_R__)
+    new HplMsp430GeneralIORenP(P11IN_, P11OUT_, P11DIR_, P11SEL_, P11REN_, 0) as P110,
+    new HplMsp430GeneralIORenP(P11IN_, P11OUT_, P11DIR_, P11SEL_, P11REN_, 1) as P111,
+    new HplMsp430GeneralIORenP(P11IN_, P11OUT_, P11DIR_, P11SEL_, P11REN_, 2) as P112,
+    new HplMsp430GeneralIORenP(P11IN_, P11OUT_, P11DIR_, P11SEL_, P11REN_, 3) as P113,
+    new HplMsp430GeneralIORenP(P11IN_, P11OUT_, P11DIR_, P11SEL_, P11REN_, 4) as P114,
+    new HplMsp430GeneralIORenP(P11IN_, P11OUT_, P11DIR_, P11SEL_, P11REN_, 5) as P115,
+    new HplMsp430GeneralIORenP(P11IN_, P11OUT_, P11DIR_, P11SEL_, P11REN_, 6) as P116,
+    new HplMsp430GeneralIORenP(P11IN_, P11OUT_, P11DIR_, P11SEL_, P11REN_, 7) as P117,
+#elif defined(__msp430_have_port11) || defined(__MSP430_HAS_PORT11__)
+    new HplMsp430GeneralIOP(P11IN_, P11OUT_, P11DIR_, P11SEL_, 0) as P110,
+    new HplMsp430GeneralIOP(P11IN_, P11OUT_, P11DIR_, P11SEL_, 1) as P111,
+    new HplMsp430GeneralIOP(P11IN_, P11OUT_, P11DIR_, P11SEL_, 2) as P112,
+    new HplMsp430GeneralIOP(P11IN_, P11OUT_, P11DIR_, P11SEL_, 3) as P113,
+    new HplMsp430GeneralIOP(P11IN_, P11OUT_, P11DIR_, P11SEL_, 4) as P114,
+    new HplMsp430GeneralIOP(P11IN_, P11OUT_, P11DIR_, P11SEL_, 5) as P115,
+    new HplMsp430GeneralIOP(P11IN_, P11OUT_, P11DIR_, P11SEL_, 6) as P116,
+    new HplMsp430GeneralIOP(P11IN_, P11OUT_, P11DIR_, P11SEL_, 7) as P117,
+#endif
+
     PlatformC; // dummy to end unknown sequence
 
 #if defined(__msp430_have_port1) || defined(__MSP430_HAS_PORT1__) || defined(__MSP430_HAS_PORT1_R__)
@@ -469,6 +709,61 @@ implementation
   Port65 = P65;
   Port66 = P66;
   Port67 = P67;
+#endif
+
+#if defined(__msp430_have_port7) || defined(__MSP430_HAS_PORT7__) || defined(__MSP430_HAS_PORT7_R__)
+  Port70 = P70;
+  Port71 = P71;
+  Port72 = P72;
+  Port73 = P73;
+  Port74 = P74;
+  Port75 = P75;
+  Port76 = P76;
+  Port77 = P77;
+#endif
+
+#if defined(__msp430_have_port8) || defined(__MSP430_HAS_PORT8__) || defined(__MSP430_HAS_PORT8_R__)
+  Port80 = P80;
+  Port81 = P81;
+  Port82 = P82;
+  Port83 = P83;
+  Port84 = P84;
+  Port85 = P85;
+  Port86 = P86;
+  Port87 = P87;
+#endif
+
+#if defined(__msp430_have_port9) || defined(__MSP430_HAS_PORT9__) || defined(__MSP430_HAS_PORT9_R__)
+  Port90 = P90;
+  Port91 = P91;
+  Port92 = P92;
+  Port93 = P93;
+  Port94 = P94;
+  Port95 = P95;
+  Port96 = P96;
+  Port97 = P97;
+#endif
+
+#if defined(__msp430_have_port10) || defined(__MSP430_HAS_PORT10__) || defined(__MSP430_HAS_PORT10_R__)
+  Port100 = P100;
+  Port101 = P101;
+  Port102 = P102;
+  Port103 = P103;
+  Port104 = P104;
+  Port105 = P105;
+  Port106 = P106;
+  Port107 = P107;
+#endif
+
+#if defined(__msp430_have_port11) || defined(__MSP430_HAS_PORT11__) || defined(__MSP430_HAS_PORT11_R__)
+  Port110 = P110;
+  Port111 = P111;
+  Port112 = P112;
+  Port113 = P113;
+  Port114 = P114;
+  Port115 = P115;
+  Port116 = P116;
+  Port117 = P117;
 #endif
 
 #ifdef __msp430x14x
@@ -572,6 +867,105 @@ implementation
 
   SVSIN = P67;
   SVSOUT = P57;
+#endif
+
+
+#if defined(__msp430x543x) || defined(__msp430x541x)
+
+   TA0CCR0 = P11;
+   TA0CCR1 = P12;
+   TA0CCR2 = P13;
+   TA0CCR3 = P14;
+   TA0CCR4 = P15;
+   TA0CLK = P10;
+
+   TA1CCR0 = P21;
+   TA1CCR1 = P22;
+   TA1CCR2 = P23;
+   TA1CLK = P20;
+
+   TB0CCR0 = P40;
+   TB0CCR1 = P41;
+   TB0CCR2 = P42;
+   TB0CCR3 = P43;
+   TB0CCR4 = P44;
+   TB0CCR5 = P45;
+   TB0CCR6 = P46;
+   TB0CLK = P47;
+
+   RTCCLK = P24;
+   MCLK = P20;
+   SMCLK = P16;
+   ACLK = P10;
+   ADC12CLK = P27;
+   DMAE0 = P27;
+
+   UCA0TXD = P34;
+   UCA0RXD = P35;
+   UCA0SIMO = P34;
+   UCA0SOMI = P35;
+   UCA0CLK = P30;
+   UCA0STE = P33;
+
+   UCB0STE = P30;
+   UCB0SIMO = P31;
+   UCB0SOMI = P32;
+   UCB0SDA = P31;
+   UCB0SCL = P32;
+   UCB0CLK = P33;
+
+   UCA1TXD = P56;
+   UCA1RXD = P57;
+   UCA1SIMO = P56;
+   UCA1SOMI = P57;
+   UCA1CLK = P36;
+   UCA1STE = P55;
+
+   UCB1STE = P36;
+   UCB1SIMO = P37;
+   UCB1SOMI = P54;
+   UCB1SDA = P37;
+   UCB1SCL = P54;
+   UCB1CLK = P55;
+
+// Pins left to map of modules: UCB2/UCB3 and UCA2/UCA3
+
+   ADC0 = P60;
+   ADC1 = P61;
+   ADC2 = P62;
+   ADC3 = P63;
+   ADC4 = P64;
+   ADC5 = P65;
+   ADC6 = P66;
+   ADC7 = P67;
+   ADC8 = P50;
+   ADC9 = P51;
+
+// there are no ADC's 10 and 11 according to datasheet
+
+   ADC12 = P74;
+   ADC13 = P75;
+   ADC14 = P76;
+   ADC15 = P77;
+
+//Same outputs but on different pins, need to change the names if to be used
+// Not complete yet
+/*
+   SMCLK = P47;
+   ACLK = P110;
+   MCLK = P111;
+   SMCLK = P112;
+
+   TA0CCR0 = P80;
+   TA0CCR1 = P81;
+   TA0CCR2 = P82;
+   TA0CCR3 = P83;
+   TA0CCR4 = P84;
+
+   TA1CCR0 = P85;
+   TA1CCR1 = P86;
+   TA1CCR2 = P73; */
+
 #endif
 
 #if defined(__cc430x513x) || defined(__cc430x612x) || defined(__cc430x613x)

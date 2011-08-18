@@ -1,3 +1,0 @@
-COMPONENT=TestADXL345AppC
-include $(MAKERULES)
-

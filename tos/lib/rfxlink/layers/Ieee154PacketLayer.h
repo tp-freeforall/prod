@@ -35,13 +35,7 @@
 #ifndef __IEEE154PACKETLAYER_H__
 #define __IEEE154PACKETLAYER_H__
 
-#warn "Ieee154PacketLayer.h is deprecated.  Replaced by Ieee154.h"
-
-#include <Ieee154.h>
-
-#ifdef notdef
-
-// Contents moved to tos/types/Ieee154.h
+#include "Ieee154.h"
 
 typedef nx_struct ieee154_simple_header_t
 {
@@ -51,7 +45,5 @@ typedef nx_struct ieee154_simple_header_t
 	nxle_uint16_t dest;
 	nxle_uint16_t src;
 } ieee154_simple_header_t;
-
-#endif		// notdef
 
 #endif//__IEEE154PACKETLAYER_H__

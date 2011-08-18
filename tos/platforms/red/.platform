@@ -1,0 +1,95 @@
+# Includes that should take precedence come first.  Platforms come before
+# chips because they may override files.  These must be specified as
+# @includes instead of -I's to @opts, otherwise the %T won't be processed
+# by ncc.
+
+for (split(/\n/, <<'EOText'
+
+  %P/hardware/pins
+  %P/hardware/leds
+  %P/hardware/usci
+  %P/hardware/radio
+  %P/hardware/clock
+  %P/hardware/rtc
+  %P/hardware/sensors/MLX90614
+  %P/hardware/storage/MC24XX1025
+  %P/Ieee/Identity
+  %P/compatibility/system
+
+  %T/chips/msp430/x5xxx
+  %T/chips/msp430/x5xxx/lpm
+  %T/chips/msp430/x5xxx/timer
+  %T/chips/msp430/x5xxx/usci
+
+  %T/chips/msp430
+  %T/chips/msp430/pins
+  %T/chips/msp430/timer
+  %T/chips/msp430/pmm
+  %T/chips/msp430/adc12
+  %T/chips/msp430/sensors
+  %T/chips/msp430/wdt
+  %T/chips/msp430/rtc
+  %T/chips/msp430/flash/settings
+  %T/chips/msp430/flash/driver
+  %T/chips/msp430/flash/constants
+  %T/chips/msp430/crc16
+
+  %T/chips/msp430/rf1a
+  %T/chips/msp430/rf1a/interfaces
+  %T/chips/msp430/rf1a/system
+  %T/chips/msp430/rf1a/physical
+  %T/chips/msp430/rf1a/am
+  %T/chips/msp430/rf1a/ieee154
+  %T/chips/msp430/rf1a/layers
+
+  %T/lib/timer
+
+  %T/lib/util/keyvaluerecord
+
+  %T/lib/serial
+  %T/lib/printf
+
+EOText
+)) {
+  s/\#.*$//;
+  s/^\s*//g;
+  s/\s*$//g;
+  push(@includes, $_) if $_;
+}
+
+@opts = qw(
+  -gcc=msp430-gcc
+  -mmcu=cc430x5137
+  -fnesc-target=msp430
+  -fnesc-scheduler=TinySchedulerC,TinySchedulerC.TaskBasic,TaskBasic,TaskBasic,runTask,postTask
+);
+
+
+
+#push @opts, "-fnesc-scheduler=TinySchedulerC,TinySchedulerC.TaskBasic,TaskBasic,TaskBasic,runTask,postTask" if !$with_scheduler_flag;
+#push @opts, "-mingw-gcc" if $cygwin;
+
+$ENV{'CIL_MACHINE'} =
+    "version_major=3 " .
+    "version_minor=2 " .
+    "version=msp430-3.2.3 " .
+    "short=2,2 " .
+    "int=2,2 " .
+    "long=4,2 " .
+    "long_long=8,2 " .
+    "pointer=2,2 " .
+    "enum=2,2 " .
+    "float=4,2 " .
+    "double=4,2 " .
+    "long_double=4,2 " .
+    "void=1,1 " .
+    "fun=1,2 " .
+    "wchar_size_size=2,2 " .
+    "alignof_string=1 " .
+    "max_alignment=1 " .
+    "char_wchar_signed=true,true " .
+    "const_string_literals=true " .
+    "big_endian=false " .
+    "underscore_name=false " .
+    "__builtin_va_list=true " .
+    "__thread_is_keyword=true";

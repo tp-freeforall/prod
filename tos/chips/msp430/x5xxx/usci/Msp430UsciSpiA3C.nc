@@ -1,6 +1,7 @@
 /* DO NOT MODIFY
  * This file cloned from Msp430UsciSpiB0C.nc for A3 */
 /*
+ * Copyright (c) 2011 João Gonçalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -40,6 +41,9 @@
 
 /**
  * Generic configuration for a client that shares USCI_A3 in SPI mode.
+ *
+ * Connected the SPI pins to HplMsp430GeneralIOC
+ * @author João Gonçalves <joao.m.goncalves@ist.utl.pt>
  */
 
 generic configuration Msp430UsciSpiA3C() {
@@ -49,8 +53,8 @@ generic configuration Msp430UsciSpiA3C() {
     interface SpiByte;
     interface Msp430UsciError;
   }
-
-} implementation {
+}
+implementation {
   enum {
     CLIENT_ID = unique(MSP430_USCI_A3_RESOURCE),
   };
@@ -64,4 +68,10 @@ generic configuration Msp430UsciSpiA3C() {
   Msp430UsciError = SpiC.Msp430UsciError;
 
   UsciC.ResourceConfigure[CLIENT_ID] -> SpiC.ResourceConfigure[CLIENT_ID];
+
+  components HplMsp430GeneralIOC as GIO;
+
+  SpiC.SIMO -> GIO.UCA3SIMO;
+  SpiC.SOMI -> GIO.UCA3SOMI;
+  SpiC.CLK -> GIO.UCA3CLK;
 }

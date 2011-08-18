@@ -10,10 +10,10 @@ configuration Msp430UsciUartA0P {
     interface HplMsp430GeneralIO as URXD;
     interface HplMsp430GeneralIO as UTXD;
   }
-} implementation {
+}
+implementation {
 
   components Msp430UsciA0P as UsciC;
-
   components new Msp430UsciUartP() as UartC;
 
   UartC.Usci -> UsciC;

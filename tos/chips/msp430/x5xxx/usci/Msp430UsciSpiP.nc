@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2011 João Gonçalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -39,6 +40,7 @@
  * instance.
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * @author João Gonçalves <joao.m.goncalves@ist.utl.pt>
  */
 
 generic module Msp430UsciSpiP () @safe() {
@@ -48,7 +50,6 @@ generic module Msp430UsciSpiP () @safe() {
     interface Msp430UsciError;
     interface ResourceConfigure[ uint8_t client ];
   }
-
   uses {
     interface HplMsp430Usci as Usci;
     interface HplMsp430UsciInterrupts as Interrupts;
@@ -60,7 +61,8 @@ generic module Msp430UsciSpiP () @safe() {
     interface ArbiterInfo;
     interface Leds;
   }
-} implementation {
+}
+implementation {
 
   /** The SPI is busy if it's actively transmitting/receiving, or if
    * there is an active buffered I/O operation.
@@ -163,8 +165,31 @@ generic module Msp430UsciSpiP () @safe() {
   }
 
   async command error_t SpiPacket.send[uint8_t client] (uint8_t* txBuf, uint8_t* rxBuf, uint16_t len) {
-    /* Not supported yet */
-    return FAIL;
+
+    uint16_t bytesLeft = len;
+
+    while (bytesLeft) {
+      while (! (UCTXIFG & call Usci.getIfg())) {
+        ; /* busywait */
+      }
+      call Usci.setTxbuf(txBuf[len-bytesLeft]);
+
+      while (! (UCRXIFG & call Usci.getIfg())) {
+        ; /* busywait */
+      }
+
+      rxBuf[len-bytesLeft] = call Usci.getRxbuf();
+      bytesLeft=bytesLeft-1;
+    }
+
+    /*
+     * WARNING: interrupts are disabled for this signal handler (event).   This
+     * in general is a bad idea.   We are doing it here because this is wired
+     * into the CC2420 stack which yields lots of non-atomic accesses.  A redesign
+     * of some flavor would be needed to fix this unless we put an atomic here.
+     */
+    atomic signal SpiPacket.sendDone[client](txBuf, rxBuf, len, SUCCESS);
+    return SUCCESS;
   }
 
   default async event void SpiPacket.sendDone[uint8_t client] (uint8_t* txBuf, uint8_t* rxBuf, uint16_t len, error_t error ) { }

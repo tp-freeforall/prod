@@ -28,6 +28,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE
  *
  */
+
 /*
  * Improved DMA UART implementation for MSP-base platforms to fix some
  * of the timing issues.  Based on my earlier implementation, but
@@ -105,7 +106,7 @@ module PlatformHdlcUartP {
   }
 
   async command void ResourceConfigure.configure() {
-    msp430_uart_union_config_t* config = call Msp430UartConfigure.getConfig();
+    const msp430_uart_union_config_t* config = call Msp430UartConfigure.getConfig();
     call Leds.led0On();
     m_byte_time = (config->uartConfig.ubr / 4); // SDH : assume 4MHZ...
     call Usart.setModeUart(config);
@@ -114,7 +115,7 @@ module PlatformHdlcUartP {
 
   async command void ResourceConfigure.unconfigure() {
     call RxAbort.stop();
-    call DmaChannel.stopTransfer();
+    call DmaChannel.stopDma();
 
     call Usart.resetUsart(TRUE);
     call Usart.disableIntr();
@@ -149,9 +150,12 @@ module PlatformHdlcUartP {
       m_rx_buf = __rx_buf;
 
       /* SDH : important : the dma transfer won't occur if the
-         interrupt is enabled */
-      call Usart.clrRxIntr();
+       * interrupt is enabled
+       */
       call Usart.disableRxIntr();
+      call Usart.clrRxIntr();
+#ifdef notdef
+      /* old dma driver */
       call DmaChannel.setupTransfer(DMA_REPEATED_SINGLE_TRANSFER,
                                     DMA_TRIGGER_URXIFG1,
                                     DMA_EDGE_SENSITIVE,
@@ -163,6 +167,25 @@ module PlatformHdlcUartP {
                                     DMA_ADDRESS_UNCHANGED,
                                     DMA_ADDRESS_INCREMENTED);
       call DmaChannel.startTransfer();
+      /*
+       * old driver's startTransfer left DMA_EN, and startTransfer turns on DMA_EN but
+       * doesn't actually start the transfer.  First edge of U1RXBUF does that
+       */
+#endif
+      /* new dma driver */
+      call DmaChannel.setupTransfer(
+			DMA_DT_RPT | DMA_DT_SINGLE |	// interleaved, repeated single, edge
+			DMA_SB_DB |			// SRC byte, DST byte
+			DMA_SRC_NO_CHNG |		// SRC address, no change
+			DMA_DST_INC |			// DST address, increment
+			DMAIE,
+			DMA_TRIGGER_URXIFG1,
+			(uint16_t) U1RXBUF_,
+			(uint16_t) m_rx_buf,
+			sizeof(__rx_buf));
+      /* new driver's setupTransfer sets DMA_EN, transfer actually starts on the
+       * rising edge of U1RXBUF
+       */
 
       /* start the timeout */
       /* this will be fired when the buffer is about a third full so we
@@ -191,7 +214,7 @@ module PlatformHdlcUartP {
                          m_byte_time * BUFFER_TIMEOUT_BYTES);
   }
 
-  async event void DmaChannel.transferDone(error_t success) {  }
+  async event void DmaChannel.transferDone() {  }
 
   /* 
    * Send side.  no dma here, just send it out.

@@ -1,4 +1,6 @@
 
+Getting Started.
+
 Git is great.    Git is good.    Git is powerful.
 
 Alas, that makes it a little daunting getting started.   This document should
@@ -11,7 +13,7 @@ to the TinyProd TinyOS repository structure.
 
 Contents:
 
-- About TinyProd
+- Why Git?
 - GitHub
 - Set up Git
 - Set up your working repository
@@ -19,26 +21,51 @@ Contents:
 - Guidelines
 
 
-* About TinyProd:
+* Why Git?
 
-TinyProd is a GIT based TinyOS repository that is immediately downstream from
-the main SVN based TinyOS repository that is maintained by the academic TinyOS
-community.
+The main reason behind the selection of GIT is it's fully distributed nature,
+fast branching, and associated merge magic.  The TinyOS development community
+is essentially world wide and we want to make encourage the rate of development
+by making the contribution process very easy as well as accessable.
 
-TinyProd is intended to be a more vibrant, developer/production orientated
-repository.  Some of the features include:
+  o Fully distributed.
 
-  o organize git based TinyOS development.
-  o More vibrant, higher rate of change for the community.
-  o Encourage collaboration
-  o Optimize developer resources.  (Streamline the development process).
-    Developer centric rather than academic centric.
-  o Peer driven code review, norm rather than the exception.
-  o real issue and bug tracking
-  o tracking changes to TinyProd managed pieces of the source tree
-    and linking to appropriate tracking documents.
-  o stable mainline.
-  o Continuous release cycle.
+  o Everything is local.   No need of a centralized server for anything.
+    (note our workflow does require integration repositories but this isn't
+    implicit in GIT), nor does it impact the contribution process.
+
+  o Cheap local branching.  This is important.  We want to foster faster
+    development.  Try something out while still staying in touch with what
+    is happening in the mainline.  This is much more difficult with rTinyOS's
+    (research TinyOS) CVS contrib and SVN based repositories.
+
+    Note, branching in GIT is fundamentally different than pretty much any
+    other SCM system and is responsbile for much of the productivity of projects
+    using GIT.
+
+  o GITHUB.  When coupled with github, git provides very powerful visibility tools
+    (what is being changed and by whom).  Code review becomes very easy when
+    using GIT and github.
+
+  o Git is Small
+
+  o Git is Fast
+
+  o Support for any workflow.  Although we are using the Integration Manager
+    Workflow.   This also promotes code review.
+
+  o Allows gradual reintegration of currently active contrib source bodies.
+    Currently the contrib source body is maintained in CVS and is rather
+    cumbersome to use.   Bringing active contrib code into the TinyProd
+    github realm would provide the same mechanism for accessing and using
+    active contrib code as the main TinyOS body.
+
+    Using TinyProd hosted contrib code would be as simple as merging two
+    git branches or possibly two branches in different git repositories.
+
+  o Other DVCS could also have been chosen (SVN is not a DVCS), such as Hg
+    or Bzr but I happened to be a fan of GIT.   And it seems to be working
+    well for what we are trying to do.
 
 
 * GitHub
@@ -49,12 +76,16 @@ repository.  Some of the features include:
 * Go to github.com and get yourself a logon.  Choose your login name
   carefully.   You can rename it once (but only once).
   
-  Once you are logged in, You'll be presented a page start up page which
+  Once you are logged in, You'll be presented a start up page which
   includes things like "Set Up Git", "Create a Repository", "Fork a
   Repository", etc.   We will be using existing repositories.
 
 
 * Set Up Git.
+
+  This section details items that only need to be when first getting started.
+  For more information on using git and contributing to the project please
+  see 00a_Contribution_Process.
 
  o set up SSH keys.  If you have an existing SSH key you can use it.
    Existing keys can typically be found in ~/.ssh.   The instructions have
@@ -76,9 +107,10 @@ repository.  Some of the features include:
   which lives at ~/.gitconfig)
 
   o To avoid problems with DOS EOL sequences, we always store in the
-    repository using UNIX EOL sequences.   Turn on autocrlf to avoid problems.
+    repository using UNIX EOL sequences.   Set autocrlf to input to
+    avoid these problems.
 
-    $ git config --global core.autocrlf true
+    $ git config --global core.autocrlf input
 
   o It is handy to set up local copies of remote branches automatically.
 
@@ -140,6 +172,9 @@ redacted)...
   See 00_Repo_Notes for the structure of the repositories and their
   relationships.
 
+  Also see 00a_Contribution_Process for examples of how to interacte with the
+  various branches and repositories.
+
   The main repo is https://github.com/tinyprod/prod with an integration repo
   at https://github.com/tp-freeforall/prod.  (The later is a fork off
   tinyprod/prod).
@@ -149,73 +184,14 @@ redacted)...
   between different developers.
 
   Contributors work initially on a contributor branch in their local
-  repository.  After these changes have been vetted they will be brought over
-  to an integration branch in tp-freeforall/prod.  After integration, these
-  changes will be pulled into the mainline (master) in tinyprod/prod where
-  they will be part of the next release.
+  repository.  When a contributor is happy with the work they have done,
+  they will integrate their changes into a local copy of the integration
+  branch.   This integration branch is pushed back to the contributor's
+  github fork and a request for a pull is made between the contributor's
+  branch and the main integration branch.
 
-
-  o Log in to your github account
-
-  o Create a working fork.  Working repos are forked off the main working
-    repository located at:
-
-        https://github.com/tp-freeforall/prod
-
-    This will bring up the main page for the tp-freeforall/prod repo.
-
-    To create a working repo, click on the fork button.   This will create a
-    fork of tp-freeforall/prod in your local context (your login context).
-
-    This will create the repository github.com/<github_username>/prod
-    which is forked off github.com/tp-freeforall/prod.  All working repos are
-    forked off the tp-freeforall/prod repo.  This is to keep the amount of
-    extra data in the main repository down to a minimum.
-
-  o Create your local repo.
-
-    mkdir -p w/prod                     # create working directory
-    cd w/prod
-    git clone git@github.com:<github_username>/prod.git tinyos-2.x
-    cd tinyos-2.x
-
-    # you will now have w/prod/tinyos-2.x populated with the default branch
-    # of the fork.  Your fork will inherit the default branch from
-    # tp-freeforall/prod repo.
-    #
-    # this will create the remote origin linked to your working fork on github
-
-    # you will also want to track changes coming into tp-freeforall, so
-    # create a remote that will be used for tracking.   And pull in information
-    # from the repository.
-
-    git remote add up git://github.com/tp-freeforall/prod.git
-    git fetch up
-
-  o Create your working branch.
-
-    git branch                        # make sure on the appropriate branch
-    				      # should show msp430-int-pu which is the
-				      # current default branch.
-    git checkout -b gu                # create the working branch
-    		    		      # gu are your initials or another
-				      # meaningful name.  gu is used here
-				      # as an example, it stands for
-				      # github_user but should 
-    <make changes>
-
-    git add -u                        # add changed files that are tracked.
-    git commit			      # commit.  editor will get invoked
-    				      # for the commit message.
-				      #
-				      # please see Guidelines for a guide
-				      # on how to write good commit messages
-
-    # when you are ready to publish your changes, push the changes back to
-    # your working fork on github.
-
-    git push
-
+  Please refer to 00a_Contribution_Process for details on how to set up
+  your working repository.
 
 
 * Further Reading
@@ -249,7 +225,8 @@ redacted)...
 
     In particular, please read Integration-Manger Workflow (its what we are
     using).   And we have added one more repository to the left of the
-    Blessed Repository which is VeryBlessed.  :-)
+    Blessed Repository which is VeryBlessed.  :-)   [VeryBlessed is the
+    github:TinyProd/prod repository].
 
     Also please read, Contributing to a Project.   Some of what is written there
     is also summarized in the Guidelines section below.
@@ -274,13 +251,13 @@ redacted)...
 
     the first line (50 chars or less) is used as the short message.   This
     message is displayed in one line logs and other places.  Make it
-    meaningful.
+    meaningful and concise if possible.
 
-    The rest of the commit message should provide more detailed information
-    about what the commit does.  The GIT project itself requires motivation
-    as well as contrasting the new behaviour to old behaviour.  Why was this
-    change necessary.  Its not a bad habit to get into when it makes sense
-    to do so.
+    Follow the first line by a blank line then a more detailed message which
+    should provide more detailed information about what the commit does.  The
+    GIT project itself requires motivation as well as contrasting the new
+    behaviour to old behaviour.  Why was this change necessary?  Its not a
+    bad habit to get into when it makes sense to do so.
 
   o Use the imperative present tense when writing commit messages.
 

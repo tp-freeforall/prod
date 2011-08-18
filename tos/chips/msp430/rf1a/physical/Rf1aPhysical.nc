@@ -380,6 +380,19 @@ interface Rf1aPhysical {
    */
   async command int rssi_dBm ();
 
+  /** Read the LQI value.
+   *
+   * Returns the LQI value from the LQI status register
+   * the lower the number indicates a better link quality.
+   * the CRC OK bit(7) is mask off in the return result and the 
+   * value is made negative.
+   *
+   * @return EOFF if radio is off; EBUSY if assigned to another
+   * client.  A negative value indicates a valid LQI measurement.
+   * @note This is not an error_t.
+   */
+
+  async command int lqi ();
   /** Read the current radio configuration.
    *
    * @note This command always succeeds and returns the current
