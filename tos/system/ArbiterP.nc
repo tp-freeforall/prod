@@ -105,6 +105,9 @@ generic module ArbiterP(uint8_t default_owner_id) @safe() {
     interface ResourceConfigure[uint8_t id];
     interface ResourceQueue as Queue;
     interface Leds;
+#ifdef TRACE_RESOURCE
+    interface Trace;
+#endif
   }
 }
 implementation {
@@ -143,6 +146,7 @@ implementation {
 
   enum {default_owner_id = default_owner_id};
   enum {NO_RES = 0xFF};
+  enum {arbiter_id = unique("arbiter_id")};
 
   uint8_t state;			/* init'd to 0, RES_DEF_OWNED */
   norace uint8_t resId = default_owner_id;
@@ -156,6 +160,9 @@ implementation {
     /*
      * make sure that we respect queue order, determined by the queuing discipline.
      */
+#ifdef TRACE_RESOURCE
+    call Trace.trace((arbiter_id << 8) | T_REQ, id, resId);
+#endif
     atomic {
       /*
        * Queue.enqueue should check for the id already being in the list.
@@ -227,6 +234,9 @@ implementation {
   }
   
   async command error_t Resource.release[uint8_t id]() {
+#ifdef TRACE_RESOURCE
+    call Trace.trace((arbiter_id << 8) | T_REL, id, resId);
+#endif
     atomic {
       if(state == RES_BUSY && resId == id) {
         if(call Queue.isEmpty()) {
@@ -326,6 +336,9 @@ implementation {
       reqResId = NO_RES;
       state = RES_BUSY;
     }
+#ifdef TRACE_RESOURCE
+    call Trace.trace((arbiter_id << 8) | T_GRANT, resId, 0);
+#endif
     call ResourceConfigure.configure[resId]();
     signal Resource.granted[resId]();
   }

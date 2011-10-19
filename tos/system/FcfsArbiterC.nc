@@ -72,6 +72,11 @@ implementation {
 
   MainC.SoftwareInit -> Queue;
 
+#ifdef TRACE_RESOURCE
+  components TraceC;
+  Arbiter.Trace -> TraceC;
+#endif
+
   Resource = Arbiter;
   ResourceRequested = Arbiter;
   ResourceDefaultOwner = Arbiter;
