@@ -66,5 +66,5 @@ implementation {
   ResourceConfigure        = ArbiterC;
   ResourceDefaultOwnerInfo = ArbiterC;
   ArbiterInfo              = ArbiterC;
-  UsciArbP.ArbiterInfo    -> ArbiterC;
+  UsciIntP.ArbiterInfo    -> ArbiterC;
 }
