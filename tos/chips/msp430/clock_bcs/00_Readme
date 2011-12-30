@@ -10,6 +10,6 @@ the processor is sleeping.
 x1: msp430f1611,     TA3 and TB7.
 x2: msp430f261[6-9], TA3 and TB7.
 
-By default, TA is wired to the 32KiHz timebase and TB is wired to a 1MiHz timebase.
+By default, TA is the 1MiHz timebase and TB is a 32KiHz timebase.
 
 Other msp430 x1/x2 family chips will have various mixtures of TA and TB.

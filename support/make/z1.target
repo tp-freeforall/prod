@@ -4,12 +4,9 @@ MSP_BSL ?= tos-bsl
 MOTELIST ?= motelist
 
 MSP_BSL_FLAGS = --z1
-MSP_MCU ?= msp430x261
+MSP_MCU ?= msp430f2617
 MSP_GCC ?= msp430-gcc
 MSP_NESC_TARGET ?= msp430
-
-# Remove MSP430 hardware multiply disable: new msp430-gcc (4.5.3+) fixes
-# PFLAGS += -mdisable-hwmul 
 
 #
 # Old Z1, mspgccX (3.2.3) tool chain accepts -mdata-64k and -mcode-64k

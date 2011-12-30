@@ -1,9 +1,6 @@
 PLATFORM = shimmer2r
 
-# Remove MSP430 hardware multiply disable: new msp430-gcc fixes
-#PFLAGS += -mdisable-hwmul 
-
-OPTFLAGS += -O
+OPTFLAGS ?= -Os
 
 MSP_BSL ?= tos-bsl
 MSP_BSL_FLAGS = --invert-test --invert-reset

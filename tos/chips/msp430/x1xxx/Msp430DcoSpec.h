@@ -59,7 +59,8 @@
  */
 #define TARGET_DCO_HZ  4194304UL
 #define ACLK_HZ        32768UL
-#define DIV_UIS        4
+#define SMCLK_DIV      4
+#define TIMERA_DIV     1
 
 #ifdef notdef
 /* deprecating in favor of _HZ which works for all cases */

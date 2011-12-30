@@ -53,6 +53,8 @@
  */
 #define TARGET_DCO_HZ   4020000UL  // the target MCLK clock rate in Hz.
 #define ACLK_HZ         32768UL    // the ACLK rate in Hz
+#define SMCLK_DIV	1
+#define TIMERA_DIV	4	   // 1us ticks
 
 #ifdef notdef
 #define TARGET_DCO_KHZ  3926       // the target MCLK clock rate in binary kHz (4 020 000 Hz)

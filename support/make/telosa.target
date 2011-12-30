@@ -2,14 +2,9 @@
 
 PLATFORM ?= telosa
 
-MSP_MCU = msp430x149
+MSP_MCU = msp430f149
 
-# Remove MSP430 hardware multiply disable: new msp430-gcc (4.5.3+) fixes
-# PFLAGS += -mdisable-hwmul
-
-# The default msp OPTFLAGS should be -Os, that's what we want
-# if -O is added here it will override the -Os, we really want -Os
-# OPTFLAGS += -O
+OPTFLAGS ?= -Os
 
 MSP_BSL ?= tos-bsl
 

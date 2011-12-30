@@ -2,7 +2,7 @@
 Major Changes to the msp430 core software:
 (branch: gh:tp-freeforall/prod(msp430-int)
 
-Last Update: 2011-12-16, cire
+Last Update: 2011-12-18, cire
 
 msp430-int-next merged into msp430-int.  2011-12-16
 
@@ -73,6 +73,10 @@ Other notable changes:
 
 * use common clock module for x1 and x2.  msp430/clock_bcs.  Handles
   basic_clock and bc2.
+
+* add basic_clock configuration mechanism to allow easy configuration of
+  MCLK (cpu freq), SMCLK (peripheral clock), and 1 uis ticker (TimerA).  See
+  clock_bcs/Msp430ClockP.nc and Msp430DcoSpec.h (various locations).
 
 * gdb files to support different processor families,
   tos/chips/msp430/99_gdb/gdb{x1,x2,x5}.  See tos/chips/msp430/99_gdb/gdbinit

@@ -16,8 +16,8 @@ implementation {
 	#define CONCAT(a, b, c, d) CONCAT2(a, b, c, d)
 	
 	msp430_uart_union_config_t msp430_uart_config = {{
-		ubr: CONCAT(UBR_, SMCLK_MHZ, MIHZ_, PLATFORM_SERIAL_BAUD_RATE),
-		umctl: CONCAT(UMCTL_, SMCLK_MHZ, MIHZ_, PLATFORM_SERIAL_BAUD_RATE),
+		ubr: CONCAT(UBR_, SMCLK_MIHZ, MIHZ_, PLATFORM_SERIAL_BAUD_RATE),
+		umctl: CONCAT(UMCTL_, SMCLK_MIHZ, MIHZ_, PLATFORM_SERIAL_BAUD_RATE),
 		ucmode: 0,	// UART mode
 		ucspb: 0,		// 1 stop bit
 		uc7bit: 0,		// 8 data bits

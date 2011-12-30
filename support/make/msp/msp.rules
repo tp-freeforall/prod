@@ -29,7 +29,6 @@ endif
 
 #MSP_NESC_TARGET ?= msp430
 #MSP_GCC ?= msp430-gcc
-#MSP_MCU ?= msp430x149
 #PFLAGS += -fnesc-target=$(MSP_NESC_TARGET) -gcc=$(MSP_GCC) -mmcu=$(MSP_MCU)
 
 OBJCOPY = msp430-objcopy

@@ -53,6 +53,14 @@
 #include <signal.h>
 #endif /* __MSPGCC__ */
 
+/*
+ * old tool chain (3.2.3) defined in iomacros.h, new 4.5.+ no longer
+ * defines these.   Add back in those we use.
+ */
+#ifndef noinit
+#define noinit	__attribute__ ((section(".noinit"))) 
+#endif
+
 #if defined(__msp430x261x) && !defined(__msp430x26x)
 /*
  * The old 3.2.3 toolchain defined __msp430x261x when compiling for the

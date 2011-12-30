@@ -56,7 +56,8 @@
 /* 4 MiHZ, low power */
 #define TARGET_DCO_HZ   4194304UL
 #define ACLK_HZ         32768UL
-#define DIV_UIS		16
+#define SMCLK_DIV	4
+#define TIMERA_DIV	1
 
 #ifdef notdef
 #define TARGET_DCO_KHZ	4096	// the target DCO clock rate in binary kHz

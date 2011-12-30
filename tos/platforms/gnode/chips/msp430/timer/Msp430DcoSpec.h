@@ -39,8 +39,8 @@
  * 
  * @author: Andreas Koepke (koepke@tkn.tu-berlin.de)
  * 
- * Support different clock speeds: define MCLK_MHZ to the speed you want (4 or 8 MHz).
- * Timer A always runs at 1 MHz.
+ * Support different clock speeds: define MCLK_MIHZ to the speed you want (4 or 8 MiHZ).
+ * Timer A always runs at 1 MiHZ.
  * @author Michiel Konstapel
  */
 
@@ -48,22 +48,24 @@
 #ifndef MSP430DCOSPEC_H
 #define MSP430DCOSPEC_H
 
-#define ACLK_HZ 32768U
+#define ACLK_HZ 32768UL
 
-#ifndef MCLK_MHZ
-#define MCLK_MHZ 8
+#ifndef MCLK_MIHZ
+#define MCLK_MIHZ 8
 #endif
 
-#if MCLK_MHZ == 4
+#if MCLK_MIHZ == 4
 	#define TARGET_DCO_HZ 4194304UL
-	#define DIV_UIS 4
-	#define SMCLK_MHZ 4
-#elif MCLK_MHZ == 8
+	#define SMCLK_MIHZ 4
+        #define SMCLK_DIV  1
+        #define TIMERA_DIV 4
+#elif MCLK_MIHZ == 8
 	#define TARGET_DCO_HZ 8388608UL
-	#define DIV_UIS 8
-	#define SMCLK_MHZ 8
+	#define SMCLK_MIHZ 8
+        #define SMCLK_DIV  1
+        #define TIMERA_DIV 8
 #else
-	#error "Unsupported MCLK_MHZ setting"
+	#error "Unsupported MCLK_MIHZ setting"
 #endif
 
 #endif

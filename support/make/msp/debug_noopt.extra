@@ -1,8 +1,3 @@
 #-*-Makefile-*- vim:syntax=make
-#
-# Modern GDB debuggers can handle optimized code pretty well so
-# we no longer specify -O1 to turn optimization off to simplify
-# debugging.  Rather use the default optimization level which is -Os
-# for size.
 
 OPTFLAGS += -O0 -g -fnesc-no-inline

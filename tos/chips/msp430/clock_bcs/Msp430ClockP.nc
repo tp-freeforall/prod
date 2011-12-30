@@ -46,44 +46,74 @@
  * on the x1 and x2 devices are similar enough to be supported by the same
  * driver.  x5 devices use a different system, the Unified Clock System.
  *
- * FREQ by default is 4MiHz for x1 procs and 8MiHz for x2 procs.  Actual
- * clock frequency is determined by Msp430DcoSpec.h.   The default files
- * are in the different x1, x2, and x5 directories.
+ * TinyOS assumes a 1 uis (us) ticker and a 32 KiHZ (30.5 us) ticker.  The
+ * later is used for timing when sleeping.  On the x1 and x2 processors, the
+ * 1 uis ticker (micro) is implemented by TimerA and the 32 KiHZ ticker is
+ * on TimerB.
  *
- * Why the different default speeds?   The x1 processors are spec'd by
- * TI as having a max speed of 8MHz.   We do binary so would set this up
- * for 8MiHz which would exceed the stated max.  So the default is set to
- * 4MiHz.  Be conservative.   x2s have a max of 16MHz so the default is
- * set to 8MiHz.   And x5s can be run at 25MHz so the default is 16MiHz.
+ * The basic_clock system provides a main clock (DCO) used to clock the
+ * CPU (MCLK).  Peripherals (timers, usci, uart, spi, i2c, etc)
+ * are driven off SMCLK (sub-main), driven off DCO via a divider network.
+ * TimerA is clocked off SMCLK and needs to be set to provide a 1uis (1us)
+ * ticker.
+ *
+ * The include file Msp430DcoSpec.h determines how the clock system should
+ * be set up.   Selectors in this file determine the configuration.
+ *
+ * TARGET_DCO_HZ: Base DCO frequency.
+ * SMCLK_DIV:	  SMCLK divider.   SMCLK = DCO/(SMCLK_DIV).
+ * TIMERA_DIV:	  determines the SMCLK divider for TimerA.
+ *
+ * Default settings:
+ *
+ * CPU clock: DCO 4MiHZ, (MCLK = DCO/1)
+ * SMCLK:     DCO/4 (1MiHZ).
+ * TimerA:    1uis (1MiHZ), SMCLK/1
+ * Default Bauds: based on SMCLK 1MiHZ.
+ *
+ * 4 MiHZ is chosen for low power reasons.  Other processors support higher
+ * speeds but defaulting to 4 MiHZ simplifies a number of things.
+ *
+ * The x1 processors are spec'd by TI as having a max speed of 8MHz.  TinyOS
+ * is spec'd as using binary time (see TEP102).  So the simplest set up is
+ * to set the x1 clock to 4 MiHZ (4194304 HZ) while 8 MiHZ (8388608) exceeds
+ * the maximum clock speed as spec'd by TI.   Not a good idea.
+ *
+ * x2 processors can be clocked up to 16 MHZ, so running at 8 MiHZ would work.
+ * A default of 4 MiHZ is chosen for lower power and to have a single main
+ * clock speed.
+ *
+ * We also want to have a single set of baud rates as the default.   This
+ * requires having a default SMCLK frequency.   We default to 1 MiHZ.
  *
  * ACLK (Aux Clk) is assumed to be run off the LFXT interface (low-freq) at
  * 32KiHz (32768).  This clock is used to calibrate the main DCO clock and
- * serves as the timer source to run s/w timers when sleeping.
+ * serves as the timer source for TB, the long term timer when sleeping.
  *
- * MCLK (Main Clk) is run off the DCO (default FREQ) and is calibrated to
- * a 32KiHz (32768) crystal (ACLK).  DCO/1.
+ * MCLK (Main Clk) is run off the DCO and is calibrated to 32KiHz (32768)
+ * crystal (ACLK).  DCO/1.
  *
- * SMCLK (sub-main clock) is run directly off the DCO (FREQ).  DCO/1.   All
- * peripherals are run off the SMCLK.  For example, the SPI on UsciB is
- * clocked from SMCLK so to get the maximum speed we want SMCLK to be DCO/1.
+ * SMCLK (sub-main clock) is run directly off the DCO (FREQ).  DCO/(SMCLK_DIV).
+ * All peripherals are run off the SMCLK.  The default should be 1MiHZ.  Default
+ * baud rate setting are provided assuming this 1 MiHZ SMCLK setting.
  *
- * TimerA is programmed to for 1uis ticks and is SMCLK/4 or SMCLK/8.  /8 is
- * the highest divisor available on an x1 or x2 proc.  If MCLK is cranked
- * faster than 8 MiHz either SMCLK can become DCO/2 (which slows the
- * peripherals down) or the timer subsystem is changed to deal with a 500ns
- * tick.
+ * TimerA is programmed for a 1uis tick and is SMCLK/(TIMERA_DIV).  TIMERA_DIV can
+ * be a maximum of 8 on x1 or x2 procs.  If MCLK is clocked faster than 8 MiHz
+ * either SMCLK can become DCO/2 (which slows the peripherals down) or the timer
+ * subsystem is changed to deal with a 512ns tick.
  *
  * TimerB is run off the 32KiHz crystal oscillator.  This is used to provide
  * a stable time base for syncronizing the main DCO clock.  It also provides
  * a stable timer that runs the timer system especially when the cpu is
  * sleeping.
  *
- * XT2 isn't used for an external oscillator because it is expensive.  Power
- * wise and it has been measured to take roughly 5ms to power up and stabilize.
- * You don't want to be doing that if one is putting the cpu to sleep a bunch.
+ * XT2 isn't used for an external oscillator because it is expensive and a power
+ * hog.  It also takes a long time (measured ~5ms) to power up and stabilize.
+ * You don't want to be doing that if one is putting the cpu to sleep a bunch
+ * (which is needed for low power).
  *
  * WARNING: This module assumes that the 32KiHz XTAL has stablized.  This
- * is assumed to have been performed in the Platform Initilization.
+ * is assumed to have been performed in Platform Initilization.
  *
  * The Platform code gets executed on the way up and so certain assumptions can
  * be made about the state of clocking system.  Otherwise we have to put the
@@ -101,8 +131,18 @@
  * Msp430DcoSpec provides cpu/platform data about clock speed.
  *
  * TARGET_DCO_HZ:	DCO frequency
- * ACLK_HZ:		Auxilary clock frequency
- * DIV_UIS:		DCO divisor for main clock to yield 1uis ticks.
+ * ACLK_HZ:		Auxiliary clock frequency
+ * SMCLK_DIV:		Divisor for SMCLK
+ * TIMERA_DIV:		Divisor for TimerA
+ *
+ * TimerA will be DCO/SMCLK_DIV/TIMERA_DIV and should be set for 1MiHZ or 1MHZ.
+ *
+ * Suggested set up (if in doubt):
+ *
+ * TARGET_DCO_HZ  4194304UL
+ * ACLK_HZ        32768UL
+ * SMCLK_DIV      4
+ * TIMERA_DIV     1
  */
 
 #include "Msp430DcoSpec.h"
@@ -121,26 +161,40 @@
 #define RSEL_MASK (RSEL0 | RSEL1 | RSEL2)
 #define RSEL_MAX RSEL2
 #else
-#error "Msp430ClockP (bcs): processor doesn't support BASIC_CLOCK/BC2"
+#error "Msp430ClockP (clock_bcs): processor doesn't support BASIC_CLOCK/BC2"
 #endif
 
-#ifndef DIV_UIS
-/*
- * if DIV_UIS is not defined then assume we are running an x1 (1611) at
- * 4 MiHz and the DIV_UIS divisor is 4 to yield 1uis ticks.
- */
-#warning "ClockP: assuming 4MiHz and /4 divisor"
-#define DIV_UIS 4
+#ifndef SMCLK_DIV
+#error "ClockP: SMCLK_DIV needs to be defined."
 #endif
 
-#if DIV_UIS == 4
-/* divisor 4, 4MiHz/4 = 1uis ticks. */
-#define UIS_DIV ID_2
-#elif DIV_UIS == 8
-/* divisor 8, 8MiHz/8 = 1uis ticks. */
-#define UIS_DIV ID_3
+#if     SMCLK_DIV == 1
+#define SMCLK_DIVS DIVS_0
+#elif   SMCLK_DIV == 2
+#define SMCLK_DIVS DIVS_1
+#elif   SMCLK_DIV == 4
+#define SMCLK_DIVS DIVS_2
+#elif   SMCLK_DIV == 8
+#define SMCLK_DIVS DIVS_3
 #else
-#error "ClockP: unknown DIV_UIS defined.  Need valid DIV_UIS to proceed."
+#error "ClockP: unknown SMCLK_DIV defined.  Need valid SMCLK_DIV to proceed."
+#endif
+
+#ifndef TIMERA_DIV
+#error "ClockP: TIMERA_DIV needs to be defined."
+#endif
+
+/* TA clock is DCO/SMCLK_DIV/TIMERA_DIV */
+#if     TIMERA_DIV == 1
+#define TIMERA_ID ID_0
+#elif   TIMERA_DIV == 2
+#define TIMERA_ID ID_1
+#elif   TIMERA_DIV == 4
+#define TIMERA_ID ID_2
+#elif   TIMERA_DIV == 8
+#define TIMERA_ID ID_3
+#else
+#error "ClockP: unknown TIMERA_DIV defined.  Need valid TIMERA_DIV to proceed."
 #endif
 
 module Msp430ClockP @safe() {
@@ -208,9 +262,9 @@ implementation {
     // .SELM = 0;	select DCOCLK as source for MCLK
     // .DIVM = 0;	set the divisor of MCLK to 1
     // .SELS = 0;	select DCOCLK as source for SMCLK
-    // .DIVS = 0;	set the divisor of SCLK to 1
+    // .DIVS = xxx;	set the divisor of SCLK to SMCLK_DIVS
     // .DCOR = 0;	select internal resistor for DCO
-    BCSCTL2 = 0;
+    BCSCTL2 = SMCLK_DIVS;
 
     // BCSCTL3: use default, on reset set to 4, 6pF.
 
@@ -223,11 +277,11 @@ implementation {
 
     // TACTL
     // .TASSEL = 2;	source SMCLK = DCO/1
-    // .ID = UIS_DIV;	input divisor for 1uis ticks.
+    // .ID = TIMERA_ID;	input divisor for 1uis ticks.
     // .MC = 0;		initially disabled
     // .TACLR = 0;
     // .TAIE = 1;	enable timer A interrupts
-    TACTL = TASSEL_2 | UIS_DIV | TAIE;
+    TACTL = TASSEL_2 | TIMERA_ID | TAIE;
   }
 
   command void Msp430ClockInit.defaultInitTimerB() {

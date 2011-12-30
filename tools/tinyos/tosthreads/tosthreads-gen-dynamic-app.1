@@ -15,7 +15,7 @@ FLAG=$2
 GCC="msp430-gcc"
 OBJCOPY="msp430-objcopy"
 NESCFLAGS="-target=telosb -x nesc -fnesc-target=msp430"
-CFLAGS="-c -gcc=$GCC -mmcu=msp430x1611 -Os -mdisable-hwmul -Wall -Wshadow"
+CFLAGS="-c -gcc=$GCC -mmcu=msp430f1611 -Os -Wall -Wshadow"
 
 OBJFILE=`basename $CFILE .c`.o
 BINFILE=`basename $CFILE .c`.bin

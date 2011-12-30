@@ -217,7 +217,7 @@ configuration HplMsp430GeneralIOC {
  * Note: 247, 248, 249, and 2410 aren't currently used for a tinyos platform.
  * 241[6-9] and 261[6-9] are used by tinyos platforms.
  *
- * Old headers: mspgccX (3.2.3) includes msp430x261x.h (-mmcu=msp430x2617)
+ * Old headers: mspgccX (3.2.3) includes msp430x261x.h (-mmcu=msp430f2617)
  * which defines __msp430x261x.
  *
  * New headers: mspgcc4 (4.4.5, uniarch, TI_HEADERS) defines __msp430x26x.  There

@@ -13,15 +13,7 @@ MSP_BSL ?= tos-bsl
 VOLUME_FILE = volumes-at45db.xml
 VOLUME_ALLOCATOR ?= tos-storage-at45db
 
-OPTFLAGS += -Os
-#OPTFLAGS = 
-
-# Disable MSP430 hardware multiply because it makes MSPGCC die
-PFLAGS += -mdisable-hwmul
-
-# removed per Pierre.Castella@tinynode.com, not needed.
-# causes problems with newer toolchains that don't support -mstrict-align
-# PFLAGS += -mstrict-align
+OPTFLAGS ?= -Os
 
 $(call TOSMake_include_platform,tinynode)
 $(call TOSMake_include_platform,msp)
