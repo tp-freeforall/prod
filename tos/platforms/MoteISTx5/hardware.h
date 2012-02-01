@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2011 João Gonçalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -32,6 +33,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @author Peter Bigot
+ * @author João Gonçalves
  */
 
 #ifndef _H_hardware_h
@@ -45,37 +47,35 @@ enum {
   TOS_SLEEP_NONE = MSP430_POWER_ACTIVE,
 };
 
-/* Use the PlatformAdcC component, and enable 8 pins */
-//#define ADC12_USE_PLATFORM_ADC 1
-//#define ADC12_PIN_AUTO_CONFIGURE 1
-//#define ADC12_PINS_AVAILABLE 8
+//#define TOS_DEFAULT_BAUDRATE 9600
+#define TOS_DEFAULT_BAUDRATE 115200
 
-/* @TODO@ Disable probe for XT1 support until the anomaly observed in
- * apps/bootstrap/LocalTime is resolved. */
+/* uart is sourced by SMCLK that has 4MHz XTAL reference
+ * only works with 9600 and 115200 baudrates
+ * for other baudrates edit msp430usci.h
+ */
+
+//#define UART_SMCLK_XTAL_4MHz 
+#define UART_SMCLK_XTAL_16MHz
+//#define UART_SOURCE_REFOCLK
+/* Use the 32kHz crystal or REFOCLK */
+
+//Unlock for Special funcionality of PINS such as SPI
+
+/* Use the PlatformAdcC component, and enable 8 pins */
+#define ADC12_USE_PLATFORM_ADC 1
+#define ADC12_PIN_AUTO_CONFIGURE 1
+#define ADC12_PINS_AVAILABLE 8
+
 #ifndef PLATFORM_MSP430_HAS_XT1
 #define PLATFORM_MSP430_HAS_XT1 1
 #endif /* PLATFORM_MSP430_HAS_XT1 */
 
-// LEDs
-TOSH_ASSIGN_PIN(RED_LED, 4, 7);
-TOSH_ASSIGN_PIN(GREEN_LED, 4, 5);
-TOSH_ASSIGN_PIN(YELLOW_LED, 4, 6);
+#ifndef PLATFORM_MSP430_HAS_XT2
+#define PLATFORM_MSP430_HAS_XT2 1
+#endif /* PLATFORM_MSP430_HAS_XT2 */
 
-// CC2420 RADIO #defines
-TOSH_ASSIGN_PIN(RADIO_CSN, 3, 0);
-TOSH_ASSIGN_PIN(RADIO_VREF, 2, 6);
-TOSH_ASSIGN_PIN(RADIO_RESET, 2, 5);
-TOSH_ASSIGN_PIN(RADIO_FIFOP, 2, 3);
-TOSH_ASSIGN_PIN(RADIO_SFD, 2, 1);
-TOSH_ASSIGN_PIN(RADIO_GIO0, 5, 0);
-TOSH_ASSIGN_PIN(RADIO_FIFO, 2, 2);
-TOSH_ASSIGN_PIN(RADIO_GIO1, 5, 1);
-TOSH_ASSIGN_PIN(RADIO_CCA, 2, 4);
-
-TOSH_ASSIGN_PIN(CC_FIFOP, 2, 3);
-TOSH_ASSIGN_PIN(CC_FIFO, 2, 2);
-TOSH_ASSIGN_PIN(CC_SFD, 2, 1);
-TOSH_ASSIGN_PIN(CC_VREN, 2, 6);
-TOSH_ASSIGN_PIN(CC_RSTN, 2, 5);
+/* default DCO configuration */
+#define MSP430XV2_DCO_CONFIG MSP430XV2_DCO_2MHz_RSEL2
 
 #endif // _H_hardware_h
