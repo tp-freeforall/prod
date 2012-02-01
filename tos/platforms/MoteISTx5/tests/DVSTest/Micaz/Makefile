@@ -1,0 +1,2 @@
+COMPONENT=MicaTaskC
+include $(MAKERULES)

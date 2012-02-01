@@ -1,0 +1,3 @@
+COMPONENT=TimerTestC
+include $(MAKERULES)
+

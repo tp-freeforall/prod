@@ -1,0 +1,244 @@
+Configure multipleRepeat
+Starting the ADC...
+
+Printing ADC set of samples Nº0.
+Sample 0 = 3830.000
+Sample 1 = 2989.000
+Sample 2 = 2546.000
+Sample 3 = 2283.000
+Sample 4 = 2114.000
+Sample 5 = 2010.000
+Sample 6 = 1929.000
+Sample 7 = 1875.000
+Sample 8 = 1839.000
+Sample 9 = 1812.000
+Sample 10 = 1805.000
+Sample 11 = 1786.000
+Sample 12 = 1781.000
+Sample 13 = 1769.000
+Sample 14 = 1776.000
+Sample 15 = 1761.000
+Sample mean = 2119.062
+Vout mean (into ADC) = 1.293 V
+Vsense = 34.534 mV
+Current = 34.192 mA
+
+Printing ADC set of samples Nº1.
+Sample 0 = 1695.000
+Sample 1 = 1721.000
+Sample 2 = 1695.000
+Sample 3 = 1692.000
+Sample 4 = 1697.000
+Sample 5 = 1702.000
+Sample 6 = 1692.000
+Sample 7 = 1697.000
+Sample 8 = 1698.000
+Sample 9 = 1688.000
+Sample 10 = 1695.000
+Sample 11 = 1740.000
+Sample 12 = 1701.000
+Sample 13 = 1690.000
+Sample 14 = 1703.000
+Sample 15 = 1691.000
+Sample mean = 1699.812
+Vout mean (into ADC) = 1.037 V
+Vsense = 27.701 mV
+Current = 27.427 mA
+
+Printing ADC set of samples Nº2.
+Sample 0 = 1836.000
+Sample 1 = 1832.000
+Sample 2 = 1836.000
+Sample 3 = 1835.000
+Sample 4 = 1830.000
+Sample 5 = 1834.000
+Sample 6 = 1836.000
+Sample 7 = 1826.000
+Sample 8 = 1834.000
+Sample 9 = 1836.000
+Sample 10 = 1839.000
+Sample 11 = 1849.000
+Sample 12 = 1834.000
+Sample 13 = 1850.000
+Sample 14 = 1832.000
+Sample 15 = 1835.000
+Sample mean = 1835.875
+Vout mean (into ADC) = 1.120 V
+Vsense = 29.919 mV
+Current = 29.622 mA
+
+Printing ADC set of samples Nº3.
+Sample 0 = 1876.000
+Sample 1 = 1882.000
+Sample 2 = 1875.000
+Sample 3 = 1890.000
+Sample 4 = 1873.000
+Sample 5 = 1887.000
+Sample 6 = 1873.000
+Sample 7 = 1873.000
+Sample 8 = 1878.000
+Sample 9 = 1872.000
+Sample 10 = 1874.000
+Sample 11 = 1888.000
+Sample 12 = 1883.000
+Sample 13 = 1877.000
+Sample 14 = 1879.000
+Sample 15 = 1880.000
+Sample mean = 1878.750
+Vout mean (into ADC) = 1.146 V
+Vsense = 30.617 mV
+Current = 30.314 mA
+
+Printing ADC set of samples Nº4.
+Sample 0 = 1909.000
+Sample 1 = 1904.000
+Sample 2 = 1907.000
+Sample 3 = 1905.000
+Sample 4 = 1906.000
+Sample 5 = 1900.000
+Sample 6 = 1909.000
+Sample 7 = 1898.000
+Sample 8 = 1910.000
+Sample 9 = 1909.000
+Sample 10 = 1911.000
+Sample 11 = 1910.000
+Sample 12 = 1908.000
+Sample 13 = 1905.000
+Sample 14 = 1908.000
+Sample 15 = 1910.000
+Sample mean = 1906.812
+Vout mean (into ADC) = 1.164 V
+Vsense = 31.075 mV
+Current = 30.767 mA
+
+Printing ADC set of samples Nº5.
+Sample 0 = 1907.000
+Sample 1 = 1922.000
+Sample 2 = 1907.000
+Sample 3 = 1913.000
+Sample 4 = 1911.000
+Sample 5 = 1909.000
+Sample 6 = 1911.000
+Sample 7 = 1909.000
+Sample 8 = 1907.000
+Sample 9 = 1954.000
+Sample 10 = 1912.000
+Sample 11 = 1898.000
+Sample 12 = 1907.000
+Sample 13 = 1899.000
+Sample 14 = 1908.000
+Sample 15 = 1925.000
+Sample mean = 1912.437
+Vout mean (into ADC) = 1.167 V
+Vsense = 31.166 mV
+Current = 30.858 mA
+
+Printing ADC set of samples Nº6.
+Sample 0 = 1903.000
+Sample 1 = 1905.000
+Sample 2 = 1908.000
+Sample 3 = 1906.000
+Sample 4 = 1903.000
+Sample 5 = 1906.000
+Sample 6 = 1909.000
+Sample 7 = 1904.000
+Sample 8 = 1903.000
+Sample 9 = 1902.000
+Sample 10 = 1905.000
+Sample 11 = 1896.000
+Sample 12 = 1914.000
+Sample 13 = 1894.000
+Sample 14 = 1905.000
+Sample 15 = 1900.000
+Sample mean = 1903.937
+Vout mean (into ADC) = 1.162 V
+Vsense = 31.028 mV
+Current = 30.721 mA
+
+Printing ADC set of samples Nº7.
+Sample 0 = 1895.000
+Sample 1 = 1903.000
+Sample 2 = 1894.000
+Sample 3 = 1890.000
+Sample 4 = 1891.000
+Sample 5 = 1898.000
+Sample 6 = 1896.000
+Sample 7 = 1901.000
+Sample 8 = 1891.000
+Sample 9 = 1888.000
+Sample 10 = 1899.000
+Sample 11 = 1916.000
+Sample 12 = 1897.000
+Sample 13 = 1896.000
+Sample 14 = 1890.000
+Sample 15 = 1899.000
+Sample mean = 1896.500
+Vout mean (into ADC) = 1.157 V
+Vsense = 30.907 mV
+Current = 30.601 mA
+
+Printing ADC set of samples Nº8.
+Sample 0 = 1887.000
+Sample 1 = 1886.000
+Sample 2 = 1885.000
+Sample 3 = 1881.000
+Sample 4 = 1885.000
+Sample 5 = 1892.000
+Sample 6 = 1886.000
+Sample 7 = 1907.000
+Sample 8 = 1889.000
+Sample 9 = 1898.000
+Sample 10 = 1889.000
+Sample 11 = 1886.000
+Sample 12 = 1889.000
+Sample 13 = 1898.000
+Sample 14 = 1880.000
+Sample 15 = 1883.000
+Sample mean = 1888.812
+Vout mean (into ADC) = 1.153 V
+Vsense = 30.781 mV
+Current = 30.477 mA
+
+Printing ADC set of samples Nº9.
+Sample 0 = 1867.000
+Sample 1 = 1860.000
+Sample 2 = 1869.000
+Sample 3 = 1866.000
+Sample 4 = 1863.000
+Sample 5 = 1869.000
+Sample 6 = 1870.000
+Sample 7 = 1870.000
+Sample 8 = 1871.000
+Sample 9 = 1869.000
+Sample 10 = 1868.000
+Sample 11 = 1880.000
+Sample 12 = 1871.000
+Sample 13 = 1867.000
+Sample 14 = 1870.000
+Sample 15 = 1862.000
+Sample mean = 1868.250
+Vout mean (into ADC) = 1.140 V
+Vsense = 30.446 mV
+Current = 30.145 mA
+
+Printing ADC set of samples Nº9.
+Sample 0 = 1867.000
+Sample 1 = 1860.000
+Sample 2 = 1869.000
+Sample 3 = 1866.000
+Sample 4 = 1863.000
+Sample 5 = 1869.000
+Sample 6 = 1870.000
+Sample 7 = 1870.000
+Sample 8 = 1871.000
+Sample 9 = 1869.000
+Sample 10 = 1868.000
+Sample 11 = 1880.000
+Sample 12 = 1871.000
+Sample 13 = 1867.000
+Sample 14 = 1870.000
+Sample 15 = 1862.000
+Sample mean = 1868.250
+Vout mean (into ADC) = 1.140 V
+Vsense = 30.446 mV
+Current = 30.145 mA

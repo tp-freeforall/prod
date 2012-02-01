@@ -1,0 +1,2 @@
+COMPONENT=FastADCAppC
+include $(MAKERULES)
