@@ -59,7 +59,7 @@ configuration HplCC2420PinsC {
     interface GeneralIO as SFD;
     interface GeneralIO as VREN;
   }
-
+}
 implementation {
   components HplMsp430GeneralIOC as GeneralIOC;
   components new Msp430GpioC() as CCAM;
