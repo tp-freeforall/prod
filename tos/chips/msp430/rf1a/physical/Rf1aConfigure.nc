@@ -34,7 +34,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "Rf1aConfigure.h"
+#include <Rf1aConfigure.h>
 
 /** Enable an RF1A client to control its radio configuration.
  *
