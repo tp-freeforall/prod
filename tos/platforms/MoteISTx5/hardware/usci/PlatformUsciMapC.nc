@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2012 João Gonçalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -44,12 +45,17 @@ configuration PlatformUsciMapC {
 } implementation {
   components HplMsp430GeneralIOC as GIO;
 
- // components Msp430UsciUartA0P as UartA0C;
-//  UartA0C.URXD -> GIO.UCA0RXD;
-//  UartA0C.UTXD -> GIO.UCA0TXD;
+  components Msp430UsciUartA0P as UartA0C;
+  UartA0C.URXD -> GIO.UCA0RXD;
+  UartA0C.UTXD -> GIO.UCA0TXD;
 
   components Msp430UsciSpiB0P as SpiB0C;
-   SpiB0C.SIMO -> GIO.UCB0SIMO;
-   SpiB0C.SOMI -> GIO.UCB0SOMI;
-   SpiB0C.CLK -> GIO.UCB0CLK;
+  SpiB0C.SIMO -> GIO.UCB0SIMO;
+  SpiB0C.SOMI -> GIO.UCB0SOMI;
+  SpiB0C.CLK -> GIO.UCB0CLK;
+   
+  components Msp430UsciI2CB1P as I2CB1C;
+  I2CB1C.SDA -> GIO.UCB1SDA;
+  I2CB1C.SCL -> GIO.UCB1SCL;
+  
 }

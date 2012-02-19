@@ -46,19 +46,18 @@
 enum {
   TOS_SLEEP_NONE = MSP430_POWER_ACTIVE,
 };
+#define TOS_DEFAULT_BAUDRATE 9600
+//#define TOS_DEFAULT_BAUDRATE 115200
+//#define UART_SMCLK_XTAL_4MHz 
+//#define UART_SMCLK_XTAL_16MHz
 
-//#define TOS_DEFAULT_BAUDRATE 9600
-#define TOS_DEFAULT_BAUDRATE 115200
-
-/* uart is sourced by SMCLK that has 4MHz XTAL reference
+/* uart is sourced by SMCLK that has 4MHz or 16MHz XTAL reference
  * only works with 9600 and 115200 baudrates
  * for other baudrates edit msp430usci.h
  */
 
-//#define UART_SMCLK_XTAL_4MHz 
-#define UART_SMCLK_XTAL_16MHz
-//#define UART_SOURCE_REFOCLK
-/* Use the 32kHz crystal or REFOCLK */
+#define UART_SOURCE_REFOCLK
+/* Use the 32kHz crystal or REFOCLK instead of SMCLK*/
 
 //Unlock for Special funcionality of PINS such as SPI
 
