@@ -41,6 +41,7 @@ module PlatformP {
     interface Init as PlatformClock;
     interface Init as MoteInit;
     interface Init as PeripheralInit;
+    interface Init as AnalogSwitches;
   }
 }
 
@@ -58,7 +59,7 @@ implementation {
     call PlatformLeds.init();   // Initializes the Leds
     call PlatformClock.init();  // Initializes UCS
     call PeripheralInit.init();
-
+    call AnalogSwitches.init();
     // Wait an arbitrary 10 milliseconds for the FLL to calibrate the DCO
     // before letting the system continue on into a low power mode.
     uwait(1024*10);

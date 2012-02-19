@@ -12,6 +12,8 @@ for (split(/\n/, <<'EOText'
   %P/hardware/adc
   %P/hardware/clock
   %P/hardware/pmm
+  %P/chips/adg715
+  
   %P/tests/DVSTest/Tasks
   %P/tests/DVSTest
   

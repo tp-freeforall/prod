@@ -2,8 +2,7 @@
 module PlatformSpiP {
   provides interface Init;
   uses {
-    interface Resource;  
-    interface Leds;
+    interface Resource;
     }
 }
 
