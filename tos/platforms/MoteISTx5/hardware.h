@@ -71,7 +71,7 @@ enum {
 #endif /* PLATFORM_MSP430_HAS_XT1 */
 
 #ifndef PLATFORM_MSP430_HAS_XT2
-#define PLATFORM_MSP430_HAS_XT2 1
+#define PLATFORM_MSP430_HAS_XT2 0
 #endif /* PLATFORM_MSP430_HAS_XT2 */
 
 /* default DCO configuration */
