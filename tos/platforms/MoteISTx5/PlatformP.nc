@@ -54,7 +54,6 @@ implementation {
 
   command error_t Init.init() {
     WDTCTL = WDTPW + WDTHOLD;    // Stop watchdog timer
-
     call PlatformPins.init();   // Initializes the GIO pins
     call PlatformLeds.init();   // Initializes the Leds
     call PlatformClock.init();  // Initializes UCS
