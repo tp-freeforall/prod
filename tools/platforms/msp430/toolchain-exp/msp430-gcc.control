@@ -1,0 +1,8 @@
+Package: msp430-gcc-exp
+Version: @version@
+Architecture: @architecture@
+Depends: libc6, msp430-binutils-exp
+Maintainer: Razvan Musaloiu-E. <razvanm@musaloiu.com>
+Priority: optional
+Section: devel
+Description: Experimental MSP430 gcc

@@ -1,0 +1,8 @@
+Package: msp430-libc-exp
+Version: @version@
+Architecture: @architecture@
+Depends: msp430-binutils-exp, msp430-gcc-exp
+Maintainer: Razvan Musaloiu-E. <razvanm@musaloiu.com>
+Priority: optional
+Section: devel
+Description: Experimental MSP430 libc
