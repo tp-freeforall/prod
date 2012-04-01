@@ -220,7 +220,7 @@ build_binutils()
 # ${BUILD_ROOT}/msp430-binutils.files contains all files built so far.
 # ie. all files built for binutils.
 #
-    ( cd $PREFIX ; find . -type f -o type l) > ${BUILD_ROOT}/msp430-binutils.files
+    ( cd $PREFIX ; find . -type f -o -type l) > ${BUILD_ROOT}/msp430-binutils.files
 }
 
 package_binutils_deb()
