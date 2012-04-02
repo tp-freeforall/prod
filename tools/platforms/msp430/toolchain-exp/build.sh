@@ -11,8 +11,8 @@
 # msp430mcu	20120311
 #
 # gmp		4.3.2
-# mpfr		2.4.2
-# mpc		0.8.1
+# mpfr		3.0.0
+# mpc		0.9
 #
 # set TOSROOT to the head of the tinyos source tree root.
 #
@@ -38,8 +38,8 @@ GCC=gcc-${GCC_VER}
 GDB=gdb-${GDB_VER}
 
 GMP_VER=4.3.2
-MPFR_VER=2.4.2
-MPC_VER=0.8.1
+MPFR_VER=3.0.0
+MPC_VER=0.9
 
 GMP=gmp-${GMP_VER}
 MPFR=mpfr-${MPFR_VER}
