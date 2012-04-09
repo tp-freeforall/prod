@@ -1,6 +1,6 @@
 Package: msp430mcu-exp
 Version: @version@
-Architecture: @architecture@
+Architecture: all
 Depends: msp430-binutils-exp, msp430-gcc-exp
 Maintainer: Razvan Musaloiu-E. <razvanm@musaloiu.com>
 Priority: optional
