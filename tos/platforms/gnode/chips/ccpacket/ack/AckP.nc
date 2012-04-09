@@ -253,6 +253,8 @@ implementation {
 		
 		if (acking) {
 			// we'll send it after the ack
+			// length field is not yet filled in, so lets do it here
+         	call ChipconPacket.setPayloadLength(txMessage, len);
 			return SUCCESS;
 		} else {
 			// send rightaway
