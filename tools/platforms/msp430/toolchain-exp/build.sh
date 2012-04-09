@@ -19,14 +19,15 @@
 
 BUILD_ROOT=$(pwd)
 
+DEB_DEST=opt/msp430-462
+REL=
+MAKE_J=-j8
+
 if [[ -z "${TOSROOT}" ]]; then
     TOSROOT=$(pwd)/../../../..
 fi
 echo -e "\n*** TOSROOT: $TOSROOT"
-
-DEB_DEST=opt/msp430-462
-REL=
-MAKE_J=-j8
+echo "*** Destination: ${DEB_DEST}"
 
 BINUTILS_VER=2.21.1
 GCC_VER=4.6.2
@@ -47,24 +48,34 @@ MPC=mpc-${MPC_VER}
 
 MSPGCC_VER=20120311
 MSPGCC=mspgcc-${MSPGCC_VER}
+MSPGCC_DIR=DEVEL-4.6.x/
 
 PATCHES=""
 
-if [[ "$1" == deb || "$1" == testdeb || "$1" == test ]]
-then
+: ${PREFIX:=${TOSROOT}/local}
+
+
+setup_deb()
+{
     ARCH_TYPE=$(dpkg-architecture -qDEB_HOST_ARCH)
     PREFIX=$(pwd)/debian/${DEB_DEST}
-    PACKAGES_DIR=${TOSROOT}/packages/${ARCH_TYPE}
-    mkdir -p ${PACKAGES_DIR}
-    mkdir -p ${PACKAGES_DIR/${ARCH_TYPE}/all}
-fi
+    PACKAGES_DIR=${TOSROOT}/packages
+    PACKAGES_ARCH=${PACKAGES_DIR}/${ARCH_TYPE}
+    mkdir -p ${PACKAGES_DIR} ${PACKAGES_DIR}/all ${PACKAGES_ARCH}
+}
 
-if [[ "$1" == rpm ]]
-then
+
+setup_rpm()
+{
     PREFIX=$(pwd)/fedora/usr
-fi
+}
 
-: ${PREFIX:=${TOSROOT}/local}
+
+setup_local()
+{
+    ${PREFIX:=${TOSROOT}/local}
+}
+
 
 last_patch()
 {
@@ -97,7 +108,7 @@ download()
 
     echo "  ... ${MSPGCC} patches"
     [[ -a ${MSPGCC}.tar.bz2 ]] \
-	|| wget http://sourceforge.net/projects/mspgcc/files/mspgcc/${MSPGCC}.tar.bz2
+	|| wget http://sourceforge.net/projects/mspgcc/files/mspgcc/${MSPGCC_DIR}${MSPGCC}.tar.bz2
 
     # We need to unpack this in order to find what libc to download
     [[ -d ${MSPGCC} ]] \
@@ -105,12 +116,14 @@ download()
 
     MSP430MCU_VER=$(cat ${MSPGCC}/msp430mcu.version)
     MSP430MCU=msp430mcu-${MSP430MCU_VER}
+    echo "      (mcu)  ${MSP430MCU}"
 
     [[ -a ${MSP430MCU}.tar.bz2 ]] \
 	|| wget http://sourceforge.net/projects/mspgcc/files/msp430mcu/${MSP430MCU}.tar.bz2
 
     MSP430LIBC_VER=$(cat ${MSPGCC}/msp430-libc.version)
     MSP430LIBC=msp430-libc-${MSP430LIBC_VER}
+    echo "      (libc) ${MSP430LIBC}"
 
     [[ -a ${MSP430LIBC}.tar.bz2 ]] \
 	|| wget http://sourceforge.net/projects/mspgcc/files/msp430-libc/${MSP430LIBC}.tar.bz2
@@ -229,8 +242,7 @@ package_binutils_deb()
     VER=${BINUTILS_VER}
     LAST_PATCH=$(last_patch msp430-binutils-*.patch)
     DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}
-    PACKAGE_NAME=${PACKAGES_DIR}/msp430-binutils-exp-${DEB_VER}.deb
-    echo -e "\n***" debian archive: ${PACKAGE_NAME}
+    echo -e "\n***" debian archive: ${BINUTILS}
     (
 	cd ${BINUTILS}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
@@ -239,7 +251,8 @@ package_binutils_deb()
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	rsync -a ../debian/${DEB_DEST}/ debian/${DEB_DEST}/
-	dpkg-deb --build debian ${PACKAGE_NAME}
+	dpkg-deb --build debian .
+	mv *.deb ${PACKAGES_ARCH}
     )
 }
 
@@ -257,8 +270,8 @@ package_binutils_rpm()
 
 build_gcc()
 {
-    echo -e "\n***" building ${GCC} "->" ${PREFIX}
     set -e
+    echo -e "\n***" building ${GCC} "->" ${PREFIX}
     (
 	cd $GCC
 	rm -rf build
@@ -288,8 +301,7 @@ package_gcc_deb()
     VER=${GCC_VER}
     LAST_PATCH=$(last_patch msp430-gcc-*.patch)
     DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}
-    PACKAGE_NAME=${PACKAGES_DIR}/msp430-gcc-exp-${DEB_VER}.deb
-    echo -e "\n***" debian archive: ${PACKAGE_NAME}
+    echo -e "\n***" debian archive: ${GCC}
     (
 	cd ${GCC}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
@@ -307,7 +319,8 @@ package_gcc_deb()
 	    cat ${BUILD_ROOT}/msp430-binutils.files | xargs rm -rf
 	    find . -empty | xargs rm -rf
 	)
-	dpkg-deb --build debian ${PACKAGE_NAME}
+	dpkg-deb --build debian .
+	mv *.deb ${PACKAGES_ARCH}
     )
 }
 
@@ -326,6 +339,7 @@ package_gcc_rpm()
 build_mcu()
 {
     set -e
+    echo -e "\n***" ${MSPMCU} "->" ${PREFIX}
     (
 	cd ${MSP430MCU}
 	MSP430MCU_ROOT=$(pwd) scripts/install.sh ${PREFIX}
@@ -343,8 +357,7 @@ package_mcu_deb()
     VER=${MSP430MCU_VER}
     LAST_PATCH="-$(last_patch msp430mcu-*.patch)"
     DEB_VER=${VER}
-    PACKAGE_NAME=${PACKAGES_DIR}/msp430mcu-exp-${DEB_VER}.deb
-    echo -e "\n***" debian archive: ${PACKAGE_NAME}
+    echo -e "\n***" debian archive: ${MSPMCU}
     (
 	cd ${MSP430MCU}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
@@ -363,7 +376,8 @@ package_mcu_deb()
 	    | sed 's/@version@/'${DEB_VER}'/' \
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
-	dpkg-deb --build debian ${PACKAGE_NAME}
+	dpkg-deb --build debian .
+	mv *.deb ${PACKAGES_DIR}/all
     )
 }
 
@@ -382,6 +396,7 @@ package_mcu_rpm()
 build_libc()
 {
     set -e
+    echo -e "\n***" building ${MSP430LIBC} "->" ${PREFIX}
     (
 	PATH=${PREFIX}/bin:${PATH}
 	echo -e -n "\n*** which msp430-gcc: "
@@ -401,8 +416,7 @@ package_libc_deb()
     VER=${MSP430LIBC_VER}
     LAST_PATCH="-$(last_patch msp430-libc-*.patch)"
     DEB_VER=${VER}
-    PACKAGE_NAME=${PACKAGES_DIR}/msp430-libc-exp-${DEB_VER}.deb
-    echo -e "\n***" debian archive: ${PACKAGE_NAME}
+    echo -e "\n***" debian archive: ${MSP430LIBC}
     (
 	cd ${MSP430LIBC}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
@@ -417,7 +431,8 @@ package_libc_deb()
 	    | sed 's/@version@/'${DEB_VER}'/' \
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
-	dpkg-deb --build debian ${PACKAGE_NAME}
+	dpkg-deb --build debian .
+	mv *.deb ${PACKAGES_DIR}/all
     )
 }
 
@@ -436,6 +451,7 @@ package_libc_rpm()
 build_gdb()
 {
     set -e
+    echo -e "\n***" building ${GDB} "->" ${PREFIX}
     (
 	cd ${GDB}
 	../${GDB}/configure \
@@ -455,8 +471,7 @@ package_gdb_deb()
     VER=${GDB_VER}
     LAST_PATCH=$(last_patch msp430-gdb-*.patch)
     DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}
-    PACKAGE_NAME=${PACKAGES_DIR}/msp430-gdb-exp-${DEB_VER}.deb
-    echo -e "\n***" debian archive: ${PACKAGE_NAME}
+    echo -e "\n***" debian archive: ${GDB}
     (
 	cd ${GDB}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
@@ -470,7 +485,8 @@ package_gdb_deb()
 	    cat ${BUILD_ROOT}/msp430-libc.files | xargs rm -rf
 	    find . -empty | xargs rm -rf
 	)
-	dpkg-deb --build debian ${PACKAGE_NAME}
+	dpkg-deb --build debian .
+	mv *.deb ${PACKAGES_ARCH}
     )
 }
 
@@ -489,8 +505,7 @@ package_gdb_rpm()
 package_dummy_deb()
 {
     set -e
-    PACKAGE_NAME=${PACKAGES_DIR/${ARCH_TYPE}/all}/msp430-exp.deb
-    echo -e "\n***" debian archive: ${PACKAGE_NAME}
+    echo -e "\n***" debian archive: msp430-exp
     (
 	mkdir -p tinyos
 	cd tinyos
@@ -498,7 +513,8 @@ package_dummy_deb()
 	cat ../msp430-tinyos.control \
 	    | sed 's/@version@/'$(date +%Y%m%d)'/' \
 	    > debian/DEBIAN/control
-	dpkg-deb --build debian ${PACKAGE_NAME}
+	dpkg-deb --build debian .
+	mv *.deb ${PACKAGES_DIR}/all
     )
 }
 
@@ -516,8 +532,9 @@ remove()
 
 case $1 in
     test)
+	setup_deb
 	download
-#	patch_dirs
+	patch_dirs
 #	build_binutils
 #	package_binutils_deb
 #	build_gcc
@@ -526,19 +543,9 @@ case $1 in
 #	package_mcu_deb
 #	build_libc
 #	package_libc_deb
-	build_gdb
-	package_gdb_deb
-	package_dummy_deb
-	;;
-
-    testdeb)
-	download
-	package_binutils_deb
-	package_gcc_deb
-	package_mcu_deb
-	package_libc_deb
-	package_gdb_deb
-	package_dummy_deb
+#	build_gdb
+#	package_gdb_deb
+#	package_dummy_deb
 	;;
 
     download)
@@ -551,15 +558,18 @@ case $1 in
 	    msp430mcu-* mpfr-* gmp-* mpc-* \
 	    | fmt -1 | grep -v 'tar' | grep -v 'patch' | xargs)
 	remove tinyos *.files debian fedora
+	remove repo/{db,dists,pool}
 	;;
 
     veryclean)
 	remove binutils-* gcc-* gdb-* mspgcc-* msp430-libc-2012* \
 	    msp430mcu-* mpfr-* gmp-* mpc-*
 	remove tinyos *.patch *.files debian fedora
+	remove repo/{db,dists,pool}
 	;;
 
     deb)
+        setup_deb
 	download
 	patch_dirs
 	build_binutils
@@ -573,9 +583,12 @@ case $1 in
 	build_gdb
 	package_gdb_deb
 	package_dummy_deb
-	;;
+	echo -e "\n*** Building Repository"
+	find ${PACKAGES_DIR} -iname "*.deb" -exec reprepro -b repo includedeb msp430-exp '{}' \;
+ 	;;
 
     rpm)
+        setup_rpm
 	download
 	patch_dirs
 	build_binutils
@@ -591,6 +604,7 @@ case $1 in
 	;;
 
     *)
+	setup_local
 	download
 	patch_dirs
 	build_binutils
