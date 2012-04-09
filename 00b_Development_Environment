@@ -1,12 +1,12 @@
-
-
 Installing a development environment for TinyOS (TinyProd).
 
 
 State:
 
 2011-12-16:
-    Ubuntu 10.04 or 11.04.   Debian Squeeze works as well.
+    Ubuntu 10.04 - 12.04.   Debian Squeeze works as well.
+    Tested directly on 10.04 and 11.10, (12.04 in progress)
+
     T2 (TinyProd) github:tp-freeforall/prod(msp430-int),
     mspdebug JTAG debugging.   mspgcc-LTS20110716 toolchain with patches
     Toolchain from http://tinyprod.net/repos/debian-dev
@@ -14,7 +14,7 @@ State:
 **************************************************************************************
 
 This brief is written assuming that there is a common root directory,
-we'll call it top and it is usually at the top level of a working
+we'll call it "top" and it is usually at the top level of a working
 directory.  ie.  ~/top.   You can put this directory anywhere, environment
 variables are used to tell the tools where things live.
 
@@ -24,12 +24,13 @@ Most commands are entered from a terminal window.
 
 1) OS Install.
 
-We currently only support development using Linux Ubuntu 10.04 (lucid).  11.04 is also
-known to behave.  10.04 was chosen because Mac laptops (MacBook Pros (3,1 and 7,1)) seem
-to work pretty well using 10.04.  11.04 (natty) also works but the Macs run hot.  (fans and cpu
-throttling doesn't seem to work right).
+Development is only supported on Linux hosts, in particular the Ubuntu and/or Debian
+strains.  Ubuntu 10.04 and 11.10 have been directly tested (on Apple MacBookPro laptops).
+Ubuntu 12.04 is currently being tested.  Mac support can be added to 10.04 and 10.10 and
+is included directly in 11.10 and later versions.   (MacBookPro 3,1 has been directly
+tested).
 
-Obtain an ISO image from releases/ubuntu.com or alternativly from tinyprod.net/downloads.
+Obtain an ISO image from releases/ubuntu.com or alternatively from tinyprod.net/downloads.
 Burn the iso to a CD and install on your box.  A simple install is fine and will
 take less time.
 
@@ -53,9 +54,9 @@ exit
 
 2) Install the TinyOS toolset (msp430)
 
-We want the tinyos toolset for msp430 based motes (telosb). Debian packages
-are available from Stanford and TinyProd.net.   The toolchain at TinyProd.Net
-is more up to date.
+We want the tinyos toolset for msp430 based motes (ie, telosb, msp430f1611). Debian packages
+are available from Stanford and TinyProd.net.   The toolchain at TinyProd.Net as of
+(April 4, 2012) is more up to date.
 
 We want the following packages:
 
@@ -69,7 +70,7 @@ We want the following packages:
 	   mspdebug-tinyos
 	   tinyos-tools
 
-You want to follow the instructions at: http://tinyprod.net/debian-dev.
+You want to follow the instructions at: http://tinyprod.net/repos/debian.
 
 The following should be equivilent.  With some additions...
 
@@ -82,9 +83,9 @@ gpg -a --export F99BE531 | sudo apt-key add -
 sudo -s
 
 #
-# add the repo pointer into sources.list
+# teach dpkt/apt-get/aptitude about where to find the tinyprod tools repository
 #
-echo "deb http://tinyprod.net/repos/debian-dev squeeze main" >> /etc/apt/sources.list
+echo "deb http://tinyprod.net/repos/debian squeeze main" >> /etc/apt/sources.list.d/tinyprod-debian.list
 apt-get update
 apt-get install nesc msp430-tinyos mspdebug-tinyos tinyos-tools
 exit

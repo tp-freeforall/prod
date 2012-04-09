@@ -1,4 +1,3 @@
-
 WARNING:  Default branch has been switched to *** msp430-int ***
 
 ============================================================================
@@ -10,7 +9,25 @@ See "Where to begin" (next section) for where to start.
 TinyProd
    tp-freeforall/prod
 
-Default (Main working) Branch: (2011-12-16)   msp430-int
+TinyProd is a more production/industrial orientated TinyOS repository.  It
+actively tracks the academic/development main TinyOS repository.   While 
+maintaining proper production controls.  The highly controlled release 
+repository is tinyprod/prod (github.com/tinyprod/prod).
+
+tp-freeforall is the main integration flavor and is used to integrate new code.
+It is still managed but pretty much almost any new code is allowed to come in.
+The intent is to provide an integration platform for new code proposed for addition
+to the TinyProd code base.
+
+
+The current major feature of TP-freeforall is an integrated msp430 core.  This 
+includes support for the 3 major TI msp430 families (x1, x2, and x5).  See 
+tos/chips/msp430/00_Chip_Notes for more details.  When the first TP release occurs,
+a better release note will be written.  This will occur immediately after the 
+TinyOS 2.1.2 release occurs.
+
+
+** Default (Main working) Branch:** (2011-12-16)   msp430-int
   Integration cycle.  Merging tinyos-main (SVN) -> msp430-int
 
 <current feature branch>
@@ -51,7 +68,7 @@ msp430-int-svn: continues along.   (commits that should come into the
 
 ============================================================================
 
-Where to begin:
+** Where to begin: **
 
 00a_Repo_Notes: (this file).  For a general overview of what this Repo is
   about.  Note this repository uses GIT as its DVCS.

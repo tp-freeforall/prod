@@ -78,14 +78,15 @@ repositories.
 VeryBlessed (release) repository:  (gh:tinyprod/prod)
 
    master:	The main release line in TinyProd.   Current stable point.
-   master-pu:	proposed updates for next release, accepted and integrated.
-   master-next: 1st stage updates for next release.
+   master-next: next updates, accepted and integrated.
+   master-pu:	1st staged changes.  Go into <next>
 
    svn/upstream: tracks the upstream SVN T2 trunk.  This is manually updated
 		 to schedule potential impact on downstream development.
+                 This marks the base branch point for TinyProd.
 
-   master-next feeds master-pu which feeds master.   When the next release
-   is done, master-pu becomes master and new master-pu and master-next
+   master-pu feeds master-next which feeds master.   When the next release
+   is done, master-next becomes master and new master-next and master-pu
    branches are started.
 
 
@@ -112,7 +113,7 @@ Blessed (integration) repository: (gh:tp-freeforall/prod)
 			proposed updates for the feature.
 
     Note that branches are only created if the complexity of the development
-    structure warrants the complexity.	This is left up to the discretion
+    structure warrants this complexity.	This is left up to the discretion
     of the integration manager.
 
 
@@ -167,7 +168,7 @@ Local repository:
     This will create the repository github.com/<github_username>/prod
     which is forked off github.com/tp-freeforall/prod.	All working repos are
     forked off the tp-freeforall/prod repo.  This is to keep the amount of
-    extra data in the main repository down to a minimum.
+    extra data in the main repository (tinyprod/prod) down to a minimum.
 
     For our virtual user this will create the repository
     gh:roberthunter/prod
