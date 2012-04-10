@@ -2,13 +2,13 @@
 #
 # BUILD_ROOT is assumed to be the same directory as the build.sh file.
 #
-# mspgcc development branch: 4.6.2 (non-20 bit)
+# mspgcc development branch: 4.6.3 (non-20 bit)
 # binutils	2.21.1a
-# gcc		4.6.2
+# gcc		4.6.3
 # gdb		7.2a
-# mspgcc	20120311
+# mspgcc	20120406
 # msp430-libc	20120224
-# msp430mcu	20120311
+# msp430mcu	20120406
 #
 # gmp		4.3.2
 # mpfr		3.0.0
@@ -19,8 +19,8 @@
 
 BUILD_ROOT=$(pwd)
 
-DEB_DEST=opt/msp430-462
-REL=
+DEB_DEST=opt/msp430-463
+REL=LTS
 MAKE_J=-j8
 
 if [[ -z "${TOSROOT}" ]]; then
@@ -30,7 +30,7 @@ echo -e "\n*** TOSROOT: $TOSROOT"
 echo "*** Destination: ${DEB_DEST}"
 
 BINUTILS_VER=2.21.1
-GCC_VER=4.6.2
+GCC_VER=4.6.3
 GDB_VER=7.2
 
 BINUTILS=binutils-${BINUTILS_VER}
@@ -46,9 +46,9 @@ GMP=gmp-${GMP_VER}
 MPFR=mpfr-${MPFR_VER}
 MPC=mpc-${MPC_VER}
 
-MSPGCC_VER=20120311
+MSPGCC_VER=20120406
 MSPGCC=mspgcc-${MSPGCC_VER}
-MSPGCC_DIR=DEVEL-4.6.x/
+MSPGCC_DIR=
 
 PATCHES=""
 
@@ -339,7 +339,7 @@ package_gcc_rpm()
 build_mcu()
 {
     set -e
-    echo -e "\n***" ${MSPMCU} "->" ${PREFIX}
+    echo -e "\n***" installing ${MSP430MCU} "->" ${PREFIX}
     (
 	cd ${MSP430MCU}
 	MSP430MCU_ROOT=$(pwd) scripts/install.sh ${PREFIX}
@@ -355,9 +355,16 @@ package_mcu_deb()
 {
     set -e
     VER=${MSP430MCU_VER}
-    LAST_PATCH="-$(last_patch msp430mcu-*.patch)"
-    DEB_VER=${VER}
-    echo -e "\n***" debian archive: ${MSPMCU}
+    LAST_PATCH="$(last_patch msp430mcu-*.patch)"
+    if [[ -n "${LAST_PATCH}" ]]; then
+	LAST_PATCH=-${LAST_PATCH}
+    fi
+    if [[ -z "${REL}" ]]; then
+	DEB_VER=${VER}
+    else
+	DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}
+    fi
+    echo -e "\n***" debian archive: ${MSP430MCU}
     (
 	cd ${MSP430MCU}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
@@ -414,8 +421,15 @@ package_libc_deb()
 {
     set -e
     VER=${MSP430LIBC_VER}
-    LAST_PATCH="-$(last_patch msp430-libc-*.patch)"
-    DEB_VER=${VER}
+    LAST_PATCH="$(last_patch msp430-libc-*.patch)"
+    if [[ -n "${LAST_PATCH}" ]]; then
+	LAST_PATCH=-${LAST_PATCH}
+    fi
+    if [[ -z "${REL}" ]]; then
+	DEB_VER=${VER}
+    else
+	DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}
+    fi
     echo -e "\n***" debian archive: ${MSP430LIBC}
     (
 	cd ${MSP430LIBC}
@@ -534,7 +548,7 @@ case $1 in
     test)
 	setup_deb
 	download
-	patch_dirs
+#	patch_dirs
 #	build_binutils
 #	package_binutils_deb
 #	build_gcc
@@ -542,7 +556,7 @@ case $1 in
 #	build_mcu
 #	package_mcu_deb
 #	build_libc
-#	package_libc_deb
+	package_libc_deb
 #	build_gdb
 #	package_gdb_deb
 #	package_dummy_deb
@@ -583,9 +597,13 @@ case $1 in
 	build_gdb
 	package_gdb_deb
 	package_dummy_deb
+ 	;;
+
+    repo)
+	setup_deb
 	echo -e "\n*** Building Repository"
 	find ${PACKAGES_DIR} -iname "*.deb" -exec reprepro -b repo includedeb msp430-exp '{}' \;
- 	;;
+	;;
 
     rpm)
         setup_rpm
