@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2013 Eric B. Decker
- * Copyright (c) 2011 Eric B. Decker
+ * Copyright (c) 2011-2013 Eric B. Decker
  * Copyright (c) 2010 People Power Co.
  * Copyright (c) 2000-2003, 2010 The Regents of the University of California.
  * All rights reserved.
@@ -40,6 +39,24 @@
  * @author Peter A. Bigot <pab@peoplepowerco.com>
  * @author Eric B. Decker <cire831@gmail.com>
  */
+
+/*
+ * Control Defines:
+ *
+ * DISABLE_ATOMIC_INLINE: normally, we force atomics to be inline which
+ * generating better simpler code.  For debugging, it is better to
+ * disable inlining.   Define DISABLE_ATOMIC_INLINE to cause this
+ * behavior.  The other advantage to turning off atomic inline is
+ * smaller code size.
+ */
+
+#ifdef DISABLE_ATOMIC_INLINE
+#define INLINE_ATOMIC
+#define INLINE_ATTRIBUTE
+#else
+#define INLINE_ATOMIC    inline
+#define INLINE_ATTRIBUTE __attribute__((always_inline))
+#endif
 
 #ifndef _H_msp430hardware_h
 #define _H_msp430hardware_h
@@ -514,8 +531,8 @@ inline void __nesc_enable_interrupt(void) __attribute__((always_inline)) @safe()
  * This should be checked to verify that it generates minimal code.  It does.
  */
 typedef uint16_t __nesc_atomic_t;
-inline __nesc_atomic_t  __nesc_atomic_start(void) __attribute__((always_inline));
-inline void __nesc_atomic_end(__nesc_atomic_t reenable_interrupts) __attribute__((always_inline));
+INLINE_ATOMIC __nesc_atomic_t  __nesc_atomic_start(void) INLINE_ATTRIBUTE;
+INLINE_ATOMIC void __nesc_atomic_end(__nesc_atomic_t reenable_interrupts) INLINE_ATTRIBUTE;
 
 #ifndef NESC_BUILD_BINARY
 /*
@@ -545,7 +562,7 @@ inline void __nesc_atomic_end(__nesc_atomic_t reenable_interrupts) __attribute__
    * we deal with it.
    */
 
-inline __nesc_atomic_t __nesc_atomic_start(void) @spontaneous() __attribute__((always_inline)) @safe() {
+INLINE_ATOMIC __nesc_atomic_t __nesc_atomic_start(void) @spontaneous() INLINE_ATTRIBUTE @safe() {
   __nesc_atomic_t result = (READ_SR & SR_GIE);
 
   dint();
@@ -559,7 +576,7 @@ inline __nesc_atomic_t __nesc_atomic_start(void) @spontaneous() __attribute__((a
   return result;
 }
 
-inline void __nesc_atomic_end(__nesc_atomic_t reenable_interrupts) @spontaneous() __attribute__((always_inline)) @safe() {
+INLINE_ATOMIC void __nesc_atomic_end(__nesc_atomic_t reenable_interrupts) @spontaneous() INLINE_ATTRIBUTE @safe() {
   asm volatile("" : : : "memory"); /* ensure atomic section effect visibility */
   if( reenable_interrupts )
     eint();
