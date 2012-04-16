@@ -1,5 +1,5 @@
-//$Id: Serial.h,v 1.8 2010-06-29 22:07:50 scipio Exp $
-/* Copyright (c) 2000-2005 The Regents of the University of California.  
+/*
+ * Copyright (c) 2000-2005 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -122,6 +122,7 @@ typedef struct radio_stats {
 } radio_stats_t;
 
 typedef nx_struct serial_header {
+  nx_uint8_t   dispatch;
   nx_am_addr_t dest;
   nx_am_addr_t src;
   nx_uint8_t length;

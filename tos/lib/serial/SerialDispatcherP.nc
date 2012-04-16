@@ -1,6 +1,5 @@
-//$Id: SerialDispatcherP.nc,v 1.10 2010-06-29 22:07:50 scipio Exp $
-
-/* Copyright (c) 2000-2005 The Regents of the University of California.  
+/*
+ * Copyright (c) 2000-2005 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -95,7 +94,7 @@ implementation {
 
   uint8_t *COUNT_NOK(sizeof(message_t)) sendBuffer = NULL;
   send_state_t sendState = SEND_STATE_IDLE;
-  uint8_t sendLen = 0;
+  uint8_t sendStop = 0;
   uint8_t sendIndex = 0;
   norace error_t sendError = SUCCESS;
   bool sendCancelled = FALSE;
@@ -124,13 +123,27 @@ implementation {
       sendState = SEND_STATE_DATA;
       sendId = id;
       sendCancelled = FALSE;
+
+      /*
+       * dispatch byte is very first byte.  This is now reflected in the
+       * serial header structure.  Stuff the id (dispatch value) where it
+       * belong to be consistent and send it out.  Make sure to account for
+       * it already being on the way.
+       *
+       * The dispatch byte is actually the protocol identifier and determines
+       * what format the remainder of the packet is in.
+       */
+      sendBuffer[sendIndex] = id;
+      sendIndex++;
+
       // If something we're starting past the header, something is wrong
       // Bug fix from John Regehr
 
 
-      // sendLen is where in the buffer the packet stops.
+      // sendStop is where in the buffer the packet stops.
       // This is the length of the packet, plus its start point
-      sendLen = call PacketInfo.dataLinkLength[id](msg, len) + sendIndex;
+      sendStop = call PacketInfo.dataLinkLength[id](msg, len) + sendIndex;
+      sendStop--;			/* account for already sent dispatch */
     }
     if (call SendBytePacket.startSend(id) == SUCCESS) {
       return SUCCESS;
@@ -183,7 +196,7 @@ implementation {
       sendIndex++;
       indx = sendIndex;
     }
-    if (indx > sendLen) {
+    if (indx > sendStop) {
       call SendBytePacket.completeSend();
       return 0;
     }
@@ -245,16 +258,19 @@ implementation {
     atomic {
       switch (receiveState.state) {
       case RECV_STATE_BEGIN:
+	/*
+	 * note: the dispatch byte gets laid down in the packet
+	 * now and thusly needs to be accounted for.
+	 */
         receiveState.state = RECV_STATE_DATA;
         recvIndex = call PacketInfo.offset[b]();
+	receiveBuffer[recvIndex++] = b;
         recvType = b;
         break;
         
       case RECV_STATE_DATA:
-        if (recvIndex < sizeof(message_t)) {
-          receiveBuffer[recvIndex] = b;
-          recvIndex++;
-        }
+        if (recvIndex < sizeof(message_t))
+          receiveBuffer[recvIndex++] = b;
         else {
           // Drop extra bytes that do not fit in a message_t.
           // We assume that either the higher layer knows what to
