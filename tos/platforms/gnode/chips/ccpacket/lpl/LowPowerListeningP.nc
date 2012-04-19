@@ -1,3 +1,28 @@
+/*
+ * Copyright (c) 2008-2012, SOWNet Technologies B.V.
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+*/
+
 /**
  * Provides duty cycling/low power listening.
  */
@@ -7,6 +32,7 @@ module LowPowerListeningP {
 		interface Send;
 		interface Receive;
 		interface LowPowerListening;
+		interface SendNotify;
 	}
 	
 	uses {
@@ -33,7 +59,8 @@ implementation {
 	bool radioOn = FALSE;		// is the actual radio on, i.e. in its active duty cycle?
 	bool sending = FALSE;		// outgoing packet pending?
 	uint16_t wakeupInterval = LPL_DEFAULT_INTERVAL;	// time between receive checks; 0 means always on
-	uint16_t calibrationCounter = 0;	// when duty cycling, calibrate the radio when this hits zero
+	uint16_t calibrationCounter;	// when duty cycling, calibrate the radio when this hits zero
+	uint8_t ccaCounter;		// counts channel-not-clear detections
 	
 	void on() {
 		error_t error = call SubControl.start();
@@ -114,6 +141,10 @@ implementation {
 		// if the radio is not on already, turn it on now
 		if (!radioOn) on();
 		
+		// hook for others to make last minute adjustments,
+		// especially to the preamble duration
+		signal SendNotify.sending(m);
+
 		// lower layers should never fail at this point,
 		// since we are not busy (we checked) and we just
 		// turned the radio on
@@ -167,6 +198,7 @@ implementation {
 			calibrationCounter--;
 		}
 		
+		ccaCounter = 0;
 		call CcaSampleTimer.startOneShot(CCA_SETTLING_TIME);
 	}
 	
@@ -183,12 +215,11 @@ implementation {
 			off();
 		} else {
 			// 1 ms may be just a bit too fast for reliable CCA and can give us a false positive,
-			// so check again after another 0.5 ms before deciding to stay awake
-			call BusyWait.wait(500);
-			
-			if (clear()) {
-				// false alarm
-				off();
+			// so check again after the first "hit"
+			ccaCounter++;
+			if (ccaCounter < 2) {
+				// check again in another millisecond
+				call CcaSampleTimer.startOneShot(1);
 			} else {
 				// stay awake
 				call ReceiveTimer.startOneShot(wakeupInterval + LPL_PREAMBLE_OVERLAP);
@@ -197,12 +228,15 @@ implementation {
 	}
 	
 	/**
-	 * We've waited long enough to pick up a packet if one was coming.
-	 * If it did, stay awake; else go back to sleep.
+	 * If something is being received, or there is still a carrier,
+	 * stay awake and check again after another interval.
+	 * Else, go back to sleep.
 	 */
 	event void ReceiveTimer.fired() {
-		if (!call HalChipconControl.isBusy()) {
+		if (clear()) {
 			off();
+		} else {
+			call ReceiveTimer.startOneShot(wakeupInterval + LPL_PREAMBLE_OVERLAP);
 		}
 	}
 	
@@ -277,4 +311,6 @@ implementation {
 	event void HalChipconControl.rxWaiting(uint32_t timestamp) {}
 	event void HalChipconControl.txStart(uint32_t timestamp) {}
 	event void HalChipconControl.txDone(uint32_t timestamp, error_t error) {}
+
+	default event void SendNotify.sending(message_t* msg) {}
 }

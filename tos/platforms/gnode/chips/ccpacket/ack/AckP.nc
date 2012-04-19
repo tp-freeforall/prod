@@ -1,3 +1,28 @@
+/*
+ * Copyright (c) 2008-2012, SOWNet Technologies B.V.
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+*/
+
 /**
  * Provides synchronous acknowledgements.
  * 
@@ -48,11 +73,10 @@ implementation {
 	message_t rxBuffer;		// for buffer swapping
 	message_t* buffer = &rxBuffer;	// current receive buffer
 	
-	// ack messages are just headers and this buffer is only for sending,
-	// so we don't need space for a payload, footers and metadata
-	// NB: headers are right-aligned against the payload, so we need a full message_header_t, not just a chipcon_header_t!
-	message_header_t ackBuffer;
-	message_t* ackMessage = TCAST(message_t*, &ackBuffer);
+	// ack messages are just headers, but packet timestamping writes into the metadata fields,
+	// so we do need a full message_t
+	message_t ackBuffer;
+	message_t* ackMessage = &ackBuffer;
 	message_t* txMessage;	// the message being sent, either pending or awaiting an acknowledgement
 	message_t* rxMessage;	// the message being received, held while we're sending its acknowledgement
 	
@@ -252,7 +276,8 @@ implementation {
 		txMessage = msg;
 		
 		if (acking) {
-			// we'll send it after the ack
+			// we'll send it after the ack, so remember the length
+			call ChipconPacket.setPayloadLength(txMessage, len);
 			return SUCCESS;
 		} else {
 			// send rightaway

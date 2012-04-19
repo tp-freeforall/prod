@@ -31,6 +31,7 @@
 module HplAt45dbP {
 	provides {
 		interface HplAt45dbByte;
+		interface Init;
 	}
 	uses {
 		interface SpiByte as FlashSpi;
@@ -39,13 +40,17 @@ module HplAt45dbP {
 }
 implementation
 {
-	command void HplAt45dbByte.select() {
+	command error_t Init.init() {
 		call Select.makeOutput();
+		call Select.set();
+		return SUCCESS;
+	}
+
+	command void HplAt45dbByte.select() {
 		call Select.clr();
 	}
 
 	command void HplAt45dbByte.deselect() {
-		call Select.makeOutput();
 		call Select.set();
 	}
 

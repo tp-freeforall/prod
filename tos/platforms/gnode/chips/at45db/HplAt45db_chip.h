@@ -34,7 +34,7 @@
 
 // flash characteristics
 enum {
-  AT45_MAX_PAGES = 2048,
+  AT45_MAX_PAGES = 4096,
   AT45_PAGE_SIZE = 264,
   AT45_PAGE_SIZE_LOG2 = 8 // For those who want to ignore the last 8 bytes
 };

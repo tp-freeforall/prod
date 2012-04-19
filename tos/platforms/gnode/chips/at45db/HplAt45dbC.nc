@@ -34,7 +34,7 @@ configuration HplAt45dbC {
 implementation {
 
 	components new HplAt45dbByteC(9), HplAt45dbP,
-		new SoftwareSpiC(1, 1) as Spi, GeneralIOC;
+		new SoftwareSpiC(1, 1) as Spi, GeneralIOC, MainC;
 
 	HplAt45db = HplAt45dbByteC;
 
@@ -44,6 +44,7 @@ implementation {
 
 	HplAt45dbP.Select -> GeneralIOC.GeneralIO[FLASH_CSN];
 	HplAt45dbP.FlashSpi -> Spi;
+	HplAt45dbP.Init <- MainC.SoftwareInit;
 	
 	Spi.MISO -> GeneralIOC.GeneralIO[FLASH_MISO];
 	Spi.MOSI -> GeneralIOC.GeneralIO[FLASH_MOSI];

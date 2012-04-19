@@ -23,18 +23,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
 */
 
-/**
- * Provides a putchar() function for printf().
- */
- module PutcharC {
-	 provides interface Putchar;
+module PlatformPinsP {
+	provides interface Init;
+	uses interface Init as DefaultInit;
 }
 
 implementation {
 
-	int putchar(int c) @C() @spontaneous() {
-		signal Putchar.putchar((uint8_t) c);
-		return 0;
-	}
+	/**
+	 * Initialize I/O pins.
+	 */
+	command error_t Init.init() {
+		call DefaultInit.init();
 
+		// set the SRAM pins to the appropriate levels to prevent current drain
+		P4DIR = 0xB0;
+		P4OUT = 0xB0;
+
+		return SUCCESS;
+	}
 }
