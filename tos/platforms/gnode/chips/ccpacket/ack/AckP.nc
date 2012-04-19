@@ -51,8 +51,8 @@ implementation {
 	// ack messages are just headers and this buffer is only for sending,
 	// so we don't need space for a payload, footers and metadata
 	// NB: headers are right-aligned against the payload, so we need a full message_header_t, not just a chipcon_header_t!
-	message_header_t ackBuffer;
-	message_t* ackMessage = TCAST(message_t*, &ackBuffer);
+	message_t ackBuffer;
+	message_t* ackMessage = &ackBuffer;
 	message_t* txMessage;	// the message being sent, either pending or awaiting an acknowledgement
 	message_t* rxMessage;	// the message being received, held while we're sending its acknowledgement
 	
@@ -253,6 +253,8 @@ implementation {
 		
 		if (acking) {
 			// we'll send it after the ack
+			// length field is not yet filled in, so lets do it here
+			call ChipconPacket.setPayloadLength(txMessage, len);
 			return SUCCESS;
 		} else {
 			// send rightaway
