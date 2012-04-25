@@ -3,12 +3,15 @@
 # BUILD_ROOT is assumed to be the same directory as the build.sh file.
 #
 # mspgcc development branch: 4.7.0 (non-20 bit)
+# custom nesc (1.3.4x - testing), modified for 4.7
+#
 # binutils	2.22
 # gcc		4.7.0
 # gdb		7.2a
 # mspgcc	20120407
 # msp430-libc	20120224
 # msp430mcu	20120407
+# nesc          base 1.3.3 with 1.3.4x patches
 #
 # gmp		4.3.2
 # mpfr		3.0.0
@@ -49,6 +52,10 @@ MPC=mpc-${MPC_VER}
 MSPGCC_VER=20120407
 MSPGCC=mspgcc-${MSPGCC_VER}
 MSPGCC_DIR=DEVEL-4.7.x/
+
+NESC_VER=1.3.3
+NESC=nesc-${NESC_VER}
+NESC_PATCH=1.3.4x
 
 PATCHES=""
 
@@ -138,6 +145,18 @@ download()
 	    || (echo "    ... ${f}"
 	    wget -q http://sourceforge.net/projects/mspgcc/files/Patches/LTS/20110716/${f})
     done
+    echo "  ... base ${NESC} tarball"
+    [[ -a ${NESC}.tar.gz ]] \
+	|| wget http://downloads.sourceforge.net/project/nescc/nescc/v${NESC_VER}/${NESC}.tar.gz
+
+#    echo "  ... nesc CVS"
+#    if [[ -a nesc ]] ; then
+#	echo "      using existing nesc"
+#    else
+#	echo "      fetching current nesc (CVS)"
+#	cvs -z3 -d:pserver:anonymous@nescc.cvs.sourceforge.net:/cvsroot/nescc co -P nesc > nesc.fetch
+#    fi
+
     echo "*** Done"
 }
 
@@ -212,6 +231,16 @@ patch_dirs()
 #	echo -e "\n*** LTS libc bugfix patches..."
 #	cat ../msp430-libc-*.patch | patch -p1
 #    )
+
+    echo -e "\n***" Unpacking base ${NESC}
+    rm -rf ${NESC}
+    tar xzf ${NESC}.tar.gz
+    set -e
+    (
+	cd ${NESC}
+	echo -e "*** applying ${NESC_PATCH} ..."
+	cat ../nesc-${NESC_PATCH}.patch | patch -p1
+    )
 }
 
 build_binutils()
@@ -516,6 +545,57 @@ package_gdb_rpm()
 	-bb msp430-gdb.spec
 }
 
+build_nesc()
+{
+    LOCAL_PREFIX=$(pwd)/${NESC}/debian/${DEB_DEST}
+    echo -e "\n***" building ${NESC} "->" ${LOCAL_PREFIX}
+    set -e
+    (
+	cd ${NESC}
+	mkdir -p debian/DEBIAN debian/${DEB_DEST}
+#	if [[ ! -a configure ]] ; then
+#	    echo "***" bootstraping
+#	    ./Bootstrap
+#	fi
+	./configure --prefix=${LOCAL_PREFIX}
+	make ${MAKE_J}
+	make install
+    )
+}
+
+package_nesc_deb()
+{
+    set -e
+    VER=${NESC_PATCH}
+    DEB_VER=${VER}-${REL}${MSPGCC_VER}
+    LOCAL_PREFIX=$(pwd)/${NESC}/debian/${DEB_DEST}
+    echo -e "\n***" debian archive: nesc-${NESC_PATCH}
+    (
+	cd ${NESC}
+	mkdir -p debian/DEBIAN debian/${DEB_DEST}
+	find ${LOCAL_PREFIX} -type f \
+	    | xargs perl -i -pe 's#'${LOCAL_PREFIX}'#/'${DEB_DEST}'#'
+	cat ../nesc.control \
+	    | sed 's/@version@/'${DEB_VER}'/' \
+	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
+	    > debian/DEBIAN/control
+	dpkg-deb --build debian .
+	mv *.deb ${PACKAGES_ARCH}
+    )
+}
+
+package_nesc_rpm()
+{
+    echo Packaging ${NESC}
+    find fedora/usr/bin/ -type f \
+	| xargs perl -i -pe 's#'${PREFIX}'#/usr#'
+    rpmbuild \
+	-D "version ${NESC_VER}" \
+	-D "release `date +%Y%m%d`" \
+	-D "prefix ${PREFIX}" \
+	-bb nesc.spec
+}
+
 package_dummy_deb()
 {
     set -e
@@ -548,18 +628,20 @@ case $1 in
     test)
 	setup_deb
 	download
-#	patch_dirs
+	patch_dirs
 #	build_binutils
 #	package_binutils_deb
 #	build_gcc
 #	package_gcc_deb
 #	build_mcu
 #	package_mcu_deb
-	build_libc
-	package_libc_deb
+#	build_libc
+#	package_libc_deb
 #	build_gdb
 #	package_gdb_deb
-	package_dummy_deb
+	build_nesc
+	package_nesc_deb
+#	package_dummy_deb
 	;;
 
     download)
@@ -569,7 +651,7 @@ case $1 in
 
     clean)
 	remove $(echo binutils-* gcc-* gdb-* mspgcc-* msp430-libc-2012* \
-	    msp430mcu-* mpfr-* gmp-* mpc-* \
+	    msp430mcu-* mpfr-* gmp-* mpc-* ${NESC} \
 	    | fmt -1 | grep -v 'tar' | grep -v 'patch' | xargs)
 	remove tinyos *.files debian fedora
 	remove repo/{db,dists,pool}
@@ -577,8 +659,9 @@ case $1 in
 
     veryclean)
 	remove binutils-* gcc-* gdb-* mspgcc-* msp430-libc-2012* \
-	    msp430mcu-* mpfr-* gmp-* mpc-*
-	remove tinyos *.patch *.files debian fedora
+	    msp430mcu-* mpfr-* gmp-* mpc-* ${NESC}.tar*
+	remove $(echo *.patch | fmt -1 | grep -v 'nesc' | xargs)
+	remove tinyos *.files debian fedora
 	remove repo/{db,dists,pool}
 	;;
 
@@ -596,6 +679,8 @@ case $1 in
 	package_libc_deb
 	build_gdb
 	package_gdb_deb
+	build_nesc
+	package_nesc_deb
 	package_dummy_deb
  	;;
 
