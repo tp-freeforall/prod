@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#
+# mspgcc, msp430 gcc toolchain
+# 4.5.3-LTS20110716
+#
+
 BINUTILS_VER=2.21.1
 BINUTILS=binutils-${BINUTILS_VER}
 GCC_VER=4.5.3
