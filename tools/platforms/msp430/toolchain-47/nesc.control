@@ -1,0 +1,11 @@
+Package: nesc-47
+Version: @version@
+Section: devel
+Priority: optional
+Architecture: @architecture@
+Depends: perl, libc6-dev|libc-dev
+Recommends: graphviz, java-sdk
+Maintainer: Eric B. Decker <cire831@gmail.com>
+Description: Experimental nesC compiler used to compile TinyOS applications.  Modified for gcc 4.7.
+
+
