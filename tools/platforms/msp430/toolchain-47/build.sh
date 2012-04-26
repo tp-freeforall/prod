@@ -659,7 +659,7 @@ case $1 in
 
     veryclean)
 	remove binutils-* gcc-* gdb-* mspgcc-* msp430-libc-2012* \
-	    msp430mcu-* mpfr-* gmp-* mpc-* ${NESC}.tar*
+	    msp430mcu-* mpfr-* gmp-* mpc-* ${NESC} ${NESC}.tar*
 	remove $(echo *.patch | fmt -1 | grep -v 'nesc' | xargs)
 	remove tinyos *.files debian fedora
 	remove repo/{db,dists,pool}
