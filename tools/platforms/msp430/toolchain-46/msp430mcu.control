@@ -1,8 +1,8 @@
-Package: msp430mcu-exp
+Package: msp430mcu-46
 Version: @version@
 Architecture: all
-Depends: msp430-binutils-exp, msp430-gcc-exp
-Maintainer: Razvan Musaloiu-E. <razvanm@musaloiu.com>
+Depends: msp430-binutils-46, msp430-gcc-46
+Maintainer: Eric B. Decker <cire831@gmail.com>
 Priority: optional
 Section: devel
-Description: Experimental MSP430 headers and linker scripts
+Description: Experimental MSP430 (gcc 4.6) headers and linker scripts

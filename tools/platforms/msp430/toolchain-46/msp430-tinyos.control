@@ -1,8 +1,8 @@
-Package: msp430-exp
+Package: msp430-46
 Version: @version@
 Architecture: all
-Depends: msp430-binutils-exp, msp430-gcc-exp, msp430-libc-exp, msp430mcu-exp, msp430-gdb-exp, tinyos-tools
-Maintainer: Razvan Musaloiu-E. <razvanm@musaloiu.com>
+Depends: msp430-binutils-46, msp430-gcc-46, msp430-libc-46, msp430mcu-46, msp430-gdb-46, tinyos-tools
+Maintainer: Eric B. Decker <cire831@gmail.com>
 Priority: optional
 Section: devel
-Description: Dummy package to pull in all the Experimental MSP430 packages
+Description: Dummy package to pull in all the Experimental MSP430 (gcc 4.6) packages

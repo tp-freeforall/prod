@@ -1,8 +1,8 @@
-Package: msp430-binutils-exp
+Package: msp430-binutils-46
 Version: @version@
 Architecture: @architecture@
 Depends: libc6
-Maintainer: Razvan Musaloiu-E. <razvanm@musaloiu.com>
+Maintainer: Eric B. Decker <cire831@gmail.com>
 Priority: optional
 Section: devel
-Description: Experimental MSP430 binutils
+Description: Experimental MSP430-46 (gcc 4.6 based) binutils

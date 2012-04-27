@@ -1,7 +1,7 @@
 Origin: tinyprod.net
-Label: exp msp430
-Codename: msp430-exp
+Label: exp msp430 (4.6)
+Codename: msp430-46
 Architectures: i386 amd64
 Components: main
-Description: Experimental MSP430 GCC toolchain
+Description: Experimental MSP430 GCC 4.6 toolchain
 SignWith: yes

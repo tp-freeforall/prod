@@ -19,7 +19,7 @@
 
 BUILD_ROOT=$(pwd)
 
-DEB_DEST=opt/msp430-463
+DEB_DEST=opt/msp430-46
 REL=LTS
 MAKE_J=-j8
 
@@ -519,7 +519,7 @@ package_gdb_rpm()
 package_dummy_deb()
 {
     set -e
-    echo -e "\n***" debian archive: msp430-exp
+    echo -e "\n***" debian archive: msp430-46
     (
 	mkdir -p tinyos
 	cd tinyos
@@ -602,7 +602,7 @@ case $1 in
     repo)
 	setup_deb
 	echo -e "\n*** Building Repository"
-	find ${PACKAGES_DIR} -iname "*.deb" -exec reprepro -b repo includedeb msp430-exp '{}' \;
+	find ${PACKAGES_DIR} -iname "*.deb" -exec reprepro -b repo includedeb msp430-46 '{}' \;
 	;;
 
     rpm)
