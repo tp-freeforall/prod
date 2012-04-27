@@ -1,5 +1,5 @@
-Summary: TinyOS-specific MSP430 gdb
-Name: msp430-gdb-tinyos
+Summary: Experimental (4.7) MSP430 gdb
+Name: msp430-gdb-47
 Version: %{version}
 Release: %{release}
 License: GNU GPL
@@ -20,4 +20,4 @@ rsync -a %{prefix} %{buildroot}
 %define __strip /bin/true
 
 %files
-/usr
+/opt/msp430-47

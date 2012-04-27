@@ -1,5 +1,5 @@
-Summary: nesC compiler
-Name: nesc
+Summary: nesC compiler (4.7 modified)
+Name: nesc-47
 Version: %{version}
 Release: %{release}
 License: GNU GPL Version 2
@@ -17,4 +17,4 @@ interfaces.
 rsync -a %{prefix} %{buildroot}
 
 %files
-/usr
+/opt/msp430-47

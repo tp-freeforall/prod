@@ -1,5 +1,5 @@
-Summary: TinyOS-specific MSP430 binutils
-Name: msp430-binutils-tinyos
+Summary: Experimental (4.7) MSP430 binutils
+Name: msp430-binutils-47
 Version: %{version}
 Release: %{release}
 License: GNU GPL
@@ -12,4 +12,4 @@ Group: Development/Tools
 rsync -a %{prefix} %{buildroot}
 
 %files
-/usr
+/opt/msp430-47

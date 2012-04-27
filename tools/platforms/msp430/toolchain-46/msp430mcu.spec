@@ -1,5 +1,5 @@
-Summary: TinyOS-specific MSP430 headers and linker scripts
-Name: msp430mcu-tinyos
+Summary: Experimental (4.6) MSP430 headers and linker scripts
+Name: msp430mcu-46
 Version: %{version}
 Release: %{release}
 License: GNU GPL
@@ -18,4 +18,4 @@ rsync -a %{prefix} %{buildroot}
 )
 
 %files
-/usr
+/opt/msp430-46

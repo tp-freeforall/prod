@@ -74,7 +74,7 @@ setup_deb()
 
 setup_rpm()
 {
-    PREFIX=$(pwd)/fedora/usr
+    PREFIX=$(pwd)/fedora/${DEB_DEST}
 }
 
 
