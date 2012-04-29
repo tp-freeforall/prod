@@ -524,7 +524,7 @@ package_dummy_deb()
 	mkdir -p tinyos
 	cd tinyos
 	mkdir -p debian/DEBIAN
-	cat ../msp430-tinyos.control \
+	cat ../msp430-46.control \
 	    | sed 's/@version@/'$(date +%Y%m%d)'/' \
 	    > debian/DEBIAN/control
 	dpkg-deb --build debian .

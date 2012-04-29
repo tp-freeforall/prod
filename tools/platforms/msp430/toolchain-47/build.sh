@@ -49,7 +49,7 @@ GMP=gmp-${GMP_VER}
 MPFR=mpfr-${MPFR_VER}
 MPC=mpc-${MPC_VER}
 
-MSPGCC_VER=20120407
+MSPGCC_VER=20120425
 MSPGCC=mspgcc-${MSPGCC_VER}
 MSPGCC_DIR=DEVEL-4.7.x/
 
@@ -604,7 +604,7 @@ package_dummy_deb()
 	mkdir -p tinyos
 	cd tinyos
 	mkdir -p debian/DEBIAN
-	cat ../msp430-tinyos.control \
+	cat ../msp430-47.control \
 	    | sed 's/@version@/'$(date +%Y%m%d)'/' \
 	    > debian/DEBIAN/control
 	dpkg-deb --build debian .
@@ -628,7 +628,7 @@ case $1 in
     test)
 	setup_deb
 	download
-	patch_dirs
+#	patch_dirs
 #	build_binutils
 #	package_binutils_deb
 #	build_gcc
@@ -639,9 +639,9 @@ case $1 in
 #	package_libc_deb
 #	build_gdb
 #	package_gdb_deb
-	build_nesc
-	package_nesc_deb
-#	package_dummy_deb
+#	build_nesc
+#	package_nesc_deb
+	package_dummy_deb
 	;;
 
     download)
