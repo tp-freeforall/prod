@@ -193,6 +193,7 @@ patch_dirs()
 
 	echo -e "\n***" mspgcc ${GCC} patch
 	cat ../${MSPGCC}/msp430-gcc-${GCC_VER}-*.patch | patch -p1
+
 #	echo -e "\n*** LTS gcc bugfix patches..."
 #	cat ../msp430-gcc-*.patch | patch -p1
     )
@@ -203,11 +204,14 @@ patch_dirs()
     set -e
     (
 	cd ${GDB}
+	echo -e "\n***" base gdb patches...
+	cat ../gdb-*.patch | patch -p1
+
 	echo -e "\n***" mspgcc ${GDB} patch
 	cat ../${MSPGCC}/msp430-gdb-${GDB_VER}a-*.patch | patch -p1
 
-# no extra patches.
-#	echo -n "\n*** LTS gdb bugfix patches...
+# no extra LTS patches.
+#	echo -n "\n***" LTS gdb bugfix patches...
 #	cat ../msp430-gdb-*.patch | patch -p1
     )
 
@@ -513,6 +517,9 @@ package_gdb_deb()
     set -e
     VER=${GDB_VER}
     LAST_PATCH=$(last_patch msp430-gdb-*.patch)
+    if [[ -z "${LAST_PATCH}" ]]; then
+	LAST_PATCH=$(last_patch gdb-*.patch)
+    fi
     DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}
     echo -e "\n***" debian archive: ${GDB}
     (
@@ -628,7 +635,7 @@ case $1 in
     test)
 	setup_deb
 	download
-#	patch_dirs
+	patch_dirs
 #	build_binutils
 #	package_binutils_deb
 #	build_gcc
@@ -637,11 +644,11 @@ case $1 in
 #	package_mcu_deb
 #	build_libc
 #	package_libc_deb
-#	build_gdb
-#	package_gdb_deb
+	build_gdb
+	package_gdb_deb
 #	build_nesc
 #	package_nesc_deb
-	package_dummy_deb
+#	package_dummy_deb
 	;;
 
     download)
@@ -658,9 +665,10 @@ case $1 in
 	;;
 
     veryclean)
-	remove binutils-* gcc-* gdb-* mspgcc-* msp430-libc-2012* \
+	remove binutils-* gcc-* ${GDB} ${GDB}a.tar* mspgcc-* msp430-libc-2012* \
 	    msp430mcu-* mpfr-* gmp-* mpc-* ${NESC} ${NESC}.tar*
-	remove $(echo *.patch | fmt -1 | grep -v 'nesc' | xargs)
+	remove $(echo *.patch | fmt -1 | grep -v 'nesc' | grep -v 'gdb-7.2-20120430' \
+	    | xargs)
 	remove tinyos *.files debian fedora
 	remove repo/{db,dists,pool}
 	;;
