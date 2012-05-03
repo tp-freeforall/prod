@@ -56,7 +56,29 @@ case `uname` in
     ;;
 
     Darwin)
-    ## This should work bu the symlinks are broken. Apple bug, I suppose :)
+    #
+    # Lion (Mac OS X, 10.7)
+    #
+    # As of 10.7 (Lion) the symlinks seem to be fixed.  However, the preferred mechanism
+    # seems to be to use /usr/libexec/java_home to find where home lives.  This also
+    # has the benefit of being controlled by the settings from Utilities/JavaPreferences.app
+    # which is a good thing.
+    #
+    # The /Developer mechanism referenced below no longer works because Xcode 4 moves the
+    # Development tree around and /Developer no long exists.   A mechanism is needed
+    # that does the right thing after figureing out which version of MacOSX we are on.
+    # It is unclear where Java lives these days.  Oracle does something else too as
+    # far as /System/Library/Frameworks/JavaVM.framework/Version/CurrentJDK vs. Current.
+    # Apple used CurrentJDK while Oracle uses Current.   /usr/libexec/java_home seems
+    # to figure this out and returns the right value.  Note the structure of Current is
+    # different than CurrentJDK.
+    #
+    # Don't know what to return for JNI.   Currently, we return /Library/Java/Extensions
+    # but that is empty.
+    #
+    # I don't know how all this behaves on pre-Lion machines.
+    #
+    ## This should work but the symlinks are broken. Apple bug, I suppose :)
     #jhome=/System/Library/Frameworks/JavaVM.framework/Versions/Current
     ## The real location is under /Developer/SDKs/MacOSX*.sdk/
     ## but now how do we determin the version correctly ?
@@ -65,13 +87,16 @@ case `uname` in
     ## it appears that `basename `uname -r` .0` works
     ## it's not very certain if it will later.
 
-    pn=`sw_vers -productName | sed 's/ //g'`
-    pv=`sw_vers -productVersion | awk -F. '{ print $1 "." $2 }'`
+    # pn=`sw_vers -productName | sed 's/ //g'`
+    # pv=`sw_vers -productVersion | awk -F. '{ print $1 "." $2 }'`
     ## Since we only want to modify this one script for now, stick the
     ## extra subdir at the end, beceuase that's what the reset of scripts
     ## presume. This is a work-around and should be eliminated eventually.
-    xcode_jdk=/Developer/SDKs/${pn}${pv}.sdk/System/Library/Frameworks/JavaVM.framework/Versions/A/Headers
-    jhome=/Library/Java/Home
+    #xcode_jdk=/Developer/SDKs/${pn}${pv}.sdk/System/Library/Frameworks/JavaVM.framework/Versions/A/Headers
+    #jhome=/Library/Java/Home
+
+    xcode_jdk=`/usr/libexec/java_home`
+    jhome=${xcode_jdk}
     ;;
 
     Linux)
@@ -147,13 +172,9 @@ if [ "$jni" = "yes" ]; then
 	    jnilocate "$jhome/lib/amd64"
     fi
 elif [ "$javac" = "yes" ]; then
- if [ `uname` = "Darwin" ];  then
-  dir="$xcode_jdk"
- else
-  dir="$jhome/bin"
- fi
+    dir="$jhome/bin"
 elif [ "$java" = "yes" ]; then
- dir="$jhome/bin"
+    dir="$jhome/bin"
 fi
 
 # Check that what we found actually exists
