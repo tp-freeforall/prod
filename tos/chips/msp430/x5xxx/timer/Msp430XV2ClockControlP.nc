@@ -94,71 +94,17 @@ module Msp430XV2ClockControlP @safe() {
        * is closest to your desired DCO frequency.
        */
       UCSCTL0 = 0x0000;                         // Set lowest possible DCOx, MODx
-
-      switch (dco_config) {
-        /* If unrecognized, default to the CC430 power-up value */
-        case MSP430XV2_DCO_2MHz_RSEL2:
-        default:
-          UCSCTL1 = DCORSEL_2;
-          UCSCTL2 = FLLD_1 + 31;
-          divs = DIVS__1;
-          break;
-        case MSP430XV2_DCO_4MHz_RSEL3:
-          UCSCTL1 = DCORSEL_3;
-          UCSCTL2 = FLLD_1 + 63;
-          divs = DIVS__2;
-          break;
-        case MSP430XV2_DCO_8MHz_RSEL3:
-          UCSCTL1 = DCORSEL_3;
-          UCSCTL2 = FLLD_1 + 127;
-          divs = DIVS__4;
-          break;
-        case MSP430XV2_DCO_8MHz_RSEL4:
-          UCSCTL1 = DCORSEL_4;
-          UCSCTL2 = FLLD_1 + 127;
-          divs = DIVS__4;
-          break;
-        case MSP430XV2_DCO_16MHz_RSEL4:
-          UCSCTL1 = DCORSEL_4;
-          UCSCTL2 = FLLD_1 + 255;
-          divs = DIVS__8;
-          break;
-        case MSP430XV2_DCO_16MHz_RSEL5:
-          UCSCTL1 = DCORSEL_5;
-          UCSCTL2 = FLLD_1 + 255;
-          divs = DIVS__8;
-          break;
-        case MSP430XV2_DCO_32MHz_RSEL5:
-          UCSCTL1 = DCORSEL_5;
-          UCSCTL2 = FLLD_1 + 511;
-          divs = DIVS__16;
-          break;
-        case MSP430XV2_DCO_32MHz_RSEL6:
-          UCSCTL1 = DCORSEL_6;
-          UCSCTL2 = FLLD_1 + 511;
-          divs = DIVS__16;
-          break;
-        case MSP430XV2_DCO_64MHz_RSEL6:
-          UCSCTL1 = DCORSEL_6;
-          UCSCTL2 = FLLD_1 + 1023;
-          divs = DIVS__32;
-          break;
-        case MSP430XV2_DCO_64MHz_RSEL7:
-          UCSCTL1 = DCORSEL_7;
-          UCSCTL2 = FLLD_1 + 1023;
-          divs = DIVS__32;
-          break;
-      }
+      UCSCTL1 = DCORSEL_3;
+      UCSCTL2 = FLLD_1 + 127;
+      divs = DIVS__1;
       __bic_SR_register(SR_SCG0);               // Enable the FLL control loop
 
-#ifdef notdef
       /* No __delay_cycles intrinsic on MSPGCC (yet) */
       // Worst-case settling time for the DCO when the DCO range bits have been
       // changed is n x 32 x 32 x f_MCLK / f_FLL_reference. See UCS chapter in 5xx
       // UG for optimization.
-      // 32 x 32 x 8 MHz / 32,768 Hz = 250000 = MCLK cycles for DCO to settle
-      __delay_cycles(250000);
-#endif
+      // 32 x 32 x 8 MHz / 32,768 Hz = 256000 = MCLK cycles for DCO to settle
+      //__delay_cycles(256000);
 
       // Loop until DCO fault flag is cleared.  Ignore OFIFG, since it
       // incorporates XT1 and XT2 fault detection.
@@ -168,15 +114,18 @@ module Msp430XV2ClockControlP @safe() {
         SFRIFG1 &= ~OFIFG;                      // Clear fault flags
       } while (UCSCTL7 & DCOFFG); // Test DCO fault flag
 
-      /* Use REFOCLK for ACLK, and DCOCLKDIV for MCLK and SMCLK */
-      UCSCTL4 = SELA__REFOCLK | SELS__DCOCLKDIV | SELM__DCOCLKDIV;
+      UCSCTL4 = SELA__XT1CLK | SELS__DCOCLK | SELM__DCOCLK;
 
-      /* DIVPA routes ACLK to external pin, undivided
-       * DIVA uses ACLK at 2^15 Hz, undivided
-       * DIVS (SMCLK) uses DCOCLKDIV / N to produce 2^20Hz
+      /*
+       * ACLK  is XT1/1 = 32KiHz (32768 Hz)
+       * SMCLK is DCOCLK/1 = 8MiHz
+       * MCLK  is DCOCLK/1 = 8MiHz
+       *
+       * FIX ME
+       * DIVS (SMCLK) uses DCOCLKDIV / N to produce 2^20Hz  (1uis)
        * DIVM (MCLK) uses DCOCLKDIV to produce DCO/2, undivided
        */
-      UCSCTL5 = DIVPA__1 | DIVA__1 | divs | DIVM__1;
+      UCSCTL5 = DIVA__1 | divs | DIVM__1;
     }
   }
 
@@ -184,7 +133,7 @@ module Msp430XV2ClockControlP @safe() {
     atomic {
       TA0CTL = TASSEL__ACLK | TACLR | MC__STOP | TAIE;
       TA0R = 0;
-      TA1CTL = TASSEL__SMCLK | TACLR | MC__STOP | TAIE;
+      TA1CTL = TASSEL__SMCLK | ID__8 | TACLR | MC__STOP | TAIE;
       TA1R = 0;
     }
   }

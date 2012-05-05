@@ -1,7 +1,7 @@
 COMPONENT=SerialDirectC
 #
-# if building for a x1 cpu define USE_X1.
-# otherwise we are assuming we are building for an x2 cpu.
+# X1 for 1611 etc.  X2 for z1 (2617) mm4 (2618)
+# X5 for 5137 (surf), mm5 (5438)
 #
-#PFLAGS+=-DUSE_X1
+PFLAGS+=-DUSE_X5
 include $(MAKERULES)

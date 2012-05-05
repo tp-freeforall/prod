@@ -166,7 +166,7 @@ configuration HplMsp430GeneralIOC {
 #endif
 
   // provides special ports explicitly
-  // this section of HplMsp430GeneralIOC supports the F14x series
+  // this section of HplMsp430GeneralIOC supports the F14x and F16x series
   // x1 family: msp430f149 and msp430f1611
 
 #if defined(__msp430x14x) || defined(__msp430x16x)
@@ -275,8 +275,10 @@ configuration HplMsp430GeneralIOC {
 #endif /* __msp430x241x || __msp430x261x || __msp430x26x */
 
 
-  // x5 family: cc430f5137, msp430x541x, msp430f5438{,a}
-
+/*
+ * x5 family: cc430f513{3,5,7}
+ * in particular cc4305135 and cc4305137
+ */
 #if defined(__cc430x513x) || defined(__cc430x612x) || defined(__cc430x613x)
   provides interface HplMsp430GeneralIO as CBOUT0;
   provides interface HplMsp430GeneralIO as TA0CLK;
@@ -327,8 +329,12 @@ configuration HplMsp430GeneralIOC {
 #endif /* cc430x513x || cc430x612x || cc430x613x */
 
 
+/*
+ * x5 family: msp430f541{8,9}{,a}, 543{5,6,7,8}{,a}
+ * in particular 5418a and 5438a
+ * You should be using the A parts.   Non-A are buggy.
+ */
 #if defined(__msp430x54x) || defined(__msp430x54xA)
-
   provides interface HplMsp430GeneralIO as TA0CCR0;
   provides interface HplMsp430GeneralIO as TA0CCR1;
   provides interface HplMsp430GeneralIO as TA0CCR2;
@@ -437,7 +443,7 @@ configuration HplMsp430GeneralIOC {
   provides interface HplMsp430GeneralIO as ADC14;
   provides interface HplMsp430GeneralIO as ADC15;
 
-#endif
+#endif /* msp430x54x || msp430x54xA */
 
 }
 implementation {
