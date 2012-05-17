@@ -8,7 +8,7 @@
 # binutils	2.22
 # gcc		4.7.0
 # gdb		7.2a
-# mspgcc	20120407
+# mspgcc	20120514
 # msp430-libc	20120224
 # msp430mcu	20120407
 # nesc          base 1.3.3 with 1.3.4x patches
@@ -49,7 +49,7 @@ GMP=gmp-${GMP_VER}
 MPFR=mpfr-${MPFR_VER}
 MPC=mpc-${MPC_VER}
 
-MSPGCC_VER=20120425
+MSPGCC_VER=20120514
 MSPGCC=mspgcc-${MSPGCC_VER}
 MSPGCC_DIR=DEVEL-4.7.x/
 
