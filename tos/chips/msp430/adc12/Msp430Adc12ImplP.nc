@@ -233,7 +233,7 @@ implementation
   {
     error_t result = ERESERVE;
 #ifdef ADC12_CHECK_ARGS
-    if (!config)
+    if (!config || config->inch == INPUT_CHANNEL_NONE)
       return EINVAL;
 #endif
     atomic {
@@ -281,7 +281,7 @@ implementation
     if (jiffies>0) 
       return EINVAL;
 #endif
-    if (!config || jiffies == 1 || jiffies == 2)
+    if (!config || config->inch == INPUT_CHANNEL_NONE || jiffies == 1 || jiffies == 2)
       return EINVAL;
 #endif
     atomic {
@@ -325,15 +325,16 @@ implementation
 
   async command error_t SingleChannel.configureMultiple[uint8_t id](
       const msp430adc12_channel_config_t *config,
-      uint16_t *buf, uint16_t length, uint16_t jiffies)
-  {
+      uint16_t *buf, uint16_t length, uint16_t jiffies) {
+
     error_t result = ERESERVE;
+
 #ifdef ADC12_CHECK_ARGS
 #ifndef ADC12_TIMERA_ENABLED
     if (jiffies>0) 
       return EINVAL;
 #endif
-    if (!config || !buf || !length || jiffies == 1 || jiffies == 2)
+    if (!config || config->inch == INPUT_CHANNEL_NONE || !buf || !length || jiffies == 1 || jiffies == 2)
       return EINVAL;
 #endif
     atomic {
@@ -386,15 +387,16 @@ implementation
 
   async command error_t SingleChannel.configureMultipleRepeat[uint8_t id](
       const msp430adc12_channel_config_t *config,
-      uint16_t *buf, uint8_t length, uint16_t jiffies)
-  {
+      uint16_t *buf, uint8_t length, uint16_t jiffies) {
+
     error_t result = ERESERVE;
+
 #ifdef ADC12_CHECK_ARGS
 #ifndef ADC12_TIMERA_ENABLED
     if (jiffies>0) 
       return EINVAL;
 #endif
-    if (!config || !buf || !length || length > 16 || jiffies == 1 || jiffies == 2)
+    if (!config || config->inch == INPUT_CHANNEL_NONE || !buf || !length || length > 16 || jiffies == 1 || jiffies == 2)
       return EINVAL;
 #endif
     atomic {
@@ -427,7 +429,7 @@ implementation
         resultBufferLength = length;
         resultBufferStart = buf;
         resultBufferIndex = 0;            
-        
+
         call HplAdc12.setCtl0(ctl0);
         call HplAdc12.setCtl1(ctl1);
         for (i=0; i<(length-1) && i < 15; i++)
@@ -469,15 +471,18 @@ implementation
   async command error_t MultiChannel.configure[uint8_t id](
       const msp430adc12_channel_config_t *config,
       adc12memctl_t *memctl, uint8_t numMemctl, uint16_t *buf, 
-      uint16_t numSamples, uint16_t jiffies)
-  {
+      uint16_t numSamples, uint16_t jiffies) {
+
     error_t result = ERESERVE;
+
 #ifdef ADC12_CHECK_ARGS
 #ifndef ADC12_TIMERA_ENABLED
     if (jiffies>0) 
       return EINVAL;
 #endif
-    if (!config || !memctl || !numMemctl || numMemctl > 15 || !numSamples || 
+    /* note: numSamples % (numMemctl+1) is expensive and should be reworked */
+    if (!config || config->inch == INPUT_CHANNEL_NONE || !memctl || !numMemctl ||
+	numMemctl > 15 || !numSamples || 
         !buf || jiffies == 1 || jiffies == 2 || numSamples % (numMemctl+1) != 0)
       return EINVAL;
 #endif
@@ -609,6 +614,8 @@ implementation
       // only if the client didn't ask for data as fast as possible (jiffies was not zero)
       if (!(call HplAdc12.getCtl0()).msc)
         overflow = TRUE;
+      if (call HplAdc12.getIEFlags() == 0)
+        return; // DMA serves interrupts
     }
     switch (state & CONVERSION_MODE_MASK) 
     { 

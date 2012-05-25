@@ -17,37 +17,11 @@
 #endif
 
 #ifdef USE_X1
-const msp430_uart_union_config_t uart_config = { {
-  ubr    : UBR_4MIHZ_4800,
-  umctl  : UMCTL_4MIHZ_4800,
-  ssel   : 2,
-  pena   : 0,
-  pev    : 0,
-  spb    : 0,
-  clen   : 1,
-  listen : 0,
-  mm     : 0,
-  ckpl   : 0,
-  urxse  : 0,
-  urxeie : 1,
-  urxwie : 0,
-  utxe   : 1,
-  urxe   : 1
-  } };
+#include "uart_x1_config.h"
+#elif USE_X2
+#include "uart_x2_config.h"
 #else
-const msp430_uart_union_config_t uart_config = { {
-  ubr:		UBR_8MIHZ_4800,
-  umctl:	UMCTL_8MIHZ_4800,
-  ucmode:	0,			// uart
-  ucspb:	0,			// one stop
-  uc7bit:	0,			// 8 bit
-  ucpar:	0,			// odd parity (but no parity)
-  ucpen:	0,			// parity disabled
-  ucrxeie:	0,			// err int off
-  ucssel:	2,			// smclk
-  utxe:		1,			// enable tx
-  urxe:		1,			// enable rx
-} };
+#include "uart_x5_config.h"
 #endif
 
 uint16_t rx_ints, tx_ints;
@@ -58,8 +32,11 @@ module SerialDirectP {
 #ifdef USE_X1
     interface HplMsp430Usart as Port;
     interface HplMsp430UsartInterrupts as PortInt;
-#else
+#elif USE_X2
     interface HplMsp430UsciA as Port;
+    interface HplMsp430UsciInterrupts as PortInt;
+#else
+    interface HplMsp430Usci as Port;
     interface HplMsp430UsciInterrupts as PortInt;
 #endif
     interface Boot;
@@ -71,15 +48,21 @@ implementation {
 
     while (!start)
       nop();
+#if defined(USE_X1) || defined(USE_X2)
     call Port.setModeUart((msp430_uart_union_config_t *) &uart_config);
+#else
+    P5SEL |= BIT7 | BIT6;
+    call Port.configure(&uart_config, FALSE);
+#endif
     b = 0;
-    call Port.tx(b++);
+    call Port.setTxbuf(b++);
     while(1) {
       if (call Port.isTxIntrPending())
-	call Port.tx(b++);
+	call Port.setTxbuf(b++);
     }
   }
 
+#ifdef notdef
   async event void PortInt.txDone() {
     tx_ints++;
   }
@@ -89,5 +72,9 @@ implementation {
 
     rx_ints++;
     tmp = call Port.rx();
+  }
+#endif
+
+  async event void PortInt.interrupted(uint8_t iv) {
   }
 }

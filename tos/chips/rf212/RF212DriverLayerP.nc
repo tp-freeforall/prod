@@ -84,6 +84,7 @@ module RF212DriverLayerP
 		interface PacketTimeStamp<TRadio, uint32_t>;
 
 		interface Tasklet;
+		interface RadioAlarm;
 
 #ifdef RADIO_DEBUG
 		interface DiagMsg;
@@ -184,6 +185,10 @@ implementation
 		TX_SFD_DELAY = (uint16_t)(177 * RADIO_ALARM_MICROSEC),
 		RX_SFD_DELAY = (uint16_t)(8 * RADIO_ALARM_MICROSEC),
 	};
+	
+	tasklet_async event void RadioAlarm.fired()
+	{
+	}
   
 /*----------------- INIT -----------------*/
 
@@ -209,6 +214,37 @@ implementation
 	{
 		// for powering up the radio
 		return call SpiResource.request();
+	}
+	
+	void resetRadio()
+	{
+		//TODO: all waiting should be optimized in this function
+		call BusyWait.wait(15);
+		call RSTN.clr();
+		call SLP_TR.clr();
+		call BusyWait.wait(15);
+		call RSTN.set();
+
+		writeRegister(RF212_TRX_CTRL_0, RF212_TRX_CTRL_0_VALUE);
+		writeRegister(RF212_TRX_STATE, RF212_TRX_OFF);
+		
+		//this is way too much (should be done in around 200us), but 510 seemd too short, and it happens quite rarely
+		call BusyWait.wait(1000);
+
+		writeRegister(RF212_IRQ_MASK, RF212_IRQ_TRX_UR | RF212_IRQ_PLL_LOCK | RF212_IRQ_TRX_END | RF212_IRQ_RX_START | RF212_IRQ_CCA_ED_DONE);
+
+		// update register values if different from default
+		if( RF212_CCA_THRES_VALUE != 0x77 )
+			writeRegister(RF212_CCA_THRES, RF212_CCA_THRES_VALUE);
+
+		if( RF212_DEF_RFPOWER != 0x60 )
+			writeRegister(RF212_PHY_TX_PWR, RF212_DEF_RFPOWER);
+
+		if( RF212_TRX_CTRL_2_VALUE != RF212_DATA_MODE_DEFAULT )
+			writeRegister(RF212_TRX_CTRL_2, RF212_TRX_CTRL_2_VALUE);
+
+		writeRegister(RF212_PHY_CC_CCA, RF212_CCA_MODE_VALUE | channel);
+		state = STATE_TRX_OFF;
 	}
 
 	void initRadio()
@@ -341,9 +377,9 @@ implementation
 		else if( (cmd == CMD_TURNOFF || cmd == CMD_STANDBY) 
 			&& state == STATE_RX_ON && isSpiAcquired() )
 		{
+			call IRQ.disable();
 			writeRegister(RF212_TRX_STATE, RF212_FORCE_TRX_OFF);
 
-			call IRQ.disable();
 			radioIrq = FALSE;
 
 			state = STATE_TRX_OFF;
@@ -404,6 +440,7 @@ implementation
 
 	tasklet_async command error_t RadioSend.send(message_t* msg)
 	{
+		uint16_t time;
 		uint8_t length;
 		uint8_t* data;
 		uint8_t header;
@@ -430,6 +467,7 @@ implementation
 
 		// do something useful, just to wait a little
 		timesync = call PacketTimeSyncOffset.isSet(msg) ? ((void*)msg) + call PacketTimeSyncOffset.get(msg) : 0;
+		time32 = call LocalTime.get();
 
 		// we have missed an incoming message in this short amount of time
 		if( (readRegister(RF212_TRX_STATUS) & RF212_TRX_STATUS_MASK) != RF212_PLL_ON )
@@ -442,7 +480,7 @@ implementation
 		atomic
 		{
 			call SLP_TR.set();
-			time32 = call LocalTime.get();
+			time = call RadioAlarm.getNow();
 		}
 		call SLP_TR.clr();
 
@@ -472,7 +510,7 @@ implementation
 		}
 		while( --header != 0 );
 
-		time32 += TX_SFD_DELAY;
+		time32 += (int16_t)(time + TX_SFD_DELAY) - (int16_t)(time32);
 
 		if( timesync != 0 )
 			*(timesync_relative_t*)timesync = (*(timesync_absolute_t*)timesync) - time32;
@@ -651,6 +689,21 @@ implementation
 			atomic time = capturedTime;
 			radioIrq = FALSE;
 			irq = readRegister(RF212_IRQ_STATUS);
+			//this is really bad, but unfortunatly sometimes happens (e.g. radio receives a message while turning on). can't found better solution than reset
+			if(irq == 0 ){
+				RADIO_ASSERT(FALSE);
+				if (cmd == CMD_TURNON){
+					resetRadio();
+					//CMD_TURNON will be restarted at the tasklet when serviceRadio returns
+				} else
+					RADIO_ASSERT(FALSE);
+				/*
+				 * We don't care (yet) with CHANNEL, CCA, RECEIVE and TRANSMIT, mostly becouse all of them needs to turn the radio back on, which needs PLL_LOCK irq,
+				 * but we don't want to signal RadioState.done()
+				 * However it seems most problems happens when turning on the radio
+				 */
+				return;
+			}
 
 #ifdef RADIO_DEBUG
 			// TODO: handle this interrupt

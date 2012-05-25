@@ -1,5 +1,6 @@
-
-/* Copyright (c) 2000-2003 The Regents of the University of California.  
+/*
+ * Copyright (c) 2012, Eric B. Decker
+ * Copyright (c) 2000-2003 The Regents of the University of California.  
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,6 +37,7 @@
  *
  * @author Cory Sharp <cssharp@eecs.berkeley.edu>
  * @author Peter Bigot <pab@peoplepowerco.com>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include "TinyError.h"
@@ -116,4 +118,19 @@ interface HplMsp430GeneralIO
    */
   async command uint8_t getResistor();
 
+  /** 
+   * Set port drive strength.
+   * @param mode: MSP430_PORT_DRIVE_STRENGTH_*
+   * @return EINVAL if invalid mode or pin doesn't support drive
+   *     strength config.
+   * FAIL if pin is not an output
+   * SUCCESS if pin supports it, is an output, and mode is valid
+   */
+  async command error_t setDriveStrength(uint8_t mode);
+
+  /**
+   * Get drive strength.
+   * @return MSP430_PORT_DRIVE_STRENGTH_*
+   */
+  async command uint8_t getDriveStrength(); 
 }

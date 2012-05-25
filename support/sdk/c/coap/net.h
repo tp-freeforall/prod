@@ -24,6 +24,9 @@
 #ifdef IDENT_APPNAME
 #include <lib6lowpan/ip.h>
 typedef uint16_t ssize_t;
+#ifdef PLATFORM_MICAZ
+typedef uint16_t in_port_t;
+#endif
 #else
 #include <string.h>
 #include <time.h>
@@ -66,10 +69,12 @@ typedef struct {
   coap_queue_t *sendqueue, *recvqueue; /* FIXME make these coap_list_t */
 #ifndef IDENT_APPNAME
   int sockfd;			/* send/receive socket */
+#else
+  int tinyos_port;
 #endif
   int reqtoken;
   void ( *msg_handler )( void *, coap_queue_t *, void *);
-   coap_queue_t *asynresqueue; /* FIXME to keep the details of asyn delayed responses */
+   coap_queue_t *splitphasequeue; /* FIXME to keep the details of TinyOS splitphase responses */
 } coap_context_t;
 
 typedef void (*coap_message_handler_t)( coap_context_t  *, coap_queue_t *, void *);

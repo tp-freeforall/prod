@@ -26,7 +26,6 @@
 
 /* pre-defined constants that reflect defaults for CoAP */
 
-#define COAP_PREACK_TIMEOUT          200 /* timeout in milliseconds for sending PreACK */
 #define COAP_DEFAULT_RESPONSE_TIMEOUT  1 /* response timeout in seconds */
 #define COAP_DEFAULT_MAX_RETRANSMIT    5 /* max number of retransmissions */
 #define COAP_DEFAULT_PORT          61616 /* CoAP default UDP port */
@@ -75,6 +74,7 @@
 
 /* CoAP result codes (HTTP-Code / 100 * 40 + HTTP-Code % 100) */
 
+#define COAP_RESPONSE_CODE(N)  (((N)/100 << 5) | (N)%100)
 #define COAP_RESPONSE_100       40   /* 100 Continue */
 #define COAP_RESPONSE_200       80   /* 200 OK */
 #define COAP_RESPONSE_201       81   /* 201 Created */
@@ -89,6 +89,8 @@
 #define COAP_RESPONSE_X_240    240   /* Token Option required by server */
 #define COAP_RESPONSE_X_241    241   /* Uri-Authority Option required by server */
 #define COAP_RESPONSE_X_242    242   /* Critical Option not supported */
+
+#define COAP_SPLITPHASE       300   /* Code for telling TinyOS that the splitphase resource has successfully started */
 
 /* CoAP media type encoding */
 

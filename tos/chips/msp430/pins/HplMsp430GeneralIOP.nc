@@ -1,5 +1,6 @@
-
-/* Copyright (c) 2000-2005 The Regents of the University of California.  
+/*
+ * Copyright (c) 2012, Eric B. Decker
+ * Copyright (c) 2000-2005 The Regents of the University of California.  
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +33,7 @@
 
 /**
  * @author Joe Polastre
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include "msp430regtypes.h"
@@ -68,4 +70,6 @@ implementation
   async command bool IO.isIOFunc() { return (PORTxSEL & (0x01<<pin)) == 0; }
   async command error_t IO.setResistor(uint8_t mode) { return EINVAL; }
   async command uint8_t IO.getResistor() { return MSP430_PORT_RESISTOR_INVALID; }
+  async command error_t IO.setDriveStrength(uint8_t mode){ return EINVAL;}
+  async command uint8_t IO.getDriveStrength(){ return MSP430_PORT_DRIVE_STRENGTH_INVALID;}
 }

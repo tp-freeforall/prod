@@ -54,7 +54,6 @@
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
  * @author Derek Baker <derek@red-slate.co.uk>
- *   I2C support
  * @author Eric B. Decker <cire831@gmail.com>
  */
 

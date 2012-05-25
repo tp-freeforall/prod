@@ -1,3 +1,28 @@
+/*
+ * Copyright (c) 2008-2012, SOWNet Technologies B.V.
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+*/
+
 #include "Assert.h"
 #include "ChipconRegisters.h"
 #include "ChipconRegisterValues.h"
@@ -205,9 +230,11 @@ implementation {
 	 * to be set (which indicates the radio has a valid RSSI measurement).
 	 */
 	void waitForRssiValid() {
-		// wait until either CS (bit 6) or CCA (bit 4) is asserted in PKTSTATUS
-		uint8_t valid = (1<< 6) | (1 << 4);
-		while (!(readRegister(PKTSTATUS) & valid));
+		// Wait until either CS (bit 6) or CCA (bit 4) is asserted in PKTSTATUS,
+		// but drop out of the loop if we're no longer in RX, which can happen
+		// if (something that looks like) a packet is received while we wait.
+		uint8_t valid = (1 << 6) | (1 << 4);
+		while (!(readRegister(PKTSTATUS) & valid) && getChipState() == STATE_RX);
 	}
 	
 	/**
@@ -543,13 +570,36 @@ implementation {
 			// wait and see if we actually made the transition
 			call BusyWait.wait(RX_TO_TX_TIME);
 			
-			// check against STATE_RX instead of STATE_TX, just in case we're still in STATE_SETTLING or somesuch
-			if (getChipState() == STATE_RX) {
-				return FAIL;
+//			// check against STATE_RX instead of STATE_TX, just in case we're still in STATE_SETTLING or somesuch
+//			if (getChipState() == STATE_RX) {
+//				return FAIL;
+//			}
+//
+//			// set the flag - next interrupt indicates end of sent packet 
+//			transmitting = TRUE;
+			
+			switch (getChipState()) {
+				case STATE_RX:
+					// still in RX, so CCA prevented us from switching
+					return FAIL;
+				
+				case STATE_IDLE:
+				case STATE_CALIBRATE:
+				case STATE_RXFIFO_OVERFLOW:
+					// we received a packet just as we tried to switch
+					return EBUSY;
+				
+				case STATE_TX:
+				case STATE_SETTLING:
+					transmitting = TRUE;
+					break;
+				
+				default:
+					// OK, now I'm curious - which is it?
+					// compare to one we know it isn't so assertEquals will print it out
+					assertEquals(state, STATE_IDLE, ASSERT_CC_HAL_NO_TX);
+					return FAIL;
 			}
-
-			// set the flag - next interrupt indicates end of sent packet 
-			transmitting = TRUE;
 			
 			// set a timer to guard against losing the end-of-packet interrupt
 			if (call TxTimer.isRunning()) {

@@ -423,7 +423,7 @@ implementation {
   async command void Usci.clearGeneralCall() { UCB0I2COA &= ~UCGCEN; }
   async command void Usci.setGeneralCall()   { UCB0I2COA |=  UCGCEN; }
 
-  /* get/set Slave Address, i2cSA */
+  /* get/set Slave Address, I2Csa */
   async command uint16_t Usci.getSlaveAddress()            { return UCB0I2CSA; }
   async command void Usci.setSlaveAddress( uint16_t addr ) { UCB0I2CSA = addr; }
 

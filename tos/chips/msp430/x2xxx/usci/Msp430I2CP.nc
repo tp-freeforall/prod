@@ -59,7 +59,7 @@ generic module Msp430I2CP() {
 
 implementation {
   enum {
-    TIMEOUT = 256,
+    TIMEOUT = 800, // 200
   };
 
   norace uint8_t* m_buf;
@@ -122,14 +122,16 @@ implementation {
     call UsciB.enableRxIntr();
 
     if ( flags & I2C_START ) {
-      while(call UsciB.getStopBit()) {
-	if (i >= TIMEOUT)
-	  return EBUSY;
-	i++;
+      while(call UsciB.getStopBit()){
+        if(i>=TIMEOUT) { 
+          return EBUSY;
+        }
+        i++;
       }
       call UsciB.setTXStart();
-    } else
+    } else {
       nextRead();
+    }
     return SUCCESS;
   }
 
@@ -142,8 +144,9 @@ implementation {
     m_flags = flags;
     m_pos = 0;
     while((call UsciB.getUstat()) & UCBBUSY) {
-      if (i >= TIMEOUT)
-	return FAIL;
+      if(i>=TIMEOUT) {
+        return FAIL;
+      }
       i++;
     }
 
@@ -151,72 +154,80 @@ implementation {
     call UsciB.setSlaveAddress(addr);
     call UsciB.enableTxIntr(); 
 
-    if (flags & I2C_START) {
-      while (call UsciB.getStopBit()) {
-	if (i >= TIMEOUT)
-	  return EBUSY;
-	i++;
+    if ( flags & I2C_START ) {
+      while(call UsciB.getStopBit()){
+        if(i>=TIMEOUT) {
+          return EBUSY;
+        }
+        i++;
       }
       i=0;
       while((call UsciB.getUstat()) & UCBBUSY) {
-	if (i >= TIMEOUT)
-	  return FAIL;
-	i++;
+        if(i>=TIMEOUT) {
+          return FAIL;
+        }
+        i++;
       }
       call UsciB.setTXStart();
-    } else
+    } else {
       nextWrite();
+    }
     return SUCCESS;
   }
 
   void nextRead() {
     uint16_t i=0;
 
+#ifdef notdef
     /* this needs to be fixed.  software delay not so great */
     for(i = 0xffff; i != 0;i--);	//software delay (aprox 25msec on z1)
+#endif
     if ( m_pos == m_len ) {
       if ( m_flags & I2C_STOP ) {
-	call UsciB.setTXStop();
-	while (!call UsciB.getStopBit()) {
-	  if (i >= TIMEOUT) { 		/* eh.  this looks broken */
-	    signalDone(EBUSY);
-	    return;
-	  }
-	  i++;
-	}
-	signalDone(SUCCESS);
-      } else
-	signalDone(SUCCESS);
+        call UsciB.setTXStop();
+        while(!call UsciB.getStopBit()){
+          if(i>=TIMEOUT) { 
+            signalDone( EBUSY );
+            return;
+          }
+          i++;
+        }
+        signalDone( SUCCESS );
+      } else {
+        signalDone( SUCCESS );
+      }
     } else {
-      m_buf[m_pos++] = call UsciB.rx();
+      m_buf[ m_pos++ ] = call UsciB.rx();
     }
   }
 
   void nextWrite() {
     uint16_t i = 0;
 
+#ifdef notdef
     /* this needs to get fixed. */
     for (i = 0xffff; i != 0; i--);	//software delay (aprox 25msec on z1)
-    if ((m_pos == m_len) && (m_flags & I2C_STOP)) {
+#endif
+    if ( ( m_pos == m_len) && ( m_flags & I2C_STOP ) ) {
       call UsciB.setTXStop();
-      while (call UsciB.getStopBit()) {
-	if(i >= TIMEOUT) {
-	  signalDone(EBUSY);
-	  return;
-	}
-	i++;
+      while(call UsciB.getStopBit()){
+        if(i>=TIMEOUT) {
+          signalDone( EBUSY );
+          return;
+        }
+        i++;
       }
-      signalDone(SUCCESS);
+      signalDone( SUCCESS );
     } else { 
-      if ((call UsciB.getUstat()) == (UCBBUSY | UCNACKIFG | UCSCLLOW)) {
-	signal I2CBasicAddr.writeDone(FAIL, call UsciB.getSlaveAddress(), m_len, m_buf );
-	return;
+      if((call UsciB.getUstat()) == ( UCBBUSY | UCNACKIFG | UCSCLLOW)) {
+        signal I2CBasicAddr.writeDone( FAIL, call UsciB.getSlaveAddress(), m_len, m_buf );
+        return;
       }
-      call UsciB.tx(m_buf[m_pos++]);
+      call UsciB.tx( m_buf[ m_pos++ ] );
     }
   }
 
-  async event void Interrupts.txDone() {
+  async event void Interrupts.txDone(){
     call UsciB.clrTxIntr();
     if (call UsciB.getTransmitReceiveMode())
       nextWrite();
@@ -224,7 +235,7 @@ implementation {
       nextRead();
   }
 
-  async event void Interrupts.rxDone(uint8_t data) {
+  async event void Interrupts.rxDone(uint8_t data){
     call UsciB.clrRxIntr();
     if (call UsciB.getTransmitReceiveMode())
       nextWrite();

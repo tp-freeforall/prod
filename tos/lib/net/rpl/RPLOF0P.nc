@@ -68,11 +68,14 @@ implementation{
 
   /* Which metrics does this implementation support */
   command bool RPLOF.objectSupported(uint16_t objectType) {
-    if (objectType == RPLOF_OPTION_SOLICITATION) {
+    // OF0 does not care about the metric
+    return TRUE;
+    /*
+    if (objectType == RPL_ROUTE_METRIC_ETX) {
       return TRUE;
     }
-
     return FALSE;
+    */
   }
 
   command void RPLOF.setMinHopRankIncrease(uint16_t val) {
@@ -94,7 +97,7 @@ implementation{
     return nodeRank;
   }
 
-  command bool RPLOF.recalcualateRank() {
+  command bool RPLOF.recalculateRank() {
     uint16_t prevEtx, prevRank;
     parent_t* parentNode = call ParentTable.get(desiredParent);
 

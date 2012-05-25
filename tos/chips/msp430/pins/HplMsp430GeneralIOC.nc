@@ -1,4 +1,5 @@
 /**
+ * Copyright (c) 2012 Eric B. Decker
  * Copyright (c) 2011 João Gonçalves
  * Copyright (c) 2011 Eric B. Decker
  * Copyright (c) 2009 DEXMA SENSORS SL
@@ -165,8 +166,15 @@ configuration HplMsp430GeneralIOC {
   provides interface HplMsp430GeneralIO as Port117;
 #endif
 
+#if defined (__msp430_have_portj) || defined(__MSP430_HAS_PORTJ__) || defined(__MSP430_HAS_PORTJ_R__)
+  provides interface HplMsp430GeneralIO as PortJ0;
+  provides interface HplMsp430GeneralIO as PortJ1;
+  provides interface HplMsp430GeneralIO as PortJ2;
+  provides interface HplMsp430GeneralIO as PortJ3;
+#endif
+
   // provides special ports explicitly
-  // this section of HplMsp430GeneralIOC supports the F14x series
+  // this section of HplMsp430GeneralIOC supports the F14x and F16x series
   // x1 family: msp430f149 and msp430f1611
 
 #if defined(__msp430x14x) || defined(__msp430x16x)
@@ -275,8 +283,10 @@ configuration HplMsp430GeneralIOC {
 #endif /* __msp430x241x || __msp430x261x || __msp430x26x */
 
 
-  // x5 family: cc430f5137, msp430x541x, msp430f5438{,a}
-
+/*
+ * x5 family: cc430f513{3,5,7}
+ * in particular cc4305135 and cc4305137
+ */
 #if defined(__cc430x513x) || defined(__cc430x612x) || defined(__cc430x613x)
   provides interface HplMsp430GeneralIO as CBOUT0;
   provides interface HplMsp430GeneralIO as TA0CLK;
@@ -327,8 +337,12 @@ configuration HplMsp430GeneralIOC {
 #endif /* cc430x513x || cc430x612x || cc430x613x */
 
 
+/*
+ * x5 family: msp430f541{8,9}{,a}, 543{5,6,7,8}{,a}
+ * in particular 5418a and 5438a
+ * You should be using the A parts.   Non-A are buggy.
+ */
 #if defined(__msp430x54x) || defined(__msp430x54xA)
-
   provides interface HplMsp430GeneralIO as TA0CCR0;
   provides interface HplMsp430GeneralIO as TA0CCR1;
   provides interface HplMsp430GeneralIO as TA0CCR2;
@@ -437,7 +451,7 @@ configuration HplMsp430GeneralIOC {
   provides interface HplMsp430GeneralIO as ADC14;
   provides interface HplMsp430GeneralIO as ADC15;
 
-#endif
+#endif /* msp430x54x || msp430x54xA */
 
 }
 implementation {
@@ -662,6 +676,13 @@ implementation {
     new HplMsp430GeneralIOP(P11IN_, P11OUT_, P11DIR_, P11SEL_, 7) as P117,
 #endif
 
+#if defined(__MSP430_HAS_PORTJ_R__)
+    new HplMsp430GeneralIORenDsP(PJIN_, PJOUT_, PJDIR_, PJREN_, PJDS_, 0) as PJ0,
+    new HplMsp430GeneralIORenDsP(PJIN_, PJOUT_, PJDIR_, PJREN_, PJDS_, 1) as PJ1,
+    new HplMsp430GeneralIORenDsP(PJIN_, PJOUT_, PJDIR_, PJREN_, PJDS_, 2) as PJ2,
+    new HplMsp430GeneralIORenDsP(PJIN_, PJOUT_, PJDIR_, PJREN_, PJDS_, 3) as PJ3,
+#endif
+
     PlatformC; // dummy to end unknown sequence
 
 #if defined(__msp430_have_port1) || defined(__MSP430_HAS_PORT1__) || defined(__MSP430_HAS_PORT1_R__)
@@ -783,6 +804,13 @@ implementation {
   Port115 = P115;
   Port116 = P116;
   Port117 = P117;
+#endif
+
+#if defined(__msp430_have_portJ) || defined(__MSP430_HAS_PORTJ__) || defined(__MSP430_HAS_PORTJ_R__)
+  PortJ0 = PJ0;
+  PortJ1 = PJ1;
+  PortJ2 = PJ2;
+  PortJ3 = PJ3;
 #endif
 
 #ifdef __msp430x14x

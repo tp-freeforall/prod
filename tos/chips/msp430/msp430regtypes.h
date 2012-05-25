@@ -278,6 +278,7 @@
 #define TYPE_PORT_DIR uint8_t
 #define TYPE_PORT_SEL uint8_t
 #define TYPE_PORT_REN uint8_t
+#define TYPE_PORT_DS uint8_t
 
 /*
  * Port 0?  very odd.  TI starts with P1 so where did P0 come from?

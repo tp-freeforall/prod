@@ -30,7 +30,7 @@ Ubuntu 12.04 is currently being tested.  Mac support can be added to 10.04 and 1
 is included directly in 11.10 and later versions.   (MacBookPro 3,1 has been directly
 tested).
 
-Obtain an ISO image from releases/ubuntu.com or alternativly from tinyprod.net/downloads.
+Obtain an ISO image from releases/ubuntu.com or alternatively from tinyprod.net/downloads.
 Burn the iso to a CD and install on your box.  A simple install is fine and will
 take less time.
 
@@ -54,9 +54,9 @@ exit
 
 2) Install the TinyOS toolset (msp430)
 
-We want the tinyos toolset for msp430 based motes (telosb). Debian packages
-are available from Stanford and TinyProd.net.   The toolchain at TinyProd.Net
-is more up to date.
+We want the tinyos toolset for msp430 based motes (ie, telosb, msp430f1611). Debian packages
+are available from Stanford and TinyProd.net.   The toolchain at TinyProd.Net as of
+(April 4, 2012) is more up to date.
 
 We want the following packages:
 
@@ -70,7 +70,7 @@ We want the following packages:
 	   mspdebug-tinyos
 	   tinyos-tools
 
-You want to follow the instructions at: http://tinyprod.net/repos/debian-dev.
+You want to follow the instructions at: http://tinyprod.net/repos/debian.
 
 The following should be equivilent.  With some additions...
 
@@ -83,9 +83,9 @@ gpg -a --export F99BE531 | sudo apt-key add -
 sudo -s
 
 #
-# add the repo pointer into sources.list
+# teach dpkt/apt-get/aptitude about where to find the tinyprod tools repository
 #
-echo "deb http://tinyprod.net/repos/debian-dev squeeze main" >> /etc/apt/sources.list
+echo "deb http://tinyprod.net/repos/debian squeeze main" >> /etc/apt/sources.list.d/tinyprod-debian.list
 apt-get update
 apt-get install nesc msp430-tinyos mspdebug-tinyos tinyos-tools
 exit

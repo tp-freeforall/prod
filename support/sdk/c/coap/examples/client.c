@@ -302,9 +302,6 @@ message_handler( coap_context_t  *ctx, coap_queue_t *node, void *data) {
 
 #ifdef SHOWREALVALUES
 
-
-
-
     if (strcmp((const char *)uri.path.s, "st") == 0 ) {
       printf("\n** Temperatur: %4.2f K\n\n", ((float)char_to_uint16(node->pdu->data))/100);
     } else if (strcmp((const char *)uri.path.s, "sh") == 0) {
@@ -330,6 +327,8 @@ message_handler( coap_context_t  *ctx, coap_queue_t *node, void *data) {
       } else {
 	printf("** LEDs set\n");
       }
+    } else if (strcmp((const char *)uri.path.s, "rt") == 0) {
+      printf("** Route:\ndestination\t\tgateway\t\tiface\n %s\n", node->pdu->data);
     } else if (strcmp((const char *)uri.path.s, "r") == 0) {
       val_all val = char_to_val_all(node->pdu->data);
       printf("\n** All values: \n");
@@ -347,6 +346,8 @@ message_handler( coap_context_t  *ctx, coap_queue_t *node, void *data) {
 	printf("** Voltage:     NaN\n\n");
     } else if (strcmp((const char *)uri.path.s, "lipsum") == 0) {
     } else if (strcmp((const char *)uri.path.s, "time") == 0) {
+    } else if (strcmp((const char *)uri.path.s, COAP_DEFAULT_URI_WELLKNOWN) == 0) {
+      printf("** .well-known/core:\n");
     } else {
       printf("** unknown URI\n");
     }
@@ -799,8 +800,8 @@ main(int argc, char **argv) {
 	coap_dispatch( ctx );	/* and dispatch PDUs from receivequeue */
 
 	// koo second read is done to process the asyn response. TODO this has to be done properly by checking the type of message
-	coap_read( ctx );	/* read received data */
-	coap_dispatch( ctx );	/* and dispatch PDUs from receivequeue */
+	//coap_read( ctx );	/* read received data */
+	//coap_dispatch( ctx );	/* and dispatch PDUs from receivequeue */
 	// koo
       }
     }

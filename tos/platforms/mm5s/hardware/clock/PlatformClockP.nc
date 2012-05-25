@@ -57,7 +57,9 @@
  *
  * So for power performance reasons we want to configure for 8MHz and 1.8V.
  * (Yes the 5438 is different but we are using it to simulate set up for
- * the 5438a which has the tasty power performance specs.)
+ * the 5438a which has the tasty power performance specs.)  Note, we ignore
+ * the 5438.   It is quite buggy and has a pin for pin replacement (the 5438a)
+ * that behaves mor better.   So why bother supporting the 5438.
  *
  * The TMicro timer (TA1) is run off DCOCLK/8 which yields 1us (not 1uis)
  * ticks.  However, TMilli is the long term timer that runs when the system
@@ -68,7 +70,8 @@
  * in terms of 1mis (essentially different units).  This is not a good situation.
  * It is better to be consistent in terms of units for both TMilli and TMicro.
  * The constrant is on TMicro because of the 8MHz restriction forcing 1us.
- * This argues for TMilli also being in decimal time (1ms).
+ * This argues for TMilli also being in decimal time (1ms).   This is what
+ * we are doing.   Both TMilli and TMicro decimal units.
  *
  * We want the following set up to be true when we are complete:
  *

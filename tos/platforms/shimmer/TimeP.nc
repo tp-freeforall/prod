@@ -65,15 +65,33 @@ extern int snprintf(char *str, size_t len, const char *format, ...) __attribute_
 #endif
 
 #ifndef HOST_TIME
+  /*
+   * this array needs to be one longer than NUM_YEARS, because
+   * the code tests to see if current time in seconds is less than
+   * the start of next year...
+   * how to generate this:
+   * get the dates for start and end of daylight savings
+   * get the day of week for jan 1 (0-6, 0 is monday)
+   * in python, do this for dst dates:
+   * >>> time.strptime("13 Mar 16", "%d %b %y")
+   * which will give you something like
+   * time.struct_time(tm_year=2016, tm_mon=3, tm_mday=13, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=6, tm_yday=73, tm_isdst=-1)
+   * use tm_yday for the last two fields (def above)
+   * for seconds for jan 1 at 00:00, set hour relative to gmtime; e.g., here in u.s. est i used 5.  field 7 (the 4) is jan 1 day of week:
+   * >>> print "%08x" % time.mktime((2016, 1, 1, 5, 0, 0, 4, 1, 0))
+   * field three is is_leap.  
+   */
 #define NUM_YEARS 4
-  const int16_t g_first_year = 2009;
-  struct y_info year_info[NUM_YEARS] = {
+  const int16_t g_first_year = 2012;
+  struct y_info year_info[NUM_YEARS + 1] = {
     /* unix time start jan 1 1970 */
     // from 2007, dst begins 2nd sunday in march, ends first sunday in november
-    { 0x495c4dd0, 3, 0, 67, 305},
-    { 0x4B3D8150, 4, 0, 73, 311},
-    { 0x4D1EB4D0, 5, 0, 72, 310},
-    { 0x4EFFE850, 6, 1, 71, 309}
+    { 0x4EFFE850, 6, 1, 71, 309},
+    { 0x50e26d50, 1, 0, 69, 307},
+    { 0x52c3a0d0, 2, 0, 68, 306},
+    { 0x54a4d450, 3, 0, 67, 305},
+    { 0x568607d0, 4, 1, 73, 311}
+
   };
 
 #else

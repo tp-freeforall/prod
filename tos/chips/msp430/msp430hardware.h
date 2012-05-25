@@ -571,6 +571,13 @@ enum {
   MSP430_PORT_RESISTOR_PULLUP,     /**< Pullup resistor enabled */
 };
 
+/* support for chips with configurable drive strengths */
+enum {
+  MSP430_PORT_DRIVE_STRENGTH_INVALID,
+  MSP430_PORT_DRIVE_STRENGTH_REDUCED,
+  MSP430_PORT_DRIVE_STRENGTH_FULL,
+};
+
 #ifndef STATIC_ARRAY_SIZE
 
 /*

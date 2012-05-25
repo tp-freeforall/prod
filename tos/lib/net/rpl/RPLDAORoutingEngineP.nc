@@ -99,7 +99,7 @@ generic module RPLDAORoutingEngineP() {
 
   command error_t StdControl.stop() {
     m_running = FALSE;
-    return FAIL;
+    return SUCCESS;
   }
 
   uint32_t count = 0;
@@ -305,6 +305,7 @@ generic module RPLDAORoutingEngineP() {
                           size_t len, struct ip6_metadata *meta) {
     dao_entry_t* dao_msg;
     error_t error;
+    struct in6_addr MYADDR;
     // This is where the message is actually cast
     struct dao_base_t *dao = (struct dao_base_t *)payload; 
     struct route_entry *entry;
@@ -343,8 +344,11 @@ generic module RPLDAORoutingEngineP() {
       }
     } else {
       /* new prefix */
-      if (downwards_table_count == ROUTE_TABLE_SZ) {
+
+      call IPAddress.getGlobalAddr(&MYADDR);
+      if (downwards_table_count == ROUTE_TABLE_SZ || memcmp_rpl((void*)&MYADDR, dao->target_option.target_prefix.s6_addr, 16)) {
         // printf("RPL: Downward table full -- not adding route\n");
+	// or this is my own address for some wierd reason
         return;
       }
       printf("RPL: DAO: Add new route\n");
@@ -354,22 +358,24 @@ generic module RPLDAORoutingEngineP() {
 						dao->target_option.prefix_length,
 						&iph->ip6_src,
 						RPL_IFACE);
-	/*
-	if (new_key == ROUTE_INVAL_KEY) {
-	  call Leds.led1Toggle();
-	  return;
-	}
-	*/
       }
 
       if (new_key != ROUTE_INVAL_KEY) {
-	downwards_table[downwards_table_count].lifetime = 
-          dao->transit_info_option.path_lifetime;
+	//downwards_table[downwards_table_count].lifetime = dao->transit_info_option.path_lifetime;
 	downwards_table[downwards_table_count].key = new_key;
 	// for next element
 	downwards_table_count ++;
       }
 
+    }
+
+    if (new_key != ROUTE_INVAL_KEY) {
+      uint8_t i;
+      for (i=0;i<downwards_table_count;i++){
+        if (downwards_table[i].key == new_key){
+          downwards_table[i].lifetime = dao->transit_info_option.path_lifetime;
+	}
+      }
     }
 
     /***********************************************************************/

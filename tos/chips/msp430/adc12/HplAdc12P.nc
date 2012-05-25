@@ -109,25 +109,30 @@ implementation
     ADC12IV = 0; 
     ADC12IFG = 0;
   } 
-  
-  async command void HplAdc12.startConversion(){ 
-    ADC12CTL0 |= ADC12ON; 
-    ADC12CTL0 |= (ADC12SC + ENC); 
+
+  async command void HplAdc12.startConversion() {
+    /*
+     * Breakfast (jhu) does the enable on a single line
+     * trunk does the following...  does it matter?
+     * for now leave the trunk version.
+     */
+    ADC12CTL0 |= ADC12ON;
+    ADC12CTL0 |= (ADC12SC | ADC12ENC);
   }
-  
+
   async command void HplAdc12.stopConversion(){
     // stop conversion mode immediately, conversion data is unreliable
     uint16_t ctl1 = ADC12CTL1;
-    ADC12CTL1 &= ~(CONSEQ0 | CONSEQ1);
-    ADC12CTL0 &= ~(ADC12SC + ENC); 
+    ADC12CTL1 &= ~(ADC12CONSEQ0 | ADC12CONSEQ1);
+    ADC12CTL0 &= ~(ADC12SC + ADC12ENC); 
     ADC12CTL0 &= ~(ADC12ON);
-    ADC12CTL1 |= (ctl1 & (CONSEQ0 | CONSEQ1));
+    ADC12CTL1 |= (ctl1 & (ADC12CONSEQ0 | ADC12CONSEQ1));
   }
-  
+
   async command void HplAdc12.enableConversion(){ 
-    ADC12CTL0 |= ENC; 
+    ADC12CTL0 |= ADC12ENC; 
   }
-    
+
   async command bool HplAdc12.isBusy(){ return (ADC12CTL1 & ADC12BUSY); }
 
   TOSH_SIGNAL(ADC12_VECTOR) {

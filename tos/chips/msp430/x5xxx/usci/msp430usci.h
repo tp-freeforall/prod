@@ -3,7 +3,7 @@
 
 #include "msp430hardware.h"
 
-/* when would this ever get used? */
+/* MSP430_USCI_RESOURCE is used for USCI_IDs */
 #define MSP430_USCI_RESOURCE "Msp430Usci.Resource"
 
 #define MSP430_USCI_A0_RESOURCE "Msp430Usci.A0.Resource"

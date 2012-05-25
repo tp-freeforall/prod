@@ -47,7 +47,6 @@
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
  * @author Derek Baker <derek@red-slate.co.uk>
- *   I2C support
  */
 
 generic module HplMsp430UsciP(

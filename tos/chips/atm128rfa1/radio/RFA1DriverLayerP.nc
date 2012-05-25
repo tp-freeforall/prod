@@ -114,7 +114,6 @@ implementation
     STATE_TRX_OFF_2_RX_ON = 4,
     STATE_RX_ON = 5,
     STATE_BUSY_TX_2_RX_ON = 6,
-    STATE_PLL_ON_2_RX_ON = 7,
   };
 
   tasklet_norace uint8_t cmd;
@@ -382,7 +381,7 @@ implementation
     {
       RADIO_ASSERT( (TRX_STATUS & RFA1_TRX_STATUS_MASK) == BUSY_RX );
 
-      state = STATE_PLL_ON_2_RX_ON;
+      TRX_STATE = CMD_RX_ON;
       return EBUSY;
     }
 
@@ -540,7 +539,15 @@ implementation
       radioIrq = IRQ_NONE;
     }
 
-    if( irq & IRQ_PLL_LOCK )
+#ifdef RFA1_RSSI_ENERGY
+    // check this early before the PHY_ED_LEVEL register is overwritten
+    if( irq == IRQ_RX_END )
+      call PacketRSSI.set(rxMsg, PHY_ED_LEVEL);
+    else
+      call PacketRSSI.clear(rxMsg);
+#endif
+
+    if( (irq & IRQ_PLL_LOCK) != 0 )
     {
       if( cmd == CMD_TURNON || cmd == CMD_CHANNEL )
       {
@@ -555,44 +562,7 @@ implementation
         RADIO_ASSERT(FALSE);
     }
 
-    if( irq & IRQ_RX_START )
-    {
-      if( cmd == CMD_CCA )
-      {
-        signal RadioCCA.done(FAIL);
-        cmd = CMD_NONE;
-      }
-
-      if( cmd == CMD_NONE )
-      {
-        RADIO_ASSERT( state == STATE_RX_ON || state == STATE_PLL_ON_2_RX_ON );
-
-        // the most likely place for busy channel, with no TRX_END interrupt
-        if( irq == IRQ_RX_START )
-        {
-          temp = PHY_RSSI & RFA1_RSSI_MASK;
-          rssiBusy += temp - (rssiBusy >> 2);
-#ifndef RFA1_RSSI_ENERGY
-          call PacketRSSI.set(rxMsg, temp);
-        }
-        else
-        {
-          call PacketRSSI.clear(rxMsg);
-#endif
-        }
-
-        if( irq == IRQ_RX_START ) // just to be cautious
-          call PacketTimeStamp.set(rxMsg, time);
-        else
-          call PacketTimeStamp.clear(rxMsg);
-
-        cmd = CMD_RECEIVE;
-      }
-      else
-        RADIO_ASSERT( cmd == CMD_TURNOFF );
-    }
-
-    if( irq & IRQ_TX_END )
+    if( cmd == CMD_TRANSMIT && (irq & IRQ_TX_END) != 0 )
     {
       RADIO_ASSERT( state == STATE_BUSY_TX_2_RX_ON );
 
@@ -604,46 +574,67 @@ implementation
       RADIO_ASSERT( ! (irq & IRQ_RX_START) );
     }
 
-    if( irq & IRQ_RX_END )
+    if( (irq & IRQ_RX_START) != 0 )
     {
-#ifdef RFA1_RSSI_ENERGY
-      if( irq == IRQ_RX_END && cmd == CMD_NONE )
-              call PacketRSSI.set(rxMsg, PHY_ED_LEVEL);
-            else
-              call PacketRSSI.clear(rxMsg);
-#endif
-
-      RADIO_ASSERT( state == STATE_RX_ON || state == STATE_PLL_ON_2_RX_ON );
-
-      if( state == STATE_PLL_ON_2_RX_ON )
+      if( cmd == CMD_CCA )
       {
-        RADIO_ASSERT( (TRX_STATUS & RFA1_TRX_STATUS_MASK) == PLL_ON );
+        signal RadioCCA.done(FAIL);
+        cmd = CMD_NONE;
+      }
 
-        TRX_STATE = CMD_RX_ON;
-        state = STATE_RX_ON;
+      if( cmd == CMD_NONE )
+      {
+        RADIO_ASSERT( state == STATE_RX_ON );
+
+        // the most likely place for busy channel and good SFD, with no other interrupts
+        if( irq == IRQ_RX_START )
+        {
+          temp = PHY_RSSI & RFA1_RSSI_MASK;
+          rssiBusy += temp - (rssiBusy >> 2);
+
+          call PacketTimeStamp.set(rxMsg, time);
+
+#ifndef RFA1_RSSI_ENERGY
+          call PacketRSSI.set(rxMsg, temp);
+#endif
+        }
+        else
+        {
+          call PacketTimeStamp.clear(rxMsg);
+
+#ifndef RFA1_RSSI_ENERGY
+          call PacketRSSI.clear(rxMsg);
+#endif
+        }
+
+        cmd = CMD_RECEIVE;
       }
       else
-      {
-        // the most likely place for clear channel (hope to avoid acks)
-        rssiClear += (PHY_RSSI & RFA1_RSSI_MASK) - (rssiClear >> 2);
-      }
+        RADIO_ASSERT( cmd == CMD_TURNOFF );
+    }
+
+    if( cmd == CMD_RECEIVE && (irq & IRQ_RX_END) != 0 )
+    {
+      RADIO_ASSERT( state == STATE_RX_ON );
+
+      // the most likely place for clear channel (hope to avoid acks)
+      rssiClear += (PHY_RSSI & RFA1_RSSI_MASK) - (rssiClear >> 2);
 
       cmd = CMD_DOWNLOAD;
     }
 
-    if( irq & IRQ_AWAKE ){
+    if( (irq & IRQ_AWAKE) != 0 ){
       if( state == STATE_SLEEP_2_TRX_OFF && (cmd==CMD_STANDBY || cmd==CMD_TURNON) )
         state = STATE_TRX_OFF;
       else
         RADIO_ASSERT(FALSE);
     }
 
-    if ( irq & IRQ_CCA_ED_DONE ){
+    if( (irq & IRQ_CCA_ED_DONE) != 0 ){
       if( cmd == CMD_CCA )
       {
         // workaround, see Errata 38.5.5 datasheet
         CLR_BIT(RX_SYN,RX_PDT_DIS);
-
 
         cmd = CMD_NONE;
 
@@ -651,10 +642,10 @@ implementation
         RADIO_ASSERT( (TRX_STATUS & RFA1_TRX_STATUS_MASK) == RX_ON );
 
         signal RadioCCA.done( (TRX_STATUS & CCA_DONE) ? ((TRX_STATUS & CCA_STATUS) ? SUCCESS : EBUSY) : FAIL );
-      } else
+      }
+      else
         RADIO_ASSERT(FALSE);
     }
-
   }
 
   /**

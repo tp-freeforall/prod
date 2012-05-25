@@ -174,7 +174,7 @@ implementation
   {
     uint8_t *payload = (uint8_t *) &frame->data;
     ieee154_macShortAddress_t shortAddress = *((nxle_uint16_t*) (payload + 1));
-    ieee154_status_t assocRespStatus = *(payload + 3);
+    ieee154_association_status_t assocRespStatus = *(payload + 3);
 
     if (m_associationOngoing) {
       call ResponseTimeout.stop();
@@ -199,6 +199,7 @@ implementation
   event void ResponseTimeout.fired()
   {
     uint8_t coordAddress[8];
+    nxle_uint16_t *shortAddress = (nxle_uint16_t*) coordAddress;
 
     if (!m_associationOngoing)
       return;
@@ -207,7 +208,7 @@ implementation
     // -> we explicitly poll the coordinator now
     dbg_serial("AssociationP", "Polling the coordinator for an AssociationResponse now...\n");
     if (m_coordAddrMode == ADDR_MODE_SHORT_ADDRESS)
-      *((nxle_uint16_t*) &coordAddress) = call MLME_GET.macCoordShortAddress();
+      *shortAddress = call MLME_GET.macCoordShortAddress();
     else
       call FrameUtility.copyCoordExtendedAddressLE(coordAddress);
 

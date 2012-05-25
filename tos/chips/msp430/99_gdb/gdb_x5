@@ -107,22 +107,93 @@ display msp430 usci hardware
 end
 
 define sfr
-printf "ie1: %02x  ie2: %02x  ifg1: %02x  ifg2: %02x  rpcr: %02x%02x\n",\
-    (*(uint8_t *)0x100), (*(uint8_t *)0x101), (*(uint8_t *)0x102), (*(uint8_t *)0x103), \
-    (*(uint8_t *)0x105), (*(uint8_t *)0x104)
+printf "sfr: ie1: %04x  ifg1: %04x  rpcr: %04x\n",\
+    (*(uint16_t *)0x100), (*(uint16_t *)0x102), (*(uint16_t *)0x104)
 end
 document sfr
 display misc interrupt/fault registers
 end
 
-define ucs
+#display ucs registers
+# p 100. MSP430 Family User's Guide
+# mps430f5438, p26  has the UCS control 0-8 register addresses and offsets
+
+define ucss
 printf "ucsctl0:  %04x  %04x  %04x\n", (*(uint16_t *)0x160),(*(uint16_t *)0x162),(*(uint16_t *)0x164)
 printf "ucsctl3:  %04x  %04x  %04x\n", (*(uint16_t *)0x166),(*(uint16_t *)0x168),(*(uint16_t *)0x16a)
 printf "ucsctl6:  %04x  %04x  %04x\n", (*(uint16_t *)0x16c),(*(uint16_t *)0x16e),(*(uint16_t *)0x170)
 end
+document ucss
+display msp430 5xxx unified clock system hardware (concise, short)
+end
+
+define ucs
+set $_tmp = *(uint16_t *) 0x0160
+printf "ucsctl0: %04x\n",	$_tmp
+printf "  dco: %x",		($_tmp & 0x1F00) >> 8
+printf "  mod: %x\n",		($_tmp & 0x00f8) >> 3
+
+set $_tmp = *(uint16_t *) 0x0162
+printf "ucsctl1: %04x\n",	($_tmp)
+printf "  dcorsel: %x",		($_tmp & 0x0070) >> 4
+printf "  dismod:  %x\n",	($_tmp & 0x0001)
+
+set $_tmp = *(uint16_t *) 0x0164
+printf "ucsctl2: %04x\n",	($_tmp)
+printf "  flld: %x",		($_tmp & 0x7000) >> 8 >> 4
+printf "  flln: %x\n",		($_tmp & 0x03FF)
+
+set $_tmp = *(uint16_t *) 0x0166
+printf "ucsctl3: %04x\n",	($_tmp)
+printf "  selref: %x",		($_tmp & 0x0070) >> 4
+printf "  fllrefdiv: %x\n",	($_tmp & 0x0007)
+
+set $_tmp = *(uint16_t *) 0x0168
+printf "ucsctl4: %04x\n",	($_tmp)
+printf "  sela: %x",		($_tmp & 0x0700) >> 8
+printf "  sels: %x",		($_tmp & 0x0070) >> 4
+printf "  selm: %x\n",		($_tmp & 0x0007)
+
+set $_tmp = *(uint16_t *) 0x016a
+printf "ucsctl5: %04x\n",	($_tmp)
+printf "  divpa: %d",		($_tmp & 0x7000) >> 8 >> 4
+printf "  diva: %d",		($_tmp & 0x0700) >> 8
+printf "  divs: %d",		($_tmp & 0x0070) >> 4
+printf "  divm: %d\n",		($_tmp & 0x0007)  
+
+set $_tmp = *(uint16_t *) 0x016c
+printf "ucsctl6: %04x\n",	($_tmp)
+printf "  xt2drive: %x",	($_tmp & 0xC000) >> 8 >> 6
+printf "  xt2bypass: %x",	($_tmp & 0x1000) >> 8 >> 4
+printf "  xt2off: %x\n",	($_tmp & 0x0100) >> 8
+printf "  xt1drive: %x",	($_tmp & 0x00C0) >> 6
+printf "  xts: %x",  		($_tmp & 0x0020) >> 5
+printf "  xt1bypass: %x",	($_tmp & 0x0010) >> 4
+printf "  xcap: %x",		($_tmp & 0x000C) >> 2
+printf "  smclkoff: %x",	($_tmp & 0x0002) >> 1
+printf "  xt1off: %x\n",	($_tmp & 0x0001)  
+
+set $_tmp = *(uint16_t *) 0x016e
+printf "ucsctl7: %04x\n",	($_tmp)
+printf "  xt2flt: %x",		($_tmp & 0x0008) >> 3
+printf "  xt1hfflt: %x",	($_tmp & 0x0004) >> 2
+printf "  xt1lfflt: %x",	($_tmp & 0x0002) >> 1
+printf "  dcoflt: %x",		($_tmp & 0x0001) 
+set $_tmp = *(uint16_t *) 0x102
+printf "  oscflt: %x\n",	($_tmp & 0x0002) >> 1
+
+set $_tmp = *(uint16_t *) 0x0170
+printf "ucsctl8: %04x\n",	($_tmp)
+printf "  modoscreqen: %x",	($_tmp & 0x0008) >> 3
+printf "  smclkreqen: %x",	($_tmp & 0x0004) >> 2
+printf "  mclkreqen: %x",	($_tmp & 0x0002) >> 1
+printf "  aclkreqen: %x\n",	($_tmp & 0x0001)
+
+end
 document ucs
 display msp430 5xxx unified clock system hardware
 end
+
 
 define dp2
 printf "p2  i: %02x  o: %02x  d: %02x  f: %02x  es: %02x  ie: %02x  sel: %02x  ren: %02x  ds: %02x\n",\
@@ -135,24 +206,62 @@ display port 2
 end
 
 define ports
-printf " in  p1: %02x %02x %02x  p4: %02x %02x\n", \
-    (*(uint8_t *)0x200),(*(uint8_t *)0x201),(*(uint8_t *)0x220),(*(uint8_t *)0x221),(*(uint8_t *)0x240)
-printf "out  p1: %02x %02x %02x  p4: %02x %02x\n", \
-    (*(uint8_t *)0x202),(*(uint8_t *)0x203),(*(uint8_t *)0x222),(*(uint8_t *)0x223),(*(uint8_t *)0x242)
-printf "dir: p1: %02x %02x %02x  p4: %02x %02x\n", \
-    (*(uint8_t *)0x204),(*(uint8_t *)0x205),(*(uint8_t *)0x224),(*(uint8_t *)0x225),(*(uint8_t *)0x244)
-printf "sel: p1: %02x %02x %02x  p4: %02x %02x\n", \
-    (*(uint8_t *)0x20a),(*(uint8_t *)0x20b),(*(uint8_t *)0x22a),(*(uint8_t *)0x22b),(*(uint8_t *)0x24a)
-printf "ifg  p1: %02x %02x\n",
+printf " in  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
+    (*(uint8_t *)0x200), (*(uint8_t *)0x201), \
+    (*(uint8_t *)0x220), (*(uint8_t *)0x221), \
+    (*(uint8_t *)0x240), (*(uint8_t *)0x241), \
+    (*(uint8_t *)0x260), (*(uint8_t *)0x261), \
+    (*(uint8_t *)0x280), (*(uint8_t *)0x281), \
+    (*(uint8_t *)0x2a0)
+
+printf "out  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
+    (*(uint8_t *)0x202), (*(uint8_t *)0x203), \
+    (*(uint8_t *)0x222), (*(uint8_t *)0x223), \
+    (*(uint8_t *)0x242), (*(uint8_t *)0x243), \
+    (*(uint8_t *)0x262), (*(uint8_t *)0x263), \
+    (*(uint8_t *)0x282), (*(uint8_t *)0x283), \
+    (*(uint8_t *)0x2a2)
+
+printf "dir  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
+    (*(uint8_t *)0x204), (*(uint8_t *)0x205), \
+    (*(uint8_t *)0x224), (*(uint8_t *)0x225), \
+    (*(uint8_t *)0x244), (*(uint8_t *)0x245), \
+    (*(uint8_t *)0x264), (*(uint8_t *)0x265), \
+    (*(uint8_t *)0x284), (*(uint8_t *)0x285), \
+    (*(uint8_t *)0x2a4)
+
+printf "sel  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
+    (*(uint8_t *)0x20a), (*(uint8_t *)0x20b), \
+    (*(uint8_t *)0x22a), (*(uint8_t *)0x22b), \
+    (*(uint8_t *)0x24a), (*(uint8_t *)0x24b), \
+    (*(uint8_t *)0x26a), (*(uint8_t *)0x26b), \
+    (*(uint8_t *)0x28a), (*(uint8_t *)0x28b), \
+    (*(uint8_t *)0x2aa)
+
+printf "ren  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
+    (*(uint8_t *)0x206), (*(uint8_t *)0x207), \
+    (*(uint8_t *)0x226), (*(uint8_t *)0x227), \
+    (*(uint8_t *)0x246), (*(uint8_t *)0x247), \
+    (*(uint8_t *)0x266), (*(uint8_t *)0x267), \
+    (*(uint8_t *)0x286), (*(uint8_t *)0x287), \
+    (*(uint8_t *)0x2a6)
+
+printf " ds: p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
+    (*(uint8_t *)0x208), (*(uint8_t *)0x209), \
+    (*(uint8_t *)0x228), (*(uint8_t *)0x229), \
+    (*(uint8_t *)0x248), (*(uint8_t *)0x249), \
+    (*(uint8_t *)0x268), (*(uint8_t *)0x269), \
+    (*(uint8_t *)0x288), (*(uint8_t *)0x289), \
+    (*(uint8_t *)0x2a8)
+
+printf "ifg  p1: %02x %02x\n", \
     (*(uint8_t *)0x21c), (*(uint8_t *)0x21d)
+
 printf "ie   p1: %02x %02x    iv:  %04x  %04x\n", \
     (*(uint8_t *)0x21a), (*(uint8_t *)0x21b), (*(uint16_t *) 0x20e), (*(uint16_t *) 0x21e)
+
 printf "ies  p1: %02x %02x\n", \
     (*(uint8_t *)0x218), (*(uint8_t *)0x219)
-printf "ren: p1: %02x %02x %02x  p4: %02x %02x\n", \
-    (*(uint8_t *)0x206),(*(uint8_t *)0x207),(*(uint8_t *)0x226),(*(uint8_t *)0x227),(*(uint8_t *)0x246)
-printf " ds: p1: %02x %02x %02x  p4: %02x %02x\n", \
-    (*(uint8_t *)0x208),(*(uint8_t *)0x209),(*(uint8_t *)0x228),(*(uint8_t *)0x229),(*(uint8_t *)0x248)
 end
 document ports
 display h/w ports
