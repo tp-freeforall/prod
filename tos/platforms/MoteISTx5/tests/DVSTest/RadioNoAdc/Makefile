@@ -1,2 +1,0 @@
-COMPONENT=DVSTestAppC
-include $(MAKERULES)

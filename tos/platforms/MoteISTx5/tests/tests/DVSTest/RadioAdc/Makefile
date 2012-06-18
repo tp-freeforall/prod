@@ -1,2 +1,0 @@
-COMPONENT=RadioAdcC
-include $(MAKERULES)

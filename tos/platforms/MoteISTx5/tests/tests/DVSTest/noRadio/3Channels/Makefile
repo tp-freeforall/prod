@@ -1,2 +1,0 @@
-COMPONENT=DVSnoRadioC
-include $(MAKERULES)

@@ -1,3 +1,0 @@
-COMPONENT=PrintfAppC
-include $(MAKERULES)
-
