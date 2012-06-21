@@ -18,8 +18,8 @@ configuration Msp430UsciSpiB3P {
 implementation {
 
   components Msp430UsciB3P as UsciC;
-
   components new Msp430UsciSpiP() as SpiC;
+
   SpiC.Usci -> UsciC;
   SpiC.Interrupts -> UsciC.Interrupts[MSP430_USCI_SPI];
   SpiC.ArbiterInfo -> UsciC;

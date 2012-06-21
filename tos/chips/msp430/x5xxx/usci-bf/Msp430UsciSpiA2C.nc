@@ -1,7 +1,7 @@
 /* DO NOT MODIFY
  * This file cloned from Msp430UsciSpiB0C.nc for A2 */
 /*
- * Copyright (c) 2011 Eric B. Decker
+ * Copyright (c) 2011-2012 Eric B. Decker
  * Copyright (c) 2011 João Gonçalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
@@ -47,11 +47,13 @@
 generic configuration Msp430UsciSpiA2C() {
   provides {
     interface Resource;
+    interface ResourceRequested;
     interface SpiPacket;
     interface SpiBlock;
     interface SpiByte;
     interface Msp430UsciError;
   }
+  uses interface Msp430UsciConfigure;
 }
 implementation {
   enum {
@@ -60,12 +62,14 @@ implementation {
 
   components Msp430UsciA2P as UsciC;
   Resource = UsciC.Resource[CLIENT_ID];
+  ResourceRequested = UsciC.ResourceRequested[CLIENT_ID];
 
   components Msp430UsciSpiA2P as SpiC;
   SpiPacket = SpiC.SpiPacket[CLIENT_ID];
   SpiBlock  = SpiC.SpiBlock;
   SpiByte   = SpiC.SpiByte;
   Msp430UsciError = SpiC.Msp430UsciError;
+  Msp430UsciConfigure = SpiC.Msp430UsciConfigure[CLIENT_ID];
 
   UsciC.ResourceConfigure[CLIENT_ID] -> SpiC.ResourceConfigure[CLIENT_ID];
 }

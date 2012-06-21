@@ -44,10 +44,12 @@
 generic configuration Msp430UsciUartA1C() {
   provides {
     interface Resource;
+    interface ResourceRequested;
     interface UartStream;
     interface UartByte;
     interface Msp430UsciError;
   }
+  uses interface Msp430UsciConfigure;
 }
 implementation {
   enum {
@@ -56,11 +58,13 @@ implementation {
 
   components Msp430UsciA1P as UsciC;
   Resource = UsciC.Resource[CLIENT_ID];
+  ResourceRequested = UsciC.ResourceRequested[CLIENT_ID];
 
   components Msp430UsciUartA1P as UartC;
   UartStream = UartC.UartStream[CLIENT_ID];
   UartByte = UartC.UartByte[CLIENT_ID];
   Msp430UsciError = UartC.Msp430UsciError[CLIENT_ID];
+  Msp430UsciConfigure = UartC.Msp430UsciConfigure[CLIENT_ID];
 
   UsciC.ResourceConfigure[CLIENT_ID] -> UartC.ResourceConfigure[CLIENT_ID];
 }

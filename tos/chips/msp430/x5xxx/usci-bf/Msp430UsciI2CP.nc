@@ -97,8 +97,8 @@ implementation {
     //printf(" CTLW: %x\n\r", call Usci.getCtlw0());
     //printf(" BRw:  %x\n\r", call Usci.getBrw());
 
-    printf(" OA:   %x\n\r", call Usci.getI2coa());
-    printf(" SA:   %x\n\r", call Usci.getI2csa());
+    printf(" OA:   %x\n\r", call Usci.getI2Coa());
+    printf(" SA:   %x\n\r", call Usci.getI2Csa());
     printf(" IE:   %x\n\r", call Usci.getIe());
     printf(" IFG:  %x\n\r", call Usci.getIfg());
     printf("---\n\r");
@@ -117,7 +117,7 @@ implementation {
     call SDA.selectModuleFunc();
 
     //i2c-specific config
-    call Usci.setI2coa(config->i2coa);
+    call Usci.setI2Coa(config->i2coa);
     call Usci.leaveResetMode_();
 
     //enable slave-start interrupt, clear the rest
@@ -185,7 +185,7 @@ implementation {
       call Usci.leaveResetMode_();
 
       // set slave address 
-      call Usci.setI2csa(addr);
+      call Usci.setI2Csa(addr);
 
       //check bus status at the latest point possible.
       if ( call Usci.getStat() & UCBBUSY ){
@@ -281,9 +281,9 @@ implementation {
       //disable the rx interrupt 
       call Usci.setIe(call Usci.getIe() & ~UCRXIE);
       if (counter > 0x01) {
-        signal I2CBasicAddr.readDone[call ArbiterInfo.userId()]( SUCCESS, call Usci.getI2csa(), m_pos, m_buf );
+        signal I2CBasicAddr.readDone[call ArbiterInfo.userId()]( SUCCESS, call Usci.getI2Csa(), m_pos, m_buf );
       } else {
-        signal I2CBasicAddr.readDone[call ArbiterInfo.userId()]( FAIL, call Usci.getI2csa() , m_pos, m_buf );
+        signal I2CBasicAddr.readDone[call ArbiterInfo.userId()]( FAIL, call Usci.getI2Csa() , m_pos, m_buf );
       }
     }
   }
@@ -316,7 +316,7 @@ implementation {
       call Usci.leaveResetMode_();
 
       // set slave address 
-      call Usci.setI2csa(addr);
+      call Usci.setI2Csa(addr);
 
       //check bus status at the latest point possible.
       if ( call Usci.getStat() & UCBBUSY ){
@@ -335,7 +335,7 @@ implementation {
     /* is this a restart or a direct continuation */
     else if (m_flags & I2C_RESTART) {
       // set slave address 
-      call Usci.setI2csa(addr);
+      call Usci.setI2Csa(addr);
 
       /* UCTR - set transmit */
       /* UCTXSTT - generate START condition */
@@ -390,9 +390,9 @@ implementation {
       call Usci.setIe(call Usci.getIe() & ~UCTXIE );
       /* fail gracefully */      
       if (counter > 0x01) {
-        signal I2CBasicAddr.writeDone[call ArbiterInfo.userId()]( SUCCESS, call Usci.getI2csa(), m_len, m_buf );
+        signal I2CBasicAddr.writeDone[call ArbiterInfo.userId()]( SUCCESS, call Usci.getI2Csa(), m_len, m_buf );
       } else{
-        signal I2CBasicAddr.writeDone[call ArbiterInfo.userId()]( FAIL, call Usci.getI2csa(), m_len, m_buf );
+        signal I2CBasicAddr.writeDone[call ArbiterInfo.userId()]( FAIL, call Usci.getI2Csa(), m_len, m_buf );
       }
     } else {
       //send the next char
@@ -426,24 +426,24 @@ implementation {
   /***** Slave-mode functions ***/
   command error_t I2CSlave.setOwnAddress[uint8_t client](uint16_t addr) {
     //retain UCGCEN bit
-    call Usci.setI2coa( (call Usci.getI2coa() & UCGCEN) | addr);
+    call Usci.setI2Coa( (call Usci.getI2Coa() & UCGCEN) | addr);
     return SUCCESS;
   }
 
   command error_t I2CSlave.enableGeneralCall[uint8_t client]() {
-    if (UCGCEN & (call Usci.getI2coa())) {
+    if (UCGCEN & (call Usci.getI2Coa())) {
       return EALREADY;
     } else {
-      call Usci.setI2coa(UCGCEN | (call Usci.getI2coa()));
+      call Usci.setI2Coa(UCGCEN | (call Usci.getI2Coa()));
       return SUCCESS;
     }
   }
 
   command error_t I2CSlave.disableGeneralCall[uint8_t client]() {
-    if (UCGCEN & ~(call Usci.getI2coa())) {
+    if (UCGCEN & ~(call Usci.getI2Coa())) {
       return EALREADY;
     } else {
-      call Usci.setI2coa(~UCGCEN & (call Usci.getI2coa()));
+      call Usci.setI2Coa(~UCGCEN & (call Usci.getI2Coa()));
       return SUCCESS;
     }
   }
@@ -547,9 +547,9 @@ implementation {
     //another master addressed us as a slave. However, this should
     //manifest as an AL interrupt, not a NACK interrupt.
     if (call Usci.getCtl1() & UCTR) {
-      signal I2CBasicAddr.writeDone[call ArbiterInfo.userId()]( ENOACK, call Usci.getI2csa(), m_len, m_buf );
+      signal I2CBasicAddr.writeDone[call ArbiterInfo.userId()]( ENOACK, call Usci.getI2Csa(), m_len, m_buf );
     } else {
-      signal I2CBasicAddr.readDone[call ArbiterInfo.userId()]( ENOACK, call Usci.getI2csa(), m_len, m_buf );
+      signal I2CBasicAddr.readDone[call ArbiterInfo.userId()]( ENOACK, call Usci.getI2Csa(), m_len, m_buf );
     }
   }
 
@@ -563,9 +563,9 @@ implementation {
 
     //TODO: more descriptive error? I guess EBUSY is fair.
     if(lastAction == MASTER_WRITE) {
-      signal I2CBasicAddr.writeDone[call ArbiterInfo.userId()]( EBUSY, call Usci.getI2csa(), m_len, m_buf );
+      signal I2CBasicAddr.writeDone[call ArbiterInfo.userId()]( EBUSY, call Usci.getI2Csa(), m_len, m_buf );
     } else if(lastAction == MASTER_READ) {
-      signal I2CBasicAddr.readDone[call ArbiterInfo.userId()]( EBUSY, call Usci.getI2csa(), m_len, m_buf);
+      signal I2CBasicAddr.readDone[call ArbiterInfo.userId()]( EBUSY, call Usci.getI2Csa(), m_len, m_buf);
     }
 
     //once this returns, we should get another interrupt for STT

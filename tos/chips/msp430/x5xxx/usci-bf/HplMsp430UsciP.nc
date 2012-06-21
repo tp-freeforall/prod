@@ -104,8 +104,8 @@ implementation {
   async command void     Usci.setCtl1(uint8_t v)    { UCmxCTL1  = v; }
 
   async command uint16_t Usci.getBrw()		    { return UCmxBRW; }
-  async command uint8_t  Usci.getBR0()		    { return UCmxBR0; }
-  async command uint8_t  Usci.getBR1()		    { return UCmxBR1; }
+  async command uint8_t  Usci.getBr0()		    { return UCmxBR0; }
+  async command uint8_t  Usci.getBr1()		    { return UCmxBR1; }
 
   async command void     Usci.setBrw(uint16_t v)    { UCmxBRW = v; }
   async command void     Usci.setBr0(uint8_t v)     { UCmxBR0 = v; }
@@ -181,10 +181,10 @@ implementation {
     if (! config) {
       return;
     }
-    UCMxCTL1  = config->ctl1 | UCSWRST;
-    UCMxCTL0  = config->ctl0;
-    UCMxBR1   = config->br1;
-    UCMxBR0   = config->br0;
+    UCmxCTL1  = config->ctl1 | UCSWRST;
+    UCmxCTL0  = config->ctl0;
+    UCmxBR1   = config->br1;
+    UCmxBR0   = config->br0;
     UCmxMCTL  = config->mctl;
     UCmxI2COA = config->i2coa;
     if (!leave_in_reset) {
