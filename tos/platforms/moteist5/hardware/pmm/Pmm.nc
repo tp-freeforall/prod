@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007 Arch Rock Corporation
- * All rights reserved.
+ * Copyright (c) 2011 João Gonçalves
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,15 +31,42 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+interface Pmm {
+  /**
+   * Set the voltage level of the MSP430x core
+   *  0x0 => DVcc > 1.8V
+   *  0x1 => DVcc > 2.0V
+   *  0x2 => DVcc > 2.2V
+   *  0x3 => DVcc > 2.4V
+   */
+
+//====================================================================
 /**
- * Implementation of the user button for the telosb platform
- *
- * @author Gilman Tolle <gtolle@archrock.com>
- */
+  * Set the minimum Vcore level for the desired frequency*/
+  command error_t setMinRequiredVCore(uint32_t freq);
 
-#ifndef USERBUTTON_H
-#define USERBUTTON_H
 
-typedef enum { BUTTON_RELEASED = 0, BUTTON_PRESSED = 1 } button_state_t;
+//====================================================================
+/**
+  * Set the VCore to a new level if it is possible*/
 
-#endif
+  command error_t SetVCore (uint8_t level);
+
+//====================================================================
+/**
+  * Set the VCore to a higher level, if it is possible.
+  * Return a 1 if voltage at highside (Vcc) is to low
+  * for the selected Level (level).*/
+
+  command error_t SetVCoreUp (uint8_t level);
+
+//====================================================================
+/**
+  * Set the VCore to a lower level.
+  * Return a 1 if voltage at highside (Vcc) is still to low
+  * for the selected Level (level).*/
+
+  command error_t SetVCoreDown (uint8_t level);
+}
+
+

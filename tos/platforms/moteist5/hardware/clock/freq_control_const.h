@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Arch Rock Corporation
+ * Copyright (c) 2011 João Gonçalves
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -8,12 +8,12 @@
  *
  * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- *
+
  * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
- *
+
  * - Neither the name of the copyright holders nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
@@ -32,24 +32,12 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Implementation of the user button for the em430 platform
- *
- * @author Gilman Tolle <gtolle@archrock.com>
- * @author Peter A. Bigot <pab@peoplepowerco.com>
- */
+enum{
+  FLLD_BITS = 0x7000,
+  FLLN_BITS = 0x03FF, 
+  FLLREFDIV = 0x0007, 
+  FLLREF = 0x0070,
+  XT1_FREQ = 32768UL,
+  MHZ = 1000000,
+};
 
-configuration HplUserButtonC {
-  provides interface HplMsp430GeneralIO;
-  provides interface GpioInterrupt;
-}
-implementation {
-  components HplMsp430GeneralIOC as GeneralIOC;
-  components HplMsp430InterruptC as InterruptC;
-
-  HplMsp430GeneralIO = GeneralIOC.Port17;
-
-  components new Msp430InterruptC() as InterruptUserButtonC;
-  InterruptUserButtonC.HplInterrupt -> InterruptC.Port17;
-  GpioInterrupt = InterruptUserButtonC.Interrupt;
-}

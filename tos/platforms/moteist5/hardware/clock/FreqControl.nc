@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 People Power Co.
+ * Copyright (c) 2011, João Gonçalves
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -8,13 +8,11 @@
  *
  * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- *
  * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
- *
- * - Neither the name of the copyright holders nor the names of
+ * - Neither the name of the University of California nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -32,24 +30,26 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "msp430usci.h"
+interface FreqControl{
 
-/**
- * Connect the appropriate pins for USCI support on a CC430.
- *
- * @author Peter A. Bigot <pab@peoplepowerco.com>
- */
+ command uint8_t getFLLD(void);
 
-configuration PlatformUsciMapC {
-} implementation {
-  components HplMsp430GeneralIOC as GIO;
+ command uint16_t getFLLN(void);
 
- // components Msp430UsciUartA0P as UartA0C;
-//  UartA0C.URXD -> GIO.UCA0RXD;
-//  UartA0C.UTXD -> GIO.UCA0TXD;
+ command uint8_t getFLLREFDIV(void);
 
-  components Msp430UsciSpiB0P as SpiB0C;
-   SpiB0C.SIMO -> GIO.UCB0SIMO;
-   SpiB0C.SOMI -> GIO.UCB0SOMI;
-   SpiB0C.CLK -> GIO.UCB0CLK;
+ command uint8_t getMCLKSource(void);
+
+ command uint32_t getMCLKFreq(uint8_t source);
+
+ command error_t setMCLKFreq(uint32_t value);
+
+ command uint32_t getDCOFreq(uint8_t isdcoclkdiv);
+
+ command error_t setDCORange(uint32_t value);
+
+ command error_t setDCOFreq(uint32_t value, bool isdcoclkdiv);
+
+ command uint8_t getFLLsource(void);
+
 }

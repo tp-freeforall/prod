@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2009-2010 People Power Co.
+ * Copyright (c) 2000-2005 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,42 +33,38 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-module PlatformP {
-  provides interface Init;
-  uses {
-    interface Init as PlatformPins;
-    interface Init as PlatformLeds;
-    interface Init as Msp430Pmm;
-    interface Init as PlatformClock;
-    interface Init as MoteInit;
-    interface Init as PeripheralInit;
-  }
+/**
+ * @author Joe Polastre
+ * @author Cory Sharp
+ * @author David Moss
+ */
+
+#include "hardware.h"
+
+configuration PlatformC {
+  provides interface Init as PlatformInit;
+  uses interface Init as PeripheralInit;
 }
 
 implementation {
 
-  void uwait(uint16_t u) {
-    uint16_t t0 = TA0R;
-    while((TA0R - t0) <= u);
-  }
+  components PlatformP;
+  PlatformInit = PlatformP;
+  PeripheralInit = PlatformP.PeripheralInit;
 
-  command error_t Init.init() {
-    WDTCTL = WDTPW + WDTHOLD;    // Stop watchdog timer
+  components PlatformPinsC;
+  PlatformP.PlatformPins -> PlatformPinsC;
 
-    call PlatformPins.init();   // Initializes the GIO pins
-    call PlatformLeds.init();   // Initializes the Leds
-    call PlatformClock.init();  // Initializes UCS
-    call PeripheralInit.init();
+  components PlatformLedsC;
+  PlatformP.PlatformLeds -> PlatformLedsC;
 
-    // Wait an arbitrary 10 milliseconds for the FLL to calibrate the DCO
-    // before letting the system continue on into a low power mode.
-    uwait(1024*10);
+  components PlatformUsciMapC;
+  // No code initialization required; just connect the pins
 
-    return SUCCESS;
-  }
-
-  /***************** Defaults ***************/
-  default command error_t PeripheralInit.init() {
-    return SUCCESS;
-  }
+  components PlatformClockC;
+  PlatformP.PlatformClock -> PlatformClockC;
+  
+  components ADG715C;
+  PlatformP.AnalogSwitches -> ADG715C;
+  
 }

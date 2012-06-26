@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Arch Rock Corporation
+ * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,47 +32,42 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Implementation of the user button for the telosb platform
- *
- * @author Gilman Tolle <gtolle@archrock.com>
- */
-
-#include <UserButton.h>
-
-module UserButtonP {
-  provides interface Get<button_state_t>;
-  provides interface Notify<button_state_t>;
-
-  uses interface Get<bool> as GetLower;
-  uses interface Notify<bool> as NotifyLower;
+module PlatformP {
+  provides interface Init;
+  uses {
+    interface Init as PlatformPins;
+    interface Init as PlatformLeds;
+    interface Init as Msp430Pmm;
+    interface Init as PlatformClock;
+    interface Init as MoteInit;
+    interface Init as PeripheralInit;
+    interface Init as AnalogSwitches;
+  }
 }
+
 implementation {
 
-  command button_state_t Get.get() {
-    if ( call GetLower.get() ) {
-      return BUTTON_PRESSED;
-    } else {
-      return BUTTON_RELEASED;
-    }
+  void uwait(uint16_t u) {
+    uint16_t t0 = TA0R;
+    while((TA0R - t0) <= u);
   }
 
-  command error_t Notify.enable() {
-    return call NotifyLower.enable();
+  command error_t Init.init() {
+    WDTCTL = WDTPW + WDTHOLD;    // Stop watchdog timer
+    call PlatformPins.init();   // Initializes the GIO pins
+    call PlatformLeds.init();   // Initializes the Leds
+    call PlatformClock.init();  // Initializes UCS
+    call PeripheralInit.init();
+    call AnalogSwitches.init();
+    // Wait an arbitrary 10 milliseconds for the FLL to calibrate the DCO
+    // before letting the system continue on into a low power mode.
+    uwait(1024*10);
+
+    return SUCCESS;
   }
 
-  command error_t Notify.disable() {
-    return call NotifyLower.disable();
+  /***************** Defaults ***************/
+  default command error_t PeripheralInit.init() {
+    return SUCCESS;
   }
-
-  event void NotifyLower.notify( bool val ) {
-    // telosb user button pin is high when released - invert state
-    if ( val ) {
-      signal Notify.notify( BUTTON_RELEASED );
-    } else {
-      signal Notify.notify( BUTTON_PRESSED );
-    }
-  }
-
-  default event void Notify.notify( button_state_t val ) { }
 }

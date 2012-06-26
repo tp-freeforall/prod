@@ -63,7 +63,23 @@ generic module Msp430UsciSpiP () @safe() {
   }
 }
 implementation {
+  
+  enum {
+    SPI_ATOMIC_SIZE = 2,
+  };
 
+  norace uint16_t m_len;
+  norace uint8_t* COUNT_NOK(m_len) m_tx_buf;
+  norace uint8_t* COUNT_NOK(m_len) m_rx_buf;
+  norace uint16_t m_pos;
+  norace uint8_t m_client;
+  
+  void signalDone();
+  
+  task void signalDone_task() {
+    atomic signalDone();
+  }
+  
   /** The SPI is busy if it's actively transmitting/receiving, or if
    * there is an active buffered I/O operation.
    */
@@ -185,30 +201,72 @@ implementation {
       len--;
     }      
   }
+  
+  void continueOp() {
+    uint8_t end;
+    uint8_t tmp;
 
+    atomic {
+      call Usci.setTxbuf( m_tx_buf ? m_tx_buf[ m_pos ] : 0 );
 
-  /*
-   * SpiPacket.send is improperly implemented.   It should be split phase.  Other msp430 families
-   * implement it using interrupts and/or dma.
-   *
-   * For the time being, the functionality implemented originally by the x5 SpiPacket, is now
-   * available in SpiBlock.transfer.   This routine now returns FAIL.
+      end = m_pos + SPI_ATOMIC_SIZE;
+      if ( end > m_len )
+	    end = m_len;
+
+      while ( ++m_pos < end ) {
+        while( !call Usci.isRxIntrPending() );
+          tmp = call Usci.getRxbuf();
+          if ( m_rx_buf )
+            m_rx_buf[ m_pos - 1 ] = tmp;
+          call Usci.setTxbuf( m_tx_buf ? m_tx_buf[ m_pos ] : 0 );
+      }
+    }
+  }
+   /** Split phase SpiPacket send
+   * Implemented just as in the x2 usci Msp430SpiNoDmaP
    */
+  
   async command error_t SpiPacket.send[uint8_t client] (uint8_t* txBuf, uint8_t* rxBuf, uint16_t len) {
-    return FAIL;
+    m_client = client;
+    m_tx_buf = txBuf;
+    m_rx_buf = rxBuf;
+    m_len = len;
+    m_pos = 0;
+
+    if ( len ) {
+      call Usci.enableRxIntr();
+      continueOp();
+    } else
+      post signalDone_task();
+    return SUCCESS;
+  }
+  
+  void signalDone() {
+    signal SpiPacket.sendDone[ m_client ]( m_tx_buf, m_rx_buf, m_len, SUCCESS );
   }
 
-  default async event void SpiPacket.sendDone[uint8_t client] (uint8_t* txBuf,
-			uint8_t* rxBuf, uint16_t len, error_t error ) { }
-
   async event void Interrupts.interrupted (uint8_t iv) {
+    uint8_t data;
     if (! call ArbiterInfo.inUse()) {
       return;
     }
     if (USCI_UCRXIFG == iv) {
+      data = call Usci.getRxbuf();
+      
+      if ( m_rx_buf )
+        m_rx_buf[ m_pos-1 ] = data;
+      if ( m_pos < m_len )
+        continueOp();
+      else {
+        call Usci.disableRxIntr();
+        signalDone();
+      }
     } else if (USCI_UCTXIFG == iv) {
     }
   }
+  
+  default async event void SpiPacket.sendDone[uint8_t client] (uint8_t* txBuf,
+			uint8_t* rxBuf, uint16_t len, error_t error ) { }
 
   default async command const msp430_usci_config_t*
     Msp430UsciConfigure.getConfiguration[uint8_t client] () {

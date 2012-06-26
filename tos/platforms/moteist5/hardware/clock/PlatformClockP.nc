@@ -1,4 +1,4 @@
-/*
+/* copyright (c) 2012 João Gonçalves
  * Copyright (c) 2010 People Power Co.
  * All rights reserved.
  *
@@ -141,6 +141,31 @@ module PlatformClockP {
     }
 
 #endif /* PLATFORM_MSP430_HAS_XT1 */
+
+#if defined(PLATFORM_MSP430_HAS_XT2) && (0 == PLATFORM_MSP430_HAS_XT2)
+    /* Specifically told that there is no crystal.  Do nothing. */
+#else /* PLATFORM_MSP430_HAS_XT2 */
+
+    //set P5SEL.2 (in) and P5SEL.3(out) to cristal mode (XT2IN and XT2OUT bits = 1)
+    P5SEL |= (BIT2 | BIT3);
+    // XT2 on, sourced internally
+    UCSCTL6 &= ~(XT2BYPASS | XT2OFF);
+    //From TI example code msp430x54x_UCS_2.c
+    do {
+       // Clear XT2,XT1,DCO fault flags
+      UCSCTL7 &= ~(XT2OFFG + XT1LFOFFG + XT1HFOFFG + DCOFFG);
+      SFRIFG1 &= ~OFIFG;		// Clear fault flags
+    } while (SFRIFG1&OFIFG);		// Test oscillator fault flag
+
+  if (UCSCTL7 & XT2OFFG) {
+      //P7DIR |= (BIT0 | BIT1);
+      P7SEL &= ~(BIT0| BIT1);
+      UCSCTL6 |= XT2OFF;
+    } else {
+       UCSCTL6 &= ~(XT2DRIVE_3);   // Xtal is now stable, reduce drive
+    }
+
+#endif /* PLATFORM_MSP430_HAS_XT2 */
 
     return call SubInit.init();
   }
