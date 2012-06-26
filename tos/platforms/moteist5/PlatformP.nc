@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Arch Rock Corporation
+ * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,24 +32,43 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Implementation of the user button for the em430 platform
- *
- * @author Gilman Tolle <gtolle@archrock.com>
- * @author Peter A. Bigot <pab@peoplepowerco.com>
- */
-
-configuration HplUserButtonC {
-  provides interface HplMsp430GeneralIO;
-  provides interface GpioInterrupt;
+module PlatformP {
+  provides interface Init;
+  uses {
+    interface Init as PlatformPins;
+    interface Init as PlatformLeds;
+    interface Init as Msp430Pmm;
+    interface Init as PlatformClock;
+    interface Init as MoteInit;
+    interface Init as PeripheralInit;
+    interface Init as AnalogSwitches;
+  }
 }
+
 implementation {
-  components HplMsp430GeneralIOC as GeneralIOC;
-  components HplMsp430InterruptC as InterruptC;
 
-  HplMsp430GeneralIO = GeneralIOC.Port17;
+  void uwait(uint16_t u) {
+    uint16_t t0 = TA0R;
+    while((TA0R - t0) <= u);
+  }
 
-  components new Msp430InterruptC() as InterruptUserButtonC;
-  InterruptUserButtonC.HplInterrupt -> InterruptC.Port17;
-  GpioInterrupt = InterruptUserButtonC.Interrupt;
+  command error_t Init.init() {
+    WDTCTL = WDTPW + WDTHOLD;    // Stop watchdog timer
+
+    call PlatformPins.init();   // Initializes the GIO pins
+    call PlatformLeds.init();   // Initializes the Leds
+    call PlatformClock.init();  // Initializes UCS
+    call PeripheralInit.init();
+    call AnalogSwitches.init();
+    // Wait an arbitrary 10 milliseconds for the FLL to calibrate the DCO
+    // before letting the system continue on into a low power mode.
+    uwait(1024*10);
+
+    return SUCCESS;
+  }
+
+  /***************** Defaults ***************/
+  default command error_t PeripheralInit.init() {
+    return SUCCESS;
+  }
 }

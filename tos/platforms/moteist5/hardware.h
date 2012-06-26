@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2007 Arch Rock Corporation
+ * Copyright (c) 2011 João Gonçalves
+ * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,65 +31,50 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * Not quite generic layer to translate a GIO into a toggle switch
- * (Newer MSP430 chips require configuring pull-up resistor)
  *
- * @author Gilman Tolle <gtolle@archrock.com>
- * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * @author Peter Bigot
+ * @author João Gonçalves
  */
 
-#include <UserButton.h>
+#ifndef _H_hardware_h
+#define _H_hardware_h
 
-generic module SwitchToggleC() {
-  provides interface Get<bool>;
-  provides interface Notify<bool>;
+#include "msp430hardware.h"
 
-  uses interface HplMsp430GeneralIO;
-  uses interface GpioInterrupt;
-}
-implementation {
-  norace bool m_pinHigh;
+// enum so components can override power saving,
+// as per TEP 112.
+enum {
+  TOS_SLEEP_NONE = MSP430_POWER_ACTIVE,
+};
+#define TOS_DEFAULT_BAUDRATE 9600
+//#define TOS_DEFAULT_BAUDRATE 115200
+//#define UART_SMCLK_XTAL_4MHz 
+//#define UART_SMCLK_XTAL_16MHz
 
-  task void sendEvent();
+/* uart is sourced by SMCLK that has 4MHz or 16MHz XTAL reference
+ * only works with 9600 and 115200 baudrates
+ * for other baudrates edit msp430usci.h
+ */
 
-  command bool Get.get() { return call HplMsp430GeneralIO.get(); }
+#define UART_SOURCE_REFOCLK
+/* Use the 32kHz crystal or REFOCLK instead of SMCLK*/
 
-  command error_t Notify.enable() {
-    error_t rv;
+//Unlock for Special funcionality of PINS such as SPI
 
-    call HplMsp430GeneralIO.makeInput();
-    call HplMsp430GeneralIO.setResistor(MSP430_PORT_RESISTOR_PULLUP);
-    if ( call HplMsp430GeneralIO.get() ) {
-      m_pinHigh = TRUE;
-      return call GpioInterrupt.enableFallingEdge();
-    } else {
-      m_pinHigh = FALSE;
-      return call GpioInterrupt.enableRisingEdge();
-    }
-  }
+/* Use the PlatformAdcC component, and enable 8 pins */
+#define ADC12_USE_PLATFORM_ADC 1
+#define ADC12_PIN_AUTO_CONFIGURE 1
+#define ADC12_PINS_AVAILABLE 8
 
-  command error_t Notify.disable() {
-    return call GpioInterrupt.disable();
-  }
+#ifndef PLATFORM_MSP430_HAS_XT1
+#define PLATFORM_MSP430_HAS_XT1 1
+#endif /* PLATFORM_MSP430_HAS_XT1 */
 
-  async event void GpioInterrupt.fired() {
-    call GpioInterrupt.disable();
+#ifndef PLATFORM_MSP430_HAS_XT2
+#define PLATFORM_MSP430_HAS_XT2 0
+#endif /* PLATFORM_MSP430_HAS_XT2 */
 
-    m_pinHigh = !m_pinHigh;
+/* default DCO configuration */
+#define MSP430XV2_DCO_CONFIG MSP430XV2_DCO_2MHz_RSEL2
 
-    post sendEvent();
-  }
-
-  task void sendEvent() {
-    bool pinHigh;
-    pinHigh = m_pinHigh;
-    signal Notify.notify( pinHigh );
-    if ( pinHigh )
-      call GpioInterrupt.enableFallingEdge();
-    else
-      call GpioInterrupt.enableRisingEdge();
-  }
-}
+#endif // _H_hardware_h

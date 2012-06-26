@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2007 Arch Rock Corporation
+ * Copyright (c) 2012 João Gonçalves
+ * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,34 +33,29 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "msp430usci.h"
+
 /**
- * Implementation of the user button for the telosb platform. Get
- * returns the current state of the button by reading the pin,
- * regardless of whether enable() or disable() has been called on the
- * Interface. Notify.enable() and Notify.disable() modify the
- * underlying interrupt state of the pin, and have the effect of
- * enabling or disabling notifications that the button has changed
- * state.
+ * Connect the appropriate pins for USCI support on a CC430.
  *
- * @author Gilman Tolle <gtolle@archrock.com>
+ * @author Peter A. Bigot <pab@peoplepowerco.com>
  */
 
-#include <UserButton.h>
+configuration PlatformUsciMapC {
+} implementation {
+  components HplMsp430GeneralIOC as GIO;
 
-configuration UserButtonC {
-  provides interface Get<button_state_t>;
-  provides interface Notify<button_state_t>;
-}
-implementation {
-  components HplUserButtonC;
-  components new SwitchToggleC();
-  SwitchToggleC.GpioInterrupt -> HplUserButtonC.GpioInterrupt;
-  SwitchToggleC.HplMsp430GeneralIO -> HplUserButtonC.HplMsp430GeneralIO;
+  components Msp430UsciUartA0P as UartA0C;
+  UartA0C.URXD -> GIO.UCA0RXD;
+  UartA0C.UTXD -> GIO.UCA0TXD;
 
-  components UserButtonP;
-  Get = UserButtonP;
-  Notify = UserButtonP;
-
-  UserButtonP.GetLower -> SwitchToggleC.Get;
-  UserButtonP.NotifyLower -> SwitchToggleC.Notify;
+  components Msp430UsciSpiB0P as SpiB0C;
+  SpiB0C.SIMO -> GIO.UCB0SIMO;
+  SpiB0C.SOMI -> GIO.UCB0SOMI;
+  SpiB0C.CLK -> GIO.UCB0CLK;
+   
+  components Msp430UsciI2CB1P as I2CB1C;
+  I2CB1C.SDA -> GIO.UCB1SDA;
+  I2CB1C.SCL -> GIO.UCB1SCL;
+  
 }

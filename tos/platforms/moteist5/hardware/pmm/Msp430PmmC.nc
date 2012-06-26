@@ -1,6 +1,7 @@
 /*
- * Copyright (c) 2009-2010 People Power Co.
- * Copyright (c) 2000-2005 The Regents of the University of California.
+ * Copyright (c) 2011 João Gonçalves
+ * Copyright (c) 2011 Eric B. Decker
+ * Copyright (c) 2010 People Power Co.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,33 +35,17 @@
  */
 
 /**
- * @author Joe Polastre
- * @author Cory Sharp
+ * Power Management Module
+ *
  * @author David Moss
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
-#include "hardware.h"
-
-configuration PlatformC {
-  provides interface Init as PlatformInit;
-  uses interface Init as PeripheralInit;
+configuration Msp430PmmC {
+  provides interface Pmm;
 }
 
 implementation {
-
-  components PlatformP;
-  PlatformInit = PlatformP;
-  PeripheralInit = PlatformP.PeripheralInit;
-
-  components PlatformPinsC;
-  PlatformP.PlatformPins -> PlatformPinsC;
-
-  components PlatformLedsC;
-  PlatformP.PlatformLeds -> PlatformLedsC;
-
-  components PlatformUsciMapC;
-  // No code initialization required; just connect the pins
-
-  components PlatformClockC;
-  PlatformP.PlatformClock -> PlatformClockC;
+  components Msp430PmmP;
+  Pmm = Msp430PmmP;
 }

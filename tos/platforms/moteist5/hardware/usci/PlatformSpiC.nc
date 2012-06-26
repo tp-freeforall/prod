@@ -11,9 +11,6 @@ configuration PlatformSpiC {
 implementation {
   
   components PlatformSpiP;
- 
-  //components MainC;
- // MainC.SoftwareInit -> PlatformSpiP;
 
   components new Msp430UsciSpiB0C() as SpiC;
 
@@ -23,8 +20,5 @@ implementation {
 
   Msp430UsciError = SpiC;
   PlatformSpiP.Resource -> SpiC.Resource;
-
-  components PlatformLedsC;
-  PlatformSpiP.Leds -> PlatformLedsC;
   
 }

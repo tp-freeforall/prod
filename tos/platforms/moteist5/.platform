@@ -11,7 +11,13 @@ for (split(/\n/, <<'EOText'
   %P/hardware/usci
   %P/hardware/adc
   %P/hardware/clock
-
+  %P/hardware/pmm
+  %P/chips/adg715
+  %P/chips/cc2420
+  
+  %P/tests/DVSTest/Tasks
+  %P/tests/DVSTest
+  
   %T/chips/msp430/x5xxx
   %T/chips/msp430/x5xxx/lpm
   %T/chips/msp430/x5xxx/timer

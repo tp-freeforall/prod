@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2012 João Gonçalves
  * Copyright (c) 2009-2010 People Power Company
  * All rights reserved.
  *
@@ -37,6 +38,9 @@
 /**
  * @author David Moss
  * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * 
+ * @author João Gonçalves
+ * Initialize all pins to output and set them low
  */
 
 module PlatformPinsP {
@@ -50,72 +54,76 @@ implementation {
     atomic {
 
 #if defined(__msp430_have_port1) || defined(__MSP430_HAS_PORT1__) || defined(__MSP430_HAS_PORT1_R__)
-      P1DIR = 0xFF;
-      P1OUT = 0xFF;
+      P1DIR = 0x00;
+      P1OUT = 0x00;
+      P1REN = 0xFF;
 #endif
 
 #if defined(__msp430_have_port2) || defined(__MSP430_HAS_PORT2__) || defined(__MSP430_HAS_PORT2_R__)
-      P2DIR = 0xFF;
-      P2OUT = 0xFF;
+      P2DIR = 0x00;
+      P2OUT = 0x00;
+      P2REN = 0xFF;
 #endif
 
 #if defined(__msp430_have_port3) || defined(__MSP430_HAS_PORT3__) || defined(__MSP430_HAS_PORT3_R__)
-      P3DIR = 0xFF;
-      P3OUT = 0xFF;
+      P3DIR = 0x00;
+      P3OUT = 0x00;
+      P3REN = 0xFF;
 #endif
 
 #if defined(__msp430_have_port4) || defined(__MSP430_HAS_PORT4__) || defined(__MSP430_HAS_PORT4_R__)
-      P4DIR = 0xFF;
-      P4OUT = 0x7F;
-
+      P4DIR = 0x00;
+      P4OUT = 0x00;
+      P4REN = 0xFF;
 #endif
 
 #if defined(__msp430_have_port5) || defined(__MSP430_HAS_PORT5__) || defined(__MSP430_HAS_PORT5_R__)
-      P5DIR = 0xFF;
-      P5OUT = 0xFF;
+      P5DIR = 0x00;
+      P5OUT = 0x00;
+      P5REN = 0xFF;
 #endif
 
 #if defined(__msp430_have_port6) || defined(__MSP430_HAS_PORT6__) || defined(__MSP430_HAS_PORT6_R__)
-      P6DIR = 0xFF;
-      P6OUT = 0xFF;
+      P6DIR = 0x00;
+      P6OUT = 0x00;
+      P6REN = 0xFF;
 #endif
 
 #if defined(__msp430_have_port7) || defined(__MSP430_HAS_PORT7__) || defined(__MSP430_HAS_PORT7_R__)
-      P7DIR = 0xFF;
-      P7OUT = 0xFF;
+      P7DIR = 0x00;
+      P7OUT = 0x00;
+      P7REN = 0xFF;
 #endif
 
 #if defined(__msp430_have_port8) || defined(__MSP430_HAS_PORT8__) || defined(__MSP430_HAS_PORT8_R__)
-      P8DIR = 0xFF;
-      P8OUT = 0xFF;
+      P8DIR = 0x00;
+      P8OUT = 0x00;
+      P8REN = 0xFF;
 #endif
 
 #if defined(__msp430_have_port9) || defined(__MSP430_HAS_PORT9__) || defined(__MSP430_HAS_PORT9_R__)
-      P9DIR = 0xFF;
-      P9OUT = 0xFF;
+      P9DIR = 0x00;
+      P9OUT = 0x00;
+      P9REN = 0xFF;
 #endif
 
 #if defined(__msp430_have_port10) || defined(__MSP430_HAS_PORT10__) || defined(__MSP430_HAS_PORT10_R__)
-      P10DIR = 0xFF;
-      P10OUT = 0xFF;
+      P10DIR = 0x00;
+      P10OUT = 0x00;
+      P10REN = 0xFF;
 #endif
 
 #if defined(__msp430_have_port11) || defined(__MSP430_HAS_PORT11__) || defined(__MSP430_HAS_PORT11_R__)
-      P11DIR = 0xFF;
-      P11OUT = 0xFF;
+      P11DIR = 0x00;
+      P11OUT = 0x00;
+      P11REN = 0XFF;
 #endif
 
 #if defined(__msp430_have_portJ) || defined(__MSP430_HAS_PORTJ__) || defined(__MSP430_HAS_PORTJ_R__)
-      PJDIR = 0xFF;
-      PJOUT = 0xFF;
+      //PJDIR = 0x00;
+      //PJOUT = 0x00;
+      //PJREN = 0xFF;
 #endif
-
-#if 0 /* Disabled: these specific setting sare defaults, but others might not be */
-      PMAPPWD = PMAPPW;                         // Get write-access to port mapping regs
-      P1MAP5 = PM_UCA0RXD;                      // Map UCA0RXD output to P1.5
-      P1MAP6 = PM_UCA0TXD;                      // Map UCA0TXD output to P1.6
-      PMAPPWD = 0;                              // Lock port mapping registers
-#endif //
 
     }
     return SUCCESS;
