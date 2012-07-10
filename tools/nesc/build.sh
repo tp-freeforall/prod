@@ -1,25 +1,54 @@
 #!/bin/bash
+#
+# Duplicates what is in tools/platforms/msp430/toolchain*
+#
+# BUILD_ROOT is assumed to be the same directory as the build.sh file.
+#
+# set TOSROOT to the head of the tinyos source tree root.
+# used to find PACKAGES_DIR.
+#
 
-NESC_VER=1.3.3
+BUILD_ROOT=$(pwd)
+
+DEB_DEST=usr
+MAKE_J=-j8
+
+if [[ -z "${TOSROOT}" ]]; then
+    TOSROOT=$(pwd)/../..
+fi
+echo -e "\n*** TOSROOT: $TOSROOT"
+echo "*** Destination: ${DEB_DEST}"
+
+NESC_VER=1.3.4
 NESC=nesc-${NESC_VER}
+POST_VER=
 
-if [[ "$1" == deb ]]
-then
+setup_deb()
+{
     ARCH_TYPE=$(dpkg-architecture -qDEB_HOST_ARCH)
-    PREFIX=$(pwd)/${NESC}/debian/usr
-    PACKAGES_DIR=$(pwd)/../../packages/debian/${ARCH_TYPE}
-    mkdir -p ${PACKAGES_DIR}
-fi
+    PREFIX=${BUILD_ROOT}/${NESC}/debian/${DEB_DEST}
+    PACKAGES_DIR=${TOSROOT}/packages
+    PACKAGES_ARCH=${PACKAGES_DIR}/${ARCH_TYPE}
+    mkdir -p ${PACKAGES_DIR} ${PACKAGES_DIR}/all ${PACKAGES_ARCH}
+}
 
-if [[ "$1" == rpm ]]
-then
-    PREFIX=$(pwd)/${NESC}/fedora/usr
-fi
 
-: ${PREFIX:=$(pwd)/../../local}
+setup_rpm()
+{
+    PREFIX=${BUILD_ROOT}/${NESC}/fedora/${DEB_DEST}
+}
+
+
+setup_local()
+{
+    mkdir -p ${TOSROOT}/local
+    ${PREFIX:=${TOSROOT}/local}
+}
+
 
 download()
 {
+    echo -e "\n*** Downloading ... "
     [[ -a ${NESC}.tar.gz ]] \
 	|| wget http://downloads.sourceforge.net/project/nescc/nescc/v${NESC_VER}/${NESC}.tar.gz
 }
@@ -40,17 +69,21 @@ build()
 
 package_deb()
 {
-    echo Packaging ${NESC}
+    VER=${NESC_VER}
+    DEB_VER=${VER}${POST_VER}
+    echo -e "\n***" debian archive: ${NESC}${POST_VER}
     cd ${NESC}
-    find debian/usr/bin/ -type f \
-	| xargs perl -i -pe 's#'${PREFIX}'#/usr#'
-    mkdir -p debian/DEBIAN
+    mkdir -p debian/DEBIAN debian/${DEB_DEST}
+    find debian/${DEB_DEST}/bin/ -type f \
+	| xargs perl -i -pe 's#'${PREFIX}'#/'${DEB_DEST}'#'
     cat ../nesc.control \
-	| sed 's/@version@/'${NESC_VER}-`date +%Y%m%d`'/' \
+	| sed 's/@version@/'${DEB_VER}'/' \
 	| sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	> debian/DEBIAN/control
-    dpkg-deb --build debian ${PACKAGES_DIR}/nesc-${NESC_VER}.deb
+    dpkg-deb --build debian .
+    mv *.deb ${PACKAGES_ARCH}
 }
+
 
 package_rpm()
 {
@@ -77,8 +110,13 @@ remove()
 }
 
 case $1 in
+    test)
+	setup_deb
+	package_deb
+	;;
+
     download)
-	download
+        download
 	;;
 
     build)
@@ -94,18 +132,21 @@ case $1 in
 	;;
 
     deb)
+	setup_deb
 	download
 	build
 	package_deb
 	;;
 
     rpm)
+	setup_rpm
 	download
 	build
 	package_rpm
 	;;
 
     *)
+	setup_local
 	download
 	build
 	;;
