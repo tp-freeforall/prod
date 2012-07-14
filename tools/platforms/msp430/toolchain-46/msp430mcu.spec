@@ -1,4 +1,4 @@
-Summary: Experimental (4.6) MSP430 headers and linker scripts
+Summary: MSP430 (4.6) headers and linker scripts
 Name: msp430mcu-46
 Version: %{version}
 Release: %{release}

@@ -1,4 +1,4 @@
-Summary: Experimental (4.6) MSP430 gdb
+Summary: MSP430 (4.6) gdb
 Name: msp430-gdb-46
 Version: %{version}
 Release: %{release}
