@@ -376,9 +376,6 @@ package_mcu_deb()
     set -e
     VER=${MSP430MCU_VER}
     LAST_PATCH="$(last_patch msp430mcu-*.patch)"
-    if [[ -n "${LAST_PATCH}" ]]; then
-	LAST_PATCH=-${LAST_PATCH}
-    fi
     if [[ -z "${REL}" ]]; then
 	DEB_VER=${VER}
     else
@@ -442,9 +439,6 @@ package_libc_deb()
     set -e
     VER=${MSP430LIBC_VER}
     LAST_PATCH="$(last_patch msp430-libc-*.patch)"
-    if [[ -n "${LAST_PATCH}" ]]; then
-	LAST_PATCH=-${LAST_PATCH}
-    fi
     if [[ -z "${REL}" ]]; then
 	DEB_VER=${VER}
     else
@@ -577,7 +571,7 @@ case $1 in
 #	build_gcc
 #	package_gcc_deb
 #	build_mcu
-#	package_mcu_deb
+	package_mcu_deb
 #	build_libc
 	package_libc_deb
 #	build_gdb
