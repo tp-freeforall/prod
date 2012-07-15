@@ -1,8 +1,0 @@
-Package: msp430-tinyos
-Version: @version@
-Architecture: all
-Depends: msp430-binutils-tinyos, msp430-gcc-tinyos, msp430-libc-tinyos, msp430mcu-tinyos, msp430-gdb-tinyos, tinyos-tools
-Maintainer: Razvan Musaloiu-E. <razvanm@musaloiu.com>
-Priority: optional
-Section: devel
-Description: Dummy package to pull in all the MSP430 packages
