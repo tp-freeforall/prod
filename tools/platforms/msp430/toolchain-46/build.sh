@@ -78,8 +78,7 @@ setup_deb()
     if [[ -z "${PACKAGES_DIR}" ]]; then
 	PACKAGES_DIR=${BUILD_ROOT}/packages
     fi
-    PACKAGES_ARCH=${PACKAGES_DIR}/${ARCH_TYPE}
-    mkdir -p ${PACKAGES_DIR} ${PACKAGES_DIR}/all ${PACKAGES_ARCH}
+    mkdir -p ${PACKAGES_DIR}
 }
 
 
@@ -272,7 +271,7 @@ package_binutils_deb()
 	    > debian/DEBIAN/control
 	rsync -a ../debian/${DEB_DEST}/ debian/${DEB_DEST}/
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -340,7 +339,7 @@ package_gcc_deb()
 	    find . -empty | xargs rm -rf
 	)
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -401,7 +400,7 @@ package_mcu_deb()
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -460,7 +459,7 @@ package_libc_deb()
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -517,7 +516,7 @@ package_gdb_deb()
 	    find . -empty | xargs rm -rf
 	)
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -543,9 +542,10 @@ package_dummy_deb()
 	mkdir -p debian/DEBIAN
 	cat ../msp430-46.control \
 	    | sed 's/@version@/'$(date +%Y%m%d)'/' \
+	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_DIR}/all
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -571,12 +571,12 @@ case $1 in
 #	build_gcc
 #	package_gcc_deb
 #	build_mcu
-	package_mcu_deb
+#	package_mcu_deb
 #	build_libc
-	package_libc_deb
+#	package_libc_deb
 #	build_gdb
 #	package_gdb_deb
-#	package_dummy_deb
+	package_dummy_deb
 	;;
 
     download)
