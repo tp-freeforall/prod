@@ -28,7 +28,7 @@ fi
 
 TINYOS_TOOLS_VER=1.2.4
 TINYOS_TOOLS=tinyos-tools-${TINYOS_TOOLS_VER}
-POST_VER=-tinyprod-1
+POST_VER=-tinyprod-2
 
 setup_deb()
 {
@@ -37,8 +37,7 @@ setup_deb()
     if [[ -z "${PACKAGES_DIR}" ]]; then
 	PACKAGES_DIR=${BUILD_ROOT}/packages
     fi
-    PACKAGES_ARCH=${PACKAGES_DIR}/${ARCH_TYPE}
-    mkdir -p ${PACKAGES_DIR} ${PACKAGES_DIR}/all ${PACKAGES_ARCH}
+    mkdir -p ${PACKAGES_DIR}
 }
 
 
@@ -87,7 +86,7 @@ package_deb()
 	| sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	> debian/DEBIAN/control
     dpkg-deb --build debian .
-    mv *.deb ${PACKAGES_ARCH}
+    mv *.deb ${PACKAGES_DIR}
 }
 
 package_rpm()
@@ -138,8 +137,12 @@ case $1 in
 	package_rpm
 	;;
 
-    *)
+    local)
 	setup_local
 	build
 	;;
+
+    *)
+	echo -e "\n./build.sh <target>"
+	echo -e "    local | rpm | deb | repo | clean | download"
 esac
