@@ -1,6 +1,6 @@
 Package: msp430-45
 Version: @version@
-Architecture: all
+Architecture: @architecture@
 Depends: msp430-binutils-45, msp430-gcc-45, msp430-libc-45, msp430mcu-45, msp430-gdb-45, tinyos-tools
 Maintainer: Eric B. Decker <cire831@gmail.com>
 Priority: optional

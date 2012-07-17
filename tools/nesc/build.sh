@@ -5,19 +5,32 @@
 # BUILD_ROOT is assumed to be the same directory as the build.sh file.
 #
 # set TOSROOT to the head of the tinyos source tree root.
-# used to find PACKAGES_DIR.
+# used to find default PACKAGES_DIR.
+#
+#
+# Env variables used....
+#
+# TOSROOT	head of the tinyos source tree root.  Used for base of default repo
+# PACKAGES_DIR	where packages get stashed.  Defaults to $(TOSROOT)/packages
+# REPO_DEST	Where the repository is being built (no default)
+# DEB_DEST	final home once installed.
+# CODENAME	which part of the repository to place this build in.
+#
+# REPO_DEST	must contain a conf/distributions file for reprepro to work
+#		properly.   One can be copied from $(TOSROOT)/tools/repo/conf.
 #
 
 BUILD_ROOT=$(pwd)
 
 DEB_DEST=usr
+CODENAME=squeeze
 MAKE_J=-j8
 
 if [[ -z "${TOSROOT}" ]]; then
     TOSROOT=$(pwd)/../..
 fi
 echo -e "\n*** TOSROOT: $TOSROOT"
-echo "*** Destination: ${DEB_DEST}"
+echo      "*** Destination: ${DEB_DEST}"
 
 NESC_VER=1.3.4
 NESC=nesc-${NESC_VER}
@@ -27,7 +40,9 @@ setup_deb()
 {
     ARCH_TYPE=$(dpkg-architecture -qDEB_HOST_ARCH)
     PREFIX=${BUILD_ROOT}/${NESC}/debian/${DEB_DEST}
-    PACKAGES_DIR=${TOSROOT}/packages
+    if [[ -z "${PACKAGES_DIR}" ]]; then
+	PACKAGES_DIR=${BUILD_ROOT}/packages
+    fi
     PACKAGES_ARCH=${PACKAGES_DIR}/${ARCH_TYPE}
     mkdir -p ${PACKAGES_DIR} ${PACKAGES_DIR}/all ${PACKAGES_ARCH}
 }
@@ -62,7 +77,7 @@ build()
     (
 	cd ${NESC}
 	./configure --prefix=${PREFIX}
-	make
+	make ${MAKE_J}
 	make install-strip
     )
 }
@@ -124,11 +139,11 @@ case $1 in
 	;;
 
     clean)
-	remove ${NESC}
+	remove ${NESC} packages
 	;;
 
     veryclean)
-	remove ${NESC}{,.tar.gz}
+	remove ${NESC}{,.tar.gz} packages
 	;;
 
     deb)
@@ -145,9 +160,23 @@ case $1 in
 	package_rpm
 	;;
 
-    *)
+    repo)
+	setup_deb
+	if [[ -z "${REPO_DEST}" ]]; then
+	    REPO_DEST=${TOSROOT}/tools/repo
+	fi
+	echo -e "\n*** Building Repository: [${CODENAME}] -> ${REPO_DEST}"
+	echo -e   "*** Using packages from ${PACKAGES_DIR}\n"
+	find ${PACKAGES_DIR} -iname "*.deb" -exec reprepro -b ${REPO_DEST} includedeb ${CODENAME} '{}' \;
+	;;
+
+    local)
 	setup_local
 	download
 	build
 	;;
+
+    *)
+	echo -e "\n./build.sh <target>"
+	echo -e "    local | rpm | deb | repo | clean | veryclean | download"
 esac

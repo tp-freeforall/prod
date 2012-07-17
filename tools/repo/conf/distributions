@@ -1,0 +1,31 @@
+Origin: tinyprod.net
+Label: tinyprod.net
+Codename: squeeze
+Architectures: i386 amd64
+Components: main
+Description: general TinyOS Debian/Ubuntu repository
+#SignWith: yes
+
+Origin: tinyprod.net
+Label: tinyprod.net
+Codename: msp430-45
+Architectures: i386 amd64
+Components: main
+Description: mspgcc 4.5.3 toolchain DEPRECATED (debian/ubuntu)
+#SignWith: yes
+
+Origin: tinyprod.net
+Label: tinyprod.net
+Codename: msp430-46
+Architectures: i386 amd64
+Components: main
+Description: mspgcc 4.6.3 toolchain (debian/ubuntu)
+#SignWith: yes
+
+Origin: tinyprod.net
+Label: tinyprod.net
+Codename: msp430-47
+Architectures: i386 amd64
+Components: main
+Description: mspgcc 4.7 toolchain EXPERIMENTAL (debian/ubuntu)
+#SignWith: yes
