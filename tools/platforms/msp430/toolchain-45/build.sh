@@ -2,7 +2,7 @@
 #
 # BUILD_ROOT is assumed to be the same directory as the build.sh file.
 #
-# mspgcc, msp430 gcc toolchain
+# mspgcc, msp430 gcc toolchain  DEPRECATED
 # 4.5.3-LTS20110716
 # binutils	2.21.1a
 # gcc		4.5.3
@@ -15,12 +15,25 @@
 # mpfr		2.4.2
 # mpc		0.8.1
 #
-# set TOSROOT to the head of the tinyos source tree root.
+# Env variables used....
+#
+# TOSROOT	head of the tinyos source tree root.  Used for base of default repo
+# PACKAGES_DIR	where packages get stashed.  Defaults to ${BUILD_ROOT}/packages
+# REPO_DEST	Where the repository is being built (defaults to ${TOSROOT}/tools/repo)
+# DEB_DEST	final home once installed.
+# CODENAME	which part of the repository to place this build in.
+#
+# REPO_DEST	must contain a conf/distributions file for reprepro to work
+#		properly.   One can be copied from $(TOSROOT)/tools/repo/conf.
+#
+# we use opt for these tools to avoid conflicting with placement from normal
+# distribution paths (debian or ubuntu repositories).
 #
 
 BUILD_ROOT=$(pwd)
 
 DEB_DEST=opt/msp430-45
+CODENAME=msp430-45
 REL=LTS
 MAKE_J=-j8
 
@@ -79,21 +92,23 @@ PATCHES="  msp430-binutils-2.21.1-20110716-sf3143071.patch
 setup_deb()
 {
     ARCH_TYPE=$(dpkg-architecture -qDEB_HOST_ARCH)
-    PREFIX=$(pwd)/debian/${DEB_DEST}
-    PACKAGES_DIR=${TOSROOT}/packages
-    PACKAGES_ARCH=${PACKAGES_DIR}/${ARCH_TYPE}
-    mkdir -p ${PACKAGES_DIR} ${PACKAGES_DIR}/all ${PACKAGES_ARCH}
+    PREFIX=${BUILD_ROOT}/debian/${DEB_DEST}
+    if [[ -z "${PACKAGES_DIR}" ]]; then
+	PACKAGES_DIR=${BUILD_ROOT}/packages
+    fi
+    mkdir -p ${PACKAGES_DIR}
 }
 
 
 setup_rpm()
 {
-    PREFIX=$(pwd)/fedora/${DEB_DEST}
+    PREFIX=${BUILD_ROOT}/fedora/${DEB_DEST}
 }
 
 
 setup_local()
 {
+    mkdir -p ${TOSROOT}/local
     ${PREFIX:=${TOSROOT}/local}
 }
 
@@ -272,7 +287,7 @@ package_binutils_deb()
 	    > debian/DEBIAN/control
 	rsync -a ../debian/${DEB_DEST}/ debian/${DEB_DEST}/
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -340,7 +355,7 @@ package_gcc_deb()
 	    find . -empty | xargs rm -rf
 	)
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -401,7 +416,7 @@ package_mcu_deb()
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_DIR}/all
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -460,7 +475,7 @@ package_libc_deb()
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_DIR}/all
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -498,6 +513,9 @@ package_gdb_deb()
     set -e
     VER=${GDB_VER}
     LAST_PATCH=$(last_patch msp430-gdb-*.patch)
+    if [[ -z "${LAST_PATCH}" ]]; then
+	LAST_PATCH=$(last_patch gdb-*.patch)
+    fi
     DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}
     echo -e "\n***" debian archive: ${GDB}
     (
@@ -514,7 +532,7 @@ package_gdb_deb()
 	    find . -empty | xargs rm -rf
 	)
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -540,9 +558,10 @@ package_dummy_deb()
 	mkdir -p debian/DEBIAN
 	cat ../msp430-45.control \
 	    | sed 's/@version@/'$(date +%Y%m%d)'/' \
+	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_DIR}/all
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -586,14 +605,12 @@ case $1 in
 	    msp430mcu-* mpfr-* gmp-* mpc-* \
 	    | fmt -1 | grep -v 'tar' | grep -v 'patch' | xargs)
 	remove tinyos *.files debian fedora
-	remove repo/{db,dists,pool}
 	;;
 
     veryclean)
 	remove binutils-* gcc-* gdb-* mspgcc-* msp430-libc-2011* \
 	    msp430mcu-* mpfr-* gmp-* mpc-*
-	remove tinyos *.patch *.files debian fedora
-	remove repo/{db,dists,pool}
+	remove tinyos *.patch *.files debian fedora packages
 	;;
 
     deb)
@@ -615,8 +632,12 @@ case $1 in
 
     repo)
 	setup_deb
-	echo -e "\n*** Building Repository"
-	find ${PACKAGES_DIR} -iname "*.deb" -exec reprepro -b repo includedeb msp430-46 '{}' \;
+	if [[ -z "${REPO_DEST}" ]]; then
+	    REPO_DEST=${TOSROOT}/tools/repo
+	fi
+	echo -e "\n*** Building Repository: [${CODENAME}] -> ${REPO_DEST}"
+	echo -e   "*** Using packages from ${PACKAGES_DIR}\n"
+	find ${PACKAGES_DIR} -iname "*.deb" -exec reprepro -b ${REPO_DEST} includedeb ${CODENAME} '{}' \;
 	;;
 
     rpm)
@@ -635,7 +656,7 @@ case $1 in
 	package_gdb_rpm
 	;;
 
-    *)
+    local)
 	setup_local
 	download
 	patch_dirs
@@ -645,4 +666,8 @@ case $1 in
 	build_libc
 	build_gdb
 	;;
+
+    *)
+	echo -e "\n./build.sh <target>"
+	echo -e "    local | rpm | deb | repo | clean | veryclean | download"
 esac

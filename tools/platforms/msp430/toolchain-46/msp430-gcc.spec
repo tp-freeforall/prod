@@ -1,4 +1,4 @@
-Summary: Experimental (4.6) MSP430 gcc
+Summary: MSP430 (4.6) gcc
 Name: msp430-gcc-46
 Version: %{version}
 Release: %{release}

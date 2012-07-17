@@ -1,7 +1,0 @@
-Origin: tinyprod.net
-Label: msp430 (4.5)
-Codename: msp430-45
-Architectures: i386 amd64
-Components: main
-Description: MSP430 GCC 4.5 toolchain
-SignWith: yes

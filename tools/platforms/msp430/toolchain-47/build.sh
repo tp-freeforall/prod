@@ -3,26 +3,37 @@
 # BUILD_ROOT is assumed to be the same directory as the build.sh file.
 #
 # mspgcc development branch: 4.7.0 (non-20 bit)
-# custom nesc (1.3.4x - testing), modified for 4.7
+# needs nesc 1.3.4 (in squeeze)
 #
+# mspgcc:	4.7.0
 # binutils	2.22
 # gcc		4.7.0
 # gdb		7.2a
 # mspgcc	20120514
 # msp430-libc	20120224
 # msp430mcu	20120407
-# nesc          base 1.3.3 with 1.3.4x patches
 #
 # gmp		4.3.2
 # mpfr		3.0.0
 # mpc		0.9
 #
-# set TOSROOT to the head of the tinyos source tree root.
+# TOSROOT	head of the tinyos source tree root.  Used for base of default repo
+# PACKAGES_DIR	where packages get stashed.  Defaults to ${BUILD_ROOT}/packages
+# REPO_DEST	Where the repository is being built (defaults to ${TOSROOT}/tools/repo)
+# DEB_DEST	final home once installed.
+# CODENAME	which part of the repository to place this build in.
+#
+# REPO_DEST	must contain a conf/distributions file for reprepro to work
+#		properly.   One can be copied from $(TOSROOT)/tools/repo/conf.
+#
+# we use opt for these tools to avoid conflicting with placement from normal
+# distribution paths (debian or ubuntu repositories).
 #
 
 BUILD_ROOT=$(pwd)
 
 DEB_DEST=opt/msp430-47
+CODENAME=msp430-47
 REL=
 MAKE_J=-j8
 
@@ -53,10 +64,6 @@ MSPGCC_VER=20120514
 MSPGCC=mspgcc-${MSPGCC_VER}
 MSPGCC_DIR=DEVEL-4.7.x/
 
-NESC_VER=1.3.3
-NESC=nesc-${NESC_VER}
-NESC_PATCH=1.3.4x
-
 PATCHES=""
 
 : ${PREFIX:=${TOSROOT}/local}
@@ -65,21 +72,23 @@ PATCHES=""
 setup_deb()
 {
     ARCH_TYPE=$(dpkg-architecture -qDEB_HOST_ARCH)
-    PREFIX=$(pwd)/debian/${DEB_DEST}
-    PACKAGES_DIR=${TOSROOT}/packages
-    PACKAGES_ARCH=${PACKAGES_DIR}/${ARCH_TYPE}
-    mkdir -p ${PACKAGES_DIR} ${PACKAGES_DIR}/all ${PACKAGES_ARCH}
+    PREFIX=${BUILD_ROOT}/debian/${DEB_DEST}
+    if [[ -z "${PACKAGES_DIR}" ]]; then
+	PACKAGES_DIR=${BUILD_ROOT}/packages
+    fi
+    mkdir -p ${PACKAGES_DIR}
 }
 
 
 setup_rpm()
 {
-    PREFIX=$(pwd)/fedora/${DEB_DEST}
+    PREFIX=${BUILD_ROOT}/fedora/${DEB_DEST}
 }
 
 
 setup_local()
 {
+    mkdir -p ${TOSROOT}/local
     ${PREFIX:=${TOSROOT}/local}
 }
 
@@ -145,18 +154,6 @@ download()
 	    || (echo "    ... ${f}"
 	    wget -q http://sourceforge.net/projects/mspgcc/files/Patches/LTS/20110716/${f})
     done
-    echo "  ... base ${NESC} tarball"
-    [[ -a ${NESC}.tar.gz ]] \
-	|| wget http://downloads.sourceforge.net/project/nescc/nescc/v${NESC_VER}/${NESC}.tar.gz
-
-#    echo "  ... nesc CVS"
-#    if [[ -a nesc ]] ; then
-#	echo "      using existing nesc"
-#    else
-#	echo "      fetching current nesc (CVS)"
-#	cvs -z3 -d:pserver:anonymous@nescc.cvs.sourceforge.net:/cvsroot/nescc co -P nesc > nesc.fetch
-#    fi
-
     echo "*** Done"
 }
 
@@ -236,15 +233,6 @@ patch_dirs()
 #	cat ../msp430-libc-*.patch | patch -p1
 #    )
 
-    echo -e "\n***" Unpacking base ${NESC}
-    rm -rf ${NESC}
-    tar xzf ${NESC}.tar.gz
-    set -e
-    (
-	cd ${NESC}
-	echo -e "*** applying ${NESC_PATCH} ..."
-	cat ../nesc-${NESC_PATCH}.patch | patch -p1
-    )
 }
 
 build_binutils()
@@ -285,7 +273,7 @@ package_binutils_deb()
 	    > debian/DEBIAN/control
 	rsync -a ../debian/${DEB_DEST}/ debian/${DEB_DEST}/
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -353,7 +341,7 @@ package_gcc_deb()
 	    find . -empty | xargs rm -rf
 	)
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -389,9 +377,6 @@ package_mcu_deb()
     set -e
     VER=${MSP430MCU_VER}
     LAST_PATCH="$(last_patch msp430mcu-*.patch)"
-    if [[ -n "${LAST_PATCH}" ]]; then
-	LAST_PATCH=-${LAST_PATCH}
-    fi
     if [[ -z "${REL}" ]]; then
 	DEB_VER=${VER}
     else
@@ -417,7 +402,7 @@ package_mcu_deb()
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_DIR}/all
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -455,9 +440,6 @@ package_libc_deb()
     set -e
     VER=${MSP430LIBC_VER}
     LAST_PATCH="$(last_patch msp430-libc-*.patch)"
-    if [[ -n "${LAST_PATCH}" ]]; then
-	LAST_PATCH=-${LAST_PATCH}
-    fi
     if [[ -z "${REL}" ]]; then
 	DEB_VER=${VER}
     else
@@ -479,7 +461,7 @@ package_libc_deb()
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_DIR}/all
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -536,7 +518,7 @@ package_gdb_deb()
 	    find . -empty | xargs rm -rf
 	)
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -552,57 +534,6 @@ package_gdb_rpm()
 	-bb msp430-gdb.spec
 }
 
-build_nesc()
-{
-    LOCAL_PREFIX=$(pwd)/${NESC}/debian/${DEB_DEST}
-    echo -e "\n***" building ${NESC} "->" ${LOCAL_PREFIX}
-    set -e
-    (
-	cd ${NESC}
-	mkdir -p debian/DEBIAN debian/${DEB_DEST}
-#	if [[ ! -a configure ]] ; then
-#	    echo "***" bootstraping
-#	    ./Bootstrap
-#	fi
-	./configure --prefix=${LOCAL_PREFIX}
-	make ${MAKE_J}
-	make install
-    )
-}
-
-package_nesc_deb()
-{
-    set -e
-    VER=${NESC_PATCH}
-    DEB_VER=${VER}-${REL}${MSPGCC_VER}
-    LOCAL_PREFIX=$(pwd)/${NESC}/debian/${DEB_DEST}
-    echo -e "\n***" debian archive: nesc-${NESC_PATCH}
-    (
-	cd ${NESC}
-	mkdir -p debian/DEBIAN debian/${DEB_DEST}
-	find ${LOCAL_PREFIX} -type f \
-	    | xargs perl -i -pe 's#'${LOCAL_PREFIX}'#/'${DEB_DEST}'#'
-	cat ../nesc.control \
-	    | sed 's/@version@/'${DEB_VER}'/' \
-	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
-	    > debian/DEBIAN/control
-	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_ARCH}
-    )
-}
-
-package_nesc_rpm()
-{
-    echo Packaging ${NESC}
-    find fedora/usr/bin/ -type f \
-	| xargs perl -i -pe 's#'${PREFIX}'#/usr#'
-    rpmbuild \
-	-D "version ${NESC_VER}" \
-	-D "release `date +%Y%m%d`" \
-	-D "prefix ${PREFIX}" \
-	-bb nesc.spec
-}
-
 package_dummy_deb()
 {
     set -e
@@ -613,9 +544,10 @@ package_dummy_deb()
 	mkdir -p debian/DEBIAN
 	cat ../msp430-47.control \
 	    | sed 's/@version@/'$(date +%Y%m%d)'/' \
+	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	dpkg-deb --build debian .
-	mv *.deb ${PACKAGES_DIR}/all
+	mv *.deb ${PACKAGES_DIR}
     )
 }
 
@@ -635,7 +567,7 @@ case $1 in
     test)
 	setup_deb
 	download
-	patch_dirs
+#	patch_dirs
 #	build_binutils
 #	package_binutils_deb
 #	build_gcc
@@ -644,11 +576,9 @@ case $1 in
 #	package_mcu_deb
 #	build_libc
 #	package_libc_deb
-	build_gdb
-	package_gdb_deb
-#	build_nesc
-#	package_nesc_deb
-#	package_dummy_deb
+#	build_gdb
+#	package_gdb_deb
+	package_dummy_deb
 	;;
 
     download)
@@ -658,19 +588,17 @@ case $1 in
 
     clean)
 	remove $(echo binutils-* gcc-* gdb-* mspgcc-* msp430-libc-2012* \
-	    msp430mcu-* mpfr-* gmp-* mpc-* ${NESC} \
+	    msp430mcu-* mpfr-* gmp-* mpc-* \
 	    | fmt -1 | grep -v 'tar' | grep -v 'patch' | xargs)
 	remove tinyos *.files debian fedora
-	remove repo/{db,dists,pool}
 	;;
 
     veryclean)
 	remove binutils-* gcc-* ${GDB} ${GDB}a.tar* mspgcc-* msp430-libc-2012* \
-	    msp430mcu-* mpfr-* gmp-* mpc-* ${NESC} ${NESC}.tar*
-	remove $(echo *.patch | fmt -1 | grep -v 'nesc' | grep -v 'gdb-7.2-20120430' \
+	    msp430mcu-* mpfr-* gmp-* mpc-*
+	remove $(echo *.patch | fmt -1 | grep -v 'gdb-7.2-20120430' \
 	    | xargs)
-	remove tinyos *.files debian fedora
-	remove repo/{db,dists,pool}
+	remove tinyos *.files debian fedora packages
 	;;
 
     deb)
@@ -687,15 +615,17 @@ case $1 in
 	package_libc_deb
 	build_gdb
 	package_gdb_deb
-	build_nesc
-	package_nesc_deb
 	package_dummy_deb
  	;;
 
     repo)
 	setup_deb
-	echo -e "\n*** Building Repository"
-	find ${PACKAGES_DIR} -iname "*.deb" -exec reprepro -b repo includedeb msp430-47 '{}' \;
+	if [[ -z "${REPO_DEST}" ]]; then
+	    REPO_DEST=${TOSROOT}/tools/repo
+	fi
+	echo -e "\n*** Building Repository: [${CODENAME}] -> ${REPO_DEST}"
+	echo -e   "*** Using packages from ${PACKAGES_DIR}\n"
+	find ${PACKAGES_DIR} -iname "*.deb" -exec reprepro -b ${REPO_DEST} includedeb ${CODENAME} '{}' \;
 	;;
 
     rpm)
@@ -714,7 +644,7 @@ case $1 in
 	package_gdb_rpm
 	;;
 
-    *)
+    local)
 	setup_local
 	download
 	patch_dirs
@@ -724,4 +654,8 @@ case $1 in
 	build_libc
 	build_gdb
 	;;
+
+    *)
+	echo -e "\n./build.sh <target>"
+	echo -e "    local | rpm | deb | repo | clean | veryclean | download"
 esac

@@ -1,4 +1,4 @@
-Summary: Experimental (4.6) MSP430 libc
+Summary: MSP430 (4.6) libc
 Name: msp430-libc-46
 Version: %{version}
 Release: %{release}

@@ -34,7 +34,7 @@ How to build a toolchain (or other package)
 Local build in $TOSROOT/local:
 
   cd platforms/<arch>/toolchain
-  ./build.sh build
+  ./build.sh deb
 
 Build a Debian pacakge:
 

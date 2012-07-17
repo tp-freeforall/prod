@@ -1,4 +1,4 @@
-Summary: Experimental (4.6) MSP430 binutils
+Summary: MSP430 (4.6) binutils
 Name: msp430-binutils-46
 Version: %{version}
 Release: %{release}
