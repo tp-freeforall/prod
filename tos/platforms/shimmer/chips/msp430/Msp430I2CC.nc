@@ -29,57 +29,41 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE
  */
 
-#include "Timer.h"
-
 /**
- * HplSensirionSht11P is a low-level component that controls power for
- * the Sensirion SHT11 sensor on the telosb platform.
- *
- * @author Gilman Tolle <gtolle@archrock.com>
- * @version $Revision: 1.4 $ $Date: 2006-12-12 18:23:45 $
+ * @author Jonathan Hui <jhui@archrock.com>
+ * @version $Revision: 1.1 $ $Date: 2012-01-31 19:41:08 $
  */
 
-module HplSensirionSht11P {
-  provides interface SplitControl;
-  uses interface Timer<TMilli>;
-  uses interface GeneralIO as PWR;
-  uses interface GeneralIO as DATA;
-  uses interface GeneralIO as SCK;
-}
-implementation {
-  task void stopTask();
+#include <I2C.h>
+#include "msp430usart.h"
 
-  command error_t SplitControl.start() {
-  #ifndef IS_ZIGLET 
-    call PWR.makeOutput();
-    call PWR.set();
-    call Timer.startOneShot( 11 );
-  #endif
-
-  #ifdef IS_ZIGLET
-    signal SplitControl.startDone( SUCCESS );
-  #endif
-    return SUCCESS;
-  }
-
-  event void Timer.fired() {
-    signal SplitControl.startDone( SUCCESS );
-  }
+generic configuration Msp430I2CC() {
   
-  command error_t SplitControl.stop() {
-    call SCK.makeInput();
-    call SCK.clr();
-    call DATA.makeInput();
-    call DATA.clr();
-  #ifndef IS_ZIGLET 
-    call PWR.clr();
-  #endif
-    post stopTask();
-    return SUCCESS;
-  }
-
-  task void stopTask() {
-    signal SplitControl.stopDone( SUCCESS );
-  }
+  provides interface Resource;
+  provides interface ResourceRequested;
+  provides interface I2CPacket<TI2CBasicAddr> as I2CBasicAddr;
+  provides interface Init as I2CInit;
+  
+  uses interface Msp430I2CConfigure;
+  
 }
 
+implementation {
+  
+  enum {
+    CLIENT_ID = unique( MSP430_I2CO_BUS ),
+  };
+  
+  components Msp430I2C0P as I2CP;
+  Resource = I2CP.Resource[ CLIENT_ID ];
+  I2CBasicAddr = I2CP.I2CBasicAddr;
+  I2CInit      = I2CP.I2CInit;
+  Msp430I2CConfigure = I2CP.Msp430I2CConfigure[ CLIENT_ID ];
+  
+  components new Msp430Usart0C() as UsartC;
+  ResourceRequested = UsartC;
+  I2CP.ResourceConfigure[ CLIENT_ID ] <- UsartC.ResourceConfigure;
+  I2CP.UsartResource[ CLIENT_ID ] -> UsartC.Resource;
+  I2CP.I2CInterrupts -> UsartC.HplMsp430I2CInterrupts;
+  
+}

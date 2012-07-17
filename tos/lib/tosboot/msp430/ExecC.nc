@@ -1,5 +1,7 @@
+// $Id: ExecC.nc,v 1.3 2010-06-29 22:07:50 scipio Exp $
+
 /*
- * Copyright (c) 2011, University of Szeged
+ * Copyright (c) 2000-2005 The Regents of the University  of California.  
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +14,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
- * - Neither the name of the copyright holder nor the names of
+ * - Neither the name of the copyright holders nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -28,43 +30,30 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Author: Miklos Maroti
  */
 
-configuration AtmegaExtInterruptC
-{
-	provides interface GpioInterrupt[uint8_t vector];
+/*
+ * @author Jonathan Hui <jwhui@cs.berkeley.edu>
+ */
+
+module ExecC {
+  provides {
+    interface Exec;
+  }
 }
 
-implementation
-{
-	components HplAtmegaExtInterruptC;
+implementation {
 
-	components new AtmegaExtInterruptP(FALSE) as Int0P;
-	components new AtmegaExtInterruptP(FALSE) as Int1P;
-	components new AtmegaExtInterruptP(FALSE) as Int2P;
-	components new AtmegaExtInterruptP(FALSE) as Int3P;
-	components new AtmegaExtInterruptP(TRUE) as Int4P;
-	components new AtmegaExtInterruptP(TRUE) as Int5P;
-	components new AtmegaExtInterruptP(TRUE) as Int6P;
-	components new AtmegaExtInterruptP(TRUE) as Int7P;
+  command void Exec.exec() {
 
-	GpioInterrupt[0] = Int0P;
-	GpioInterrupt[1] = Int1P;
-	GpioInterrupt[2] = Int2P;
-	GpioInterrupt[3] = Int3P;
-	GpioInterrupt[4] = Int4P;
-	GpioInterrupt[5] = Int5P;
-	GpioInterrupt[6] = Int6P;
-	GpioInterrupt[7] = Int7P;
+    typedef void __attribute__((noreturn)) (*tosboot_exec)();
 
-	HplAtmegaExtInterruptC.HplAtmegaExtInterrupt[0] <- Int0P;
-	HplAtmegaExtInterruptC.HplAtmegaExtInterrupt[1] <- Int1P;
-	HplAtmegaExtInterruptC.HplAtmegaExtInterrupt[2] <- Int2P;
-	HplAtmegaExtInterruptC.HplAtmegaExtInterrupt[3] <- Int3P;
-	HplAtmegaExtInterruptC.HplAtmegaExtInterrupt[4] <- Int4P;
-	HplAtmegaExtInterruptC.HplAtmegaExtInterrupt[5] <- Int5P;
-	HplAtmegaExtInterruptC.HplAtmegaExtInterrupt[6] <- Int6P;
-	HplAtmegaExtInterruptC.HplAtmegaExtInterrupt[7] <- Int7P;
+    // Restore the watchdog state produced by the __watchdog_support
+    // from GCC 4.6.
+    WDTCTL = WDTPW + WDTCNTCL;
+
+    ((tosboot_exec)TOSBOOT_END)();
+
+  }
+
 }
