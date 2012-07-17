@@ -3,11 +3,12 @@
      font-size: 17px;
      line-height: 1.2em;'
 >
-<p><b>Last update: 20120716, cire</b></p>
-<p>(Changelog at end)</p>
 
 <p><b>TinyProd TinyOS Development Repository</b></p>
+Last update: 20120717, cire
+<br>(Changelog at end)
 
+<br><br>
 4 repositories are homed here that maybe useful to the TinyOS development community.
 
 <ul>
@@ -71,19 +72,21 @@ tinyos-2.1.1 (and older).
   $ sudo apt-get clean
 </pre>
 
-<li>Add the following line to /etc/apt/sources.list.d/tinyprod-debian.list:
+<li>Add the following lines to /etc/apt/sources.list.d/tinyprod-debian.list:
 <pre>
   deb http://tinyprod.net/repos/debian squeeze main
+  deb http://tinyprod.net/repos/debian msp430-46 main
 
   $ cd /etc/apt/sources.list.d
   $ sudo echo "deb http://tinyprod.net/repos/debian squeeze main" >> tinyprod-debian.list
+  $ sudo echo "deb http://tinyprod.net/repos/debian msp430-46 main" >> tinyprod-debian.list
 
 </pre>
 
 <li>Install the new packages:
 <pre>
   $ sudo apt-get update
-  $ sudo apt-get install nesc msp430-tinyos avr-tinyos
+  $ sudo apt-get install nesc tinyos-tools msp430-46 avr-tinyos
 
 </pre>
 
@@ -92,7 +95,7 @@ tinyos-2.1.1 (and older).
 <p>If you want to uninstall the packages you can do it like this:</p>
 
 <pre>
-  $ sudo apt-get autoremove --purge nesc msp430-tinyos avr-tinyos
+  $ sudo apt-get autoremove --purge nesc tinyos-tools msp430-46 avr-tinyos
 </pre>
 
 <br><br>
@@ -130,6 +133,7 @@ tinyos-2.1.1 (and older).
 
 <p><b>Changelog:</b></p>
 <pre>
+  20120717, cire: typos in README.
   20120716, cire: rebuild tinyprod repository, squeeze, msp430-4{5-7}
 
   20120427, cire: add mspgcc 4.7.0 reference
