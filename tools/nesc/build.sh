@@ -95,7 +95,7 @@ package_deb()
 	| sed 's/@version@/'${DEB_VER}'/' \
 	| sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	> debian/DEBIAN/control
-    dpkg-deb --build debian .
+    fakeroot dpkg-deb --build debian .
     mv *.deb ${PACKAGES_ARCH}
 }
 
