@@ -3,7 +3,7 @@ Name: tinyos-tools
 Version: %{version}
 Release: %{release}
 License: Please see sources
-Packager: Razvan Musaloiu-E. <razvan@musaloiu.com>
+Packager: Eric B. Decker <cire831@gmail.com>
 Group: Development/Tools
 Requires: nesc
 

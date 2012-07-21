@@ -4,7 +4,7 @@ Section: devel
 Priority: optional
 Architecture: @architecture@
 Depends: libc6-dev|libc-dev
-Maintainer: Razvan Musaloiu-E. <razvan@musaloiu.com>
+Maintainer: Eric B. Decker <cire831@gmail.com>
 Description: Various tools (mig/ncc/ncg, motelist, tos-*, etc) used by TinyOS
 
 
