@@ -5,7 +5,7 @@
 >
 
 <p><b>TinyProd TinyOS Development Repository</b></p>
-Last update: 20120717, cire
+Last update: 20120720, cire
 <br>(Changelog at end)
 
 <br><br>
@@ -14,22 +14,21 @@ Last update: 20120717, cire
 <ul>
 <li><b><i>squeeze</i></b>: contains general tinyos tools.   Useful on multiple target platforms.  See below for more
 details.
-<li><b><i>msp430-46</i></b>: current cross compiler toolchain for msp430 based TinyOS development.
+<li><b><i>msp430-46</i></b>: current cross compiler toolchain for msp430 based TinyOS development,
 <a href='http://tinyprod.net/repos/debian/README-46.html'> README-46</a>.
 <br> <br>
-<li><b><i>msp430-45</i></b>: older cross compiler for msp430 platforms (DEPRECATED).
+<li><b><i>msp430-45</i></b>: older cross compiler for msp430 platforms (DEPRECATED),
 <a href='http://tinyprod.net/repos/debian/README-45.html'> README-45</a>.
-<li><b><i>msp430-47</i></b>: experimental mspgcc 4.7.0 cross compiler for msp430 platforms.  (20 bit support).
-<a href='http://tinyprod.net/repos/debian/README-47.html'>.   README-47</a>.
+<li><b><i>msp430-47</i></b>: experimental mspgcc 4.7.0 cross compiler for msp430 platforms, (20 bit support),
+<a href='http://tinyprod.net/repos/debian/README-47.html'> README-47</a>.
 </ul>
-
 <br>
 <p><b>Squeeze</b>, the main repository, contains the following packages for <i>i386</i> and <i>amd64</i>:</p>
 
 <ul>
-<li>nesc: 1.3.4
+<li>nesc: 1.3.4-tinyprod
 <li>tinyos-tools: 1.4.1-tinyprod
-<li>mspdebug-tinyos: 0.19-20120303
+<li>mspdebug: 0.19-tinyprod
 <br><br>
 <li>avarice-tinyos: 2.11-20110905
 <li>avr-binutils-tinyos: 2.17-20110905
@@ -49,6 +48,8 @@ details.
 <li>msp430-gcc-tinyos-legacy: 3.2.3-20110905 &dagger;
 <li>msp430-libc-tinyos-legacy: 20060801cvs-20110905 &dagger;
 <li>msp430-tinyos-legacy: 20110905 &dagger;
+<br><br>
+<li>arm-all-tinyos: 2011.03-42-20110912 <i><small>(i386 only)</small></i>&Dagger;
 </ul>
 
 <div style='
@@ -60,6 +61,10 @@ details.
 <p>&dagger; The *-legacy packages contains the old toolchains used by
 tinyos-2.1.1 (and older).
 <br />
+&Dagger; This is only available for <i>i386</i> and it is a temporary
+package based on the binary provided
+by <a href='https://sourcery.mentor.com/sgpp/lite/arm/portal/release1802'>Code
+Sourcery</a>.
 </p>
 </div>
 <br>
@@ -123,7 +128,7 @@ tinyos-2.1.1 (and older).
 
 </div>
 
-<p>-- Eric Decker (cire831@gmail.com) (July 16, 2012)</p>
+<p>-- Eric Decker (cire831@gmail.com) (July 20, 2012)</p>
 
 
 <pre>
@@ -133,6 +138,7 @@ tinyos-2.1.1 (and older).
 
 <p><b>Changelog:</b></p>
 <pre>
+  20120720, cire: bring arm-all back in.
   20120717, cire: typos in README.
   20120716, cire: rebuild tinyprod repository, squeeze, msp430-4{5-7}
 
