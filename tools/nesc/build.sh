@@ -34,7 +34,7 @@ echo      "*** Destination: ${DEB_DEST}"
 
 NESC_VER=1.3.4
 NESC=nesc-${NESC_VER}
-POST_VER=
+POST_VER=-tinyprod2
 
 setup_deb()
 {
@@ -43,8 +43,7 @@ setup_deb()
     if [[ -z "${PACKAGES_DIR}" ]]; then
 	PACKAGES_DIR=${BUILD_ROOT}/packages
     fi
-    PACKAGES_ARCH=${PACKAGES_DIR}/${ARCH_TYPE}
-    mkdir -p ${PACKAGES_DIR} ${PACKAGES_DIR}/all ${PACKAGES_ARCH}
+    mkdir -p ${PACKAGES_DIR}
 }
 
 
@@ -63,7 +62,7 @@ setup_local()
 
 download()
 {
-    echo -e "\n*** Downloading ... "
+    echo -e "\n*** Downloading ... ${NESC}"
     [[ -a ${NESC}.tar.gz ]] \
 	|| wget http://downloads.sourceforge.net/project/nescc/nescc/v${NESC_VER}/${NESC}.tar.gz
 }
@@ -86,7 +85,7 @@ package_deb()
 {
     VER=${NESC_VER}
     DEB_VER=${VER}${POST_VER}
-    echo -e "\n***" debian archive: ${NESC}${POST_VER}
+    echo -e "\n***" debian archive: ${DEB_VER}
     cd ${NESC}
     mkdir -p debian/DEBIAN debian/${DEB_DEST}
     find debian/${DEB_DEST}/bin/ -type f \
@@ -96,7 +95,7 @@ package_deb()
 	| sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	> debian/DEBIAN/control
     fakeroot dpkg-deb --build debian .
-    mv *.deb ${PACKAGES_ARCH}
+    mv *.deb ${PACKAGES_DIR}
 }
 
 
@@ -124,6 +123,7 @@ remove()
     done
 }
 
+
 case $1 in
     test)
 	setup_deb
@@ -139,7 +139,7 @@ case $1 in
 	;;
 
     clean)
-	remove ${NESC} packages
+	remove ${NESC}
 	;;
 
     veryclean)
