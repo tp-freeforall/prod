@@ -123,7 +123,7 @@ case $1 in
 	;;
 
     veryclean)
-	remove mspdebug-* debian fedora
+	remove mspdebug-* debian fedora packages
 	;;
 
     deb)
