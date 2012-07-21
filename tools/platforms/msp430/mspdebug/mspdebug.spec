@@ -1,9 +1,9 @@
 Summary: TinyOS-specific MSPDebug
-Name: mspdebug-tinyos
+Name: mspdebug
 Version: %{version}
 Release: %{release}
 License: GNU GPL
-Packager: Razvan Musaloiu-E. <razvan@musaloiu.com>
+Packager: Eric B. Decker <cire831@gmail.com>
 Group: Development/Tools
 
 %description
