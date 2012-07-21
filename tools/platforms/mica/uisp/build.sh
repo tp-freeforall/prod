@@ -1,22 +1,60 @@
 #!/bin/bash
 
+# BUILD_ROOT is assumed to be the same directory as the build.sh file.
+#
+# set TOSROOT to the head of the tinyos source tree root.
+# used to find default PACKAGES_DIR.
+#
+#
+# Env variables used....
+#
+# TOSROOT	head of the tinyos source tree root.  Used for base of default repo
+# PACKAGES_DIR	where packages get stashed.  Defaults to $(TOSROOT)/packages
+# REPO_DEST	Where the repository is being built (no default)
+# DEB_DEST	final home once installed.
+# CODENAME	which part of the repository to place this build in.
+#
+# REPO_DEST	must contain a conf/distributions file for reprepro to work
+#		properly.   One can be copied from $(TOSROOT)/tools/repo/conf.
+#
+
+BUILD_ROOT=$(pwd)
+
+DEB_DEST=usr
+CODENAME=squeeze
+
+if [[ -z "${TOSROOT}" ]]; then
+    TOSROOT=$(pwd)/../..
+fi
+echo -e "\n*** TOSROOT: $TOSROOT"
+echo      "*** Destination: ${DEB_DEST}"
+
 UISP_VER=20050519tinyos
 UISP=uisp-${UISP_VER}
 
-if [[ "$1" == deb ]]
-then
+setup_deb()
+{
     ARCH_TYPE=$(dpkg-architecture -qDEB_HOST_ARCH)
-    PREFIX=$(pwd)/${UISP}/debian/usr
-    PACKAGES_DIR=$(pwd)/../../../../packages/debian/${ARCH_TYPE}
+    PREFIX=${BUILD_ROOT}/${UISP}/debian/${DEB_DEST}
+    if [[ -z "${PACKAGES_DIR}" ]]; then
+	PACKAGES_DIR=${BUILD_ROOT}/packages
+    fi
     mkdir -p ${PACKAGES_DIR}
-fi
+}
 
-if [[ "$1" == rpm ]]
-then
-    PREFIX=$(pwd)/${UISP}/fedora/usr
-fi
 
-: ${PREFIX:=$(pwd)/../../../../local}
+setup_rpm()
+{
+    PREFIX=$(pwd)/${UISP}/fedora/${DEB_DEST}
+}
+
+
+setup_local()
+{
+    mkdir -p ${TOSROOT}/local
+    ${PREFIX:=${TOSROOT}/local}
+}
+
 
 build()
 {
@@ -31,16 +69,19 @@ build()
 
 package_deb()
 {
-    echo Packaging ${UISP}
+    VER=${UISP_VER}
+    DEB_VER=${VER}${POST_VER}
+    echo -e "\n***" debian archive: ${DEB_VER}
     cd ${UISP}
-    find debian/usr/bin/ -type f \
-	| xargs perl -i -pe 's#'${PREFIX}'#/usr#'
-    mkdir -p debian/DEBIAN
+    mkdir -p debian/DEBIAN debian/${DEB_DEST}
+    find debian/${DEB_DEST}/bin/ -type f \
+	| xargs perl -i -pe 's#'${PREFIX}'#/'${DEB_DEST}'#'
     cat ../uisp.control \
-	| sed 's/@version@/'${UISP_VER}-`date +%Y%m%d`'/' \
+	| sed 's/@version@/'${DEB_VER}'/' \
 	| sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	> debian/DEBIAN/control
-    dpkg-deb --build debian ${PACKAGES_DIR}/uisp-${UISP_VER}.deb
+    fakeroot dpkg-deb --build debian .
+    mv *.deb ${PACKAGES_DIR}
 }
 
 package_rpm()
@@ -66,16 +107,23 @@ case $1 in
 	;;
 
     deb)
+	setup_deb
 	build
 	package_deb
 	;;
 
     rpm)
+	setup_rpm
 	build
 	package_rpm
 	;;
 
-    *)
+     local)
+	setup_local
 	build
 	;;
+
+    *)
+	echo -e "\n./build.sh <target>"
+	echo -e "    local | rpm | deb | clean | build"
 esac
