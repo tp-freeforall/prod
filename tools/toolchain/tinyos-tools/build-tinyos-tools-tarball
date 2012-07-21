@@ -5,7 +5,7 @@
 # scripts in the tools directory
 
 TOS_TOOLS_NAME="tinyos-tools"
-TOS_TOOLS_VERSION=1.4.1
+TOS_TOOLS_VERSION=1.4.2
 HERE=$PWD
 
 echo "*** Building tinyos-tools tarball"

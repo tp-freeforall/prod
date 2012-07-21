@@ -26,7 +26,7 @@ if [[ -z "${TOSROOT}" ]]; then
     TOSROOT=$(pwd)/..
 fi
 
-TINYOS_TOOLS_VER=1.4.1
+TINYOS_TOOLS_VER=1.4.2
 TINYOS_TOOLS=tinyos-tools-${TINYOS_TOOLS_VER}
 POST_VER=-tinyprod1
 
