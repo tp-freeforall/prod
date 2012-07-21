@@ -26,9 +26,9 @@ if [[ -z "${TOSROOT}" ]]; then
     TOSROOT=$(pwd)/..
 fi
 
-TINYOS_TOOLS_VER=1.2.4
+TINYOS_TOOLS_VER=1.4.1
 TINYOS_TOOLS=tinyos-tools-${TINYOS_TOOLS_VER}
-POST_VER=-tinyprod-2
+POST_VER=-tinyprod1
 
 setup_deb()
 {
