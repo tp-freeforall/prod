@@ -75,7 +75,7 @@ package_binutils_deb()
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	rsync -a ../debian/usr debian
-	dpkg-deb --build debian \
+	fakeroot dpkg-deb --build debian \
 	    ${PACKAGES_DIR}/avr-binutils-${VER}.deb
     )
 }
@@ -138,7 +138,7 @@ package_gcc_deb()
 	    cat ../../../avr-binutils.files | xargs rm -rf
 	    find . -empty | xargs rm -rf
 	)
-	dpkg-deb --build debian \
+	fakeroot dpkg-deb --build debian \
 	    ${PACKAGES_DIR}/avr-gcc-${VER}.deb
     )
 }
@@ -193,7 +193,7 @@ package_libc_deb()
 	    | sed 's/@version@/'${VER}-$(date +%Y%m%d)'/' \
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
-	dpkg-deb --build debian \
+	fakeroot dpkg-deb --build debian \
 	    ${PACKAGES_DIR}/avr-libc-${VER}.deb
     )
 }
@@ -218,7 +218,7 @@ package_dummy_deb()
 	cat ../avr-tinyos.control \
 	    | sed 's/@version@/'$(date +%Y%m%d)'/' \
 	    > debian/DEBIAN/control
-	dpkg-deb --build debian \
+	fakeroot dpkg-deb --build debian \
 	    ${PACKAGES_DIR/${ARCH_TYPE}/all}/avr-tinyos.deb
     )
 }

@@ -52,7 +52,7 @@ package_avrdude_deb()
 	    | sed 's/@version@/'${VER}-$(date +%Y%m%d)'/' \
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
-	dpkg-deb --build debian \
+	fakeroot dpkg-deb --build debian \
 	    ${PACKAGES_DIR}/avrdude-tinyos-${VER}.deb
     )
 }

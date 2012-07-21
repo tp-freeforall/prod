@@ -270,7 +270,7 @@ package_binutils_deb()
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
 	rsync -a ../debian/${DEB_DEST}/ debian/${DEB_DEST}/
-	dpkg-deb --build debian .
+	fakeroot dpkg-deb --build debian .
 	mv *.deb ${PACKAGES_DIR}
     )
 }
@@ -338,7 +338,7 @@ package_gcc_deb()
 	    cat ${BUILD_ROOT}/msp430-binutils.files | xargs rm -rf
 	    find . -empty | xargs rm -rf
 	)
-	dpkg-deb --build debian .
+	fakeroot dpkg-deb --build debian .
 	mv *.deb ${PACKAGES_DIR}
     )
 }
@@ -399,7 +399,7 @@ package_mcu_deb()
 	    | sed 's/@version@/'${DEB_VER}'/' \
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
-	dpkg-deb --build debian .
+	fakeroot dpkg-deb --build debian .
 	mv *.deb ${PACKAGES_DIR}
     )
 }
@@ -458,7 +458,7 @@ package_libc_deb()
 	    | sed 's/@version@/'${DEB_VER}'/' \
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
-	dpkg-deb --build debian .
+	fakeroot dpkg-deb --build debian .
 	mv *.deb ${PACKAGES_DIR}
     )
 }
@@ -515,7 +515,7 @@ package_gdb_deb()
 	    cat ${BUILD_ROOT}/msp430-libc.files | xargs rm -rf
 	    find . -empty | xargs rm -rf
 	)
-	dpkg-deb --build debian .
+	fakeroot dpkg-deb --build debian .
 	mv *.deb ${PACKAGES_DIR}
     )
 }
@@ -544,7 +544,7 @@ package_dummy_deb()
 	    | sed 's/@version@/'$(date +%Y%m%d)'/' \
 	    | sed 's/@architecture@/'${ARCH_TYPE}'/' \
 	    > debian/DEBIAN/control
-	dpkg-deb --build debian .
+	fakeroot dpkg-deb --build debian .
 	mv *.deb ${PACKAGES_DIR}
     )
 }
