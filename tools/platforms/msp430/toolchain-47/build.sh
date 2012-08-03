@@ -8,10 +8,10 @@
 # mspgcc:	4.7.0
 # binutils	2.22
 # gcc		4.7.0
-# gdb		7.2a
-# mspgcc	20120514
-# msp430-libc	20120224
-# msp430mcu	20120407
+# gdb		7.2a - disabled
+# mspgcc	20120716
+# msp430-libc	20120716
+# msp430mcu	20120716
 #
 # gmp		4.3.2
 # mpfr		3.0.0
@@ -34,7 +34,7 @@ BUILD_ROOT=$(pwd)
 
 DEB_DEST=opt/msp430-47
 CODENAME=msp430-47
-REL=
+REL=EXP
 MAKE_J=-j8
 
 if [[ -z "${TOSROOT}" ]]; then
@@ -60,7 +60,7 @@ GMP=gmp-${GMP_VER}
 MPFR=mpfr-${MPFR_VER}
 MPC=mpc-${MPC_VER}
 
-MSPGCC_VER=20120514
+MSPGCC_VER=20120716
 MSPGCC=mspgcc-${MSPGCC_VER}
 MSPGCC_DIR=DEVEL-4.7.x/
 
@@ -613,8 +613,8 @@ case $1 in
 	package_mcu_deb
 	build_libc
 	package_libc_deb
-	build_gdb
-	package_gdb_deb
+#	build_gdb
+#	package_gdb_deb
 	package_dummy_deb
  	;;
 
@@ -640,8 +640,8 @@ case $1 in
 	package_mcu_rpm
 	build_libc
 	package_libc_rpm
-	build_gdb
-	package_gdb_rpm
+#	build_gdb
+#	package_gdb_rpm
 	;;
 
     local)
@@ -652,7 +652,7 @@ case $1 in
 	build_mcu
 	build_gcc
 	build_libc
-	build_gdb
+#	build_gdb
 	;;
 
     *)
