@@ -142,7 +142,7 @@ implementation {
   /*
    * Reset/unReset
    *
-   * resetUsci(bool): (deprecated) TRUE puts device into reset, FALSE takes it out.  But this
+   * resetUsci(bool): (DEPRECATED) TRUE puts device into reset, FALSE takes it out.  But this
    *   requires pushing the parameter on the stack and all those extra instructions.
    *
    * {un,}resetUsci_n(): reset and unreset the device but result in single instruction that
@@ -402,10 +402,6 @@ implementation {
   async command void Usci.setTransmitMode() { UCB1CTL1 |=  UCTR; }
   async command void Usci.setReceiveMode()  { UCB1CTL1 &= ~UCTR; }
 
-  /* get stop bit in i2c mode */
-  async command bool Usci.getStopBit() { return (UCB1CTL1 & UCTXSTP); }
-  async command bool Usci.getTransmitReceiveMode() { return (UCB1CTL1 & UCTR); }
-
   /* transmit a NACK, Stop condition, or Start condition, automatically cleared */
   async command void Usci.setTXNACK()  { UCB1CTL1 |= UCTXNACK; }
   async command void Usci.setTXStop()  { UCB1CTL1 |= UCTXSTP;  }
@@ -413,6 +409,7 @@ implementation {
 
   /*
    * get/set I2COA, Own Address register
+   * clears UCGCEN, Genernal Call response enable
    */
   async command uint16_t Usci.getOwnAddress() {
     return (UCB1I2COA & ~UCGCEN);
