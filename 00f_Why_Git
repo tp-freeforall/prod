@@ -1,0 +1,67 @@
+
+Getting Started.
+
+Git is great.    Git is good.    Git is powerful.
+
+Alas, that makes it a little daunting getting started.   This document should
+help make it a little less painful.  Git is powerful and hopefully you will
+find it is worth the effort.
+
+This document is written assuming that you will be using github to contribute
+to the TinyProd TinyOS repository structure.
+
+
+Contents:
+
+- Why Git?
+- GitHub
+- Set up Git
+- Set up your working repository
+- Further Reading
+- Guidelines
+
+
+* Why Git?
+
+The main reason behind the selection of GIT is it's fully distributed nature,
+fast branching, and associated merge magic.  The TinyOS development community
+is essentially world wide and we want to make encourage the rate of development
+by making the contribution process very easy as well as accessable.
+
+  o Fully distributed.
+
+  o Everything is local.   No need of a centralized server for anything.
+    (note our workflow does require integration repositories but this isn't
+    implicit in GIT), nor does it impact the contribution process.
+
+  o Cheap local branching.  This is important.  We want to foster faster
+    development.  Try something out while still staying in touch with what
+    is happening in the mainline.  This is much more difficult with rTinyOS's
+    (research TinyOS) CVS contrib and SVN based repositories.
+
+    Note, branching in GIT is fundamentally different than pretty much any
+    other SCM system and is responsbile for much of the productivity of projects
+    using GIT.
+
+  o GITHUB.  When coupled with github, git provides very powerful visibility tools
+    (what is being changed and by whom).  Code review becomes very easy when
+    using GIT and github.
+
+  o Git is Small
+
+  o Git is Fast
+
+  o Support for any workflow.  Although we are using the Integration Manager
+    Workflow and core Lead Developer model for the development tree.
+
+  o Allows gradual reintegration of currently active contrib source bodies.
+    Currently the contrib source body is maintained in CVS and is rather
+    cumbersome to use.
+
+  o Other DVCS could also have been chosen (SVN is not a DVCS), such as Hg
+    or Bzr but I happened to be a fan of GIT.   And it seems to be working
+    well for what we are trying to do.
+
+    Git is explicitly designed for fully distributed version control.   It
+    is currently in use by many major open source projects including Git itself
+    and the Linux Kernel.
