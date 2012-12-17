@@ -8,7 +8,6 @@
  */
 
 #include "panic.h"
-#include "typed_data.h"
 
 uint16_t save_sr;
 bool save_sr_free;
