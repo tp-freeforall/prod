@@ -3,7 +3,7 @@ Installing a development environment for TinyOS (TinyProd).
 
 State:
 
-2012-12-03:
+2012-12-12:
     Ubuntu 10.04 - 12.04.   Debian Squeeze works as well.
     Tested directly on 10.04 and 11.10, (12.04 in progress)
 
@@ -61,33 +61,34 @@ are available from Stanford and TinyProd.net.   The toolchain at TinyProd.Net as
 We want the following packages:
 
            nesc
-           msp430-binutils-tinyos
-           msp430-gcc-tinyos
-	   msp430-gdb-tinyos
-           msp430-libc-tinyos
-           msp430-tinyos
-	   msp430mcu-tinyos
-	   mspdebug-tinyos
 	   tinyos-tools
+	   mspdebug
+           msp430-46
+           msp430-binutils-46
+           msp430-gcc-46
+	   msp430-gdb-46
+           msp430-libc-46
+	   msp430mcu-46
 
 You want to follow the instructions at: http://tinyprod.net/repos/debian.
 
 The following should be equivilent.  With some additions...
 
 #
-# add the keys for Razvan, the package signer
+# add the keys for Eric Decker, the package signer
 #
-gpg --keyserver subkeys.pgp.net --recv-keys F99BE531
-gpg -a --export F99BE531 | sudo apt-key add -
+gpg --keyserver subkeys.pgp.net --recv-keys 34EC655A
+gpg -a --export 34EC655A | sudo apt-key add -
 
 sudo -s
 
 #
 # teach dpkt/apt-get/aptitude about where to find the tinyprod tools repository
 #
-echo "deb http://tinyprod.net/repos/debian squeeze main" >> /etc/apt/sources.list.d/tinyprod-debian.list
+echo "deb http://tinyprod.net/repos/debian squeeze main"   >> /etc/apt/sources.list.d/tinyprod-debian.list
+echo "deb http://tinyprod.net/repos/debian msp430-46 main" >> /etc/apt/sources.list.d/tinyprod-debian.list
 apt-get update
-apt-get install nesc msp430-tinyos mspdebug-tinyos tinyos-tools
+apt-get install nesc tinyos-tools msp430-46 mspdebug
 exit
 
 **************************************************************************************
