@@ -1,3 +1,15 @@
+#display power management module (pmm)
+define pmm
+set $_pmm_base=0x120
+printf "pmmctl0: %04x  pmmctl1: %04x  svsmhctl: %04x  svsmlctl: %04x  svsmio: %04x\n", \
+    *((uint16_t *) 0x120), *((uint16_t *) 0x122), *((uint16_t *) 0x124), \
+    *((uint16_t *) 0x126), *((uint16_t *) 0x128)
+printf "pmmifg:  %04x  pmmrie:  %04x  pm5ctl0:  %04x\n", \
+    *((uint16_t *) 0x12c), *((uint16_t *) 0x12e), *((uint16_t *) 0x130)
+end
+document pmm
+Display msp430 pmm hardware
+end
 
 #display dma
 define dma
