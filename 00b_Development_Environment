@@ -41,12 +41,15 @@ packages:
     git-core git-daemon-run git-doc git-email git-gui gitk gitmagic
     openssh-client openssh-server
 
+    python3 python3-serial python python-serial
+
 The following will do the trick:
 
 sudo -s
 apt-get install build-essential stow automake autoconf libtool libc6-dev
 apt-get install git-core git-daemon-run git-doc git-email git-gui gitk gitmagic
 apt-get install openssh-client openssh-server
+apt-get install python3 python3-serial python python-serial
 exit
 
 
