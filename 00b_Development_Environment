@@ -1,5 +1,11 @@
 Installing a development environment for TinyOS (TinyProd).
 
+Focuses on installing a msp430 based development environment but can
+easily be adapted to other cpus by changing what toolchain gets 
+installed.
+
+Linux only.
+
 
 State:
 
