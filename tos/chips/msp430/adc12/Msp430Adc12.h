@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013, Eric B. Decker
  * Copyright (c) 2011, Eric B. Decker
  * Copyright (c) 2010, People Power Co.
  * Copyright (c) 2006, Technische Universitaet Berlin
@@ -285,10 +286,18 @@ struct adc12_t {
 
 #endif	/* __MSP430_HAS_ADC12_PLUS__ */
 
-#ifdef notdef
-#define ENC ADC12ENC
-#define CONSEQ0 ADC12CONSEQ0
-#define CONSEQ1 ADC12CONSEQ1
+/*
+ * TI's headers are not consistent.   There are several
+ * headers for cpus that define __MSP430_HAS_ADC12__
+ * but doesn't define ADC12ENC.  Rather it defines ENC.
+ *
+ * Fix it here.   Note that we are protected from picking
+ * up a wrong value for ENC because we check to see if
+ * this cpu explicitly has the ADC12 h/w.
+ */
+
+#ifndef ADC12ENC
+#define ADC12ENC ENC
 #endif
 
 #endif		/* __MSP430_TI_HEADERS__ */
