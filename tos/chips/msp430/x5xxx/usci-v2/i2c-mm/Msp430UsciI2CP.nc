@@ -158,7 +158,7 @@ implementation {
     if (!config)
       return FAIL;			/* does anyone actually check? */
 
-    call Usci.configure(config, TRUE);
+    call Usci.configure(config, TRUE);	/* leave in reset */
     call SCL.selectModuleFunc();
     call SDA.selectModuleFunc();
     call Usci.setI2Coa(config->i2coa);
@@ -208,7 +208,7 @@ implementation {
    * configuration should be reasonable for lowish power.
    */
   error_t unconfigure_() {
-    call Usci.enterResetMode_();
+    call Usci.enterResetMode_();	/* leave in reset */
     call SCL.selectIOFunc();
     call SDA.selectIOFunc();
     return SUCCESS;
@@ -530,19 +530,25 @@ implementation {
 
   command error_t I2CSlave.setOwnAddress[uint8_t client](uint16_t addr) {
     //retain UCGCEN bit
+    call Usci.enterResetMode_();
     call Usci.setI2Coa(addr);
+    call Usci.leaveResetMode_();
     return SUCCESS;
   }
 
 
   command error_t I2CSlave.enableGeneralCall[uint8_t client]() {
+    call Usci.enterResetMode_();
     call Usci.setI2Coa(UCGCEN | (call Usci.getI2Coa()));
+    call Usci.leaveResetMode_();
     return SUCCESS;
   }
 
 
   command error_t I2CSlave.disableGeneralCall[uint8_t client]() {
+    call Usci.enterResetMode_();
     call Usci.setI2Coa(~UCGCEN & (call Usci.getI2Coa()));
+    call Usci.leaveResetMode_();
     return SUCCESS;
   }
 

@@ -57,6 +57,15 @@
  *
  * So we expose both 16 bit and 8 bit interfaces.
  *
+ * WARNING WARNING WARNING: TI in a later edition of the Users Guide
+ * for the x5 processors (SLAU208K - August 2012) documents various
+ * registers (some just particular bits) as being modified only if
+ * the module is in reset (UCSWRST = 1).
+ *
+ * We could protect every access to these bits by setting and resetting
+ * UCSWRST but this is very inefficient.  It is assumed that the user
+ * knows what they are doing.
+ *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
  * @author Derek Baker <derek@red-slate.co.uk>
  * @author Doug Carlson <carlson@cs.jhu.edu>

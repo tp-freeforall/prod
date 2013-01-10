@@ -195,7 +195,7 @@ implementation {
   async command void Usci.configure (const msp430_usci_config_t* config,
                                      bool leave_in_reset) {
     if (! config) {
-      return;
+      return;				/* panic? */
     }
     UCmxCTL1  = config->ctl1 | UCSWRST;
     UCmxCTL0  = config->ctl0;
