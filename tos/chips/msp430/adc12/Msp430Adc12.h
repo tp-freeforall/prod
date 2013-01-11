@@ -291,6 +291,13 @@ struct adc12_t {
  * headers for cpus that define __MSP430_HAS_ADC12__
  * but doesn't define ADC12ENC.  Rather it defines ENC.
  *
+ * Same applies to ADC12CONSEQ{0,1}.   There are many others
+ * which aren't currently used, the TI headers are seriously
+ * confused, something using ENC sometimes ADC12ENC, ADC12ENC
+ * is correct.   If more are used because of changes in the
+ * driver it is recommended that these tweaks be pulled out
+ * into their own file which then gets included here.
+ *
  * Fix it here.   Note that we are protected from picking
  * up a wrong value for ENC because we check to see if
  * this cpu explicitly has the ADC12 h/w.
@@ -298,6 +305,14 @@ struct adc12_t {
 
 #ifndef ADC12ENC
 #define ADC12ENC ENC
+#endif
+
+#ifndef ADC12CONSEQ0
+#define ADC12CONSEQ0 CONSEQ0
+#endif
+
+#ifndef ADC12CONSEQ1
+#define ADC12CONSEQ1 CONSEQ1
 #endif
 
 #endif		/* __MSP430_TI_HEADERS__ */
