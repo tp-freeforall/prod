@@ -402,10 +402,6 @@ implementation {
   async command void Usci.setTransmitMode() { UCB1CTL1 |=  UCTR; }
   async command void Usci.setReceiveMode()  { UCB1CTL1 &= ~UCTR; }
 
-  /* get stop bit in i2c mode */
-  async command bool Usci.getStopBit() { return (UCB1CTL1 & UCTXSTP); }
-  async command bool Usci.getTransmitReceiveMode() { return (UCB1CTL1 & UCTR); }
-
   /* transmit a NACK, Stop condition, or Start condition, automatically cleared */
   async command void Usci.setTXNACK()  { UCB1CTL1 |= UCTXNACK; }
   async command void Usci.setTXStop()  { UCB1CTL1 |= UCTXSTP;  }

@@ -396,10 +396,6 @@ implementation {
   async command void Usci.setTransmitMode() { UCB0CTL1 |=  UCTR; }
   async command void Usci.setReceiveMode()  { UCB0CTL1 &= ~UCTR; }
 
-  /* get stop bit in i2c mode */
-  async command bool Usci.getStopBit() { return (UCB0CTL1 & UCTXSTP); }
-  async command bool Usci.getTransmitReceiveMode() { return (UCB0CTL1 & UCTR); }
-
   /* transmit a NACK, Stop condition, or Start condition, automatically cleared */
   async command void Usci.setTXNACK()  { UCB0CTL1 |= UCTXNACK; }
   async command void Usci.setTXStop()  { UCB0CTL1 |= UCTXSTP;  }
@@ -407,7 +403,7 @@ implementation {
 
   /*
    * get/set I2COA, Own Address register
-   * clears UCGCEN, Genernal Call response enable
+   * clears UCGCEN, General Call response enable
    */
   async command uint16_t Usci.getOwnAddress() {
     return (UCB0I2COA & ~UCGCEN);
