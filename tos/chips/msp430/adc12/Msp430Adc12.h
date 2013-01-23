@@ -318,7 +318,15 @@ struct adc12_t {
 #endif		/* __MSP430_TI_HEADERS__ */
 
 #if __GNUC__ >= 4
-#warning "ADC12 periph_reg bitfields: mspgcc >= 4 (check bitfield code gen)."
+/*
+ * at one point (3.2.3 timeframe) someone noted that there was problems
+ * with the bitfield code gen.   What exactly wasn't documented.  No
+ * problems have been noticed but you might want to keep an eye out.
+ *
+ * As of 4.6.3 and 4.7 do not bitch.
+ *
+ * #warning "ADC12 periph_reg bitfields: mspgcc >= 4 (check bitfield code gen)."
+ */
 #else
   /* Test for GCC bug (bitfield access) - only version 3.2.3 is known to be stable */
   #define GCC_VERSION (__GNUC__ * 100 + __GNUC_MINOR__ * 10 + __GNUC_PATCHLEVEL__)

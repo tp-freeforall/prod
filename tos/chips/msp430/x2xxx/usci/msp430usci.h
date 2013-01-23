@@ -68,10 +68,6 @@
 #error "msp430usci: processor not supported, currently only supports x2xxx (HAS_USCI)"
 #endif
 
-#if __GNUC__ >= 4
-#warning "USCI periph_reg bitfields: mspgcc >= 4 (check bitfield code gen)."
-#endif
-
 /*
  * The x2 family consists of the msp430f261{6,7,8,9} which provides
  * 2 USCI_As (UART/SPI) and 2 USCI_Bs (SPI/I2C).  These are mapped on a pure

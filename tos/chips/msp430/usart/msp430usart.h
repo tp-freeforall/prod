@@ -39,10 +39,6 @@
 #error "msp430usart.h: USART0/UART0 not supported on this processor"
 #endif
 
-#if __GNUC__ >= 4
-#warning "USART periph_reg bitfields: mspgcc >= 4 (check bitfield code gen)."
-#endif
-
 #define MSP430_HPLUSART0_RESOURCE "Msp430Usart0.Resource"
 #define MSP430_SPIO_BUS "Msp430Spi0.Resource"
 #define MSP430_UARTO_BUS "Msp430Uart0.Resource"
