@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2010, Shimmer Research, Ltd.
  * All rights reserved
  *
@@ -30,9 +31,11 @@
  *
  * @author Steve Ayer
  * @date March, 2010
-
+ *
  * this is going to get duplicated in a million apps, so we gather simple setup 
- * routines with reasonable defaults here.  specific 
+ * routines with reasonable defaults here.  specific
+ *
+ * Modified for new unified msp430 dma driver, Eric B. Decker
  */
 
 
@@ -259,7 +262,7 @@ implementation {
     call Msp430DmaChannel.enableDma();
   }
 
-  async event void Msp430DmaChannel.transferDone(error_t success) {
+  async event void Msp430DmaChannel.transferDone() {
   }
 
   async event void HplAdc12.conversionDone(uint16_t iv) {

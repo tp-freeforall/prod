@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2010-2011 Eric B. Decker
  * Copyright (c) 2009 DEXMA SENSORS SL
  * Copyright (c) 2005-2006 Arch Rock Corporation
@@ -178,11 +179,11 @@ implementation {
     atomic signalDone( SUCCESS );
   }
 
-  async event void DmaChannel1.transferDone( error_t error ) {
-    signalDone( error );
+  async event void DmaChannel1.transferDone() {
+    signalDone(SUCCESS);
   }
 
-  async event void DmaChannel2.transferDone( error_t error ) {}
+  async event void DmaChannel2.transferDone() {}
 
   void signalDone( error_t error ) {
     signal SpiPacket.sendDone[ m_client ]( m_tx_buf, m_rx_buf, m_len, error );
