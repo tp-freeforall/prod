@@ -1,4 +1,5 @@
 /**
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2005-2006 Arched Rock Corporation
  * All rights reserved.
  *
@@ -33,9 +34,10 @@
  * @author Jonathan Hui <jhui@archedrock.com>
  * @author Mark Hays
  * @author Roman Lim
- * @version $Revision: 1.6 $ $Date: 2008-02-28 17:28:12 $
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
+#include "Msp430Dma.h"
 
 generic module Msp430SpiDmaP( uint16_t IFG_addr,
 			      uint16_t TXBUF_addr,
@@ -146,7 +148,7 @@ implementation {
 					// if buf inc, else dumping
 	RXTRIG,				// specified trigger
 	(uint16_t) RXBUF_addr,
-	(rx_buf ? rx_buf : &m_dump),
+	(uint16_t) (rx_buf ? rx_buf : &m_dump),
 	len);
       call DmaChannel1.enableDma();
 
