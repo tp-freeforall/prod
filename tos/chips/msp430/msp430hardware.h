@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2011 Eric B. Decker
  * Copyright (c) 2010 People Power Co.
  * Copyright (c) 2000-2003, 2010 The Regents of the University of California.
@@ -42,6 +43,16 @@
 
 #ifndef _H_msp430hardware_h
 #define _H_msp430hardware_h
+
+/*
+ * __TOS_MSP430_CORE__ defines the release version of the msp430 core code.
+ * It can be used when transitioning between major changes in the msp430
+ * API.
+ *
+ * Ver 1, subver 0
+ */
+#define __TOS_MSP430_CORE__ 0100
+#define __TOS_MSP430_CORE_0100__ 0100
 
 #if defined(__MSPGCC__)
 /* mspgcc */
