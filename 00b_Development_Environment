@@ -92,7 +92,7 @@ gpg -a --export 34EC655A | sudo apt-key add -
 sudo -s
 
 #
-# teach dpkt/apt-get/aptitude about where to find the tinyprod tools repository
+# teach dpkg/apt-get/aptitude about where to find the tinyprod tools repository
 #
 echo "deb http://tinyprod.net/repos/debian squeeze main"   >> /etc/apt/sources.list.d/tinyprod-debian.list
 echo "deb http://tinyprod.net/repos/debian msp430-46 main" >> /etc/apt/sources.list.d/tinyprod-debian.list
@@ -104,9 +104,22 @@ exit
 
 3) TinyOS 2.x tree checkout
 
-This is a basic check out of the tp-master branch of the github repository
-tp-freeforall/prod.git.   This repo tracks the main tinyos SVN repository used
-for development.   It has modifications to support newer TI MSP430 processors.
+There are several repositories of note for TinyOS 2.1.2+.  You should choose the one that makes
+the most sense for what you are working on.   These repositories are all related and pains have
+been taken to track appropriately.
+
+gh:tp-freeforall/prod (tp-master): This repository contains additional code beyond the current
+development core that has been made public.  Currently its major feature is an enhanced msp430
+core that supports newer chips.   It actively tracks the main tinyos development repo.
+
+gh:tinyos/tinyos-main(master): This is the main tinyos development repository.
+
+gh:tinyos/tinyos-release(tinyos-2_1_2): This is the main tinyos release repository.  Its 
+default branch (currently tinyos-2_1_2) will always point at the current release.
+
+
+For example, to check out of the tp-master branch of the github repository
+tp-freeforall/prod.git (aka: gh:tp-freeforall/prod(tp-master):
 
 This basic checkout gives you a read-only copy of the tp-master branch.   It
 is a fully functional local repository that can be commited into (locally only).
