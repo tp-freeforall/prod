@@ -131,6 +131,14 @@ is a fully functional local repository that can be commited into (locally only).
     cd tinyos-2.x
     git checkout -b <your_initials>
 
+
+>>>>>>>
+Note: To get the current tinyos release (currently, tinyos-2_1_2) you should use the following:
+
+    git clone -v git://github.com/tinyos/tinyos-release tinyos-2.x
+<<<<<<<
+
+
 This will create a new branch named <your_intials> and will check you into that branch.
 It will be branched off of the main branch from the remote, gh:tp-freeforall/prod
 (tp-master).
