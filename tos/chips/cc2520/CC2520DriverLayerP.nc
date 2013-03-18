@@ -95,8 +95,6 @@ module CC2520DriverLayerP
     interface DiagMsg;
 #endif
     interface Leds;
-    interface Draw;
-
     interface CC2520Security;
   }
 }
@@ -430,10 +428,12 @@ implementation{
     return;
   }
 
+#ifdef notdef
   inline void UCTR(uint8_t priority, uint8_t key_addr, uint8_t payload_len, uint8_t nonce_addr, uint16_t start_addr, uint16_t dest_addr){
     CTR(priority, key_addr, payload_len, nonce_addr, start_addr, dest_addr);
     return;
   }
+#endif
 
 
   inline void MEMCP(uint8_t priority, uint16_t count, uint16_t start_addr, uint16_t dest_addr){
@@ -1309,8 +1309,6 @@ implementation{
     security_header_t* secHdr;
     ieee154_simple_header_t* ieee154header;
 
-    //call Draw.fill(COLOR_WHITE);
-
     //state = STATE_RX_DOWNLOAD;
 
     isSpiAcquired();
@@ -1597,7 +1595,6 @@ implementation{
       //state = STATE_RX_ON;
       //cmd = CMD_NONE;
 
-      //call Draw.drawInt(80,140,5,1,COLOR_BLUE);
       endRx();
       // ready to receive new message: enable SFD interrupts
       //call SfdCapture.captureRisingEdge();// JK
