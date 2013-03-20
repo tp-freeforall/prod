@@ -1,10 +1,15 @@
 
+set remoteaddresssize 0d64
+set remotetimeout 0d999999
+set remote memory-write-packet-size 2048
+set remote memory-write-packet-size fixed
+set remote memory-read-packet-size 2048
+set remote memory-read-packet-size fixed
+
 #source ../../.gdb_x1
  source ../../.gdb_x2
 #source ../../.gdb_x5
 
-set remoteaddresssize 0d64
-set remotetimeout 0d999999
 target remote localhost:2000
 
 disp/i $pc

@@ -1,4 +1,7 @@
 
+set mem inaccessible-by-default off
+mem 0x03100 0x20000 ro 64 cache
+
 #
 # Define various gdb user commands that let you look at pieces of the CPU.
 #

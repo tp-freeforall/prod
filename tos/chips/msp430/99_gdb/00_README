@@ -60,3 +60,51 @@ Emacs also has a nice interface to all of this including a source level
 debugging mechanism.  From within emacs use M-x gdb and then
 
     Run gdb (like this): msp430-gdb --annotate=3 build/z1/main.exe
+
+
+Slow Debugging:  (from David Brown, <david@westcontrol.com>, thanks David)
+
+By default, gdb considers all memory areas to be non-cached (i.e., it
+reads them from the hardware every time it wants to show them) and uses
+native sized accesses.  This means that if it wants to read code, such
+as to show the disassembly window, it has to do an awful lot of 2-byte
+reads from the chip - often reading the same address several times.  As
+there is a certain latency for each read, this can mean long delays
+while everything is read and re-read (you can see this on the output of
+mspdebug).
+
+The way to avoid this is by memory regions.  In the gdb setup, include
+several lines about memory:
+
+
+set remoteaddresssize 64
+set remotetimeout 999999
+set remote memory-write-packet-size 2048
+set remote memory-write-packet-size fixed
+set remote memory-read-packet-size 2048
+set remote memory-read-packet-size fixed
+
+set mem inaccessible-by-default off
+mem 0x2100 0x100000 ro 64 cache
+
+
+The exact range for the "ro 64 cache" memory area will depend on the
+chip you use, but it should cover the code flash.  gdb will then know
+that it can use 64-byte reads in this area, and can remember the results
+- substantially cutting down on extra reads.
+
+
+x1 family: 0x0c00 - 0x0fff	boot memory (rom)
+(1611)	   0x1000 - 0x10ff	info memory (rom)
+	   0x1100 - 0x38ff	ram (10k)
+	   0x4000 - 0xffff	rom (48k)
+
+x2 family: 0x00c00 - 0x00fff	boot memory (rom)
+(2618)	   0x01000 - 0x010ff	info memory (rom)
+	   0x01100 - 0x030ff	ram (8k)
+	   0x03100 - 0x1ffff	rom (116k)
+
+x5 family: 0x01000 - 0x017ff	boot memory (rom) 2k
+(5438a)	   0x01800 - 0x019ff	info memory (rom) 1k
+	   0x01c00 - 0x05bff	ram (16k)
+	   0x05c00 - 0x45bff	rom (256k)
