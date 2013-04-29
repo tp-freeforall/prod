@@ -34,9 +34,9 @@ files that provide various TinyOS interfaces.
 It is also useful for the sake of discussion to be able to talk about chips that have roughly the
 same functionally.  TI talks about the MSP430, MSP430X, and MSP430X2 but it is more useful to
 denote families in a more practical sense.  The families being defined are denoted x1 (x1xxx) for
-1000 seris parts (typically first generation), x2 (x2xxx) for 2000 series parts (2nd generation),
-and x5 (x5xxx).  A given chip isn't given a family designation until it is actually understood and
-supported.
+1000 series parts (typically first generation), x2 (x2xxx) for 2000 series parts (2nd generation),
+and x5 for the MSP430X2 parts (x5xxx).  A given chip isn't given a family designation until it is
+actually understood and supported.
 
 The following families and their associated cpus are listed below.  When a new cpu is added to TinyOS,
 it can first be isolated and supported independently.   When commonalities are understood, any
@@ -58,6 +58,8 @@ x1x2:	    contains low level cpu interfaces shared between the x1 and x2 familie
 
 x5xxx (x5): cc430f5137, msp430f5438{,a}
 	    surf (cc430f5137), ev430-5137, ev430-5438, mm5 (mam-mark mote, msp430f5438a)
+	    note that the non-A variants of the 5437 and 5438 shouldn't be used (they
+	    have many bugs).
 
 
 
@@ -93,7 +95,11 @@ adc12:	Most MSP430 chips include a 12 bit analog to digital converter.  Driver c
 	the basic 1st gen ADC12 (derived for the x1 family).
 
 	__MSP430_HAS_ADC12__	   original 12 bit.  (x1, x2)
-	__MSP430_HAS_ADC12_PLUS__  on x5 processors, probably easy mod from ADC12.
+	__MSP430_HAS_ADC12_PLUS__  on x5 processors, probably easy mod from ADC12.  From inspection
+				   the _PLUS_ variant has a pre-divider, TempSensor, Resolution
+				   (default 12 bits), sampling rate (default 200 Ksps), RefOut
+				   (default off), ref burst (default always on).  Should be backward
+				   compatible with the ADC12 driver.
 
 clock_bcs: low level interface to on board clocking.  BASIC CLOCK SYSTEM (x1, x2) 1st gen and 2nd
 	clock support.

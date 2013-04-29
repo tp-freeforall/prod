@@ -102,7 +102,9 @@ ADC12:
 
 The adc12 module is supported on x1xxx, x2xxx, and x5xxx parts.   ADC12_VECTOR is defined and
 the module behaves the same for all supported families.  No special support needs to be
-provided.
+provided.  The _PLUS_ functionality provided by the x5 parts is a superset of the ADC12
+functionality.  The defaults for the additional functions should provide for correct operation
+with the ADC12 driver (needs to be tested).
 
 
 DMA:
@@ -148,7 +150,7 @@ Clocks:
 
    The x1xxx family has the original basic clock system (BCS) and has a 3 bit range select field.
    The x2xxx family has revision 2 of this system (BC2) with a 4 bit range field but is essentially
-   mostly compatable with the x1xxx clock.
+   mostly compatable with the x1xxx clock.  Both are supported by the bcs clock driver.
 
    The x5xxx family has the Unified Clock System which is different (__MSP430_HAS_UCS__).
 

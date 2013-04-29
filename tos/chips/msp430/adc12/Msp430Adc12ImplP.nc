@@ -45,8 +45,7 @@
 #endif /* P6PIN auto configure without PlatformAdcC */
 
 #include <Msp430Adc12.h>
-module Msp430Adc12ImplP @safe()
-{
+module Msp430Adc12ImplP @safe() {
   provides {
     interface Init;
     interface Msp430Adc12SingleChannel as SingleChannel[uint8_t id];
@@ -84,8 +83,7 @@ module Msp430Adc12ImplP @safe()
 #endif /* ADC12_PINS_AVAILABLE : 6 */
   }
 }
-implementation
-{ 
+implementation {
 
 #ifdef ADC12_TIMERA_ENABLED
   #warning Accessing TimerA for ADC12 

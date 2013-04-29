@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013, Eric B. Decker
  * Copyright (c) 2006, Technische Universitaet Berlin
  * All rights reserved.
  *
@@ -26,14 +27,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * - Revision -------------------------------------------------------------
- * $Revision: 1.1 $
- * $Date: 2008-06-12 14:02:26 $
  * @author: Jan Hauer <hauer@tkn.tu-berlin.de>
+ * @author: Eric B. Decker <cire831@gmail.com>
+ *
+ * TosThreads has the nasty habit of copying whole files at the time of creation
+ * to make somekind of modification.  This doesn't work very well as the low
+ * level code base changes.
+ *
+ * TosThreads implementation of the Msp430 ADC code has diverged significantly
+ * from what is now implemented for the x1, x2, and x5 msp430 families.
+ *
+ * You are welcome to try to fix it, but I'd recommend that instead you
+ * figure out a better way to make tosthreads work that doesn't require
+ * wholesale copying of source modules.
+ *
  * ========================================================================
  */
 
-#include <Msp430Adc12.h> 
+#include <Msp430Adc12.h>
+#warning TosThreads version of Msp430Adc12P no longer current.   Review.
+
 configuration Msp430Adc12P 
 { 
   provides {
