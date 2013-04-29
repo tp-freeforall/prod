@@ -57,6 +57,11 @@
  * for the 32KHz timer suite.  If you clone this to a platform area,
  * remember to also clone Msp430Counter32khzC if you change to a
  * different timer.
+ *
+ * x5 processors have various block of timers.  The 5137 and 5438 have T0A5
+ * and T1A3.  The 5438 also has the T0B7 timer block.
+ *
+ * 32KiHz timing is assigned to T0An.   TMicro is assigned to T1An.
  */
 
 configuration Msp430Timer32khzMapC {

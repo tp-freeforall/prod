@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2011 Eric B. Decker
  * Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
@@ -37,6 +38,9 @@
  * Msp430Timer32khzMapC presents as paramaterized interfaces all of the 32khz
  * hardware timers on the MSP430 that are available for compile time allocation
  * by "new Alarm32khz16C()", "new AlarmMilli32C()", and so on.
+ *
+ * x1/x2 processors has two Timer blocks, TA3 and TB7.   TA3 is assigned to
+ * TMicro while TB7 is used by the 32KHiZ clock system that runs TMilli.
  *
  * @author Cory Sharp <cssharp@eecs.berkeley.edu>
  * @author Eric B. Decker <cire831@gmail.com>

@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013, Eric B. Decker
  * Copyright (c) 2010, Vanderbilt University
  * All rights reserved.
  *
@@ -30,6 +31,11 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Author: Janos Sallai
+ * Author: Eric B. Decker <cire831@gmail.com>
+ *
+ * This file interfaces an TimerMicro instance to the underlying h/w
+ * that presents the actual timer h/w.   The first instance (use of
+ * "new")
  */ 
  
 generic configuration Msp430TimerMicroC()

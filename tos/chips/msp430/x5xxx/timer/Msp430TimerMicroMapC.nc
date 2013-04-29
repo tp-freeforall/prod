@@ -30,16 +30,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Author: Janos Sallai
+ * Author: Eric B. Decker <cire831@gmail.com>
  *
- * x1x2 Msp430TimerMicroMapC
+ * x5 Msp430TimerMicroMapC
  *
- * The x1/x2 processors have dual timers, TA3 and TB7.
- * TimerA is assigned by the platform to TMicro.  This module hands
- * out control registers for the TA3 control cells.
- *
- * TimerB is assigned to 32KHiZ which is used by TMilli.  See
- * Msp430Timer32khzMapC which hands out TimerB controls.
+ * The x5 processors have at least two timer blocks, T0An and T1An.
+ * T0An is assigned to 32KHiZ timing (TMilli) and T1An is assigned
+ * to TMicro.  This module hands out control registers for the T1An
+ * control cells.
  */
 
 configuration Msp430TimerMicroMapC {
@@ -47,19 +45,18 @@ configuration Msp430TimerMicroMapC {
   provides interface Msp430TimerControl[ uint8_t id ];
   provides interface Msp430Compare[ uint8_t id ];
 }
-
 implementation {
   components Msp430TimerC;
 
-  Msp430Timer[0] = Msp430TimerC.TimerA;
-  Msp430TimerControl[0] = Msp430TimerC.ControlA0;
-  Msp430Compare[0] = Msp430TimerC.CompareA0;
+  Msp430Timer[0] = Msp430TimerC.Timer1_A;
+  Msp430TimerControl[0] = Msp430TimerC.Control1_A0;
+  Msp430Compare[0] = Msp430TimerC.Compare1_A0;
 
-  Msp430Timer[1] = Msp430TimerC.TimerA;
-  Msp430TimerControl[1] = Msp430TimerC.ControlA1;
-  Msp430Compare[1] = Msp430TimerC.CompareA1;
+  Msp430Timer[1] = Msp430TimerC.Timer1_A;
+  Msp430TimerControl[1] = Msp430TimerC.Control1_A1;
+  Msp430Compare[1] = Msp430TimerC.Compare1_A1;
 
-  Msp430Timer[2] = Msp430TimerC.TimerA;
-  Msp430TimerControl[2] = Msp430TimerC.ControlA2;
-  Msp430Compare[2] = Msp430TimerC.CompareA2; 
+  Msp430Timer[2] = Msp430TimerC.Timer1_A;
+  Msp430TimerControl[2] = Msp430TimerC.Control1_A2;
+  Msp430Compare[2] = Msp430TimerC.Compare1_A2;
 }
