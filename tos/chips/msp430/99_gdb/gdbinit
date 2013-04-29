@@ -1,9 +1,9 @@
 
 set remoteaddresssize 0d64
 set remotetimeout 0d999999
-set remote memory-write-packet-size 2048
+set remote memory-write-packet-size 1024
 set remote memory-write-packet-size fixed
-set remote memory-read-packet-size 2048
+set remote memory-read-packet-size 1024
 set remote memory-read-packet-size fixed
 
 #source ../../.gdb_x1
