@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, Eric B. Decker
+ * Copyright (c) 2012-2013, Eric B. Decker
  * Copyright (c) 2011-2012 João Gonçalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
@@ -115,14 +115,14 @@ implementation {
    * IO function rather than module role.
    *
    * The USCI is left in software reset mode to avoid power drain.
-   * Errata UCS6 doesn't apply.
+   * Errata UCS6 doesn't apply as UCS6 only hits when in UART mode.
    */
   void unconfigure_ () {
     while (UCBUSY & (call Usci.getStat())) {
       ;/* busy-wait */
     }
 
-    call Usci.setIe(call Usci.getIe() & ~ (UCTXIE | UCRXIE));
+    /* going into reset, clears all interrupt enables */
     call Usci.enterResetMode_();
     call SIMO.makeOutput();
     call SIMO.selectIOFunc();
@@ -149,19 +149,21 @@ implementation {
      * Do basic configuration, leaving USCI in reset mode.  Configure
      * the SPI pins, enable the USCI, and leave interrupts off.
      */
-    call Usci.configure(config, TRUE);
-    call SIMO.makeOutput();
-    call SIMO.selectModuleFunc();
-    call SOMI.makeInput();
-    call SOMI.selectModuleFunc();
-    call CLK.makeOutput();
-    call CLK.selectModuleFunc();
+    atomic {
+      call Usci.configure(config, TRUE);
+      call SIMO.makeOutput();
+      call SIMO.selectModuleFunc();
+      call SOMI.makeInput();
+      call SOMI.selectModuleFunc();
+      call CLK.makeOutput();
+      call CLK.selectModuleFunc();
 
-    /*
-     * The IE bits are cleared when the USCI is reset, so there is no need
-     * to clear the IE bits.
-     */
-    call Usci.leaveResetMode_();
+      /*
+       * The IE bits are cleared when the USCI is reset, so there is no need
+       * to clear the IE bits.
+       */
+      call Usci.leaveResetMode_();
+    }
     return SUCCESS;
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Eric B. Decker
+ * Copyright (c) 2012-2013 Eric B. Decker
  * All rights reserved.
  *
  * Multi-Master driver.
@@ -158,20 +158,24 @@ implementation {
     if (!config)
       return FAIL;			/* does anyone actually check? */
 
-    call Usci.configure(config, TRUE);	/* leave in reset */
-    call SCL.selectModuleFunc();
-    call SDA.selectModuleFunc();
-    call Usci.setI2Coa(config->i2coa);
-    call Usci.leaveResetMode_();
-    m_action = SLAVE;
+    atomic {
+      call Usci.configure(config, TRUE);	/* leave in reset */
+      call SCL.selectModuleFunc();
+      call SDA.selectModuleFunc();
+      call Usci.setI2Coa(config->i2coa);
 
-    /*
-     * Turn on START interrupt.   Used for when we are the slave end
-     * and someone else is trying to talk to us...
-     *
-     * But is anything wired in and ready to receive the incoming?
-     */
-    call Usci.setIe(UCSTTIE);
+      /*
+       * Turn on START interrupt.   Used for when we are the slave end
+       * and someone else is trying to talk to us...
+       *
+       * But is anything wired in and ready to receive the incoming?
+       * hopefully should be statically wired in.   And it should be
+       * ready to deal with immediate interrupts.
+       */
+      m_action = SLAVE;
+      call Usci.leaveResetMode_();
+      call Usci.setIe(UCSTTIE);
+    }
     return SUCCESS;
   }
 
@@ -189,13 +193,15 @@ implementation {
      * only gets called after something goes wrong.   But our
      * default state is to be in Slave mode.
      */
-    if (call Usci.getCtl0() & UCMST) {
-      call Usci.enterResetMode_();
-      call Usci.andCtl0(~UCMST);
-      call Usci.leaveResetMode_();
+    atomic {
+      if (call Usci.getCtl0() & UCMST) {
+	call Usci.enterResetMode_();
+	call Usci.andCtl0(~UCMST);
+	call Usci.leaveResetMode_();
+      }
+      call Usci.setIe(UCSTTIE);
+      m_action = SLAVE;
     }
-    call Usci.setIe(UCSTTIE);
-    m_action = SLAVE;
     return SUCCESS;
   }
 
@@ -208,9 +214,11 @@ implementation {
    * configuration should be reasonable for lowish power.
    */
   error_t unconfigure_() {
-    call Usci.enterResetMode_();	/* leave in reset */
-    call SCL.selectIOFunc();
-    call SDA.selectIOFunc();
+    atomic {
+      call Usci.enterResetMode_();	/* leave in reset */
+      call SCL.selectIOFunc();
+      call SDA.selectIOFunc();
+    }
     return SUCCESS;
   }
 

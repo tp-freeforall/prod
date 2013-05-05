@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -72,6 +73,7 @@
  * UartByte.receive() method.
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 generic module Msp430UsciUartP () @safe() {
@@ -136,13 +138,16 @@ implementation {
    * to their IO rather than module role.
    *
    * The USCI is left in software reset mode to avoid power drain per
-   * CC430 errata UCS6.
+   * errata UCS6.
    */
   void unconfigure_ () {
     while (UCBUSY & (call Usci.getStat())) {
-      ;/* busy-wait */
+      ;/* busy-wait, FIX-ME */
     }
-    call Usci.setIe(call Usci.getIe() & ~ (UCTXIE | UCRXIE));
+    /*
+     * formerly, first thing we turned off the interrupt enables
+     * but kicking reset turns off the interrupt enables.
+     */
     call Usci.enterResetMode_();
     call URXD.makeOutput();
     call URXD.selectIOFunc();
@@ -166,17 +171,30 @@ implementation {
 
     /*
      * Do basic configuration, leaving USCI in reset mode.  Configure
-     * the UART pins, enable the USCI, and turn on the interrupts.
+     * the UART pins, enable the USCI, and turn on the rx interrupt.
      */
-    call Usci.configure(config, TRUE);
-    call URXD.makeInput();
-    call URXD.selectModuleFunc();
-    call UTXD.makeOutput();
-    call UTXD.selectModuleFunc();
-    call Usci.leaveResetMode_();
-    call Usci.setIe((UCRXIE | call Usci.getIe()) & (~ UCTXIE));
-    m_tx_buf = m_rx_buf = 0;
+    atomic {
+      call Usci.configure(config, TRUE);
+      call URXD.makeInput();
+      call URXD.selectModuleFunc();
+      call UTXD.makeOutput();
+      call UTXD.selectModuleFunc();
 
+      /*
+       * all configured.  before leaving reset and turning on interrupts
+       * reset the state variables about where we are in the buffer.
+       */
+      m_tx_buf = m_rx_buf = 0;
+      call Usci.leaveResetMode_();
+
+      /*
+       * The IE bits are cleared when the USCI is reset.
+       *
+       * UCmxIE only contains two bits, TXIE and RXIE.  Force to just
+       * RXIE on.
+       */
+      call Usci.setIe(UCRXIE);
+    }
     return SUCCESS;
   }
 

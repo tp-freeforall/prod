@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Eric B. Decker
+ * Copyright (c) 2012-2013 Eric B. Decker
  * All rights reserved.
  *
  * Single Master driver.
@@ -164,10 +164,13 @@ implementation {
     if (!config)
       return FAIL;			/* does anyone actually check? */
 
-    call Usci.configure(config, TRUE);
-    call SCL.selectModuleFunc();
-    call SDA.selectModuleFunc();
-    call Usci.leaveResetMode_();
+    atomic {
+      call Usci.configure(config, TRUE);
+      call SCL.selectModuleFunc();
+      call SDA.selectModuleFunc();
+      m_action = MASTER_IDLE;
+      call Usci.leaveResetMode_();
+    }
     return SUCCESS;
   }
 
@@ -180,9 +183,11 @@ implementation {
    * configuration should be reasonable for lowish power.
    */
   error_t unconfigure_() {
-    call Usci.enterResetMode_();
-    call SCL.selectIOFunc();
-    call SDA.selectIOFunc();
+    atomic {
+      call Usci.enterResetMode_();
+      call SCL.selectIOFunc();
+      call SDA.selectIOFunc();
+    }
     return SUCCESS;
   }
 
@@ -208,6 +213,7 @@ implementation {
   error_t start_check_busy() {
     uint16_t t0, t1;
 
+    /* reset will also clear any interrupt enables.  be aware. */
     call Usci.enterResetMode_();			// blow any cruft away
     call Usci.leaveResetMode_();
 
