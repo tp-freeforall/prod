@@ -1,11 +1,9 @@
 /*
- * Copyright (c) 2012 Eric B. Decker
+ * Copyright (c) 2012-2013 Eric B. Decker
  * Copyright (c) 2011 John Hopkins University
  * Copyright (c) 2011 Redslate Ltd.
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
- *
- * This open source code was developed with funding from People Power Company
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -53,12 +51,39 @@
  * @author Marcus Chang <marcus.chang@gmail.com>
  * @author Eric B. Decker <cire831@gmail.com>
  *
- * WARNING: This code makes the assumption that access to the various
- * registers occurs with single instructions and thus is atomic.  It
- * has been verified that with -Os optimization, that indeed register
- * access is via single instructions.  Other optimizations may not
- * result in single instructions.
+ * Depending on the optimization level of the toolchain and which toolchain,
+ * access may or may not be single instructions (ie. atomic).  When not sure
+ * of exactly what instructions are being used one should use the default
+ * which is to surround accesses with "atomic".
+ *
+ * The define MSP430_USCI_ATOMIC_LOWLEVEL is used to control whether accesses
+ * are protected from interrupts (via "atomic").  If not defined, it will
+ * default to "atomic".   To generated optimized accesses, define it to be
+ * empty.  From your Makefile, you can do "CFLAGS += -DMSP430_USCI_ATOMIC_LOWLEVEL=".
+ *
+ * Any override will typically be done either in the platform's hardware.h
+ * or in the applications "Makefile".
+ *
+ * WARNING: When MSP430_USCI_ATOMIC_LOWLEVEL is blank, this code makes the
+ * assumption that access to the various registers occurs with single
+ * instructions and thus is atomic.  It has been verified that with -Os
+ * optimization, that indeed register access is via single instructions.
+ * Other optimizations may not result in single instructions.  In those
+ * cases, you should use the default value which causes "atomics" to protect
+ * access from interrupts.
+ *
+ * If you turn off the atomic protection it is assumed that you know
+ * what you are doing and will make sure the machine state is reasonable
+ * for what you are doing.
+ *
+ * Also note that many of the fields in various registers shouldn't be
+ * set unless the device is in reset.   See the Users guide for details
+ * ie. SLAU208M for the x5 family cpus.
  */
+
+#ifndef MSP430_USCI_ATOMIC_LOWLEVEL
+#define MSP430_USCI_ATOMIC_LOWLEVEL atomic
+#endif
 
 generic module HplMsp430UsciP(
   /** Identifier for this USCI module, unique across (type, instance) pairs */
@@ -109,13 +134,13 @@ implementation {
   async command void     Usci.setCtl0(uint8_t v)    { UCmxCTL0  = v; }
   async command void     Usci.setCtl1(uint8_t v)    { UCmxCTL1  = v; }
 
-  async command void     Usci.orCtlw0(uint16_t v)   { UCmxCTLW0 |= v; }
-  async command void     Usci.orCtl0(uint8_t v)     { UCmxCTL0  |= v; }
-  async command void     Usci.orCtl1(uint8_t v)	    { UCmxCTL1  |= v; }
+  async command void     Usci.orCtlw0(uint16_t v)   { MSP430_USCI_ATOMIC_LOWLEVEL UCmxCTLW0 |= v; }
+  async command void     Usci.orCtl0(uint8_t v)     { MSP430_USCI_ATOMIC_LOWLEVEL UCmxCTL0  |= v; }
+  async command void     Usci.orCtl1(uint8_t v)	    { MSP430_USCI_ATOMIC_LOWLEVEL UCmxCTL1  |= v; }
 
-  async command void     Usci.andCtlw0(uint16_t v)  { UCmxCTLW0 &= v; }
-  async command void     Usci.andCtl0(uint8_t v)    { UCmxCTL0  &= v; }
-  async command void     Usci.andCtl1(uint8_t v)    { UCmxCTL1  &= v; }
+  async command void     Usci.andCtlw0(uint16_t v)  { MSP430_USCI_ATOMIC_LOWLEVEL UCmxCTLW0 &= v; }
+  async command void     Usci.andCtl0(uint8_t v)    { MSP430_USCI_ATOMIC_LOWLEVEL UCmxCTL0  &= v; }
+  async command void     Usci.andCtl1(uint8_t v)    { MSP430_USCI_ATOMIC_LOWLEVEL UCmxCTL1  &= v; }
 
   async command uint16_t Usci.getBrw()		    { return UCmxBRW; }
   async command uint8_t  Usci.getBr0()		    { return UCmxBR0; }
@@ -156,14 +181,14 @@ implementation {
   async command void	 Usci.setIfg(uint8_t v)	    { UCmxIFG = v; }
 
   async command bool	 Usci.isRxIntrPending()	    { return (UCmxIFG & UCRXIFG); }
-  async command void	 Usci.clrRxIntr()	    { UCmxIFG &= ~UCRXIFG; }
-  async command void	 Usci.disableRxIntr()	    { UCmxIE  &= ~UCRXIE;  }
-  async command void	 Usci.enableRxIntr()	    { UCmxIE  |=  UCRXIE;  }
+  async command void	 Usci.clrRxIntr()	    { MSP430_USCI_ATOMIC_LOWLEVEL UCmxIFG &= ~UCRXIFG; }
+  async command void	 Usci.disableRxIntr()	    { MSP430_USCI_ATOMIC_LOWLEVEL UCmxIE  &= ~UCRXIE;  }
+  async command void	 Usci.enableRxIntr()	    { MSP430_USCI_ATOMIC_LOWLEVEL UCmxIE  |=  UCRXIE;  }
 
   async command bool	 Usci.isTxIntrPending()	    { return (UCmxIFG & UCTXIFG); }
-  async command void	 Usci.clrTxIntr()	    { UCmxIFG &= ~UCTXIFG; }
-  async command void	 Usci.disableTxIntr()	    { UCmxIE  &= ~UCTXIE;  }
-  async command void	 Usci.enableTxIntr()	    { UCmxIE  |=  UCTXIE;  }
+  async command void	 Usci.clrTxIntr()	    { MSP430_USCI_ATOMIC_LOWLEVEL UCmxIFG &= ~UCTXIFG; }
+  async command void	 Usci.disableTxIntr()	    { MSP430_USCI_ATOMIC_LOWLEVEL UCmxIE  &= ~UCTXIE;  }
+  async command void	 Usci.enableTxIntr()	    { MSP430_USCI_ATOMIC_LOWLEVEL UCmxIE  |=  UCTXIE;  }
 
   async command bool	 Usci.isBusy()		    { return (UCmxSTAT & UCBUSY); }
 
@@ -174,14 +199,14 @@ implementation {
    *
    * set direction of the bus
    */
-  async command void Usci.setTransmitMode()	   { UCmxCTL1 |=  UCTR; }
-  async command void Usci.setReceiveMode()	   { UCmxCTL1 &= ~UCTR; }
+  async command void Usci.setTransmitMode()	   { MSP430_USCI_ATOMIC_LOWLEVEL UCmxCTL1 |=  UCTR; }
+  async command void Usci.setReceiveMode()	   { MSP430_USCI_ATOMIC_LOWLEVEL UCmxCTL1 &= ~UCTR; }
   async command bool Usci.getTransmitReceiveMode() { return (UCmxCTL1 & UCTR); }
 
   /* NACK, Stop condition, or Start condition, automatically cleared */
-  async command void Usci.setTxNack()		   { UCmxCTL1 |= UCTXNACK; }
-  async command void Usci.setTxStop()		   { UCmxCTL1 |= UCTXSTP;  }
-  async command void Usci.setTxStart()		   { UCmxCTL1 |= UCTXSTT;  }
+  async command void Usci.setTxNack()		   { MSP430_USCI_ATOMIC_LOWLEVEL UCmxCTL1 |= UCTXNACK; }
+  async command void Usci.setTxStop()		   { MSP430_USCI_ATOMIC_LOWLEVEL UCmxCTL1 |= UCTXSTP;  }
+  async command void Usci.setTxStart()		   { MSP430_USCI_ATOMIC_LOWLEVEL UCmxCTL1 |= UCTXSTT;  }
 
   async command bool Usci.getTxNack()              { return (UCmxCTL1 & UCTXNACK); }
   async command bool Usci.getTxStop()              { return (UCmxCTL1 & UCTXSTP);  }
@@ -190,8 +215,11 @@ implementation {
   async command bool Usci.isBusBusy()		   { return (UCmxSTAT & UCBBUSY);  }
 
   async command bool Usci.isNackIntrPending()	   { return (UCmxIFG & UCNACKIFG); }
-  async command void Usci.clrNackIntr()		   { UCmxIFG &= ~UCNACKIFG; }
+  async command void Usci.clrNackIntr()		   { MSP430_USCI_ATOMIC_LOWLEVEL UCmxIFG &= ~UCNACKIFG; }
 
+  /*
+   * Caller should disable interrupts.
+   */
   async command void Usci.configure (const msp430_usci_config_t* config,
                                      bool leave_in_reset) {
     if (! config) {
