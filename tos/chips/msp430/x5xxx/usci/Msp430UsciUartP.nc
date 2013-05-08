@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -72,6 +73,7 @@
  * UartByte.receive() method.
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 generic module Msp430UsciUartP () @safe() {
@@ -325,6 +327,20 @@ implementation {
   }
 
 
+  /*
+   * Check to see if space is available for another transmit byte to go out.
+   *
+   * If something goes wrong, just return FALSE (no space is available).
+   */
+  async command bool UartByte.sendAvail[uint8_t client]() {
+    error_t rv;
+
+    if ((rv = checkIsOwner(client)))	/* non-zero, error bail out */
+      return FALSE;
+    return (UCTXIFG & call Usci.getIfg());
+  }
+
+
   enum {
     /**
      * The timeout for UartByte.receive is specified in "byte times",
@@ -370,6 +386,20 @@ implementation {
     *byte = call Usci.getRxbuf();
     return SUCCESS;
   }
+
+  /*
+   * Check to see if another Rx byte is available.
+   *
+   * If something goes wrong, just return FALSE (no byte is available).
+   */
+  async command bool UartByte.receiveAvail[uint8_t client]() {
+    error_t rv;
+
+    if ((rv = checkIsOwner(client)))	/* non-zero, error bail out */
+      return FALSE;
+    return (UCRXIFG & call Usci.getIfg());
+  }
+
 
   async event void Interrupts.interrupted (uint8_t iv) {
     uint8_t current_client = call ArbiterInfo.userId();

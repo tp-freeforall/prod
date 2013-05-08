@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2010-2011 Eric B. Decker
  * Copyright (c) 2009 DEXMA SENSORS SL
  * Copyright (c) 2005-2006 Arch Rock Corporation
@@ -193,6 +194,12 @@ implementation {
     return SUCCESS;
   }
 
+  async command bool UartByte.sendAvail[ uint8_t id ]() {
+    if (call UsciResource.isOwner[id]() == FALSE)
+      return FALSE;
+    return (call Usci.isTxIntrPending());
+  }
+
   async command error_t UartByte.receive[ uint8_t id ]( uint8_t* byte, uint8_t timeout ) {
     uint16_t timeout_micro = m_byte_time * timeout + 1;
     uint16_t start;
@@ -206,6 +213,12 @@ implementation {
     }
     *byte = call Usci.rx();
     return SUCCESS;
+  }
+
+  async command bool UartByte.receiveAvail[ uint8_t id ]() {
+    if (call UsciResource.isOwner[id]() == FALSE)
+      return FALSE;
+    return (call Usci.isRxIntrPending());
   }
 
   async event void Counter.overflow() {}

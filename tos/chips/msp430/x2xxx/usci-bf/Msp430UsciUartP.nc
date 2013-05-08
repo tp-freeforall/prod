@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -70,6 +71,7 @@
  * UartByte.receive() method.
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include "msp430usci.h"
@@ -337,6 +339,15 @@ generic module Msp430UsciUartP (uint8_t TXIE_MASK, uint8_t RXIE_MASK, uint8_t TX
   }
 
 
+  async command bool UartByte.sendAvail[uint8_t client]() {
+    error_t rv;
+
+    if ((rv = checkIsOwner(client)))
+	return rv;
+    return (TXIFG_MASK & call Usci.getIfg());
+  }
+
+
   enum {
     /** The timeout for UartByte.receive is specified in "byte times",
      * which we can't know without reverse engineering the clock
@@ -377,6 +388,14 @@ generic module Msp430UsciUartP (uint8_t TXIE_MASK, uint8_t RXIE_MASK, uint8_t TX
 
     *byte = call Usci.getRxbuf();
     return SUCCESS;
+  }
+
+  async command bool UartByte.receiveAvail[uint8_t client]() {
+    error_t rv;
+
+    if ((rv = checkIsOwner(client)))
+      return rv;
+    return (RXIFG_MASK & call Usci.getIfg());
   }
 
   async event void RXInterrupts.interrupted(uint8_t iv) {

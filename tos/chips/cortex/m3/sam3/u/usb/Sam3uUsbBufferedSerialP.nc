@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2010 CSIRO Australia
  * All rights reserved.
  * 
@@ -34,6 +35,7 @@
  * High Speed USB to Serial implementation
  *
  * @author Kevin Klues
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include <sam3uudphshardware.h>
@@ -85,8 +87,16 @@ implementation {
     return FAIL;
   }
 
+  async command bool UartByte.sendAvail() {
+    return FALSE;
+  }
+
   async command error_t UartByte.receive( uint8_t* byte, uint8_t timeout ) {
     return FAIL;
+  }
+
+  async command bool UartByte.receiveAvail() {
+    return FALSE;
   }
 
   // Take a look in HdlcTranslateC to understand the logic here
