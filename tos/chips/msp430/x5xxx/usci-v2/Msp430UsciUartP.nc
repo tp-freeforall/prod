@@ -51,7 +51,8 @@
  * state managed by cooperation between the TX interrupt handler and
  * the send code, we leave the TX interrupt disabled and rely on the
  * UCTXIFG flag to indicate that single-byte transmission is
- * permitted.
+ * permitted.  It is better and simpler to let the h/w maintain the
+ * state.
  *
  * An exception to this is in support of the UartSerial.send()
  * function.  The transmit interrupt is enabled when the outgoing
@@ -65,7 +66,8 @@
  * receive operation is active, received characters will be stored and
  * no notification provided until the full packet has been received.
  * If no buffered receive operation is active, the receivedByte()
- * event will be signaled for each received character.
+ * event will be signaled for each received character.  Per byte
+ * signal per each byte interrupt.
  *
  * As with the transmit interrupt, MCU execution of the receive
  * interrupt clears the UCRXIFG flag, making interrupt-driven
@@ -105,10 +107,10 @@ implementation {
    * there is an active buffered I/O operation.
    */
   bool isBusy () {
-    while (UCBUSY & (call Usci.getStat())) {
+    while (call Usci.isBusy()) {
       ;/* busy-wait */
     }
-    return (0 != m_tx_buf) || (0 != m_rx_buf);
+    return (m_tx_buf || m_rx_buf);
   }
 
   /**
@@ -119,12 +121,12 @@ implementation {
     /* Ensure the USCI is in UART mode and we're the owning client */
     const uint8_t current_client = call ArbiterInfo.userId();
 
-    if (0xFF == current_client) {
+    if (0xFF == current_client)
       return EOFF;
-    }
-    if (current_client != client) {
+
+    if (current_client != client)
       return EBUSY;
-    }
+
     return SUCCESS;
   }
 
@@ -134,11 +136,10 @@ implementation {
    * Assumes the USCI is currently in UART mode.  This will busy-wait
    * until any characters being actively transmitted or received are
    * out of their shift register.  It disables the interrupts, puts
-   * the USCI into software resent, and returns the UART-related pins
-   * to their IO rather than module role.
+   * the USCI into reset, and returns the UART-related pins back to
+   * IO mode.
    *
-   * The USCI is left in software reset mode to avoid power drain per
-   * errata UCS6.
+   * The USCI is left in reset mode to avoid power drain per UCS6.
    */
   void unconfigure_ () {
     while (UCBUSY & (call Usci.getStat())) {
@@ -165,9 +166,8 @@ implementation {
    * enabled, and TX is disabled..
    */
   error_t configure_ (const msp430_usci_config_t* config) {
-    if (! config) {
+    if (! config)
       return FAIL;
-    }
 
     /*
      * Do basic configuration, leaving USCI in reset mode.  Configure
@@ -184,16 +184,11 @@ implementation {
        * all configured.  before leaving reset and turning on interrupts
        * reset the state variables about where we are in the buffer.
        */
-      m_tx_buf = m_rx_buf = 0;
+      m_tx_buf = m_rx_buf = 0;		/* really?  do we want to do this? */
       call Usci.leaveResetMode_();
 
-      /*
-       * The IE bits are cleared when the USCI is reset.
-       *
-       * UCmxIE only contains two bits, TXIE and RXIE.  Force to just
-       * RXIE on.
-       */
-      call Usci.setIe(UCRXIE);
+      /* any IE bits are cleared on reset, turn on RX interrupt */
+      call Usci.enableRxIntr();
     }
     return SUCCESS;
   }
@@ -207,17 +202,19 @@ implementation {
    * ready to receive a new character.
    */
   void nextStreamTransmit (uint8_t client) {
+    uint8_t ch;
+    bool    last_char;
+
     atomic {
-      uint8_t ch = m_tx_buf[m_tx_pos++];
-      bool last_char = (m_tx_pos == m_tx_len);
+      ch = m_tx_buf[m_tx_pos++];
+      last_char = (m_tx_pos >= m_tx_len);
 
       if (last_char) {
         /*
-	 * Disable interrupts and release hold on UART before we
-         * transmit the character; this ensures that UCTXIFG remains
-         * set for subsequent byte transfers
+	 * Disable TX interrupt, UCTXIFG will still be asserted
+	 * once the next char going out finishes.
 	 */
-        call Usci.setIe(call Usci.getIe() & (~ UCTXIE));
+	call Usci.disableTxIntr();
       }
       call Usci.setTxbuf(ch);
 
@@ -226,8 +223,11 @@ implementation {
        * signaling completion.
        */
       if (last_char) {
-        uint8_t* tx_buf = m_tx_buf;
-        uint16_t tx_len = m_tx_len;
+        uint8_t* tx_buf;
+        uint16_t tx_len;
+
+	tx_buf = m_tx_buf;
+	tx_len = m_tx_len;
         m_tx_buf = 0;
         signal UartStream.sendDone[client](tx_buf, tx_len, SUCCESS);
       }
@@ -235,29 +235,32 @@ implementation {
   }
 
   async command error_t UartStream.send[uint8_t client]( uint8_t* buf, uint16_t len ) {
-    error_t rv = checkIsOwner(client);
-    if (SUCCESS != rv) {
+    error_t rv;
+
+    if ((rv = checkIsOwner(client)))	/* non-zero -> error */
       return rv;
-    }
-    if (isBusy()) {
+
+    if (isBusy())
       return EBUSY;
-    }
-    if ((0 == len) || (0 == buf)) {
+
+    if (!len || !buf)
       return FAIL;
-    }
+
     m_tx_buf = buf;
     m_tx_len = len;
     m_tx_pos = 0;
     /*
-     * Enabling the interrupt causes the ISR to be invoked which
-     * transmits the first character.
+     * On start up UCTXIFG should be asserted, so enabling the TX interrupt
+     * should cause the ISR to get invoked.
      */
-    call Usci.setIe((call Usci.getIe()) | UCTXIE);
+    call Usci.enableTxIntr();
     return SUCCESS;
   }
 
+
   default async event void UartStream.sendDone[uint8_t client]
     (uint8_t* buf, uint16_t len, error_t error ) { }
+
 
   /*
    * The behavior of UartStream during reception is not well defined.
@@ -267,7 +270,7 @@ implementation {
    * simplify control flow, but we do enable the receive interrupt for
    * backwards compatibility.
    * 
-   * If receive(uint8_t*,uint16_t) is called, then subsequent received
+   * If Usci.receive(uint8_t*,uint16_t) is called, then subsequent received
    * characters will be stored into the buffer until completion, and
    * the receivedByte(uint8_t) event will not be signaled.  If no
    * buffered receive is active, then receivedByte(uint8_t) will be
@@ -281,39 +284,44 @@ implementation {
    * register.
    *
    * When the UART client releases control (unconfigures the UART),
-   * all interrupts are disabled.
+   * the UART is left in reset which also disables all interrupt enables.
    */
 
   async command error_t UartStream.enableReceiveInterrupt[uint8_t client]() {
-    error_t rv = checkIsOwner(client);
-    if (SUCCESS == rv) {
-      call Usci.setIe((call Usci.getIe()) | UCRXIE);
-    }
-    return rv;
+    error_t rv;
+
+    if ((rv = checkIsOwner(client)))	/* non-zero, error bail out */
+      return rv;
+    
+    call Usci.enableRxIntr();
+    return rv;				/* SUCCESS */
   }
 
   async command error_t UartStream.disableReceiveInterrupt[uint8_t client]() {
-    error_t rv = checkIsOwner(client);
-    if (SUCCESS == rv) {
-      call Usci.setIe((call Usci.getIe()) & (~ UCRXIE));
-    }
-    return rv;
+    error_t rv;
+
+    if ((rv = checkIsOwner(client)))	/* non-zero, error bail out */
+      return rv;
+    
+    call Usci.disableRxIntr();
+    return rv;				/* SUCCESS */
   }
 
   default async event void UartStream.receivedByte[uint8_t client]( uint8_t byte ) { }
 
   async command error_t UartStream.receive[uint8_t client]( uint8_t* buf, uint16_t len ) {
-    error_t rv = checkIsOwner(client);
-    if (SUCCESS != rv) {
+    error_t rv;
+
+    if ((rv = checkIsOwner(client)))	/* non-zero, error bail out */
       return rv;
-    }
-    if ((0 == len) || (0 == buf)) {
+    
+    if (!len || !buf)
       return FAIL;
-    }
+
     atomic {
-      if (m_rx_buf) {
+      if (m_rx_buf)
         return EBUSY;
-      }
+
       m_rx_buf = buf;
       m_rx_len = len;
       m_rx_pos = 0;
@@ -321,28 +329,35 @@ implementation {
     return SUCCESS;
   }
 
+
   default async event void UartStream.receiveDone[uint8_t client]
     (uint8_t* buf, uint16_t len, error_t error) { }
 
+
   async command error_t UartByte.send[uint8_t client]( uint8_t byte ) {
-    error_t rv = checkIsOwner(client);
-    if (SUCCESS != rv) {
+    error_t rv;
+
+    if ((rv = checkIsOwner(client)))	/* non-zero, error bail out */
       return rv;
-    }
-    if (m_tx_buf) {
+    
+    if (m_tx_buf)
       return EBUSY;
-    }
 
     /* Wait for TXBUF to become available */
-    while (! (UCTXIFG & call Usci.getIfg())) {
+    while (!(call Usci.isTxIntrPending())) {
     }
-    /* Transmit the character.  Note that it hasn't actually gone out
-     * over the wire until UCBUSY on UCmxSTAT is cleared. */
+
+    /*
+     * Transmit the character.  Note that it hasn't actually gone out
+     * over the wire until UCBUSY (see UCmxSTAT) is cleared.
+     */
     call Usci.setTxbuf(byte);
 
-    // wait until it's actually sent.   This kills the pipeline and sucks
-    // performancewise.
-    while(call Usci.getStat() & UCBUSY){
+    /*
+     * wait until it's actually sent.   This kills the pipeline and sucks
+     * performancewise.
+     */
+    while(call Usci.isBusy()) {
     }
     return SUCCESS;
   }
@@ -371,6 +386,10 @@ implementation {
      * subsystem.  Assuming a 57600 baud system, one byte takes
      * roughly 170usec to transmit (ten bits per byte), or about five
      * byte times per (binary) millisecond.
+     *
+     * This is seriously wedged because it is platform dependent.
+     * The platform interface should specify a byte time in number
+     * of microseconds (of whatever flavor the platform is providing).
      */
     ByteTimesPerMillisecond = 5,
 
@@ -385,25 +404,24 @@ implementation {
   };
 
   async command error_t UartByte.receive[uint8_t client]( uint8_t* byte, uint8_t timeout_bt ) {
-    uint32_t startTime_bms;
-    uint32_t timeout_bms = ByteTimeScaleFactor * ((ByteTimesPerMillisecond + timeout_bt - 1) / ByteTimesPerMillisecond);
+    error_t rv;
+    uint32_t startTime_bms, timeout_bms;
 
-    error_t rv = checkIsOwner(client);
-    if (SUCCESS != rv) {
-      return rv;
-    }
-    if (! byte) {
+    if ((rv = checkIsOwner(client)))	/* non-zero, error bail out */
+      return FALSE;
+
+    if (! byte)
       return FAIL;
-    }
-    if (m_rx_buf) {
+
+    if (m_rx_buf)
       return EBUSY;
-    }
 
     startTime_bms = call LocalTime_bms.get();
-    while (! (UCRXIFG & (call Usci.getIfg()))) {
-      if((call LocalTime_bms.get() - startTime_bms) > timeout_bms) {
+    timeout_bms = ByteTimeScaleFactor * ((ByteTimesPerMillisecond + timeout_bt - 1) / ByteTimesPerMillisecond);
+
+    while (! call Usci.isRxIntrPending()) {
+      if((call LocalTime_bms.get() - startTime_bms) > timeout_bms)
         return FAIL;
-      }
     }
 
     *byte = call Usci.getRxbuf();
@@ -427,10 +445,13 @@ implementation {
 
 
   async event void Interrupts.interrupted (uint8_t iv) {
-    uint8_t current_client = call ArbiterInfo.userId();
-    if (0xFF == current_client) {
+    uint8_t current_client;
+
+    current_client = call ArbiterInfo.userId();
+
+    if (0xFF == current_client)
       return;
-    }
+
     if (USCI_UCRXIFG == iv) {
       uint8_t stat = call Usci.getStat();
       uint8_t data = call Usci.getRxbuf();
@@ -443,9 +464,9 @@ implementation {
        * any left on notify somebody.
        */
       stat = MSP430_USCI_ERR_UCxySTAT & (stat | (call Usci.getStat()));
-      if (stat) {
+      if (stat)
         signal Msp430UsciError.condition[current_client](stat);
-      }
+
       if (m_rx_buf) {
         m_rx_buf[m_rx_pos++] = data;
         if (m_rx_len == m_rx_pos) {
@@ -454,12 +475,13 @@ implementation {
           m_rx_buf = 0;
           signal UartStream.receiveDone[current_client](rx_buf, rx_len, SUCCESS);
         }
-      } else {
+      } else
         signal UartStream.receivedByte[current_client](data);
-      }
-    } else if (USCI_UCTXIFG == iv) {
-      nextStreamTransmit(current_client);
+      return;
     }
+
+    if (USCI_UCTXIFG == iv)
+      nextStreamTransmit(current_client);
   }
 
   default async command const msp430_usci_config_t*
