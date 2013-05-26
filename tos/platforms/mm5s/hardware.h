@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013, Eric B. Decker
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -32,12 +33,87 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @author Peter Bigot
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #ifndef _H_hardware_h
 #define _H_hardware_h
 
 #include "msp430hardware.h"
+
+#if !defined(__msp430x54xA)
+#warning Expected Processor __msp430x54xA not found
+#endif
+
+/*
+ * Hardware Notes:
+ *
+ * Main CPU clock 8 MHz.  (DCOCLK) sync'd to 32KiHz (ACLK)
+ * see mm5s/hardware/clock/PlatformClockP.nc for details.
+ *
+ * DCOCLK -> MCLK, SMCLK (8 MHz) /8 -> TMicro (1 MHz) TA1
+ * ACLK   -> TA0 (32 KiHz) -> TMilli
+ *
+ * We are using the I2C single master driver.  Use the default configuration
+ * so use UCMST instead of UCMM.
+ *
+ * 8MHz/80 -> 100KHz
+ * 8MHz/20 -> 400KHz
+ */
+#define MSP430_I2C_MASTER_MODE UCMST
+#define MSP430_I2C_DIVISOR 20
+
+/*
+ * Port definitions:
+ *
+ * TI MSP-EXP430F5438 Eval board.
+ *
+ * Can use the CC2520EM or CC2520-2591EM radio eval modules.
+ *
+ * Leds, cc2520em, uart, xin/xout, valid
+ *
+ * Various codes for port settings: (<dir><usage><default val>: Is0 <input><spi><0, zero>)
+ * another nomenclature used is <value><function><direction>, 0pO (0 (zero), port, Output),
+ *    xpI (don't care, port, Input), mI (module input).
+ *
+ * port 1.0	0pO	led1 (red)		port 5.0	0pO
+ *       .1	0pO	led2 (yellow)		      .1	1pO
+ *       .2	1pO	cc_resetn      		      .2	1pO
+ *       .3     0pI	cc_g3 (cca)		      .3	0pI
+ *       .4	0pI	cc_g0 (1MHz clk)	      .4	0pO
+ *       .5	0pI	cc_g1 (fifo)		      .5	0pO
+ *       .6	0pI	cc_g2 (fifop)		      .6	1pO
+ *       .7	0pO	cc_vreg_en		      .7	0pO
+ *
+ * port 2.0	1pO	          		port 6.0	1pI
+ *       .1	0pO	          		      .1	1pI
+ *       .2	0pO	                 	      .2	1pI
+ *       .3	1pO	           		      .3	1pI
+ *       .4	0pO	        		      .4	1pI
+ *       .5	0pO	        		      .5	1pI
+ *       .6	0pO	       			      .6	1pI
+ *       .7	0pI	       			      .7	1pI
+ *
+ * port 3.0	1pO	cc_cs_n			port 7.0	0mI	xin   (32KiHZ)
+ *       .1	0pI	cc_si (b0simo)		      .1	0mO	xout
+ *       .2	0pI	cc_so (b0somi)		      .2	0pI
+ *       .3	0pI	cc_sclk (b0clk)		      .3	0pI
+ *       .4	1pO	uart_tx	(a0_tx)		      .4	1pO
+ *       .5	1pI	uart_rx	(a0_rx)		      .5	1pO
+ *       .6	1pI				      .6	1pO
+ *       .7	1pI				      .7	1pO
+ *
+ * port 4.0	0pO	      			port 8.0	0pI
+ *       .1	0pI	                    	      .1	0pI	cc_g4 (sfd)
+ *       .2	0pI	                    	      .2	0pI	cc_g5 (n/a)
+ *       .3	0pI	                    	      .3	0pI
+ *       .4	1pI	       			      .4	1pO
+ *       .5	1pO				      .5	1pO
+ *       .6	1pO				      .6	1pO
+ *       .7	1pO				      .7	1pO
+ *
+ */
+
 
 // enum so components can override power saving,
 // as per TEP 112.
@@ -61,21 +137,23 @@ TOSH_ASSIGN_PIN(RED_LED, 1, 0);
 TOSH_ASSIGN_PIN(GREEN_LED, 1, 1);
 TOSH_ASSIGN_PIN(YELLOW_LED, 4, 6);
 
-// CC2420 RADIO #defines
+#ifdef notdef
+// CC2520 RADIO #defines
 TOSH_ASSIGN_PIN(RADIO_CSN, 3, 0);
-TOSH_ASSIGN_PIN(RADIO_VREF, 2, 6);
-TOSH_ASSIGN_PIN(RADIO_RESET, 2, 5);
-TOSH_ASSIGN_PIN(RADIO_FIFOP, 2, 3);
-TOSH_ASSIGN_PIN(RADIO_SFD, 2, 1);
-TOSH_ASSIGN_PIN(RADIO_GIO0, 5, 0);
-TOSH_ASSIGN_PIN(RADIO_FIFO, 2, 2);
-TOSH_ASSIGN_PIN(RADIO_GIO1, 5, 1);
-TOSH_ASSIGN_PIN(RADIO_CCA, 2, 4);
+TOSH_ASSIGN_PIN(RADIO_VREN, 1, 7);
+TOSH_ASSIGN_PIN(RADIO_RESET, 1, 2);
+TOSH_ASSIGN_PIN(RADIO_FIFOP, 1, 6);
+TOSH_ASSIGN_PIN(RADIO_SFD, 8, 1);
+TOSH_ASSIGN_PIN(RADIO_GIO0, 1, 4);
+TOSH_ASSIGN_PIN(RADIO_FIFO, 1, 5);
+TOSH_ASSIGN_PIN(RADIO_GIO1, 1, 5);
+TOSH_ASSIGN_PIN(RADIO_CCA, 1, 3);
 
-TOSH_ASSIGN_PIN(CC_FIFOP, 2, 3);
-TOSH_ASSIGN_PIN(CC_FIFO, 2, 2);
-TOSH_ASSIGN_PIN(CC_SFD, 2, 1);
-TOSH_ASSIGN_PIN(CC_VREN, 2, 6);
-TOSH_ASSIGN_PIN(CC_RSTN, 2, 5);
+TOSH_ASSIGN_PIN(CC_FIFOP, 1, 6);
+TOSH_ASSIGN_PIN(CC_FIFO, 1, 5);
+TOSH_ASSIGN_PIN(CC_SFD, 8, 1);
+TOSH_ASSIGN_PIN(CC_VREN, 1, 7);
+TOSH_ASSIGN_PIN(CC_RSTN, 1, 2);
+#endif
 
 #endif // _H_hardware_h
