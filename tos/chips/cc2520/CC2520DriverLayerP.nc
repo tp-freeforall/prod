@@ -1646,12 +1646,12 @@ implementation{
         {
           if((uint16_t)(time + TX_SFD_DELAY) > (uint16_t)(capturedTime))
             // we had an overflow between SFD capture and read of LocalTime
-            capturedTime -= 1<<16;
+            capturedTime -= (uint32_t) 1<<16;
           capturedTime += (uint16_t)(time + TX_SFD_DELAY) - (uint16_t)(capturedTime);
         } else {
           if((uint16_t)(time - RX_SFD_DELAY) > (uint16_t)(capturedTime))
             // we had an overflow between SFD capture and read of LocalTime
-            capturedTime -= 1<<16;
+            capturedTime -= (uint32_t) 1<<16;
           capturedTime += (uint16_t)(time - RX_SFD_DELAY) - (uint16_t)(capturedTime);
         }
       }
