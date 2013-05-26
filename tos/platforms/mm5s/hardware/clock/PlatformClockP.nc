@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2011 Eric B. Decker
  * All rights reserved.
  *
@@ -216,8 +217,8 @@ module PlatformClockP {
      */
     TA0CTL = TACLR;			// also zeros out control bits
     TA1CTL = TACLR;
-    TA0CTL = TASSEL__ACLK  | MC__CONTINOUS;	//  ACLK/1, continuous
-    TA1CTL = TASSEL__SMCLK | MC__CONTINOUS;	// SMCLK/1, continuous
+    TA0CTL = TASSEL__ACLK  | MC__CONTINUOUS;	//  ACLK/1, continuous
+    TA1CTL = TASSEL__SMCLK | MC__CONTINUOUS;	// SMCLK/1, continuous
 
     /*
      * wait for about a sec for the 32KHz to come up and
@@ -279,7 +280,8 @@ module PlatformClockP {
      * Enable XT1, lowest capacitance.
      *
      * XT1 pins (7.0 and 7.1) default to Pins/In.   For the XT1
-     * to function these have to be swithed to Module control.
+     * to function these have to be switched to Module control.
+     * XT1 is used to control the 32 KiHz Xtal.
      *
      * Surf code mumbles something about P5.0 and 1 must be clear
      * in P5DIR.   Shouldn't have any effect (the pins get kicked
@@ -296,6 +298,10 @@ module PlatformClockP {
      * be checked.   FIXME. 
      */
 
+    /*
+     * P7.0 and P7.1 connect to the 32 KiHz Xtal.  Pins 13, 14 checked
+     * out for the 5437 and 5438.
+     */
     P7SEL |= (BIT0 | BIT1);
     UCSCTL6 &= ~(XT1OFF | XCAP_3);
 
@@ -337,11 +343,13 @@ module PlatformClockP {
      * This is a major failure as we assume we have an XT1 xtal for
      * timing stability.   Flag it and try again?
      * FIXME
+     *
+     * Should PANIC!
      */
     if (UCSCTL7 & XT1LFOFFG) {
       P7SEL &= ~(BIT0| BIT1);
       UCSCTL6 |= XT1OFF;
-      while (1)
+      while (1)				/* PANIC! */
 	nop();
       return FAIL;
     }
@@ -446,14 +454,14 @@ module PlatformClockP {
     do {
       UCSCTL7 &= ~(XT1LFOFFG | DCOFFG);
       SFRIFG1 &= ~OFIFG;                      // Clear fault flags
-    } while (UCSCTL7 & DCOFFG); // Test DCO fault flag
+    } while (UCSCTL7 & DCOFFG);		      // Test DCO fault flag
 
     /*
      * ACLK is XT1/1, 32KiHz.
      * MCLK is set to DCOCLK/1.   8 MHz
      * SMCLK is set to DCOCLK/1.  8 MHz.
      * DCO drives TA1 for TMicro and is set to provide 1us ticks.
-     * ACLK  drives TA0 for TMilli.
+     * ACLK  drives TA0 for TMilli.  Jiffy clock (32KiHz)
      */
     UCSCTL4 = SELA__XT1CLK | SELS__DCOCLK | SELM__DCOCLK;
     UCSCTL5 = DIVA__1 | DIVS__1 | DIVM__1;
