@@ -644,32 +644,35 @@ implementation{
 
   command error_t SoftwareInit.init(){
     // set pin directions
-    call CSN.makeOutput();
-    call VREN.makeOutput();
-    call RSTN.makeOutput();
-    call CCA.makeInput();
-    call SFD.makeInput();
-    call FIFO.makeInput();
-    call FIFOP.makeInput();
+    atomic {
+      call CSN.makeOutput();
+      call VREN.makeOutput();
+      call RSTN.makeOutput();
+      call CCA.makeInput();
+      call SFD.makeInput();
+      call FIFO.makeInput();
+      call FIFOP.makeInput();
 
-    call FifopInterrupt.disable();
-    call FifopInterrupt.enableRisingEdge();
+      call FifopInterrupt.disable();
+      call FifopInterrupt.enableRisingEdge();
 
-    call FifoInterrupt.disable();
-    call FifoInterrupt.enableRisingEdge();
+      call FifoInterrupt.disable();
+      call FifoInterrupt.enableRisingEdge();
 
-    call SfdCapture.disable();
-    // rising edge just saves timestamp.
-    call SfdCapture.captureRisingEdge();
+      call SfdCapture.disable();
+      // rising edge just saves timestamp.
+      call SfdCapture.captureRisingEdge();
 
-    // CSN is active low
-    call CSN.set();
+      // CSN is active low
+      call CSN.set();
 
-    // start up voltage regulator
-    call VREN.clr();
-    call VREN.set();
-    // do a reset
-    call RSTN.clr();
+      // start up voltage regulator
+      call VREN.clr();
+      call VREN.set();
+      // do a reset
+      call RSTN.clr();
+    }
+
     // hold line low for Tdres
     call BusyWait.wait( 200 ); // typical .1ms VR startup time
 
