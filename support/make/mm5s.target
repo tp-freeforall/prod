@@ -1,7 +1,20 @@
 #-*-Makefile-*- vim:syntax=make
+#
+# mm5s is a simple (hence "s") platform based on the TI MSP-EXP430F5438
+# evaluation board.   It can also support the TI radio modules, CC2520EM
+# and the CC2520-2591EM.  The former is a straight CC2520 and the later
+# includes the CC2591 range extender.
+#
 
 PLATFORM = mm5s
 MSP_MCU = msp430f5438a
+
+#
+# Currently, mm5s has a simple panic implementation brought in from the main
+# system (panic_simple).
+#
+
+PFLAGS += -I$(TOSROOT)/tos/system/panic_simple
 
 $(call TOSMake_include_platform,msp)
 

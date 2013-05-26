@@ -42,13 +42,17 @@
 #include "hardware.h"
 
 configuration PlatformC {
-  provides interface Init as PlatformInit;
+  provides {
+    interface Init as PlatformInit;
+    interface Platform;
+  }
   uses interface Init as PeripheralInit;
 }
 
 implementation {
 
   components PlatformP;
+  Platform = PlatformP;
   PlatformInit = PlatformP;
   PeripheralInit = PlatformP.PeripheralInit;
 

@@ -55,7 +55,10 @@ noinit uint16_t boot_count;
 
 
 module PlatformP {
-  provides interface Init;
+  provides {
+    interface Init;
+    interface Platform;
+  }
   uses {
     interface Init as PlatformPins;
     interface Init as PlatformLeds;
@@ -79,9 +82,16 @@ implementation {
     call PlatformPins.init();   // Initializes the GIO pins
     call PlatformLeds.init();   // Initializes the Leds
     call PlatformClock.init();  // Initializes UCS
+    nop();
     call PeripheralInit.init();
     return SUCCESS;
   }
+
+  /*
+   * See PlatformClockP.nc for assignments
+   */
+  async command uint16_t Platform.usecsRaw()   { return TA1R; }
+  async command uint16_t Platform.jiffiesRaw() { return TA0R; }
 
   /***************** Defaults ***************/
   default command error_t PeripheralInit.init() {
