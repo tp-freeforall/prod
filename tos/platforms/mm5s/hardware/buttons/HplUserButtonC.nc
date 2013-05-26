@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2007 Arch Rock Corporation
  * All rights reserved.
  *
@@ -35,8 +36,12 @@
 /**
  * Implementation of the user button for the em430 platform
  *
+ * FIXME: review port assignments for what is available on the mm5s
+ * platform (msp-exp430f5438 eval board).
+ *
  * @author Gilman Tolle <gtolle@archrock.com>
  * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 configuration HplUserButtonC {

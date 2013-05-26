@@ -34,10 +34,12 @@
 
 /**
  * Not quite generic layer to translate a GIO into a toggle switch
- * (Newer MSP430 chips require configuring pull-up resistor)
+ * (Newer MSP430 chips require configuring pull-up resistor, function
+ * is not available in generic GeneralIO.)
  *
  * @author Gilman Tolle <gtolle@archrock.com>
  * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include <UserButton.h>

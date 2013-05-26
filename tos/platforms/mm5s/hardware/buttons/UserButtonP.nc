@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2007 Arch Rock Corporation
  * All rights reserved.
  *
@@ -35,7 +36,11 @@
 /**
  * Implementation of the user button for the telosb platform
  *
+ * FIXME: check sense of pin
+ * FIXME: what should this get hooked to.
+ *
  * @author Gilman Tolle <gtolle@archrock.com>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include <UserButton.h>
@@ -50,11 +55,10 @@ module UserButtonP {
 implementation {
 
   command button_state_t Get.get() {
-    if ( call GetLower.get() ) {
+    if (call GetLower.get())
       return BUTTON_PRESSED;
-    } else {
+    else
       return BUTTON_RELEASED;
-    }
   }
 
   command error_t Notify.enable() {
@@ -66,12 +70,10 @@ implementation {
   }
 
   event void NotifyLower.notify( bool val ) {
-    // telosb user button pin is high when released - invert state
-    if ( val ) {
+    if ( val )
       signal Notify.notify( BUTTON_RELEASED );
-    } else {
+    else
       signal Notify.notify( BUTTON_PRESSED );
-    }
   }
 
   default event void Notify.notify( button_state_t val ) { }

@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2007 Arch Rock Corporation
  * All rights reserved.
  *
@@ -33,7 +34,7 @@
  */
 
 /**
- * Implementation of the user button for the telosb platform. Get
+ * Implementation of the user button for the mm5s platform. Get
  * returns the current state of the button by reading the pin,
  * regardless of whether enable() or disable() has been called on the
  * Interface. Notify.enable() and Notify.disable() modify the
@@ -42,6 +43,7 @@
  * state.
  *
  * @author Gilman Tolle <gtolle@archrock.com>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include <UserButton.h>
