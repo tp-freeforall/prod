@@ -237,7 +237,7 @@ implementation{
 
   inline cc2520_status_t writeRegister(uint8_t reg, uint8_t value){
     cc2520_status_t status;
-    uint8_t v;
+    uint8_t v __attribute__((unused));
 
     RADIO_ASSERT( call SpiResource.isOwner() );
 
@@ -279,7 +279,8 @@ implementation{
   /* This function is to write data to memory spaces above 0x200 */
   inline cc2520_status_t writeMemory(uint16_t mem_addr, uint8_t* value, uint8_t count){
     cc2520_status_t status;
-    uint8_t v, i;
+    uint8_t v __attribute__((unused));
+    uint8_t i;
 
     if(mem_addr < 0x200){
       mem_addr = 0x200;
@@ -621,7 +622,7 @@ implementation{
     // set it to stop possible pending fifo transfer
 
     {
-      cc2520_status_t status;
+      cc2520_status_t status __attribute__((unused));
 
 
       strobe(CC2520_CMD_SFLUSHRX);
@@ -1118,7 +1119,7 @@ implementation{
   {
     void* timesync;
     uint32_t time32;
-    cc2520_status_t status;
+    cc2520_status_t status __attribute__((unused));
 
 
     /*****************************************
@@ -1255,7 +1256,7 @@ implementation{
   }
 
   inline void recover_err() {
-    cc2520_status_t status;
+    cc2520_status_t status __attribute__((unused));
 
     // reset the radio, initialize registers to default values
     RADIO_ASSERT(0);
