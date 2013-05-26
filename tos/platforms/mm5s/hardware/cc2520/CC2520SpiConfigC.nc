@@ -1,8 +1,5 @@
 /*
  * Copyright (c) 2013 Eric B. Decker
- * Copyright (c) 2009 Stanford University.
- * Copyright (c) 2005 The Regents of the University  of California.
- * Copyright (c) 2002-2005 Intel Corporation
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,32 +33,28 @@
  */
 
 /**
- * Defining the platform-independently named packet structures to be the
- * chip-specific CC2520 packet structures.
- *
- * @author Philip Levis
- * @author Wanja Hofer <wanja@cs.fau.de>
  * @author Eric B. Decker <cire831@gmail.com>
  */
 
-#ifndef PLATFORM_MESSAGE_H
-#define PLATFORM_MESSAGE_H
+module CC2520SpiConfigC {
+  provides {
+    interface Init;
+    interface ResourceConfigure;
+  }
+  uses {
+  }
+}
+implementation {
 
-#include <Serial.h>
-#include "CC2520Radio.h"
+  command error_t Init.init() {
+    return SUCCESS;
+  }
 
-typedef union message_header {
-  cc2520packet_header_t cc2520;
-  serial_header_t serial;
-} message_header_t;
+  async command void ResourceConfigure.configure() {
+    // Do stuff here
+  }
 
-typedef union message_footer {
-  cc2520packet_footer_t cc2520;
-} message_footer_t;
-
-typedef union message_metadata {
-  cc2520packet_metadata_t cc2520;
-	serial_metadata_t serial;
-} message_metadata_t;
-
-#endif
+  async command void ResourceConfigure.unconfigure() {
+    // Do stuff here...
+  }
+}

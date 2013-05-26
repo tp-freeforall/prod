@@ -1,8 +1,6 @@
 /*
  * Copyright (c) 2013 Eric B. Decker
- * Copyright (c) 2009 Stanford University.
- * Copyright (c) 2005 The Regents of the University  of California.
- * Copyright (c) 2002-2005 Intel Corporation
+ * Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,32 +34,24 @@
  */
 
 /**
- * Defining the platform-independently named packet structures to be the
- * chip-specific CC2520 packet structures.
+ * CounterRadioC provides a 32-bit counter for the radio. It provides the
+ * link between TRadio (generic radio timestamping precision) and the actual
+ * timer implementations.
  *
- * @author Philip Levis
- * @author Wanja Hofer <wanja@cs.fau.de>
+ * @author Thomas Schmid
  * @author Eric B. Decker <cire831@gmail.com>
+ * @see  Please refer to TEP 102 for more information about this component and its
+ *          intended use.
  */
 
-#ifndef PLATFORM_MESSAGE_H
-#define PLATFORM_MESSAGE_H
+configuration CounterRadio32C {
+  provides interface Counter<TMicro,uint32_t>;
+}
+implementation {
+  components HilSam3TCCounterTMicroC as CounterFrom;
+  components new TransformCounterC(TMicro,uint32_t,TMicro,uint16_t,0,uint16_t) as Transform;
 
-#include <Serial.h>
-#include "CC2520Radio.h"
+  Counter = Transform;
 
-typedef union message_header {
-  cc2520packet_header_t cc2520;
-  serial_header_t serial;
-} message_header_t;
-
-typedef union message_footer {
-  cc2520packet_footer_t cc2520;
-} message_footer_t;
-
-typedef union message_metadata {
-  cc2520packet_metadata_t cc2520;
-	serial_metadata_t serial;
-} message_metadata_t;
-
-#endif
+  Transform.CounterFrom -> CounterFrom;
+}

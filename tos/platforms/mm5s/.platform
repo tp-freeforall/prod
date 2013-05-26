@@ -5,8 +5,11 @@
 
 for (split(/\n/, <<'EOText'
 
+# %P, tos/platforms/mm5s is automatically included by the build system
+
   %P/hardware/adc
   %P/hardware/buttons
+  %P/hardware/cc2520
   %P/hardware/clock
   %P/hardware/leds
   %P/hardware/pins
@@ -15,7 +18,8 @@ for (split(/\n/, <<'EOText'
   %T/chips/msp430/x5xxx
   %T/chips/msp430/x5xxx/lpm
   %T/chips/msp430/x5xxx/timer
-  %T/chips/msp430/x5xxx/usci
+  %T/chips/msp430/x5xxx/usci-v2
+  %T/chips/msp430/x5xxx/usci-v2/i2c-sm
   %T/chips/msp430
   %T/chips/msp430/pins
   %T/chips/msp430/timer
@@ -26,10 +30,19 @@ for (split(/\n/, <<'EOText'
   %T/chips/tmp112
   %T/chips/lis3dh
 
+  %T/chips/cc2520
+  %T/chips/cc2520/layers
+  %T/chips/cc2520/util
+
   %T/lib/timer
   %T/lib/serial
   %T/lib/power
   %T/lib/printf
+
+  %T/lib/rfxlink/layers
+  %T/lib/rfxlink/util
+
+  %T/lib/diagmsg
 
 EOText
 )) {
