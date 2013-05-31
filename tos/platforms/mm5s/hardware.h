@@ -76,41 +76,41 @@
  * another nomenclature used is <value><function><direction>, 0pO (0 (zero), port, Output),
  *    xpI (don't care, port, Input), mI (module input).
  *
- * port 1.0	0pO	led1 (red)		port 5.0	0pO
- *       .1	0pO	led2 (yellow)		      .1	1pO
- *       .2	1pO	cc_resetn      		      .2	1pO
+ * port 1.0	0pO	led1 (red)		port 5.0	0pI
+ *       .1	0pO	led2 (yellow)		      .1	0pI
+ *       .2	1pO	cc_resetn      		      .2	0pI
  *       .3     0pI	cc_g3 (cca)		      .3	0pI
- *       .4	0pI	cc_g0 (1MHz clk)	      .4	0pO
- *       .5	0pI	cc_g1 (fifo)		      .5	0pO
- *       .6	0pI	cc_g2 (fifop)		      .6	1pO
- *       .7	0pO	cc_vreg_en		      .7	0pO
+ *       .4	0pI	cc_g0 (1MHz clk)	      .4	0pI
+ *       .5	0pI	cc_g1 (fifo)		      .5	0pI
+ *       .6	0pI	cc_g2 (fifop)		      .6	0pI
+ *       .7	0pO	cc_vreg_en		      .7	0pI
  *
- * port 2.0	1pO	          		port 6.0	1pI
- *       .1	0pO	          		      .1	1pI
- *       .2	0pO	                 	      .2	1pI
- *       .3	1pO	           		      .3	1pI
- *       .4	0pO	        		      .4	1pI
- *       .5	0pO	        		      .5	1pI
- *       .6	0pO	       			      .6	1pI
- *       .7	0pI	       			      .7	1pI
+ * port 2.0	0pI   	          		port 6.0	0pI
+ *       .1	0pI   	          		      .1	0pI
+ *       .2	0pI   	                 	      .2	0pI
+ *       .3	0pI   	           		      .3	0pI
+ *       .4	0pI   	        		      .4	0pI
+ *       .5	0pI   	        		      .5	0pI
+ *       .6	0pI   	       			      .6	0pI
+ *       .7	0pI   	       			      .7	0pI
  *
  * port 3.0	1pO	cc_cs_n			port 7.0	0mI	xin   (32KiHZ)
  *       .1	0pI	cc_si (b0simo)		      .1	0mO	xout
  *       .2	0pI	cc_so (b0somi)		      .2	0pI
  *       .3	0pI	cc_sclk (b0clk)		      .3	0pI
- *       .4	1pO	uart_tx	(a0_tx)		      .4	1pO
- *       .5	1pI	uart_rx	(a0_rx)		      .5	1pO
- *       .6	1pI				      .6	1pO
- *       .7	1pI				      .7	1pO
+ *       .4	1pO	uart_tx	(a0_tx)		      .4	0pI
+ *       .5	1pI	uart_rx	(a0_rx)		      .5	0pI
+ *       .6	1pI				      .6	0pI
+ *       .7	1pI				      .7	0pI
  *
- * port 4.0	0pO	      			port 8.0	0pI
- *       .1	0pI	                    	      .1	0pI	cc_g4 (sfd)
- *       .2	0pI	                    	      .2	0pI	cc_g5 (n/a)
- *       .3	0pI	                    	      .3	0pI
- *       .4	1pI	       			      .4	1pO
- *       .5	1pO				      .5	1pO
- *       .6	1pO				      .6	1pO
- *       .7	1pO				      .7	1pO
+ * port 4.0	0pI   	      			port 8.0	0pI
+ *       .1	0pI   	                    	      .1	0pI	cc_g4 (sfd)
+ *       .2	0pI   	                    	      .2	0pI	cc_g5 (n/a)
+ *       .3	0pI   	                    	      .3	0pI
+ *       .4	0pI   	       			      .4	0pI
+ *       .5	0pI   				      .5	0pI
+ *       .6	0pI   				      .6	0pI
+ *       .7	0pI   				      .7	0pI
  *
  */
 

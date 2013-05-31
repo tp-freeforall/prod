@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013, Eric B. Decker
  * Copyright (c) 2009-2010 People Power Company
  * All rights reserved.
  *
@@ -37,6 +38,7 @@
 /**
  * @author David Moss
  * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 module PlatformPinsP {
@@ -48,13 +50,28 @@ implementation {
 
   command error_t Init.init() {
     atomic {
+
       /*
-       * for now, just leave it all as the reset state.
+       * Assume connected to a CC2520EM module.  Need to make sure to set
+       * the various enables and control signals to reasonable values to
+       * make sure we don't confuse the chip.
        *
-       * 5438, all input, with OUT/IN left alone.
+       * After reset all the digitial I/O pins are set to input.  Contents
+       * of PxOUT will be random or what ever is left over from prior to the
+       * reset.
        */
 
-#if 0 /* Disabled: these specific setting sare defaults, but others might not be */
+      /* two bits in P1 we care about, cc_resetn (1pO) and cc_vreg_en (0pO). */
+      P1OUT = 0x04;
+      P1DIR = 0x84;
+
+      /* 1 bit in P3, cc_cs_n (1pO) */
+      P3OUT = 0x01;
+      P3DIR = 0x01;
+
+      /* all other unused pins are left as inputs */
+
+#if 0 /* Disabled: these specific setting are defaults, but others might not be */
       PMAPPWD = PMAPPW;                         // Get write-access to port mapping regs
       P1MAP5 = PM_UCA0RXD;                      // Map UCA0RXD output to P1.5
       P1MAP6 = PM_UCA0TXD;                      // Map UCA0TXD output to P1.6
