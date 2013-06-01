@@ -37,7 +37,12 @@
  *
  * Initilization of the Clock system for the MM5 series motes.
  *
- * MM5s are based on msp430f5438 series cpus.
+ * The MM5S mote is based on msp430f5438a series cpus.
+ *
+ * MCLK (Main Clock) - 8MHz, DCOCLK/1
+ * SMCLK (submain)   DCOCLK/1
+ * SMCLK/8 -> TA1 (1us) -> TMicro
+ * ACLK/1 (32KiHz) -> TA0 (1/32768) -> TMilli
  *
  * The 5438 runs at 2.2V and can clock up to 18MHz.   The 5438a
  * can run at 1.8V (up to 8 MHz), and its core can be tweaked to
@@ -57,10 +62,18 @@
  * it is unclear how flakey behaviour would manifest.  Not recommended.
  *
  * So for power performance reasons we want to configure for 8MHz and 1.8V.
- * (Yes the 5438 is different but we are using it to simulate set up for
- * the 5438a which has the tasty power performance specs.)  Note, we ignore
- * the 5438.   It is quite buggy and has a pin for pin replacement (the 5438a)
- * that behaves mor better.   So why bother supporting the 5438.
+ * We ignore the 5438 because it is quite buggy.  The 5438a has better specs
+ * and is a pin for pin replacement.   Do not support the 5438, its a pig.
+ *
+ * The default timer configuration for the x5 is arbitrarily chosen to be
+ * DCOCLK -> SMCLK/8 -> TA1 (1MHz) and ACLK -> TA0 (32 KIHz).  TA0 is used
+ * to provide TMilli.   We use this configuration.
+ *
+ * The 2520EM module ties cc_gpio4 (default SFD) to p8.1 on the CPU.  This
+ * input is used to time stamp SFD (start of frame delimiter) via the
+ * timer capture facility.  P8.1 is TA0.CCI1B when the pin is
+ * configured for Module Input and will have jiffy resolution
+ * (1/32768 ~ 30.5us).
  *
  * The TMicro timer (TA1) is run off DCOCLK/8 which yields 1us (not 1uis)
  * ticks.  However, TMilli is the long term timer that runs when the system
@@ -81,7 +94,7 @@
  * (.0576% error, it'll do).
  *
  * DCOCLK -> MCLK, SMCLK.   Also drives high speed timer that
- * provides TMicro.   1us (note, decimal microsecs).  DCOCLK
+ * provides TMicro -> TA1.   1us (note, decimal microsecs).  DCOCLK
  * sync'd to FLL/XT1/32KiHz.
  *
  * MCLK /1: main  cpu clock.  Off DCOCLK.
@@ -90,10 +103,11 @@
  * SPI (SD, GPS, subsystems, etc.) quickly and this gives us the
  * option.  Off DCOCLK.  May want to divide it down because it isn't
  * needed to be full speed.   Dividing it down should save some energy
- * because we won't be clocking downstream parts as fast.
+ * because we won't be clocking downstream parts as fast.  However,
+ * dividing down will slow down any bus being run off SMCLK.
  *
- * ACLK: 32 KiHz.   Primarily used for slow speed timer that
- * provides TMilli.
+ * ACLK: 32 KiHz.   Primarily used for the slow speed timer that
+ * provides TMilli.  Used to clock TA0.
  *
  * FLL: in use and clocked off the 32 KiHz XT1 input.
  *
@@ -164,12 +178,15 @@ module PlatformClockP {
    * The h/w has provisions for detecting XT1 oscillator faults but we
    * don't know if that takes into account frequency stability.  We have
    * observed on the msp430f2618 that the XT1 oscillator takes a considerable
-   * amount of time to actual home to its base frequency.   And that
-   * is where we want it before we do anything else.   So we need to
-   * give it time to stabilize before using it.   This should only be true
-   * coming out of reset.  Anytime we reset P7.0 and P7.1 (XT1IN, XT1OUT)
-   * are reset to inputs and Pin Control and this shuts down the oscillator.
-   * So we need to bring it back up.
+   * amount of time to actual home to its base frequency.
+   *
+   * We haven't looked to see if the same is true of the XT1 start up on the
+   * 5438a but we assume it does need stabilize.  (same physics).
+   *
+   * Give it time to stabilize before using it.   This should only be true
+   * coming out of reset.  Anytime we reset, P7.0 and P7.1 (XT1IN, XT1OUT)
+   * are reset to inputs and this shuts down the oscillator.  The safe thing
+   * to do is bring it back up.
    *
    * On reset the 5438/5438a UCS is set to a configuration much like the
    * following:  (all values in hex).
@@ -186,11 +203,11 @@ module PlatformClockP {
    * FLL is comparing 32KiHz * 32 = 1MiHz vs. dcoclk/2 => dcoclk 2MiHz
    * SMCLK, MCLK => 1MiHz.
    *
-   * We wait about a second for the 32KHz to stablize.
+   * We wait about a second for the 32KiHz to stablize.
    *
    * PWR_UP_SEC is the number of times we need to wait for
    * TimerA to cycle (16 bits) when clocked at the default
-   * msp430f5438 dco (about 2MHz).
+   * msp430f5438a dco (about 2MHz).
    */
 
 #define PWR_UP_SEC 16
@@ -198,11 +215,16 @@ module PlatformClockP {
   uint16_t maj_xt1() {
     uint16_t a, b, c;
 
+    /* TA0 is 32KiHz ticker */
     a = TA0R; b = TA0R; c = TA0R;
     if (a == b) return a;
     if (a == c) return a;
     if (b == c) return b;
-    while (1)
+    /*
+     * something strange.  3 values read at almost the same time from
+     * the 32KiHz ticker, two of them should have matched
+     */
+    while (1)                           /* panic?  FIX ME */
       nop();
     return 0;
   }
@@ -217,8 +239,8 @@ module PlatformClockP {
      */
     TA0CTL = TACLR;			// also zeros out control bits
     TA1CTL = TACLR;
-    TA0CTL = TASSEL__ACLK  | MC__CONTINUOUS;	//  ACLK/1, continuous
-    TA1CTL = TASSEL__SMCLK | MC__CONTINUOUS;	// SMCLK/1, continuous
+    TA0CTL = TASSEL__ACLK   | MC__CONTINUOUS;	//  ACLK/1, continuous
+    TA1CTL = TASSEL__SMCLK  | MC__CONTINUOUS;	// SMCLK/1, continuous
 
     /*
      * wait for about a sec for the 32KHz to come up and
@@ -226,7 +248,7 @@ module PlatformClockP {
      * on frequency after about a second but this needs
      * to be verified.
      *
-     * FIX ME.  Need to verify stability of 32KHz.  It definitely
+     * FIX ME.  Need to verify stability of 32KiHz.  It definitely
      * has a good looking waveform but what about its frequency
      * stability.  Needs to be measured.
      *
@@ -234,7 +256,7 @@ module PlatformClockP {
      * by one) and seeing how many TA1 (1 uis) ticks have gone by.   When it is
      * around 30-31 ticks then we are in the right neighborhood.
      *
-     * We should see about PWR_UP_SEC (16) * 64Ki * 1/1024/1024 seconds which just
+     * We should see about PWR_UP_SEC (16) * 64Ki(16bits) * 1/1024/1024 seconds which just
      * happens to majikly equal 1 second.   whew!
      */
 
@@ -303,7 +325,15 @@ module PlatformClockP {
      * out for the 5437 and 5438.
      */
     P7SEL |= (BIT0 | BIT1);
-    UCSCTL6 &= ~(XT1OFF | XCAP_3);
+
+    /*
+     * xt2drive: 0,  xt2bypass: 0,  xt2off:    1
+     * xt1drive: 3,  xts:       0,  xt1bypass: 0,
+     * xcap    : 0,  smclkoff:  0,  xt1off:    0
+     *
+     * this turns on ACLK (XT1).  Now we need it to stabilize.
+     */
+    UCSCTL6 = (XT2DRIVE_0 | XT2OFF | XT1DRIVE_3 | XCAP_0);
 
     /*
      * From comments in Surf code.
@@ -469,13 +499,13 @@ module PlatformClockP {
     /*
      * TA0 clocked off XT1, used for TMilli, 32KiHz.
      */
-    TA0CTL = TASSEL__ACLK | TACLR | MC__CONTINOUS | TAIE;
+    TA0CTL = TASSEL__ACLK | TACLR | MC__CONTINUOUS | TAIE;
     TA0R = 0;
 
     /*
      * TA1 clocked off SMCLK off DCO, /8, 1us tick
      */
-    TA1CTL = TASSEL__SMCLK | ID__8 | TACLR | MC__CONTINOUS | TAIE;
+    TA1CTL = TASSEL__SMCLK | ID__8 | TACLR | MC__CONTINUOUS | TAIE;
     TA1R = 0;
 
     return SUCCESS;
