@@ -43,6 +43,11 @@ To set up the application directory, apps/<blah> do the following:
 The --force-reset make mspdebug behave better with x2 processors.   Your
 mileage may vary.
 
+another way to get debugging symbols into the object is to specify the
+following you the applications Makefile:
+
+    OPTFLAGS = -ggdb -Os -fnesc-no-inline
+
 now that the build directory exists, we can finish preping the gdb files.
 
     cd build/z1
