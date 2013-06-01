@@ -1,5 +1,6 @@
-
-/* Copyright (c) 2000-2003 The Regents of the University of California.  
+/*
+ * Copyright (c) 2013 Eric B. Decker
+ * Copyright (c) 2000-2003 The Regents of the University of California.  
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +33,7 @@
 
 /**
  * @author Joe Polastre
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 interface HplMsp430Interrupt
@@ -52,17 +54,28 @@ interface HplMsp430Interrupt
   async command void clear();
 
   /** 
-   * Gets the current value of the input voltage of a port.
+   * Gets the current input value of a port.
    *
    * @return TRUE if the pin is set high, FALSE if it is set low.
    */
   async command bool getValue();
 
-  /** 
+  /**
+   * Sets rising or falling edge for the interrupt generation
+   */
+  async command void edgeRising();
+  async command void edgeFalling();
+
+  /**
    * Sets whether the edge should be high to low or low to high.
    *
    * @param TRUE if the interrupt should be triggered on a low to high
    *        edge transition, false for interrupts on a high to low transition.
+   *
+   * DEPRECATED.
+   *
+   * The if generates extra code that doesn't need to be there.   Replaced
+   * by edge{Rising,Falling}();
    */
   async command void edge(bool low_to_high);
 

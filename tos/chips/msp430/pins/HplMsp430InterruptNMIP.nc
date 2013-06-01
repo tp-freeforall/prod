@@ -1,5 +1,6 @@
-
-/* Copyright (c) 2000-2005 The Regents of the University of California.  
+/*
+ * Copyright (c) 2013, Eric B. Decker
+ * Copyright (c) 2000-2005 The Regents of the University of California.  
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,20 +33,19 @@
 
 /**
  * @author Joe Polastre
+ * @author Eric B. Decker <cire831@gmail.com>
  */
-module HplMsp430InterruptNMIP
-{
+
+module HplMsp430InterruptNMIP {
   provides interface HplMsp430Interrupt as NMI;
   provides interface HplMsp430Interrupt as OF;
   provides interface HplMsp430Interrupt as ACCV;
 }
-implementation
-{
-  TOSH_SIGNAL(NMI_VECTOR)
-  {
+implementation {
+  TOSH_SIGNAL(NMI_VECTOR) {
     volatile int n = IFG1;
-    if (n & NMIIFG) { signal NMI.fired(); return; }
-    if (n & OFIFG)  { signal OF.fired();  return; }
+    if (n & NMIIFG)      { signal NMI.fired();  return; }
+    if (n & OFIFG)       { signal OF.fired();   return; }
     if (FCTL3 & ACCVIFG) { signal ACCV.fired(); return; }
   }
 
@@ -63,6 +63,7 @@ implementation
       IE1 |= NMIIE;
     }
   }
+
   async command void OF.enable() { atomic IE1 |= OFIE; }
   async command void ACCV.enable() { atomic IE1 |= ACCVIE; }
 
@@ -87,6 +88,26 @@ implementation
   async command bool OF.getValue() { bool b; atomic b=(IFG1 & OFIFG) & 0x01; return b; }
   async command bool ACCV.getValue() { bool b; atomic b=(FCTL3 & ACCVIFG) & 0x01; return b; }
 
+  async command void NMI.edgeRising() {
+    volatile uint16_t _watchdog;
+    atomic {
+      _watchdog = WDTCTL;
+      _watchdog = WDTPW | (_watchdog & 0x0FF);
+      _watchdog &= ~(WDTNMIES); 
+      WDTCTL = _watchdog;
+    }
+  }
+
+  async command void NMI.edgeFalling() {
+    volatile uint16_t _watchdog;
+    atomic {
+      _watchdog = WDTCTL;
+      _watchdog = WDTPW | (_watchdog & 0x0FF);
+      _watchdog |=  (WDTNMIES);
+      WDTCTL = _watchdog;
+    }
+  }
+
   async command void NMI.edge(bool l2h) { 
     volatile uint16_t _watchdog;
     atomic {
@@ -97,8 +118,13 @@ implementation
       WDTCTL = _watchdog;
     }
   }
-  // edge does not apply to oscillator faults
-  async command void OF.edge(bool l2h) { }
-  // edge does not apply to flash access violations
+
+  /* OF and ACCV don't provide edge control */
+  async command void OF.edgeRising()     { }
+  async command void OF.edgeFalling()    { }
+  async command void OF.edge(bool l2h)   { }
+
+  async command void ACCV.edgeRising()   { }
+  async command void ACCV.edgeFalling()  { }
   async command void ACCV.edge(bool l2h) { }
 }

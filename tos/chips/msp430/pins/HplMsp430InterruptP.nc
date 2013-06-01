@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Eric B. Decker
+ * Copyright (c) 2011,2013 Eric B. Decker
  * Copyright (c) 2000-2005 The Regents of the University of California.  
  * All rights reserved.
  *
@@ -72,7 +72,8 @@ implementation {
      * first pin interrupt.
      *
      * This costs repeated interrupt overhead.  Getting to the interrupt
-     * routine and the RETI overhead.
+     * routine and the RETI overhead.  However we really want those higher
+     * priority interrupts to have a crack.
      */
 
     if (n & (1 << 0)) { signal Port10.fired(); return; }
@@ -130,9 +131,27 @@ implementation {
   async command bool Port16.getValue() { bool b; atomic b=(P1IN >> 6) & 1; return b; }
   async command bool Port17.getValue() { bool b; atomic b=(P1IN >> 7) & 1; return b; }
 
-  async command void Port10.edge(bool l2h) { 
+  async command void Port10.edgeRising() { P1IES &= 0xfe; }
+  async command void Port11.edgeRising() { P1IES &= 0xfd; }
+  async command void Port12.edgeRising() { P1IES &= 0xfb; }
+  async command void Port13.edgeRising() { P1IES &= 0xf7; }
+  async command void Port14.edgeRising() { P1IES &= 0xef; }
+  async command void Port15.edgeRising() { P1IES &= 0xdf; }
+  async command void Port16.edgeRising() { P1IES &= 0xbf; }
+  async command void Port17.edgeRising() { P1IES &= 0x7f; }
+
+  async command void Port10.edgeFalling() { P1IES |= 0x01; }
+  async command void Port11.edgeFalling() { P1IES |= 0x02; }
+  async command void Port12.edgeFalling() { P1IES |= 0x04; }
+  async command void Port13.edgeFalling() { P1IES |= 0x08; }
+  async command void Port14.edgeFalling() { P1IES |= 0x10; }
+  async command void Port15.edgeFalling() { P1IES |= 0x20; }
+  async command void Port16.edgeFalling() { P1IES |= 0x40; }
+  async command void Port17.edgeFalling() { P1IES |= 0x80; }
+
+  async command void Port10.edge(bool l2h) {
     atomic {
-      if (l2h)  P1IES &= ~(1 << 0); 
+      if (l2h)  P1IES &= ~(1 << 0);
       else      P1IES |=  (1 << 0);
     }
   }
@@ -245,6 +264,24 @@ implementation {
   async command bool Port25.getValue() { bool b; atomic b=(P2IN >> 5) & 1; return b; }
   async command bool Port26.getValue() { bool b; atomic b=(P2IN >> 6) & 1; return b; }
   async command bool Port27.getValue() { bool b; atomic b=(P2IN >> 7) & 1; return b; }
+
+  async command void Port20.edgeRising() { P2IES &= 0xfe; }
+  async command void Port21.edgeRising() { P2IES &= 0xfd; }
+  async command void Port22.edgeRising() { P2IES &= 0xfb; }
+  async command void Port23.edgeRising() { P2IES &= 0xf7; }
+  async command void Port24.edgeRising() { P2IES &= 0xef; }
+  async command void Port25.edgeRising() { P2IES &= 0xdf; }
+  async command void Port26.edgeRising() { P2IES &= 0xbf; }
+  async command void Port27.edgeRising() { P2IES &= 0x7f; }
+
+  async command void Port20.edgeFalling() { P2IES |= 0x01; }
+  async command void Port21.edgeFalling() { P2IES |= 0x02; }
+  async command void Port22.edgeFalling() { P2IES |= 0x04; }
+  async command void Port23.edgeFalling() { P2IES |= 0x08; }
+  async command void Port24.edgeFalling() { P2IES |= 0x10; }
+  async command void Port25.edgeFalling() { P2IES |= 0x20; }
+  async command void Port26.edgeFalling() { P2IES |= 0x40; }
+  async command void Port27.edgeFalling() { P2IES |= 0x80; }
 
   async command void Port20.edge(bool l2h) {
     atomic {

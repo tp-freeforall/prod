@@ -1,5 +1,6 @@
-
-/* Copyright (c) 2000-2005 The Regents of the University of California.  
+/*
+ * Copyright (c) 2013 Eric B. Decker
+ * Copyright (c) 2000-2005 The Regents of the University of California.  
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,46 +37,45 @@
  *
  * @author Jonathan Hui
  * @author Joe Polastre
+ * @author Eric B. Decker <cire831@gmail.com>
  * @see  Please refer to TEP 117 for more information about this component and its
  *          intended use.
  */
 
 generic module Msp430InterruptC() @safe() {
-
   provides interface GpioInterrupt as Interrupt;
   uses interface HplMsp430Interrupt as HplInterrupt;
-
 }
 
 implementation {
-
-  error_t enable( bool rising ) {
+  async command error_t Interrupt.enableRisingEdge() {
     atomic {
       call Interrupt.disable();
-      call HplInterrupt.edge( rising );
+      call HplInterrupt.edgeRising();
       call HplInterrupt.enable();
     }
     return SUCCESS;
   }
 
-  async command error_t Interrupt.enableRisingEdge() {
-    return enable( TRUE );
-  }
-
   async command error_t Interrupt.enableFallingEdge() {
-    return enable( FALSE );
+    atomic {
+      call Interrupt.disable();
+      call HplInterrupt.edgeFalling();
+      call HplInterrupt.enable();
+    }
+    return SUCCESS;
   }
 
   async command error_t Interrupt.disable() {
     atomic {
       call HplInterrupt.disable();
-      call HplInterrupt.clear();
+      call HplInterrupt.clear();        /* this is a really bad idea, can cause missing events, REVISIT x1, x2, x5 different */
     }
     return SUCCESS;
   }
 
   async event void HplInterrupt.fired() {
-    call HplInterrupt.clear();
+    call HplInterrupt.clear();          /* this is a really bad idea, can cause missing events, REVISIT x1, x2, x5 different */
     signal Interrupt.fired();
   }
 
