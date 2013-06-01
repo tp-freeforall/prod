@@ -33,7 +33,12 @@
 
 /**
  * Implementation of the GPIO interrupt abstraction for
- * the TI MSP430 microcontroller.
+ * the TI MSP430 microcontroller.   X1/X2 processors.
+ *
+ * The X5 processors clear the highest IFG automatically when the IV
+ * has been read.   While the X1/X2 processors don't do this.   This
+ * means the interrupt handler on the X1/X2 puppies have to do it
+ * themselves.  Hence different files.
  *
  * @author Jonathan Hui
  * @author Joe Polastre
@@ -67,15 +72,22 @@ implementation {
   }
 
   async command error_t Interrupt.disable() {
-    atomic {
-      call HplInterrupt.disable();
-      call HplInterrupt.clear();        /* this is a really bad idea, can cause missing events, REVISIT x1, x2, x5 different */
-    }
+    call HplInterrupt.disable();
+
+    /*
+     * formerly, this also cleared out any pending interrupt that came in after the disable too.
+     * If it came in prior to the disable, it would have interrupted us and been handled.
+     *
+     * So there is a window between the disable happening and the clear happening where an
+     * event will get thrown away.   This is bad.   It is better to simply let the disable
+     * happen and maybe later decide if we are shutting down the system or not.  If not
+     * we may very well want to see the event.
+     */
     return SUCCESS;
   }
 
   async event void HplInterrupt.fired() {
-    call HplInterrupt.clear();          /* this is a really bad idea, can cause missing events, REVISIT x1, x2, x5 different */
+    call HplInterrupt.clear();          /* h/w doesn't do it for us. */
     signal Interrupt.fired();
   }
 

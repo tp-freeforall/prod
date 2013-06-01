@@ -104,8 +104,23 @@ implementation {
   components new GpioCaptureC() as SfdCaptureC;
   components Msp430TimerC;
   SfdCapture = SfdCaptureC;
-  SfdCaptureC.Msp430TimerControl -> Msp430TimerC.Control0_B0;
-  SfdCaptureC.Msp430Capture      -> Msp430TimerC.Capture0_B0;
+
+  /*
+   * We should use Msp430TimerMicro for this except that TimerMicroC
+   * doesn't export Capture.
+   *
+   * ie. component new Msp430TimerMicroC as TM;
+   *     SfdCaptureC.Msp430TimerControl = TM.Msp430TimerControl;
+   *     SfdCaptureC.Msp430Capture      = TM.Msp430Capture;
+   *
+   * The SFD pin on the 2520EM module for the 5438A eval board is wired
+   * to P8.1/TA0.1 on the cpu.   This connects to the capture module for
+   * TA0 via TA0.CCI1B which requires using TA0CCTL1.   The capture will
+   * show up in TA0CCR1 and will set CCIFG in TA0CCTL1.  Units in TA0CCR1
+   * will be 32KiHz jiffies.
+   */
+  SfdCaptureC.Msp430TimerControl -> Msp430TimerC.Control0_A1;
+  SfdCaptureC.Msp430Capture      -> Msp430TimerC.Capture0_A1;
   SfdCaptureC.GeneralIO          -> GeneralIOC.Port81;
 
   components HplMsp430InterruptC;

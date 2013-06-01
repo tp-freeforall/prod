@@ -15,6 +15,7 @@ push( @includes, qw(
   %T/chips/tda5250
   %T/chips/tda5250/mac
   %T/chips/ad5200
+  %T/chips/msp430/x1x2/pins
   %T/chips/msp430/x1x2/timer
   %T/chips/msp430/x1xxx
   %T/chips/msp430
