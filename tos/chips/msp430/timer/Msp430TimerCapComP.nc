@@ -1,5 +1,6 @@
-
-/* Copyright (c) 2000-2003 The Regents of the University of California.
+/*
+ * Copyright (c) Eric B. Decker
+ * Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +33,7 @@
 
 /**
  * @author Cory Sharp <cssharp@eecs.berkeley.edu>
+ * @author: Eric B. Decker <cire831@gmail.com>
  */
 
 #include "Msp430Timer.h"
@@ -60,24 +62,32 @@ implementation
   uint16_t compareControl()
   {
     cc_t x = {
-      cm : 1,    // capture on rising edge
-      ccis : 0,  // capture/compare input select
-      clld : 0,  // TBCL1 loads on write to TBCCR1
-      cap : 0,   // compare mode
-      ccie : 0,  // capture compare interrupt enable
+      cm :   1,     // capture on rising edge
+      ccis : 0,     // capture/compare input select
+      clld : 0,     // TBCL1 loads on write to TBCCR1
+      cap :  0,     // compare mode
+      ccie : 0,     // capture compare interrupt enable
     };
     return CC2int(x);
   }
 
-  uint16_t captureControl(uint8_t l_cm)
-  {
+  /*
+   * build a control word for setting up Capture/Compare on the msp430 h/w
+   *
+   * l_cm: the capture/compare control mode
+   *    0, none
+   *    1, rising edge
+   *    2, falling edge
+   *    3, both edges
+   */
+  uint16_t captureControl(uint8_t l_cm) {
     cc_t x = {
-      cm : l_cm & 0x03,  // capture on none, rising, falling or both edges
-      ccis : 0,  // capture/compare input select
-      clld : 0,  // TBCL1 loads on write to TBCCR1
-      cap : 1,   // compare mode
-      scs : 0,   // non synchronous capture mode
-      ccie : 0,  // capture compare interrupt enable
+      cm :   l_cm & 0x03,       // capture on none, rising, falling or both edges
+      ccis : 0,                 // capture/compare input select
+      clld : 0,                 // TBCL1 loads on write to TBCCR1
+      cap :  1,                 // capture mode, capture yes
+      scs :  0,                 // synch capture mode, async
+      ccie : 0,                 // capture compare interrupt enable
     };
     return CC2int(x);
   }
