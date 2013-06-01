@@ -1,5 +1,6 @@
-
-/* Copyright (c) 2000-2003 The Regents of the University of California.
+/*
+ * Copyright (c) 2013, Eric B. Decker
+ * Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +34,7 @@
 /**
  * @author Jonathan Hui
  * @author Joe Polastre
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 generic module GpioCaptureC() @safe() {
@@ -49,6 +51,7 @@ implementation {
   error_t enableCapture( uint8_t mode ) {
     atomic {
       call Msp430TimerControl.disableEvents();
+      call GeneralIO.makeInput();       /* for capture to work must be input */
       call GeneralIO.selectModuleFunc();
       call Msp430TimerControl.clearPendingInterrupt();
       call Msp430Capture.clearOverflow();
