@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2010 People Power Co.
  * All rights reserved.
  *
@@ -45,11 +46,11 @@ configuration PlatformAdcC {
     interface HplMsp430GeneralIO as A6;
     interface HplMsp430GeneralIO as A7;
 
-    interface Msp430Timer as TimerA;
+    interface Msp430Timer        as TimerA;
     interface Msp430TimerControl as ControlA0;
+    interface Msp430Compare      as CompareA0;
     interface Msp430TimerControl as ControlA1;
-    interface Msp430Compare as CompareA0;
-    interface Msp430Compare as CompareA1;
+    interface Msp430Compare      as CompareA1;
   }
 }
 
@@ -65,11 +66,16 @@ implementation {
   A6 = HplMsp430GeneralIOC.Port26;
   A7 = HplMsp430GeneralIOC.Port27;
 
-  components Msp430TimerC;
-  TimerA = Msp430TimerC.Timer0_A;
+  /*
+   * wire the ADC timer into the 32KiHz timer.
+   *
+   * the mm5s uses T0A as the 32KiHz timer.
+   * this probably should use the mapper.
+   */
+  components  Msp430TimerC;
+  TimerA    = Msp430TimerC.Timer0_A;
   ControlA0 = Msp430TimerC.Control0_A0;
-  ControlA1 = Msp430TimerC.Control0_A1;
   CompareA0 = Msp430TimerC.Compare0_A0;
+  ControlA1 = Msp430TimerC.Control0_A1;
   CompareA1 = Msp430TimerC.Compare0_A1;
-
 }
