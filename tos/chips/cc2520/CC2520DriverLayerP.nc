@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013, Eric B. Decker
  * Copyright (c) 2010, Vanderbilt University
  * All rights reserved.
  *
@@ -17,7 +18,7 @@
  *   from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
  * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE
  * COPYRIGHT HOLDER OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -35,6 +36,7 @@
  * Author: Janos Sallai, Miklos Maroti
  * Author: Thomas Schmid (port to CC2520)
  * Author: JeongGil Ko (CC2520 modifications and security support)
+ * Author: Eric B. Decker <cire831@gmail.com>
  */
 
 #include <CC2520DriverLayer.h>
@@ -58,7 +60,7 @@ module CC2520DriverLayerP
     interface PacketField<uint8_t> as PacketRSSI;
     interface PacketField<uint8_t> as PacketTimeSyncOffset;
     interface PacketField<uint8_t> as PacketLinkQuality;
-    //interface PacketField<uint8_t> as AckReceived;
+//  interface PacketField<uint8_t> as AckReceived;
     interface PacketAcknowledgements;
   }
 
@@ -99,7 +101,7 @@ module CC2520DriverLayerP
   }
 }
 
-implementation{
+implementation {
 
 #define HI_UINT16(val) (((val) >> 8) & 0xFF)
 #define LO_UINT16(val) ((val) & 0xFF)
@@ -161,7 +163,7 @@ implementation{
 
   tasklet_norace uint8_t state = STATE_VR_ON;
 
-  enum{
+  enum {
     CMD_NONE = 0,           // the state machine has stopped
     CMD_TURNOFF = 1,        // goto SLEEP state
     CMD_STANDBY = 2,        // goto TRX_OFF state
@@ -625,9 +627,9 @@ implementation{
       cc2520_status_t status __attribute__((unused));
 
 
-      strobe(CC2520_CMD_SFLUSHRX);
-      strobe(CC2520_CMD_SFLUSHRX);
-      strobe(CC2520_CMD_SFLUSHRX);
+      status = strobe(CC2520_CMD_SFLUSHRX);
+      status = strobe(CC2520_CMD_SFLUSHRX);
+      status = strobe(CC2520_CMD_SFLUSHRX);
       status = strobe(CC2520_CMD_SFLUSHRX);
 
 #ifdef RADIO_DEBUG_MESSAGES
@@ -642,7 +644,7 @@ implementation{
 
   /*----------------- INIT -----------------*/
 
-  command error_t SoftwareInit.init(){
+  command error_t SoftwareInit.init() {
     // set pin directions
     atomic {
       call CSN.makeOutput();
@@ -653,39 +655,44 @@ implementation{
       call FIFO.makeInput();
       call FIFOP.makeInput();
 
-      call FifopInterrupt.disable();
+      /* enableRisingEdge disables first */
+      call FifoInterrupt.enableRisingEdge();
       call FifopInterrupt.enableRisingEdge();
 
-      call FifoInterrupt.disable();
-      call FifoInterrupt.enableRisingEdge();
-
-      call SfdCapture.disable();
-      // rising edge just saves timestamp.
+      /* rising edge just saves timestamp. */
       call SfdCapture.captureRisingEdge();
 
-      // CSN is active low
+      /* deassert CSN (active low) */
       call CSN.set();
 
       // start up voltage regulator
       call VREN.clr();
       call VREN.set();
-      // do a reset
+
+      /* assert RSTN, active low */
       call RSTN.clr();
     }
 
     // hold line low for Tdres
     call BusyWait.wait( 200 ); // typical .1ms VR startup time
 
-    call RSTN.set();
-    // wait another .2ms for xosc to stabilize
+    /*
+     * Reset the chip and then wait 200uS for XOSC to stabilize.
+     * A better way to do this is via monitoring the control lines
+     * there is a sequence where the chip will tell us that XOSC
+     * is up.   That is how we should do it.
+     */
+    call RSTN.set();                    /* deassert RSTN */
     call BusyWait.wait( 200 );
 
     rxMsg = &rxMsgBuffer;
 
     state = STATE_VR_ON;
 
-    // request SPI, rest of the initialization will be done from
-    // the granted event
+    /*
+     * rest of initialization needs to occur over the SPI bus.
+     * Request the SPI from the arbiter.
+     */
     return call SpiResource.request();
   }
 
@@ -697,20 +704,23 @@ implementation{
     cc2520_srcmatch_t srcmatch;
     //cc2520_frmctrl0_t frmctrl0;
 
-    // do a reset
+    /*
+     * reset and wait for the chip to come back
+     * 200 uS, wait for XOSC?
+     *
     call RSTN.clr();
-    //call BusyWait.wait( 200 ); //
+ // call BusyWait.wait( 200 );          /* wait 200 uS */
     call RSTN.set();
 
     // update default values of registers
     // given from SWRS068, December 2007, Section 28.1
-    writeRegister(CC2520_TXPOWER, cc2520_txpower_default.value);
+    writeRegister(CC2520_TXPOWER,  cc2520_txpower_default.value);
     writeRegister(CC2520_CCACTRL0, cc2520_ccactrl0_default.value);
     writeRegister(CC2520_MDMCTRL0, cc2520_mdmctrl0_default.value);
     writeRegister(CC2520_MDMCTRL1, cc2520_mdmctrl1_default.value);
-    writeRegister(CC2520_RXCTRL, cc2520_rxctrl_default.value);
-    writeRegister(CC2520_FSCTRL, cc2520_fsctrl_default.value);
-    writeRegister(CC2520_FSCAL1, cc2520_fscal1_default.value);
+    writeRegister(CC2520_RXCTRL,   cc2520_rxctrl_default.value);
+    writeRegister(CC2520_FSCTRL,   cc2520_fsctrl_default.value);
+    writeRegister(CC2520_FSCAL1,   cc2520_fscal1_default.value);
     writeRegister(CC2520_AGCCTRL1, cc2520_agcctrl1_default.value);
     writeRegister(CC2520_ADCTEST0, cc2520_adctest0_default.value);
     writeRegister(CC2520_ADCTEST1, cc2520_adctest1_default.value);
@@ -758,6 +768,10 @@ implementation{
 
   event void SpiResource.granted(){
 
+    /*
+     * no no no.   CSN should always be initilized once then left alone.
+     * you really don't want to float it.
+     */
     call CSN.makeOutput();
     call CSN.set();
 
@@ -1663,7 +1677,8 @@ implementation{
     call Tasklet.schedule();
   }
 
-  async event void FifoInterrupt.fired(){
+  async event void FifoInterrupt.fired() {
+    nop();
   }
 
   // FIFOP interrupt, last byte received
