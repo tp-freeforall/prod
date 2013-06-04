@@ -111,8 +111,7 @@ implementation
     TxCCTLx = compareControl();
   }
 
-  async command void Control.setControlAsCapture( uint8_t cm )
-  {
+  async command void Control.setControlAsCapture( uint8_t cm, uint8_t ccis) {
     TxCCTLx = captureControl( cm );
   }
 

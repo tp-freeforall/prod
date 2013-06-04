@@ -31,16 +31,24 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-//@author Cory Sharp <cssharp@eecs.berkeley.edu>
+/*
+ * @author Cory Sharp <cssharp@eecs.berkeley.edu>
+ * @author Eric B. Decker <cire831@gmail.com>
+ */
 
 #ifndef _H_Msp430Timer_h
 #define _H_Msp430Timer_h
 
 enum {
-  MSP430TIMER_CM_NONE = 0,
-  MSP430TIMER_CM_RISING = 1,
+  MSP430TIMER_CM_NONE    = 0,
+  MSP430TIMER_CM_RISING  = 1,
   MSP430TIMER_CM_FALLING = 2,
-  MSP430TIMER_CM_BOTH = 3,
+  MSP430TIMER_CM_BOTH    = 3,
+
+  MSP430TIMER_CCI_A      = 0,
+  MSP430TIMER_CCI_B      = 1,
+  MSP430TIMER_CCI_GND    = 2,
+  MSP430TIMER_CCI_VCC    = 3,
 
   MSP430TIMER_STOP_MODE = 0,
   MSP430TIMER_UP_MODE = 1,

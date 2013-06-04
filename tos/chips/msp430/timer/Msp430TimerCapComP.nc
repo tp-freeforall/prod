@@ -58,33 +58,23 @@ implementation {
   DEFINE_UNION_CAST(CC2int,uint16_t,cc_t)
   DEFINE_UNION_CAST(int2CC,cc_t,uint16_t)
 
-  uint16_t compareControl()
-  {
-    cc_t x = {
-      cm :   1,     // capture on rising edge
-      ccis : 0,     // capture/compare input select
-      clld : 0,     // TBCL1 loads on write to TBCCR1
-      cap :  0,     // compare mode
-      ccie : 0,     // capture compare interrupt enable
-    };
-    return CC2int(x);
-  }
-
   /*
    * build a control word for setting up Capture/Compare on the msp430 h/w
    *
+   * See Msp430Timer.h for values or the cpu data sheet.
+   *
    * l_cm: the capture/compare control mode
-   *    0, none
-   *    1, rising edge
-   *    2, falling edge
-   *    3, both edges
+   *
+   * ccis: cap/compare input select.
+   *
+   * cap: 0 for compare, 1 for capture
    */
-  uint16_t captureControl(uint8_t l_cm) {
+  uint16_t capComControl(uint8_t l_cm, uint8_t ccis, uint8_t cap_val) {
     cc_t x = {
       cm :   l_cm & 0x03,       // capture on none, rising, falling or both edges
-      ccis : 0,                 // capture/compare input select
+      ccis : ccis & 0x3,        // capture/compare input select
       clld : 0,                 // TBCL1 loads on write to TBCCR1
-      cap :  1,                 // capture mode, capture yes
+      cap :  cap_val & 1,       // compare or capture mode
       scs :  0,                 // synch capture mode, async
       ccie : 0,                 // capture compare interrupt enable
     };
@@ -107,14 +97,13 @@ implementation {
     TxCCTLx = CC2int(x);
   }
 
-  async command void Control.setControlAsCompare()
-  {
-    TxCCTLx = compareControl();
+  async command void Control.setControlAsCompare() {
+    /* defaults to rising edge and CCIS channel A */
+    TxCCTLx = capComControl(MSP430TIMER_CM_RISING, MSP430TIMER_CCI_A, 0);
   }
 
-  async command void Control.setControlAsCapture( uint8_t cm )
-  {
-    TxCCTLx = captureControl( cm );
+  async command void Control.setControlAsCapture( uint8_t cm, uint8_t ccis) {
+    TxCCTLx = capComControl( cm, ccis, 1 );
   }
 
   async command void Control.enableEvents() {
