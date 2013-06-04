@@ -56,6 +56,7 @@ implementation {
   async command error_t Interrupt.enableRisingEdge() {
     atomic {
       call Interrupt.disable();
+      call HplInterrupt.clear();
       call HplInterrupt.edgeRising();
       call HplInterrupt.enable();
     }
@@ -65,6 +66,7 @@ implementation {
   async command error_t Interrupt.enableFallingEdge() {
     atomic {
       call Interrupt.disable();
+      call HplInterrupt.clear();
       call HplInterrupt.edgeFalling();
       call HplInterrupt.enable();
     }
