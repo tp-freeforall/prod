@@ -108,7 +108,7 @@
  *       .2	0pI   	                    	      .2	0pI	cc_g5 (n/a)
  *       .3	0pI   	                    	      .3	0pI
  *       .4	0pI   	       			      .4	0pI
- *       .5	0pI   				      .5	0pI
+ *       .5	0pO   	led3 (unused)		      .5	0pI
  *       .6	0pI   				      .6	0pI
  *       .7	0pI   				      .7	0pI
  *
