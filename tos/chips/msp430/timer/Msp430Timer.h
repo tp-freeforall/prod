@@ -1,6 +1,6 @@
-//$Id: Msp430Timer.h,v 1.5 2010-06-29 22:07:45 scipio Exp $
-
-/* Copyright (c) 2000-2003 The Regents of the University of California.
+/*
+ * Copyright (c) 2013 Eric B. Decker
+ * Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,8 +59,7 @@ enum {
   MSP430TIMER_CLOCKDIV_8 = 3,
 };
 
-typedef struct
-{
+typedef struct {
   int ccifg : 1;    // capture/compare interrupt flag
   int cov : 1;      // capture overflow flag
   int out : 1;      // output value
@@ -74,8 +73,7 @@ typedef struct
   int cm : 2;       // capture mode: 0=none, 1=rising, 2=falling, 3=both
 } msp430_compare_control_t;
 
-typedef struct
-{
+typedef struct {
   int taifg : 1;    // timer A interrupt flag
   int taie : 1;     // timer A interrupt enable
   int taclr : 1;    // timer A clear: resets TAR, .id, and .mc
@@ -86,8 +84,7 @@ typedef struct
   int _unused1 : 6; // unused
 } msp430_timer_a_control_t;
 
-typedef struct
-{
+typedef struct {
   int tbifg : 1;    // timer B interrupt flag
   int tbie : 1;     // timer B interrupt enable
   int tbclr : 1;    // timer B clear: resets TAR, .id, and .mc
@@ -102,4 +99,3 @@ typedef struct
 } msp430_timer_b_control_t;
 
 #endif//_H_Msp430Timer_h
-

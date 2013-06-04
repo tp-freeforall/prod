@@ -1,5 +1,6 @@
-
-/* Copyright (c) 2000-2003 The Regents of the University of California.
+/*
+ * Copyright (c) 2013 Eric B. Decker
+ * Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,17 +33,15 @@
 
 /**
  * @author Cory Sharp <cssharp@eecs.berkeley.edu>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 #include "Msp430Timer.h"
 
-interface Msp430Compare
-{
+interface Msp430Compare {
   async command uint16_t getEvent();
-  async command void setEvent( uint16_t time );
-  async command void setEventFromPrev( uint16_t delta );
-  async command void setEventFromNow( uint16_t delta );
+  async command void     setEvent( uint16_t time );
+  async command void     setEventFromPrev( uint16_t delta );
+  async command void     setEventFromNow( uint16_t delta );
 
   async event void fired();
-
 }
-

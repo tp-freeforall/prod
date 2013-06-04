@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Eric B. Decker
+ * Copyright (c) 2011, 2013 Eric B. Decker
  * Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
  *
@@ -49,8 +49,7 @@ generic module Msp430TimerCapComP(
   uses interface Msp430Timer as Timer;
   uses interface Msp430TimerEvent as Event;
 }
-implementation
-{
+implementation {
   #define TxCCTLx (*TCAST(volatile TYPE_TACCTL0* ONE, TxCCTLx_addr))
   #define TxCCRx (*TCAST(volatile TYPE_TACCR0* ONE, TxCCRx_addr))
 
@@ -92,23 +91,19 @@ implementation
     return CC2int(x);
   }
 
-  async command cc_t Control.getControl()
-  {
+  async command cc_t Control.getControl() {
     return int2CC(TxCCTLx);
   }
 
-  async command bool Control.isInterruptPending()
-  {
+  async command bool Control.isInterruptPending() {
     return TxCCTLx & CCIFG;
   }
 
-  async command void Control.clearPendingInterrupt()
-  {
+  async command void Control.clearPendingInterrupt() {
     CLR_FLAG(TxCCTLx,CCIFG);
   }
 
-  async command void Control.setControl( cc_t x )
-  {
+  async command void Control.setControl( cc_t x ) {
     TxCCTLx = CC2int(x);
   }
 
@@ -122,89 +117,67 @@ implementation
     TxCCTLx = captureControl( cm );
   }
 
-  async command void Capture.setEdge(uint8_t cm)
-  {
+  async command void Control.enableEvents() {
+    SET_FLAG( TxCCTLx, CCIE );
+  }
+
+  async command void Control.disableEvents() {
+    CLR_FLAG( TxCCTLx, CCIE );
+  }
+
+  async command bool Control.areEventsEnabled() {
+    return READ_FLAG( TxCCTLx, CCIE );
+  }
+
+  async command void Capture.setEdge(uint8_t cm) {
     cc_t t = call Control.getControl();
     t.cm = cm & 0x03;
     TxCCTLx = CC2int(t);
   }
 
-  async command void Capture.setSynchronous( bool sync )
-  {
-    if( sync )
-      SET_FLAG( TxCCTLx, SCS );
-    else
-      CLR_FLAG( TxCCTLx, SCS );
+  async command void Capture.setSynchronous( bool sync ) {
+    if( sync ) SET_FLAG( TxCCTLx, SCS );
+    else       CLR_FLAG( TxCCTLx, SCS );
   }
 
-  async command void Control.enableEvents()
-  {
-    SET_FLAG( TxCCTLx, CCIE );
-  }
-
-  async command void Control.disableEvents()
-  {
-    CLR_FLAG( TxCCTLx, CCIE );
-  }
-
-  async command bool Control.areEventsEnabled()
-  {
-    return READ_FLAG( TxCCTLx, CCIE );
-  }
-
-  async command uint16_t Compare.getEvent()
-  {
+  async command uint16_t Compare.getEvent() {
     return TxCCRx;
   }
 
-  async command uint16_t Capture.getEvent()
-  {
+  async command uint16_t Capture.getEvent() {
     return TxCCRx;
   }
 
-  async command void Compare.setEvent( uint16_t x )
-  {
+  async command void Compare.setEvent( uint16_t x ) {
     TxCCRx = x;
   }
 
-  async command void Compare.setEventFromPrev( uint16_t x )
-  {
-    TxCCRx += x;
+  async command void Compare.setEventFromPrev( uint16_t delta ) {
+    TxCCRx += delta;
   }
 
-  async command void Compare.setEventFromNow( uint16_t x )
-  {
-    TxCCRx = call Timer.get() + x;
+  async command void Compare.setEventFromNow( uint16_t delta ) {
+    TxCCRx = call Timer.get() + delta;
   }
 
-  async command bool Capture.isOverflowPending()
-  {
+  async command bool Capture.isOverflowPending() {
     return READ_FLAG( TxCCTLx, COV );
   }
 
-  async command void Capture.clearOverflow()
-  {
+  async command void Capture.clearOverflow() {
     CLR_FLAG( TxCCTLx, COV );
   }
 
-  async event void Event.fired()
-  {
+  async event void Event.fired() {
     if( (call Control.getControl()).cap )
       signal Capture.captured( call Capture.getEvent() );
     else
       signal Compare.fired();
   }
 
-  default async event void Capture.captured( uint16_t n )
-  {
-  }
+  default async event void Capture.captured( uint16_t n ) { }
 
-  default async event void Compare.fired()
-  {
-  }
+  default async event void Compare.fired() { }
 
-  async event void Timer.overflow()
-  {
-  }
+  async event void Timer.overflow() { }
 }
-

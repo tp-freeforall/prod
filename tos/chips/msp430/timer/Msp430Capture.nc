@@ -1,5 +1,6 @@
-
-/* Copyright (c) 2000-2003 The Regents of the University of California.
+/*
+ * Copyright (c) 2013 Eric B. Decker
+ * Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,12 +33,12 @@
 
 /**
  * @author Joe Polastre
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include "Msp430Timer.h"
 
-interface Msp430Capture
-{
+interface Msp430Capture {
   /**
    * Reads the value of the last capture event in TxCCRx
    */
@@ -84,6 +85,4 @@ interface Msp430Capture
    * @param time The time of the capture event
    */
   async event void captured(uint16_t time);
-
 }
-

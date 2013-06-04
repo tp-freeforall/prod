@@ -31,17 +31,15 @@
  */
 
 /**
- *
- *
  * @author Thomas Schmid
  */
 
-module RadioControlP{
+module RadioControlP {
   provides interface SplitControl as HighRadioControl;
   uses interface SplitControl as LowRadioControl;
   uses interface HplSam3TC as TC;
 }
-implementation{
+implementation {
   command error_t HighRadioControl.start(){
     // start TC0
     call TC.enableTC1();
@@ -65,5 +63,4 @@ implementation{
   default event void HighRadioControl.startDone(error_t error) {}
 
   default event void HighRadioControl.stopDone(error_t error) {}
-
 }
