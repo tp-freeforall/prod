@@ -56,10 +56,16 @@ implementation {
   error_t enableCapture( uint8_t mode ) {
     atomic {
       call Msp430TimerControl.disableEvents();
-      call GeneralIO.selectModuleFunc();
-      call Msp430TimerControl.clearPendingInterrupt();
-      call Msp430Capture.clearOverflow();
-      call Msp430TimerControl.setControlAsCapture( mode );
+      call GeneralIO.makeInput();                               /* for capture to work must be input */
+      call GeneralIO.selectModuleFunc();                        /* and must be assigned to the Module */
+
+      /*
+       * setControlAsCapture clears out both CCIE (pending Interrupt
+       * as well as COV (overflow).
+       *
+       * Default setting for CCIS is channel A.
+       */
+      call Msp430TimerControl.setControlAsCapture( mode, MSP430TIMER_CCI_A );
       call Msp430TimerControl.enableEvents();
     }
     return SUCCESS;
