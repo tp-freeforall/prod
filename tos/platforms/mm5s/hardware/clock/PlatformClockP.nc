@@ -134,7 +134,6 @@ noinit uint16_t xt1_stop;
 uint16_t xt1_idx;
 uint16_t xt1_deltas[XT1_DELTAS];
 uint16_t xt1_cap;
-bool cap;
 uint16_t xt1_read;
 uint16_t last_xt1, last_dco;
 
@@ -232,6 +231,7 @@ module PlatformClockP {
 
   void wait_for_32K() __attribute__ ((noinline)) {
     uint16_t left;
+    bool cap;
 
     /*
      * TA0 -> XT1 32768   (just for fun and to compare against TA1 (1uis ticker)
@@ -262,6 +262,7 @@ module PlatformClockP {
 
     xt1_cap = 16;
     left = PWR_UP_SEC;
+    cap = FALSE;
     while (1) {
       if (TA1CTL & TAIFG) {
 	/*
