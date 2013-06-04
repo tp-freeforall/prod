@@ -101,7 +101,7 @@ implementation {
   SFD   = SFDM;
   VREN  = VRENM;
 
-  components new GpioCaptureC() as SfdCaptureC;
+  components P81SfdCaptureC as SfdCaptureC;
   components Msp430TimerC;
   SfdCapture = SfdCaptureC;
 
