@@ -45,9 +45,8 @@
 #include <TimeSyncMessageLayer.h>
 #include <RadioConfig.h>
 
-module CC2520DriverLayerP
-{
-  provides{
+module CC2520DriverLayerP {
+  provides {
     interface Init as SoftwareInit @exactlyonce();
 
     interface RadioState;
@@ -63,8 +62,7 @@ module CC2520DriverLayerP
 //  interface PacketField<uint8_t> as AckReceived;
     interface PacketAcknowledgements;
   }
-
-  uses{
+  uses {
     interface BusyWait<TMicro, uint16_t>;
     interface LocalTime<TRadio>;
     interface CC2520DriverConfig as Config;
@@ -645,15 +643,38 @@ implementation {
   /*----------------- INIT -----------------*/
 
   command error_t SoftwareInit.init() {
-    // set pin directions
+    /*
+     * assumed pins start as inputs, set pin directions
+     * make sure pin value is reasonable before switching
+     * to output.
+     *
+     * Note: This is Software Init but what is being futzed with here
+     * is actually h/w init for the 2520.   Which really is a platform
+     * thing, meaning the platform defines what chips are there and
+     * PlatformInit is responsible for putting the h/w into a reasonable
+     * state.
+     *
+     * The 2520 driver should specify what h/w pins it needs and what
+     * initial state it needs/assumes.  Then PlatformInit can do more
+     * reasonable things like initialize all the pins it is responsible
+     * for at once.   Rather than this piecemeal, one bit at a time approach.
+     * silly silly silly.   But it is what we are using for now.
+     *
+     * The CC2520_v2 driver will fix this.
+     */
     atomic {
-      call CSN.makeOutput();
+      call CSN.set();                   /* initially deasserted */
+      call CSN.makeOutput();            /* before we make it an output */
+      call VREN.clr();                  /* VREN initially deasserted */
       call VREN.makeOutput();
+      call RSTN.set();                  /* RSTN deasserted */
       call RSTN.makeOutput();
       call CCA.makeInput();
       call SFD.makeInput();
       call FIFO.makeInput();
       call FIFOP.makeInput();
+
+      nop();
 
       /* enableRisingEdge disables first */
       call FifoInterrupt.enableRisingEdge();
@@ -662,11 +683,7 @@ implementation {
       /* rising edge just saves timestamp. */
       call SfdCapture.captureRisingEdge();
 
-      /* deassert CSN (active low) */
-      call CSN.set();
-
       // start up voltage regulator
-      call VREN.clr();
       call VREN.set();
 
       /* assert RSTN, active low */
@@ -707,9 +724,9 @@ implementation {
     /*
      * reset and wait for the chip to come back
      * 200 uS, wait for XOSC?
-     *
+     */
     call RSTN.clr();
- // call BusyWait.wait( 200 );          /* wait 200 uS */
+//  call BusyWait.wait( 200 );          /* wait 200 uS */
     call RSTN.set();
 
     // update default values of registers
