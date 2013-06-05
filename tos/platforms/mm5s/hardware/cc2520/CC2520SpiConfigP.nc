@@ -36,25 +36,39 @@
  * @author Eric B. Decker <cire831@gmail.com>
  */
 
-module CC2520SpiConfigC {
-  provides {
-    interface Init;
-    interface ResourceConfigure;
-  }
-  uses {
-  }
+#include "msp430usci.h"
+
+/*
+ * MM5, 5437a, USCI, SPI
+ * x5 usci configuration
+ */
+
+const msp430_usci_config_t cc2520_spi_config = {
+  /*
+   * UCCKPH: 0,
+   * UCCKPL: 0,
+   * UCMSB:  1,
+   * UC7BIT: 0,
+   * UCMST:  1,
+   * UCMODE: 0b00,
+   * UCSYNC: 1,
+   * UCSSEL: SMCLK,
+   */
+  ctl0 : (UCMSB | UCMST | UCSYNC),
+  ctl1 : UCSSEL__SMCLK,
+  br0  : 2,			/* 8MHz -> 4 MHz */
+  br1  : 0,
+  mctl : 0,                     /* Always 0 in SPI mode */
+  i2coa: 0
+};
+
+
+module CC2520SpiConfigP {
+  provides interface Msp430UsciConfigure;
 }
 implementation {
-
-  command error_t Init.init() {
-    return SUCCESS;
+  async command const msp430_usci_config_t *Msp430UsciConfigure.getConfiguration() {
+    return &cc2520_spi_config;
   }
 
-  async command void ResourceConfigure.configure() {
-    // Do stuff here
-  }
-
-  async command void ResourceConfigure.unconfigure() {
-    // Do stuff here...
-  }
 }

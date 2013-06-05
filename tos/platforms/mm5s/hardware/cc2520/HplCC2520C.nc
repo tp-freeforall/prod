@@ -69,12 +69,8 @@ implementation {
   SpiByte     = SpiC;
   SpiPacket   = SpiC;
 
-/*
-  components CC2520SpiConfigC as RadioSpiConfigC;
-  RadioSpiConfigC.Init <- SpiC;
-  RadioSpiConfigC.ResourceConfigure <- SpiC;
-  RadioSpiConfigC.HplSam3SpiChipSelConfig -> SpiC;
-*/
+  components CC2520SpiConfigP;
+  CC2520SpiConfigP.Msp430UsciConfigure <- SpiC;
 
   components HplMsp430GeneralIOC as GeneralIOC;
   components new Msp430GpioC() as CCAM;
