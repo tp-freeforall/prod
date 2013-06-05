@@ -60,7 +60,7 @@
 /**
  * This is the timer type of the radio alarm interface
  */
-typedef TMicro TRadio;
+typedef T32khz   TRadio;
 typedef uint16_t tradio_size;
 
 /**
@@ -69,14 +69,16 @@ typedef uint16_t tradio_size;
  * The main mm5s clock is at 8MHz (decimal), TA1 is used to
  * provide TMicro (DCO -> MCLK -> SMCLK -> /8 -> TA1).
  *
- * So we have 1 clock tick per 1 us.
+ * However, the SFD capture is on pin 8.1 which is connected to
+ * TA0.CCI1B.  TA0 is run off the 32KiHz clock so we use TA0
+ * for the capture and runs T32khz and TMilli.
  */
-#define RADIO_ALARM_MICROSEC    1
+#define RADIO_ALARM_MICROSEC    1/32
 
 enum cc2520_timing_enums {
-  CC2520_SYMBOL_TIME =  16 * RADIO_ALARM_MICROSEC, // 16us
-  IDLE_2_RX_ON_TIME  =  12 * CC2520_SYMBOL_TIME,
-  PD_2_IDLE_TIME     = 860 * RADIO_ALARM_MICROSEC, // .86ms
+  CC2520_SYMBOL_TIME =  17 * RADIO_ALARM_MICROSEC, //  16us, actual 16.2us
+  IDLE_2_RX_ON_TIME  =  12 * CC2520_SYMBOL_TIME,   // 192us, actual 194.5us
+  PD_2_IDLE_TIME     = 902 * RADIO_ALARM_MICROSEC, // 860us, actual 860.2us
 };
 
 
@@ -87,9 +89,9 @@ enum cc2520_timing_enums {
  * RADIO_ALARM_MILLI_EXP expressing millisecs (actually mis, binary millisecs)
  * isn't a problem.
  *
- * 2**10 = 1024 ticks which is actually a bit over (2.4%) 1 ms.
+ * 2**5 = 32.  Actually 32.7 which is about 2.3% off.
  */
-#define RADIO_ALARM_MILLI_EXP	10
+#define RADIO_ALARM_MILLI_EXP	5
 
 /**
  * Make PACKET_LINK automaticaly enabled for Ieee154MessageC
@@ -98,4 +100,4 @@ enum cc2520_timing_enums {
 #define PACKET_LINK
 #endif
 
-#endif//__RADIOCONFIG_H__
+#endif          //__RADIOCONFIG_H__

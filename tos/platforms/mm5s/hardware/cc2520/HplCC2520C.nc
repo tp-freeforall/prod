@@ -131,9 +131,9 @@ implementation {
   InterruptFIFOC.HplInterrupt  -> HplMsp430InterruptC.Port15;
   InterruptFIFOPC.HplInterrupt -> HplMsp430InterruptC.Port16;
 
-  components new AlarmMicro16C() as AlarmC;
+  components new Alarm32khz16C() as AlarmC;
   Alarm = AlarmC;
 
-  components LocalTimeMicroC;
-  LocalTimeRadio = LocalTimeMicroC;
+  components LocalTime32khzC;
+  LocalTimeRadio = LocalTime32khzC.LocalTime;
 }
