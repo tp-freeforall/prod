@@ -242,9 +242,8 @@ implementation {
     uint8_t v __attribute__((unused));
 
     RADIO_ASSERT( call SpiResource.isOwner() );
-
     call CSN.set();
-    call CSN.clr();
+    call CSN.clr();                     /* assert CSN, need the falling edge */
 
     if (reg <= CC2520_FREG_MASK) {
       // we can use 1 byte less to write this register using the
@@ -266,7 +265,7 @@ implementation {
       status.value = call SpiByte.write(reg);
     }
     v = call SpiByte.write(value);
-    call CSN.set();
+    call CSN.set();                     /* deassert */
     return status;
   }
 
@@ -286,7 +285,6 @@ implementation {
       mem_addr = 0x200;
 
     RADIO_ASSERT( call SpiResource.isOwner() );
-
     call CSN.set();
     call CSN.clr();
 
@@ -316,7 +314,6 @@ implementation {
     uint8_t i, value = 0;
 
     RADIO_ASSERT( call SpiResource.isOwner() );
-
     call CSN.set();
     call CSN.clr();
 
@@ -343,7 +340,6 @@ implementation {
            uint8_t auth_len, uint8_t mic_len) {
 
     RADIO_ASSERT( call SpiResource.isOwner() );
-
     call CSN.set();
     call CSN.clr();
 
@@ -367,7 +363,6 @@ implementation {
             uint8_t auth_len, uint8_t mic_len) {
 
     RADIO_ASSERT( call SpiResource.isOwner() );
-
     call CSN.set();
     call CSN.clr();
 
@@ -390,7 +385,6 @@ implementation {
               uint16_t start_addr, uint16_t dest_addr, uint8_t mic_len) {
 
     RADIO_ASSERT( call SpiResource.isOwner() );
-
     call CSN.set();
     call CSN.clr();
 
@@ -415,7 +409,6 @@ implementation {
            uint8_t nonce_addr, uint16_t start_addr, uint16_t dest_addr) {
 
     RADIO_ASSERT( call SpiResource.isOwner() );
-
     call CSN.set();
     call CSN.clr();
 
@@ -447,7 +440,6 @@ implementation {
   void MEMCP(uint8_t priority, uint16_t count, uint16_t start_addr, uint16_t dest_addr) {
 
     RADIO_ASSERT( call SpiResource.isOwner() );
-
     call CSN.set();
     call CSN.clr();
 
@@ -470,12 +462,9 @@ implementation {
     cc2520_status_t status;
 
     RADIO_ASSERT( call SpiResource.isOwner() );
-
     call CSN.set();
     call CSN.clr();
-
     status.value = call SpiByte.write(reg);
-
     call CSN.set();
     return status;
   }
@@ -491,7 +480,6 @@ implementation {
     uint8_t value = 0;
 
     RADIO_ASSERT( call SpiResource.isOwner() );
-
     call CSN.set();
     call CSN.clr();
 
@@ -505,7 +493,6 @@ implementation {
     }
 
     value = call SpiByte.write(0);
-
     call CSN.set();
     return value;
   }
@@ -517,7 +504,6 @@ implementation {
     uint8_t idx;
 
     RADIO_ASSERT( call SpiResource.isOwner() );
-
     call CSN.set();
     call CSN.clr();
 
@@ -526,7 +512,6 @@ implementation {
     // FIXME: replace this at some point with a SPIPacket call.
     for (idx = 0; idx < length; idx++)
       call SpiByte.write(data[idx]);
-
     call CSN.set();
     return status;
   }
@@ -742,14 +727,7 @@ implementation {
   /*----------------- SPI -----------------*/
 
   event void SpiResource.granted() {
-
-    /*
-     * no no no.   CSN should always be initilized once then left alone.
-     * you really don't want to float it.
-     */
-    call CSN.makeOutput();
     call CSN.set();
-
     if( state == STATE_VR_ON ) {
       initRadio();
       call SpiResource.release();
@@ -761,17 +739,13 @@ implementation {
 
   bool isSpiAcquired() {
     if (call SpiResource.isOwner()) {
-      call CSN.makeOutput();
       call CSN.set();
       return TRUE;
     }
-
     if (call SpiResource.immediateRequest() == SUCCESS) {
-      call CSN.makeOutput();
       call CSN.set();
       return TRUE;
     }
-
     call SpiResource.request();
     return FALSE;
   }
@@ -1423,13 +1397,11 @@ implementation {
 
       atomic first_packet = FALSE;
 
-      call CSN.set();
-
       RADIO_ASSERT( call FIFOP.get() == 0 );
       RADIO_ASSERT( call FIFO.get() == 0 );
 
-      call SpiResource.release();
       call CSN.set();
+      call SpiResource.release();
       endRx();
       return;
     }
@@ -1441,8 +1413,8 @@ implementation {
       RADIO_ASSERT( call FIFOP.get() == 0 );
       RADIO_ASSERT( call FIFO.get() == 0 );
 
-      call SpiResource.release();
       call CSN.set();
+      call SpiResource.release();
       endRx();
       return;
     }
@@ -1455,8 +1427,8 @@ implementation {
       RADIO_ASSERT( call FIFOP.get() == 0 );
       RADIO_ASSERT( call FIFO.get() == 0 );
 
-      call SpiResource.release();
       call CSN.set();
+      call SpiResource.release();
       endRx();
       return;
     }
@@ -1476,8 +1448,8 @@ implementation {
       RADIO_ASSERT( call FIFOP.get() == 0 );
       RADIO_ASSERT( call FIFO.get() == 0 );
 
-      call SpiResource.release();
       call CSN.set();
+      call SpiResource.release();
       endRx();
       return;
     }
@@ -1502,8 +1474,8 @@ implementation {
 
       RADIO_ASSERT( call FIFOP.get() == 0 );
 
-      call SpiResource.release();
       call CSN.set();
+      call SpiResource.release();
       endRx();
       return;
     }
@@ -1534,11 +1506,13 @@ implementation {
         call DiagMsg.send();
       }
 #endif
-      atomic recover_err();
-      atomic flushRxFifo();
+      atomic {
+        recover_err();
+        flushRxFifo();
+      }
 
-      call SpiResource.release();
       call CSN.set();
+      call SpiResource.release();
       endRx();
       return;
     }
@@ -1552,8 +1526,8 @@ implementation {
 
     if (length == 3 || ieee154header->fcf & (2 << IEEE154_FCF_FRAME_TYPE)) {
 //    call Leds.led2Toggle();
-      call SpiResource.release();
       call CSN.set();
+      call SpiResource.release();
       rxMsg = signal RadioReceive.receive(rxMsg);
       endRx();
       return;
@@ -1649,8 +1623,8 @@ implementation {
 #endif
       }
 
-      call SpiResource.release();
       call CSN.set();
+      call SpiResource.release();
 
       call Leds.led1Toggle();
       rxMsg = signal RadioReceive.receive(rxMsg);
@@ -1660,8 +1634,8 @@ implementation {
 //    call SfdCapture.captureRisingEdge(); // JK
 
     } else {
-      call SpiResource.release();
       call CSN.set();
+      call SpiResource.release();
 //    state = STATE_RX_ON;
 //    cmd = CMD_NONE;
 
