@@ -110,8 +110,9 @@ implementation {
 #define LOW_PRIORITY 0
 #define NONCE_FLAG_BYTE 0x09
 
-  inline void serviceRadio();
-  inline void downloadMessage();
+  void serviceRadio();
+  void downloadMessage();
+  void initRadio();
 
   uint8_t pKey[]= {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -128,50 +129,49 @@ implementation {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
   };
 
-  cc2520_header_t* getHeader(message_t* msg)
-  {
-    return ((void*)msg) + call Config.headerLength(msg);
+  cc2520_header_t *getHeader(message_t *msg) {
+    return ((void *) msg) + call Config.headerLength(msg);
   }
 
   /*
    * Return a pointer to the data portion of the message.
    */
-  void* getPayload(message_t* msg){
-    return ((void*)msg)  + call RadioPacket.headerLength(msg);
+  void *getPayload(message_t *msg) {
+    return ((void *) msg)  + call RadioPacket.headerLength(msg);
   }
 
-  cc2520_metadata_t* getMeta(message_t* msg){
-    return ((void*)msg) + sizeof(message_t) - call RadioPacket.metadataLength(msg);
+  cc2520_metadata_t *getMeta(message_t *msg) {
+    return ((void *) msg) + sizeof(message_t) - call RadioPacket.metadataLength(msg);
   }
 
   /*----------------- STATE -----------------*/
 
-  enum{
-    STATE_VR_ON = 0,
-    STATE_PD = 1,
-    STATE_PD_2_IDLE = 2,
-    STATE_IDLE = 3,
-    STATE_IDLE_2_RX_ON = 4,
-    STATE_RX_ON = 5,
+  enum {
+    STATE_VR_ON           = 0,
+    STATE_PD              = 1,
+    STATE_PD_2_IDLE       = 2,
+    STATE_IDLE            = 3,
+    STATE_IDLE_2_RX_ON    = 4,
+    STATE_RX_ON           = 5,
     STATE_BUSY_TX_2_RX_ON = 6,
-    STATE_IDLE_2_TX_ON = 7,
-    STATE_TX_ON = 8,
-    STATE_RX_DOWNLOAD = 9,
+    STATE_IDLE_2_TX_ON    = 7,
+    STATE_TX_ON           = 8,
+    STATE_RX_DOWNLOAD     = 9,
   };
 
   tasklet_norace uint8_t state = STATE_VR_ON;
 
   enum {
-    CMD_NONE = 0,           // the state machine has stopped
-    CMD_TURNOFF = 1,        // goto SLEEP state
-    CMD_STANDBY = 2,        // goto TRX_OFF state
-    CMD_TURNON = 3,         // goto RX_ON state
-    CMD_TRANSMIT = 4,       // currently transmitting a message
-    CMD_RECEIVE = 5,        // currently receiving a message
-    CMD_CCA = 6,            // performing clear chanel assesment
-    CMD_CHANNEL = 7,        // changing the channel
-    CMD_SIGNAL_DONE = 8,        // signal the end of the state transition
-    CMD_DOWNLOAD = 9,       // download the received message
+    CMD_NONE        = 0,     // the state machine has stopped
+    CMD_TURNOFF     = 1,     // goto SLEEP state
+    CMD_STANDBY     = 2,     // goto TRX_OFF state
+    CMD_TURNON      = 3,     // goto RX_ON state
+    CMD_TRANSMIT    = 4,     // currently transmitting a message
+    CMD_RECEIVE     = 5,     // currently receiving a message
+    CMD_CCA         = 6,     // performing clear chanel assesment
+    CMD_CHANNEL     = 7,     // changing the channel
+    CMD_SIGNAL_DONE = 8,     // signal the end of the state transition
+    CMD_DOWNLOAD    = 9,     // download the received message
   };
 
   tasklet_norace uint8_t cmd = CMD_NONE;
@@ -181,39 +181,40 @@ implementation {
   tasklet_norace uint8_t txPower;
   tasklet_norace uint8_t channel;
 
-  tasklet_norace message_t* rxMsg;
-  //#ifdef RADIO_DEBUG_MESSAGES
-  tasklet_norace message_t* txMsg;
-  //#endif
-  message_t rxMsgBuffer;
+// #ifdef RADIO_DEBUG_MESSAGES
+  tasklet_norace message_t *txMsg;
+// #endif 
 
-  uint32_t capturedTime;  // the current time when the last interrupt has occured
+  message_t rxMsgBuffer;
+  tasklet_norace message_t *rxMsg = &rxMsgBuffer;
+
+  uint32_t capturedTime;        // the current time when the last interrupt has occured
 
   tasklet_norace uint8_t rssiClear;
   tasklet_norace uint8_t rssiBusy;
-  norace bool first_packet = TRUE;
-  norace bool sending = FALSE;
-  norace bool receiving = FALSE;
+  norace bool first_packet        = TRUE;
+  norace bool sending             = FALSE;
+  norace bool receiving           = FALSE;
   norace bool security_processing = FALSE;
 
   // used to continue tx after sfd
-  norace uint8_t* txData;
+  norace uint8_t *txData;
   norace uint8_t header;
   norace uint8_t prevdata9, prevdata10;
   norace uint8_t secMode;
   norace uint8_t txLength;
-  norace ieee154_simple_header_t* txIeee154header;
+  norace ieee154_simple_header_t *txIeee154header;
 
-  enum{ // FIXME: need to check these for CC2520
+  enum {                // FIXME: need to check these for CC2520
     TX_SFD_DELAY = (uint16_t)(0 * RADIO_ALARM_MICROSEC),
     RX_SFD_DELAY = (uint16_t)(7 * RADIO_ALARM_MICROSEC/2),
   };
 
   inline cc2520_status_t getStatus();
+
   //inline void sendDoneSignal(error_t error, bool ack);
 
-  tasklet_async event void RadioAlarm.fired(){
-
+  tasklet_async event void RadioAlarm.fired() {
     if( state == STATE_PD_2_IDLE ) {
       state = STATE_IDLE;
       if( cmd == CMD_STANDBY )
@@ -225,7 +226,7 @@ implementation {
       //call SfdCapture.captureRisingEdge(); //JK
 
       cmd = CMD_SIGNAL_DONE;
-    }else{
+    } else {
       RADIO_ASSERT(FALSE);
     }
 
@@ -235,7 +236,8 @@ implementation {
 
   /*----------------- REGISTER -----------------*/
 
-  inline cc2520_status_t writeRegister(uint8_t reg, uint8_t value){
+//  inline
+  cc2520_status_t writeRegister(uint8_t reg, uint8_t value) {
     cc2520_status_t status;
     uint8_t v __attribute__((unused));
 
@@ -244,7 +246,7 @@ implementation {
     call CSN.set();
     call CSN.clr();
 
-    if( reg <= CC2520_FREG_MASK){
+    if (reg <= CC2520_FREG_MASK) {
       // we can use 1 byte less to write this register using the
       // register write command
 
@@ -252,39 +254,36 @@ implementation {
 
 
       status.value = call SpiByte.write(CC2520_CMD_REGISTER_WRITE | reg);
-
-    }
-    else{
+    } else {
       // we have to use the memory write command as the register is in
       // SREG
 
-      RADIO_ASSERT( reg == (reg & CC2520_SREG_MASK) );
+      RADIO_ASSERT(reg == (reg & CC2520_SREG_MASK));
 
       // the register has to be below the 0x100 memory address. Thus, we
       // don't have to add anything to the MEMORY_WRITE command.
       status.value = call SpiByte.write(CC2520_CMD_MEMORY_WRITE);
       status.value = call SpiByte.write(reg);
-
     }
-    // v is the value previously in the register
     v = call SpiByte.write(value);
-
     call CSN.set();
-
     return status;
-
   }
 
-  /* New function by JK  -- identical to MEMWR function */
-  /* This function is to write data to memory spaces above 0x200 */
-  inline cc2520_status_t writeMemory(uint16_t mem_addr, uint8_t* value, uint8_t count){
+  /*
+   * writeMemory (MEMWR function)
+   *
+   * Used to write data to memory above 0x0200
+   */
+
+//  inline
+  cc2520_status_t writeMemory(uint16_t mem_addr, uint8_t *value, uint8_t count) {
     cc2520_status_t status;
     uint8_t v __attribute__((unused));
     uint8_t i;
 
-    if(mem_addr < 0x200){
+    if (mem_addr < 0x200)
       mem_addr = 0x200;
-    }
 
     RADIO_ASSERT( call SpiResource.isOwner() );
 
@@ -294,27 +293,26 @@ implementation {
     status.value = call SpiByte.write(CC2520_CMD_MEMORY_WRITE | HI_UINT16(mem_addr));
     status.value = call SpiByte.write(LO_UINT16(mem_addr));
 
-    for(i=0;i<count;i++){
+    for (i=0; i < count; i++)
       v = call SpiByte.write(value[i]);
-    }
 
-    /* 
-       s = CC2520_SPI_TXRX(CC2520_INS_MEMWR | HI_UINT16(addr));
-       CC2520_SPI_TXRX(LO_UINT16(addr));
-       while (count--) {
-       CC2520_SPI_TX(*pData);
-       pData++;
-       CC2520_SPI_WAIT_RXRDY();
-       }
-       */
+#ifdef notdef
+    s = CC2520_SPI_TXRX(CC2520_INS_MEMWR | HI_UINT16(addr));
+    CC2520_SPI_TXRX(LO_UINT16(addr));
+    while (count--) {
+      CC2520_SPI_TX(*pData);
+      pData++;
+      CC2520_SPI_WAIT_RXRDY();
+    }
+#endif
 
     call CSN.set();
-
     return status;
   }
 
   // JK: Need to check!
-  inline uint8_t readMemory(uint16_t mem_addr, uint8_t* buf, uint8_t count){
+//  inline
+  uint8_t readMemory(uint16_t mem_addr, uint8_t *buf, uint8_t count) {
     uint8_t i, value = 0;
 
     RADIO_ASSERT( call SpiResource.isOwner() );
@@ -325,23 +323,24 @@ implementation {
     call SpiByte.write(CC2520_CMD_MEMORY_READ | HI_UINT16(mem_addr));
     call SpiByte.write(LO_UINT16(mem_addr));
 
-    for(i=0;i<count;i++){
+    for (i=0; i < count; i++)
       buf[i] = call SpiByte.write(0);
-    }
 
-    /*
-       s = CC2520_SPI_TXRX(CC2520_INS_MEMRD | HI_UINT16(addr));
-       CC2520_SPI_TXRX(LO_UINT16(addr));
-       CC2520_INS_RD_ARRAY(count, pData);
-       */
+#ifdef notdef
+    s = CC2520_SPI_TXRX(CC2520_INS_MEMRD | HI_UINT16(addr));
+    CC2520_SPI_TXRX(LO_UINT16(addr));
+    CC2520_INS_RD_ARRAY(count, pData);
+#endif
 
     call CSN.set();
-
     return value;
   }
 
 
-  inline void CCM(uint8_t priority, uint8_t key_addr, uint8_t payload_len, uint8_t nonce_addr, uint16_t start_addr, uint16_t dest_addr, uint8_t auth_len, uint8_t mic_len){
+//  inline
+  void CCM(uint8_t priority, uint8_t key_addr, uint8_t payload_len,
+           uint8_t nonce_addr, uint16_t start_addr, uint16_t dest_addr,
+           uint8_t auth_len, uint8_t mic_len) {
 
     RADIO_ASSERT( call SpiResource.isOwner() );
 
@@ -359,12 +358,13 @@ implementation {
     call SpiByte.write(mic_len);
 
     call CSN.set();
-
     return;
-
   }
 
-  inline void UCCM(uint8_t priority, uint8_t key_addr, uint8_t payload_len, uint8_t nonce_addr, uint16_t start_addr, uint16_t dest_addr, uint8_t auth_len, uint8_t mic_len){
+//  inline
+  void UCCM(uint8_t priority, uint8_t key_addr, uint8_t payload_len,
+            uint8_t nonce_addr, uint16_t start_addr, uint16_t dest_addr,
+            uint8_t auth_len, uint8_t mic_len) {
 
     RADIO_ASSERT( call SpiResource.isOwner() );
 
@@ -382,11 +382,12 @@ implementation {
     call SpiByte.write(mic_len);
 
     call CSN.set();
-
     return;
   }
 
-  inline void CBCMAC(uint8_t priority, uint8_t key_addr, uint8_t payload_len, uint16_t start_addr, uint16_t dest_addr, uint8_t mic_len){
+//  inline
+  void CBCMAC(uint8_t priority, uint8_t key_addr, uint8_t payload_len,
+              uint16_t start_addr, uint16_t dest_addr, uint8_t mic_len) {
 
     RADIO_ASSERT( call SpiResource.isOwner() );
 
@@ -402,14 +403,17 @@ implementation {
     call SpiByte.write(mic_len);
 
     call CSN.set();
-
     return;
-
   }
 
-  inline void UCBCMAC(){}
 
-  inline void CTR(uint8_t priority, uint8_t key_addr, uint8_t payload_len, uint8_t nonce_addr, uint16_t start_addr, uint16_t dest_addr){
+  inline void UCBCMAC() { }
+
+
+//  inline
+  void CTR(uint8_t priority, uint8_t key_addr, uint8_t payload_len,
+           uint8_t nonce_addr, uint16_t start_addr, uint16_t dest_addr) {
+
     RADIO_ASSERT( call SpiResource.isOwner() );
 
     call CSN.set();
@@ -425,19 +429,22 @@ implementation {
     call SpiByte.write(LO_UINT16(dest_addr));
 
     call CSN.set();
-
     return;
   }
 
+
 #ifdef notdef
-  inline void UCTR(uint8_t priority, uint8_t key_addr, uint8_t payload_len, uint8_t nonce_addr, uint16_t start_addr, uint16_t dest_addr){
+//  inline
+  void UCTR(uint8_t priority, uint8_t key_addr, uint8_t payload_len,
+            uint8_t nonce_addr, uint16_t start_addr, uint16_t dest_addr) {
     CTR(priority, key_addr, payload_len, nonce_addr, start_addr, dest_addr);
     return;
   }
 #endif
 
 
-  inline void MEMCP(uint8_t priority, uint16_t count, uint16_t start_addr, uint16_t dest_addr){
+//  inline
+  void MEMCP(uint8_t priority, uint16_t count, uint16_t start_addr, uint16_t dest_addr) {
 
     RADIO_ASSERT( call SpiResource.isOwner() );
 
@@ -451,16 +458,15 @@ implementation {
     call SpiByte.write(LO_UINT16(dest_addr));
 
     call CSN.set();
-
     return;
-
   }
 
   /*
    * Strobes changed a lot between CC2420 and CC2520. They are now just an
    * other command, without any parameters.
    */
-  inline cc2520_status_t strobe(uint8_t reg){
+//  inline
+  cc2520_status_t strobe(uint8_t reg) {
     cc2520_status_t status;
 
     RADIO_ASSERT( call SpiResource.isOwner() );
@@ -472,14 +478,16 @@ implementation {
 
     call CSN.set();
     return status;
-
   }
 
-  inline cc2520_status_t getStatus() {
+
+//  inline
+  cc2520_status_t getStatus() {
     return strobe(CC2520_CMD_SNOP);
   }
 
-  inline uint8_t readRegister(uint8_t reg){
+//  inline
+  uint8_t readRegister(uint8_t reg) {
     uint8_t value = 0;
 
     RADIO_ASSERT( call SpiResource.isOwner() );
@@ -487,25 +495,24 @@ implementation {
     call CSN.set();
     call CSN.clr();
 
-    if( reg <= CC2520_FREG_MASK ){
+    if (reg <= CC2520_FREG_MASK) {
       RADIO_ASSERT( reg == (reg & CC2520_FREG_MASK) );
       call SpiByte.write(CC2520_CMD_REGISTER_READ | reg);
-
-    }
-    else{
+    } else {
       RADIO_ASSERT( reg == (reg & CC2520_SREG_MASK) );
-
       call SpiByte.write(CC2520_CMD_MEMORY_WRITE);
       call SpiByte.write(reg);
     }
 
     value = call SpiByte.write(0);
-    call CSN.set();
 
+    call CSN.set();
     return value;
   }
 
-  inline cc2520_status_t writeTxFifo(uint8_t* data, uint8_t length){
+
+//  inline
+  cc2520_status_t writeTxFifo(uint8_t *data, uint8_t length) {
     cc2520_status_t status;
     uint8_t idx;
 
@@ -515,33 +522,43 @@ implementation {
     call CSN.clr();
 
     status.value = call SpiByte.write(CC2520_CMD_TXBUF);
+
     // FIXME: replace this at some point with a SPIPacket call.
-    for(idx = 0; idx<length; idx++)
+    for (idx = 0; idx < length; idx++)
       call SpiByte.write(data[idx]);
 
     call CSN.set();
-
     return status;
-
   }
 
-  inline uint8_t waitForRxFifoNoTimeout() {
+
+//  inline
+  uint8_t waitForRxFifoNoTimeout() {
+
     // wait for fifo to go high
-    while(call FIFO.get() == 0);
 
+    while (call FIFO.get() == 0)
+      ;
     return call FIFO.get();
   }
 
-  inline uint8_t waitForRxFifo() {
+
+//  inline
+  uint8_t waitForRxFifo() {
+    uint16_t timeout;
+  
     // wait for fifo to go high or timeout
-    // timeout is now + 2 byte time (4 symbol time)
-    uint16_t timeout = call RadioAlarm.getNow() + 4 * CC2520_SYMBOL_TIME;
 
-    while(call FIFO.get() == 0 && (timeout - call RadioAlarm.getNow() < 0x7FFF));
+    // timeout is now + 2 byte time (4 symbol time)
+    timeout = call RadioAlarm.getNow() + 4 * CC2520_SYMBOL_TIME;
+
+    while(call FIFO.get() == 0 && (timeout - call RadioAlarm.getNow() < 0x7FFF))
+      ;
     return call FIFO.get();
   }
 
-  inline cc2520_status_t readLengthFromRxFifo(uint8_t* lengthPtr){
+//  inline
+  cc2520_status_t readLengthFromRxFifo(uint8_t *lengthPtr) {
     cc2520_status_t status;
 
     RADIO_ASSERT( call SpiResource.isOwner() );
@@ -556,12 +573,15 @@ implementation {
     call CSN.clr();
 
     status.value = call SpiByte.write(CC2520_CMD_RXBUF);
-    //waitForRxFifoNoTimeout();
+
+//  waitForRxFifoNoTimeout();
     *lengthPtr = call SpiByte.write(0);
     return status;
   }
 
-  inline cc2520_status_t readLengthFromRxFifo_cp(uint8_t* lengthPtr){
+
+//  inline
+  cc2520_status_t readLengthFromRxFifo_cp(uint8_t *lengthPtr) {
     cc2520_status_t status;
 
     RADIO_ASSERT( call SpiResource.isOwner() );
@@ -576,68 +596,73 @@ implementation {
     call CSN.clr();
 
     status.value = call SpiByte.write(CC2520_CMD_RXBUFCP);
-    //waitForRxFifoNoTimeout();
+
+//  waitForRxFifoNoTimeout();
     *lengthPtr = call SpiByte.write(0);
     return status;
   }
 
 
-  inline void readPayloadFromRxFifo(uint8_t* data, uint8_t length){
+//  inline
+  void readPayloadFromRxFifo(uint8_t *data, uint8_t length) {
     uint8_t idx;
 
     // readLengthFromRxFifo was called before, so CSN is cleared and spi is ours
-    RADIO_ASSERT( call CSN.get() == 0 );
+    RADIO_ASSERT( call CSN.get() == 0 );        // make sure CSN asserted
 
-    for(idx = 0; idx<length; idx++) {
-      //waitForRxFifo();
+    for (idx = 0; idx < length; idx++) {
+//    waitForRxFifo();
       RADIO_ASSERT(call FIFO.get());
       data[idx] = call SpiByte.write(0);
     }
   }
 
-  inline void readRssiFromRxFifo(uint8_t* rssiPtr){
+
+//  inline
+  void readRssiFromRxFifo(uint8_t *rssiPtr) {
+
     // FIXME: make sure that RSSI is added to the frame in the
     // configuration! See 20.3.4 in CC2520 Manual (Dec. 2007)
 
     // readLengthFromRxFifo was called before, so CSN is cleared and spi is ours
 
-    //waitForRxFifo();
-    RADIO_ASSERT(call FIFO.get());
+//  waitForRxFifo();
+    RADIO_ASSERT(call CSN.get() == 0);
+    RADIO_ASSERT(call FIFO.get());      // FIFO should be up
     *rssiPtr = call SpiByte.write(0);
   }
 
-  inline void readCrcOkAndLqiFromRxFifo(uint8_t* crcOkAndLqiPtr){
+
+//  inline
+  void readCrcOkAndLqiFromRxFifo(uint8_t *crcOkAndLqiPtr) {
+
     // readLengthFromRxFifo was called before, so CSN is cleared and spi is ours
 
     RADIO_ASSERT( call CSN.get() == 0 );
 
-    //waitForRxFifo(); // JK
+//  waitForRxFifo(); // JK
     *crcOkAndLqiPtr = call SpiByte.write(0);
-
     // end RxFifo read operation
     call CSN.set();
   }
 
-  inline void flushRxFifo() {
-    // set it to stop possible pending fifo transfer
 
-    {
-      cc2520_status_t status __attribute__((unused));
+//  inline
+  void flushRxFifo() {
+    cc2520_status_t status __attribute__((unused));
 
-
-      status = strobe(CC2520_CMD_SFLUSHRX);
-      status = strobe(CC2520_CMD_SFLUSHRX);
-      status = strobe(CC2520_CMD_SFLUSHRX);
-      status = strobe(CC2520_CMD_SFLUSHRX);
+    status = strobe(CC2520_CMD_SFLUSHRX);
+    status = strobe(CC2520_CMD_SFLUSHRX);
+    status = strobe(CC2520_CMD_SFLUSHRX);
+    status = strobe(CC2520_CMD_SFLUSHRX);
 
 #ifdef RADIO_DEBUG_MESSAGES
-      if( call DiagMsg.record() ){
-        call DiagMsg.str("b_flush");
-        call DiagMsg.uint8(status.value);
-        call DiagMsg.send();
-      }
-#endif
+    if (call DiagMsg.record()) {
+      call DiagMsg.str("b_flush");
+      call DiagMsg.uint8(status.value);
+      call DiagMsg.send();
     }
+#endif
   }
 
   /*----------------- INIT -----------------*/
@@ -674,11 +699,11 @@ implementation {
       call FIFO.makeInput();
       call FIFOP.makeInput();
 
-      nop();
-
       /* enableRisingEdge disables first */
       call FifoInterrupt.enableRisingEdge();
       call FifopInterrupt.enableRisingEdge();
+
+      nop();
 
       /* rising edge just saves timestamp. */
       call SfdCapture.captureRisingEdge();
@@ -688,23 +713,24 @@ implementation {
 
       /* assert RSTN, active low */
       call RSTN.clr();
+
+      // hold line low for Tdres
+      call BusyWait.wait( 200 ); // typical .1ms VR startup time
+
+      /*
+       * Reset the chip and then wait 200uS for XOSC to stabilize.
+       * A better way to do this is via monitoring the control lines
+       * there is a sequence where the chip will tell us that XOSC
+       * is up.   That is how we should do it.
+       */
+      call RSTN.set();                    /* deassert RSTN */
+      call BusyWait.wait( 200 );
     }
 
-    // hold line low for Tdres
-    call BusyWait.wait( 200 ); // typical .1ms VR startup time
-
-    /*
-     * Reset the chip and then wait 200uS for XOSC to stabilize.
-     * A better way to do this is via monitoring the control lines
-     * there is a sequence where the chip will tell us that XOSC
-     * is up.   That is how we should do it.
-     */
-    call RSTN.set();                    /* deassert RSTN */
-    call BusyWait.wait( 200 );
-
     rxMsg = &rxMsgBuffer;
-
     state = STATE_VR_ON;
+
+    nop();
 
     /*
      * rest of initialization needs to occur over the SPI bus.
@@ -713,20 +739,63 @@ implementation {
     return call SpiResource.request();
   }
 
-  inline void resetRadio() {
+  /*----------------- SPI -----------------*/
+
+  event void SpiResource.granted() {
+
+    /*
+     * no no no.   CSN should always be initilized once then left alone.
+     * you really don't want to float it.
+     */
+    call CSN.makeOutput();
+    call CSN.set();
+
+    if( state == STATE_VR_ON ) {
+      initRadio();
+      call SpiResource.release();
+    } else if (state == STATE_RX_DOWNLOAD)
+      downloadMessage();
+    else call Tasklet.schedule();
+  }
+
+
+  bool isSpiAcquired() {
+    if (call SpiResource.isOwner()) {
+      call CSN.makeOutput();
+      call CSN.set();
+      return TRUE;
+    }
+
+    if (call SpiResource.immediateRequest() == SUCCESS) {
+      call CSN.makeOutput();
+      call CSN.set();
+      return TRUE;
+    }
+
+    call SpiResource.request();
+    return FALSE;
+  }
+
+
+  async event void SpiPacket.sendDone(uint8_t* txBuf, uint8_t* rxBuf,
+                                      uint16_t len, error_t error) { };
+
+
+//  inline
+  void resetRadio() {
     // now register access is enabled: set up defaults
     cc2520_fifopctrl_t fifopctrl;
     cc2520_frmfilt0_t frmfilt0;
     cc2520_frmfilt1_t frmfilt1;
     cc2520_srcmatch_t srcmatch;
-    //cc2520_frmctrl0_t frmctrl0;
+//  cc2520_frmctrl0_t frmctrl0;
 
     /*
      * reset and wait for the chip to come back
      * 200 uS, wait for XOSC?
      */
     call RSTN.clr();
-//  call BusyWait.wait( 200 );          /* wait 200 uS */
+//  call BusyWait.wait(200);
     call RSTN.set();
 
     // update default values of registers
@@ -752,9 +821,11 @@ implementation {
     frmfilt0.f.frame_filter_en = 0;
     writeRegister(CC2520_FRMFILT0, frmfilt0.value);
 
-    //frmctrl0 = cc2520_frmctrl0_default;
-    //frmctrl0.f.autoack = 1;
-    //writeRegister(CC2520_FRMCTRL0, frmctrl0.value);
+#ifdef notdef
+    frmctrl0 = cc2520_frmctrl0_default;
+    frmctrl0.f.autoack = 1;
+    writeRegister(CC2520_FRMCTRL0, frmctrl0.value);
+#endif
 
     // accept reserved frames
     frmfilt1 = cc2520_frmfilt1_default;
@@ -770,7 +841,8 @@ implementation {
     // this is done by default.
   }
 
-  void initRadio(){
+
+  void initRadio() {
     resetRadio();
 
     atomic first_packet = TRUE;
@@ -781,69 +853,32 @@ implementation {
     state = STATE_PD;
   }
 
-  /*----------------- SPI -----------------*/
-
-  event void SpiResource.granted(){
-
-    /*
-     * no no no.   CSN should always be initilized once then left alone.
-     * you really don't want to float it.
-     */
-    call CSN.makeOutput();
-    call CSN.set();
-
-    if( state == STATE_VR_ON ){
-      initRadio();
-      call SpiResource.release();
-    }else if(state == STATE_RX_DOWNLOAD){
-      downloadMessage();
-    }else
-      call Tasklet.schedule();
-  }
-
-  bool isSpiAcquired(){
-    if( call SpiResource.isOwner() ){
-      call CSN.makeOutput();
-      call CSN.set();
-      return TRUE;
-    }
-
-    if( call SpiResource.immediateRequest() == SUCCESS ){
-      call CSN.makeOutput();
-      call CSN.set();
-
-      return TRUE;
-    }
-
-    call SpiResource.request();
-    return FALSE;
-  }
-
-  async event void SpiPacket.sendDone(uint8_t* txBuf, uint8_t* rxBuf, uint16_t len, error_t error) {};
-
   /*----------------- CHANNEL -----------------*/
 
-  tasklet_async command uint8_t RadioState.getChannel(){
+  tasklet_async command uint8_t RadioState.getChannel() {
     return channel;
   }
 
-  tasklet_async command error_t RadioState.setChannel(uint8_t c){
-    c &= CC2520_CHANNEL_MASK;
 
-    if( cmd != CMD_NONE )
+  tasklet_async command error_t RadioState.setChannel(uint8_t c) {
+
+    c &= CC2520_CHANNEL_MASK;
+    if (cmd != CMD_NONE)
       return EBUSY;
-    else if( channel == c )
+    else if (channel == c)
       return EALREADY;
 
     channel = c;
     cmd = CMD_CHANNEL;
     call Tasklet.schedule();
-
     return SUCCESS;
   }
 
-  inline void setChannel(){
+
+//  inline
+  void setChannel() {
     cc2520_freqctrl_t freqctrl;
+
     // set up freq
     freqctrl = cc2520_freqctrl_default;
     freqctrl.f.freq = 11 + 5 * (channel - 11);
@@ -854,40 +889,39 @@ implementation {
       call DiagMsg.send();
     }
 #endif
-
     writeRegister(CC2520_FREQCTRL, freqctrl.value);
   }
 
-  inline void changeChannel(){
-    RADIO_ASSERT( cmd == CMD_CHANNEL );
-    RADIO_ASSERT( state == STATE_PD || state == STATE_IDLE || ( state == STATE_RX_ON && call RadioAlarm.isFree()));
 
-    if( isSpiAcquired() ){
+//  inline
+  void changeChannel() {
+    RADIO_ASSERT( cmd == CMD_CHANNEL );
+    RADIO_ASSERT( state == STATE_PD || state == STATE_IDLE
+            || (state == STATE_RX_ON && call RadioAlarm.isFree()));
+
+    if (isSpiAcquired()) {
       setChannel();
 
-      if( state == STATE_RX_ON ) {
-        call RadioAlarm.wait(IDLE_2_RX_ON_TIME); // 12 symbol periods
+      if (state == STATE_RX_ON) {
+        call RadioAlarm.wait(IDLE_2_RX_ON_TIME);        // 12 symbol periods
         state = STATE_IDLE_2_RX_ON;
-      }
-      else
-        cmd = CMD_SIGNAL_DONE;
+      } else cmd = CMD_SIGNAL_DONE;
     }
   }
 
   /*----------------- TURN ON/OFF -----------------*/
 
-  inline void changeState(){
-
-    if( (cmd == CMD_STANDBY || cmd == CMD_TURNON)
-        && state == STATE_PD  && isSpiAcquired() && call RadioAlarm.isFree() ){
-
+//  inline
+  void changeState() {
+    if ((cmd == CMD_STANDBY || cmd == CMD_TURNON) && state == STATE_PD
+        && isSpiAcquired() && call RadioAlarm.isFree()) {
       // start oscillator
       strobe(CC2520_CMD_SXOSCON);
 
       call RadioAlarm.wait(PD_2_IDLE_TIME); // .86ms OSC startup time
       state = STATE_PD_2_IDLE;
-    }
-    else if( cmd == CMD_TURNON && state == STATE_IDLE && isSpiAcquired() && call RadioAlarm.isFree()){
+    } else
+      if (cmd == CMD_TURNON && state == STATE_IDLE && isSpiAcquired() && call RadioAlarm.isFree()) {
       // setChannel was ignored in SLEEP because the SPI was not working, so do it here
       setChannel();
 
@@ -917,15 +951,16 @@ implementation {
       cmd = CMD_SIGNAL_DONE;
   }
 
+
   // TODO: turn off SFD capture when turning off radio
   tasklet_async command error_t RadioState.turnOff(){
-    if( cmd != CMD_NONE )
+    if (cmd != CMD_NONE)
       return EBUSY;
-    else if( state == STATE_PD )
+    else if (state == STATE_PD)
       return EALREADY;
 
 #ifdef RADIO_DEBUG_MESSAGES
-    if( call DiagMsg.record() ){
+    if (call DiagMsg.record()) {
       call DiagMsg.str("turnOff");
       call DiagMsg.send();
     }
@@ -933,18 +968,18 @@ implementation {
 
     cmd = CMD_TURNOFF;
     call Tasklet.schedule();
-
     return SUCCESS;
   }
 
-  tasklet_async command error_t RadioState.standby(){
-    if( cmd != CMD_NONE || (state == STATE_PD && ! call RadioAlarm.isFree()) )
+
+  tasklet_async command error_t RadioState.standby() {
+    if (cmd != CMD_NONE || (state == STATE_PD && ! call RadioAlarm.isFree()))
       return EBUSY;
-    else if( state == STATE_IDLE )
+    else if (state == STATE_IDLE)
       return EALREADY;
 
 #ifdef RADIO_DEBUG_MESSAGES
-    if( call DiagMsg.record() ){
+    if (call DiagMsg.record()) {
       call DiagMsg.str("standBy");
       call DiagMsg.send();
     }
@@ -952,15 +987,15 @@ implementation {
 
     cmd = CMD_STANDBY;
     call Tasklet.schedule();
-
     return SUCCESS;
   }
 
+
   // TODO: turn on SFD capture when turning off radio
-  tasklet_async command error_t RadioState.turnOn(){
-    if( cmd != CMD_NONE || (state == STATE_PD && ! call RadioAlarm.isFree()) )
+  tasklet_async command error_t RadioState.turnOn() {
+    if (cmd != CMD_NONE || (state == STATE_PD && !call RadioAlarm.isFree()))
       return EBUSY;
-    else if( state == STATE_RX_ON )
+    else if (state == STATE_RX_ON)
       return EALREADY;
 
 #ifdef RADIO_DEBUG_MESSAGES
@@ -972,36 +1007,37 @@ implementation {
 
     cmd = CMD_TURNON;
     call Tasklet.schedule();
-
     return SUCCESS;
   }
 
-  default tasklet_async event void RadioState.done() {}
+
+  default tasklet_async event void RadioState.done() { }
 
   /*----------------- TRANSMIT -----------------*/
 
-  tasklet_async command error_t RadioSend.send(message_t* msg){
+  tasklet_async command error_t RadioSend.send(message_t *msg) {
     uint8_t p;
     uint8_t micLength = 0;
     uint32_t frameCounter;
     cc2520_status_t status;
-    security_header_t* secHdr;
+    security_header_t *secHdr;
+    cc2520_txpower_t txpower;
 
     secMode = 0;
     prevdata9 = 0;
     prevdata10 = 0;
 
-    if( cmd != CMD_NONE || (state != STATE_IDLE && state != STATE_RX_ON) || ! isSpiAcquired() || radioIrq )
+    if (cmd != CMD_NONE || (state != STATE_IDLE && state != STATE_RX_ON)
+        || !isSpiAcquired() || radioIrq)
       return EBUSY;
 
-    p = (call PacketTransmitPower.isSet(msg) ?
-        call PacketTransmitPower.get(msg) : CC2520_DEF_RFPOWER) & CC2520_TX_PWR_MASK;
+    p =
+      (call PacketTransmitPower.isSet(msg)
+        ? call PacketTransmitPower.get(msg) : CC2520_DEF_RFPOWER)
+      & CC2520_TX_PWR_MASK;
 
-    if( p != txPower ){
-      cc2520_txpower_t txpower = cc2520_txpower_default;
-
+    if (p != txPower) {
       txPower = p;
-
       txpower.f.pa_power = txPower;
       writeRegister(CC2520_TXPOWER, txpower.value);
     }
@@ -1009,19 +1045,20 @@ implementation {
 #ifdef RADIO_DEBUG_MESSAGES
     {
       uint8_t tmp1, tmp2;
+
       tmp1 = call Config.requiresRssiCca(msg);
       tmp2 = call CCA.get();
-      if( call DiagMsg.record() ){
+      if (call DiagMsg.record()) {
         call DiagMsg.str("cca");
         call DiagMsg.int8(tmp1);
         call DiagMsg.int8(tmp2);
         call DiagMsg.send();
       }
-      if( tmp1 && !tmp2)
+      if (tmp1 && !tmp2)
         return EBUSY;
     }
 #else
-    if( call Config.requiresRssiCca(msg) && !call CCA.get() )
+    if (call Config.requiresRssiCca(msg) && !call CCA.get())
       return EBUSY;
 #endif
 
@@ -1043,7 +1080,9 @@ implementation {
     secMode = call CC2520Security.getSecurityMode();
     txIeee154header = (ieee154_simple_header_t*)txData;
 
-    if(secMode > 0 &&  (txIeee154header->fcf & (IEEE154_TYPE_DATA << IEEE154_FCF_FRAME_TYPE))){
+    if (secMode > 0 &&
+        (txIeee154header->fcf &
+         (IEEE154_TYPE_DATA << IEEE154_FCF_FRAME_TYPE))) {
 
       // Note that the payload starts at txData[9] when 16 bit addressing is used
       frameCounter = call CC2520Security.getFrameCounter();
@@ -1061,35 +1100,35 @@ implementation {
 
       //JK: Send ENC command
 
-      while(security_processing){}
+      while(security_processing) { }    /* why is this here?   crap */
 
       security_processing = TRUE;
 
-      if(secMode == CTR_MODE){
+      if (secMode == CTR_MODE) {
         micLength = 0;
         CTR(HIGH_PRIORITY, ADDR_KEY/16, txLength - 11 - 2, ADDR_NONCE/16, ADDR_DATA, 0); //11 for txData and 2 for fcs
-      }else if(secMode == CBC_MAC_4){
+      } else if (secMode == CBC_MAC_4) {
         micLength = 4;
         CBCMAC(HIGH_PRIORITY, ADDR_KEY/16, txLength - 11 - 2, ADDR_DATA, 0, 1);
-      }else if(secMode == CBC_MAC_8){
+      } else if (secMode == CBC_MAC_8) {
         micLength = 8;
         CBCMAC(HIGH_PRIORITY, ADDR_KEY/16, txLength - 11 - 2, ADDR_DATA, 0, 2);
-      }else if(secMode == CBC_MAC_16){
+      } else if(secMode == CBC_MAC_16) {
         micLength = 16;
         CBCMAC(HIGH_PRIORITY, ADDR_KEY/16, txLength - 11 - 2, ADDR_DATA, 0, 3);
-      }else if(secMode == CCM_4){
+      } else if (secMode == CCM_4) {
         micLength = 4;
         CCM(HIGH_PRIORITY, ADDR_KEY/16, txLength - 11 - 2, ADDR_NONCE/16, ADDR_DATA, 0, txLength - 11 - 2, 1);
-      }else if(secMode == CCM_8){
+      } else if(secMode == CCM_8) {
         micLength = 8;
         CCM(HIGH_PRIORITY, ADDR_KEY/16, txLength - 11 - 2, ADDR_NONCE/16, ADDR_DATA, 0, txLength - 11 - 2, 2);
-      }else if(secMode == CCM_16){
+      } else if(secMode == CCM_16) {
         micLength = 16;
         CCM(HIGH_PRIORITY, ADDR_KEY/16, txLength - 11 - 2, ADDR_NONCE/16, ADDR_DATA, 0, txLength - 11 - 2, 3);
       }
 
       status = getStatus();
-      while(status.dpu_h_active)
+      while (status.dpu_h_active)
         status = getStatus();
 
       readMemory(ADDR_DATA, &txData[11+sizeof(security_header_t)], 2 + micLength);
@@ -1102,7 +1141,7 @@ implementation {
       prevdata9 = txData[9];
       prevdata10 = txData[10];
 
-      secHdr = (security_header_t*)&txData[9]; // beginning of txData section
+      secHdr = (security_header_t*) &txData[9]; // beginning of txData section
 
       secHdr->secLevel = secMode;
       secHdr->keyMode = 1; // Fixed to 1 for now
@@ -1113,7 +1152,6 @@ implementation {
       txIeee154header->fcf |= 1 << IEEE154_FCF_SECURITY_ENABLED;
 
       txLength += (sizeof(security_header_t) + micLength);
-
     }
 
     // txLength | txData[0] ... txData[txLength-3] | automatically generated FCS
@@ -1141,20 +1179,19 @@ implementation {
       call SfdCapture.captureRisingEdge();
     }
 
-    //#ifdef RADIO_DEBUG_MESSAGES
+//#ifdef RADIO_DEBUG_MESSAGES
     txMsg = msg;
-    //#endif
+//#endif
 
     // wait for SFD rising edge.
     return SUCCESS;
   }
 
-  inline void continueTx()
-  {
+//  inline
+  void continueTx() {
     void* timesync;
     uint32_t time32;
     cc2520_status_t status __attribute__((unused));
-
 
     /*****************************************
      * FIXME: We have to check for underrun here!
@@ -1166,15 +1203,15 @@ implementation {
 
     time32 = capturedTime;
 
-    if( timesync != 0 )
-      *(timesync_relative_t*)timesync = (*(timesync_absolute_t*)timesync) - time32;
+    if (timesync != 0)
+      *(timesync_relative_t *) timesync = (*(timesync_absolute_t *) timesync) - time32;
 
     // write the rest of the payload to the fifo
     atomic writeTxFifo(txData+header, txLength);
 
     call SfdCapture.captureFallingEdge();
 
-    if(secMode > 0){
+    if (secMode > 0) {
       txData[9] = prevdata9;
       txData[10] = prevdata10;
     }
@@ -1182,20 +1219,22 @@ implementation {
     // get status
     status = getStatus();
     RADIO_ASSERT ( status.tx_active == 1);
+
     // FIXME: have to check for underflow exception!
-    //RADIO_ASSERT ( status.tx_underflow == 0);
+
+//  RADIO_ASSERT ( status.tx_underflow == 0);
     RADIO_ASSERT ( status.xosc_stable == 1);
 
-    if( timesync != 0 )
-      *(timesync_absolute_t*)timesync = (*(timesync_relative_t*)timesync) + time32;
+    if (timesync != 0)
+      *(timesync_absolute_t *) timesync = (*(timesync_relative_t *) timesync) + time32;
 
     call PacketTimeStamp.set(txMsg, time32);
 
 #ifdef RADIO_DEBUG_MESSAGES
-    if( call DiagMsg.record() ){
+    if (call DiagMsg.record()) {
       uint16_t t = call RadioAlarm.getNow();
-      txLength = getHeader(txMsg)->length;
 
+      txLength = getHeader(txMsg)->length;
       call DiagMsg.chr('t');
       call DiagMsg.uint16(time32);
       call DiagMsg.uint16(t);
@@ -1203,13 +1242,11 @@ implementation {
       call DiagMsg.uint32(call PacketTimeStamp.isValid(txMsg) ? call PacketTimeStamp.timestamp(txMsg) : 0);
       call DiagMsg.int8(txLength);
       call DiagMsg.hex8s(getPayload(txMsg), txLength - 2);
-      if(txLength - 2 > 15) {
+      if (txLength - 2 > 15) {
         call DiagMsg.hex8s(&(((uint8_t *)getPayload(txMsg))[15]), txLength - 2 - 15);
       }
-      if(txIeee154header->fcf & (1 << IEEE154_FCF_ACK_REQ)){
+      if (txIeee154header->fcf & (1 << IEEE154_FCF_ACK_REQ))
         call DiagMsg.str("w/ ack");
-      }
-
       call DiagMsg.send();
     }
 #endif
@@ -1218,7 +1255,7 @@ implementation {
     state = STATE_BUSY_TX_2_RX_ON;
     cmd = CMD_TRANSMIT;
 
-    //call SpiResource.release();
+//  call SpiResource.release();
     atomic sending = TRUE;
   }
 
@@ -1227,15 +1264,14 @@ implementation {
 
   /*----------------- CCA -----------------*/
 
-  tasklet_async command error_t RadioCCA.request(){
-    if( cmd != CMD_NONE || state != STATE_RX_ON )
+  tasklet_async command error_t RadioCCA.request() {
+    if (cmd != CMD_NONE || state != STATE_RX_ON)
       return EBUSY;
 
-    if(call CCA.get()) {
+    if (call CCA.get())
       signal RadioCCA.done(SUCCESS);
-    } else {
+    else
       signal RadioCCA.done(EBUSY);
-    }
     return SUCCESS;
   }
 
@@ -1245,14 +1281,15 @@ implementation {
 
   // recover from an error
   // rx fifo flush does not always work
-  inline void recover() {
+//  inline
+  void recover() {
     cc2520_status_t status;
 
     // reset the radio, initialize registers to default values
     RADIO_ASSERT(0);
     resetRadio();
 
-    //call SfdCapture.disable();
+//  call SfdCapture.disable();
 
     RADIO_ASSERT(state == STATE_PD);
 
@@ -1267,10 +1304,10 @@ implementation {
     // get status
     status = getStatus();
     RADIO_ASSERT ( status.rssi_valid == 0);
-    //RADIO_ASSERT ( status.lock == 0);
+//  RADIO_ASSERT ( status.lock == 0);
     RADIO_ASSERT ( status.tx_active == 0);
-    //RADIO_ASSERT ( status.enc_busy == 0);
-    //RADIO_ASSERT ( status.tx_underflow == 0);
+//  RADIO_ASSERT ( status.enc_busy == 0);
+//  RADIO_ASSERT ( status.tx_underflow == 0);
     RADIO_ASSERT ( status.xosc_stable == 1);
 
     // we're idle now
@@ -1283,34 +1320,34 @@ implementation {
     strobe(CC2520_CMD_SRXON);
     state = STATE_IDLE_2_RX_ON;
 
-    //call SfdCapture.captureRisingEdge(); // JK
+//  call SfdCapture.captureRisingEdge(); // JK
 
     // we will be able to receive packets in 12 symbol periods
     state = STATE_RX_ON;
   }
 
-  inline void recover_err() {
+//  inline
+  void recover_err() {
     cc2520_status_t status __attribute__((unused));
 
     // reset the radio, initialize registers to default values
     RADIO_ASSERT(0);
 
     resetRadio();
-    // start oscillator
-    strobe(CC2520_CMD_SXOSCON);
+    strobe(CC2520_CMD_SXOSCON);         // start oscillator
 
     // going idle in PD_2_IDLE_TIME
     state = STATE_PD_2_IDLE;
 
-    //call BusyWait.wait(PD_2_IDLE_TIME); // .86ms OSC startup time
+//  call BusyWait.wait(PD_2_IDLE_TIME); // .86ms OSC startup time
 
     // get status
     status = getStatus();
     RADIO_ASSERT ( status.rssi_valid == 0);
-    //RADIO_ASSERT ( status.lock == 0);
+//  RADIO_ASSERT ( status.lock == 0);
     RADIO_ASSERT ( status.tx_active == 0);
-    //RADIO_ASSERT ( status.enc_busy == 0);
-    //RADIO_ASSERT ( status.tx_underflow == 0);
+//  RADIO_ASSERT ( status.enc_busy == 0);
+//  RADIO_ASSERT ( status.tx_underflow == 0);
     RADIO_ASSERT ( status.xosc_stable == 1);
 
     // we're idle now
@@ -1323,28 +1360,31 @@ implementation {
     strobe(CC2520_CMD_SRXON);
     state = STATE_IDLE_2_RX_ON;
 
-    //call SfdCapture.captureRisingEdge(); // JK
+//  call SfdCapture.captureRisingEdge(); // JK
 
     // we will be able to receive packets in 12 symbol periods
     state = STATE_RX_ON;
   }
 
-  inline void endRx(){
+
+//  inline
+  void endRx() {
     receiving = FALSE;
   }
 
-  inline void downloadMessage(){ // receiving message to buffer!
+//  inline
+  void downloadMessage() {      // receiving message to buffer!
     uint8_t length, micLength;
     uint16_t crc = 1;
-    uint8_t* data;
+    uint8_t *data;
     uint8_t rssi;
     uint8_t crc_ok_lqi;
     uint32_t sfdTime, decLimit;
     cc2520_status_t status;
-    security_header_t* secHdr;
-    ieee154_simple_header_t* ieee154header;
+    security_header_t *secHdr;
+    ieee154_simple_header_t *ieee154header;
 
-    //state = STATE_RX_DOWNLOAD;
+//  state = STATE_RX_DOWNLOAD;
 
     isSpiAcquired();
 
@@ -1357,7 +1397,7 @@ implementation {
     readLengthFromRxFifo(&length);
 
 #ifdef RADIO_DEBUG_MESSAGES_____
-    if( call DiagMsg.record() ){
+    if (call DiagMsg.record()) {
       call DiagMsg.str("rx");
       call DiagMsg.uint32(call PacketTimeStamp.isValid(rxMsg) ? call PacketTimeStamp.timestamp(rxMsg) : 0);
       call DiagMsg.uint16(sfdTime);
@@ -1371,12 +1411,12 @@ implementation {
     if (length == 0) {
 
 #ifdef RADIO_DEBUG_MESSAGES
-      if( call DiagMsg.record() ){
+      if (call DiagMsg.record()) {
         call DiagMsg.str("rx 0 length");
         call DiagMsg.send();
       }
 #endif
-      if(!first_packet){
+      if (!first_packet) {
         atomic recover_err();
         atomic flushRxFifo();
       }
@@ -1422,10 +1462,10 @@ implementation {
     }
 
     // check for too long lengths
-    if( length > 127 ) {
+    if (length > 127) {
 
 #ifdef RADIO_DEBUG_MESSAGES
-      if( call DiagMsg.record() ){
+      if (call DiagMsg.record()) {
         call DiagMsg.str("rx > 127");
         call DiagMsg.send();
       }
@@ -1442,9 +1482,9 @@ implementation {
       return;
     }
 
-    if( length > call RadioPacket.maxPayloadLength() + 2 ){
+    if (length > call RadioPacket.maxPayloadLength() + 2 ) {
 
-      while( length-- > 2 ) {
+      while (length-- > 2) {
         atomic readPayloadFromRxFifo(data, 1);
       }
 
@@ -1452,7 +1492,7 @@ implementation {
       atomic readCrcOkAndLqiFromRxFifo(&crc_ok_lqi);
 
 #ifdef RADIO_DEBUG_MESSAGES
-      if( call DiagMsg.record() ){
+      if (call DiagMsg.record()) {
         call DiagMsg.str("rx too long");
         call DiagMsg.send();
       }
@@ -1481,18 +1521,15 @@ implementation {
 
     // the last two bytes are not the fsc, but RSSI(8), CRC_ON(1)+LQI(7)
     readRssiFromRxFifo(&rssi);
-
     readCrcOkAndLqiFromRxFifo(&crc_ok_lqi);
-
     ieee154header = (ieee154_simple_header_t*)data;
 
     // TODO: actually, we can signal that a message was received, without
     // timestamp set
 
     if (call FIFOP.get() == 1 || call FIFO.get() == 1) {
-
 #ifdef RADIO_DEBUG_MESSAGES
-      if( call DiagMsg.record() ){
+      if (call DiagMsg.record()) {
         call DiagMsg.str("FIFO or FIFOP = 1");
         call DiagMsg.send();
       }
@@ -1506,16 +1543,15 @@ implementation {
       return;
     }
 
-    if( signal RadioReceive.header(rxMsg) ){
+    if (signal RadioReceive.header(rxMsg)) {
       // set RSSI, CRC and LQI only if we're accepting the message
       call PacketRSSI.set(rxMsg, rssi);
       call PacketLinkQuality.set(rxMsg, crc_ok_lqi & 0x7f);
       crc = (crc_ok_lqi > 0x7f) ? 0 : 1;
     }
 
-
-    if(length == 3 || ieee154header->fcf & (2 << IEEE154_FCF_FRAME_TYPE) ){
-      //call Leds.led2Toggle();
+    if (length == 3 || ieee154header->fcf & (2 << IEEE154_FCF_FRAME_TYPE)) {
+//    call Leds.led2Toggle();
       call SpiResource.release();
       call CSN.set();
       rxMsg = signal RadioReceive.receive(rxMsg);
@@ -1523,9 +1559,8 @@ implementation {
       return;
     }
 
-
     // signal only if it has passed the CRC check
-    if( crc == 0){
+    if (crc == 0) {
       call PacketTimeStamp.set(rxMsg, sfdTime);
 
 #ifdef RADIO_DEBUG_MESSAGES
@@ -1539,7 +1574,7 @@ implementation {
         call DiagMsg.uint32(call PacketTimeStamp.isValid(rxMsg) ? call PacketTimeStamp.timestamp(rxMsg) : 0);
         call DiagMsg.int8(length);
         call DiagMsg.hex8s(getPayload(rxMsg), length);
-        if(length > 15) {
+        if (length > 15) {
           call DiagMsg.hex8s(&(((uint8_t*)getPayload(rxMsg))[15]), length - 15);
         }
         call DiagMsg.send();
@@ -1547,9 +1582,11 @@ implementation {
 #endif
 
       // check fcf for security bit in data packets
-      if((ieee154header->fcf & (1 << IEEE154_FCF_SECURITY_ENABLED)) && (ieee154header->fcf & (IEEE154_TYPE_DATA << IEEE154_FCF_FRAME_TYPE))  ){ 
+      if ((ieee154header->fcf & (1 << IEEE154_FCF_SECURITY_ENABLED))
+          && (ieee154header->fcf &
+              (IEEE154_TYPE_DATA << IEEE154_FCF_FRAME_TYPE))) {
 
-        secHdr = (security_header_t*)&data[9];
+        secHdr = (security_header_t *)&data[9];
         memcpy(&decNonce[3], &(secHdr->frameCounter), 4); // readout nonce from tinyos 15.4 security header
 
         writeMemory(ADDR_KEY, call CC2520Security.getKey(), 16);
@@ -1563,29 +1600,27 @@ implementation {
         atomic security_processing = TRUE;
 
         // perform security options.
-        if (secHdr->secLevel == NO_SEC){
+        if (secHdr->secLevel == NO_SEC) {
           micLength = 0;
-        }else if (secHdr->secLevel == CBC_MAC_4){
+        } else if (secHdr->secLevel == CBC_MAC_4) {
           micLength = 4;
-        }else if (secHdr->secLevel == CBC_MAC_8){
+        } else if (secHdr->secLevel == CBC_MAC_8) {
           micLength = 8;
-        }else if (secHdr->secLevel == CBC_MAC_16){
+        } else if (secHdr->secLevel == CBC_MAC_16) {
           micLength = 16;
-        }else if (secHdr->secLevel == CTR_MODE){
+        } else if (secHdr->secLevel == CTR_MODE) {
           writeMemory(ADDR_DATA, &data[11+sizeof(security_header_t)], length - sizeof(security_header_t) - 11);
           CTR(HIGH_PRIORITY, ADDR_KEY/16, length - sizeof(security_header_t) - 11, ADDR_NONCE/16, ADDR_DATA, 0);
-          //mode = CC2420_CTR;
+//        mode = CC2420_CTR;
           micLength = 0;
-        }else if (secHdr->secLevel == CCM_4){
+        } else if (secHdr->secLevel == CCM_4) {
           micLength = 4;
-        }else if (secHdr->secLevel == CCM_8){
+        } else if (secHdr->secLevel == CCM_8) {
           micLength = 8;
-        }else if (secHdr->secLevel == CCM_16){
+        } else if (secHdr->secLevel == CCM_16) {
           micLength = 16;
-        }else{
-          // invalid security
-          micLength = 0;
-        }
+        } else
+          micLength = 0;                          // invalid security
 
         // Wait for security done interrupt (pp. 49)
         status = getStatus();
@@ -1604,14 +1639,14 @@ implementation {
         atomic security_processing = FALSE;
 
         length = length - micLength - sizeof(security_header_t); // TODO: not working out too well
-        // TODO: If I do this do I lose the RSSI pointers?
 
-
-        //readMemory(ADDR_DATA, &data[11+sizeof(security_header_t)], length - 11 - sizeof(security_header_t));
-        //length -= micLength;
-        //memcpy(&data[9], &data[9+sizeof(security_header_t)], 2 + (length - 11 - sizeof(security_header_t)));
-        //length -= micLength - sizeof(security_header_t); // modify length w.r.t. mic length
-
+#ifdef notdef
+        /* TODO: If I do this do I lose the RSSI pointers? */
+        readMemory(ADDR_DATA, &data[11+sizeof(security_header_t)], length - 11 - sizeof(security_header_t));
+        length -= micLength;
+        memcpy(&data[9], &data[9+sizeof(security_header_t)], 2 + (length - 11 - sizeof(security_header_t)));
+        length -= micLength - sizeof(security_header_t); // modify length w.r.t. mic length
+#endif
       }
 
       call SpiResource.release();
@@ -1622,17 +1657,18 @@ implementation {
       endRx();
 
       // ready to receive new message: enable SFD interrupts
-      //call SfdCapture.captureRisingEdge(); // JK
+//    call SfdCapture.captureRisingEdge(); // JK
 
-    }else{
+    } else {
       call SpiResource.release();
       call CSN.set();
-      //state = STATE_RX_ON;
-      //cmd = CMD_NONE;
+//    state = STATE_RX_ON;
+//    cmd = CMD_NONE;
 
       endRx();
+
       // ready to receive new message: enable SFD interrupts
-      //call SfdCapture.captureRisingEdge();// JK
+//    call SfdCapture.captureRisingEdge();// JK
     }
   }
 
@@ -1642,10 +1678,11 @@ implementation {
   // SFD (rising edge) for timestamps in RX & TX, falling for TX end
   async event void SfdCapture.captured( uint16_t time )  {
 
-    //call SfdCapture.disable(); 
+//  call SfdCapture.disable(); 
+
     // if canceling the above takes care of the stopping issue, then
-    //the state machine is getting stck at some point inthe disable
-    //state
+    // the state machine is getting stuck at some point in the disable
+    // state
 
     RADIO_ASSERT( ! radioIrq );
     RADIO_ASSERT( state == STATE_RX_ON || state == STATE_TX_ON || state == STATE_BUSY_TX_2_RX_ON );
@@ -1663,27 +1700,27 @@ implementation {
         call DiagMsg.str("FIFOP");
       if(call SFD.get())
         call DiagMsg.str("SFD");
-
       call DiagMsg.send();
     }
 #endif
 
-    if(call SFD.get())
-    {
+    if (call SFD.get()) {
       atomic {
+
         // rising edge, safe time and mutex to 0
         capturedTime = call LocalTime.get();
+
         // FIXME: there is a small chance that between the SFD and read of
-        // LocalTime, the timer overflowed. This wil incurr an error of 65436.
+        // LocalTime, the timer overflowed. This will incurr an error of 65436.
         // We have to check for this overflow! But how?
-        if(state == STATE_TX_ON)
-        {
-          if((uint16_t)(time + TX_SFD_DELAY) > (uint16_t)(capturedTime))
+
+        if(state == STATE_TX_ON) {
+          if ((uint16_t)(time + TX_SFD_DELAY) > (uint16_t)(capturedTime))
             // we had an overflow between SFD capture and read of LocalTime
             capturedTime -= (uint32_t) 1<<16;
           capturedTime += (uint16_t)(time + TX_SFD_DELAY) - (uint16_t)(capturedTime);
         } else {
-          if((uint16_t)(time - RX_SFD_DELAY) > (uint16_t)(capturedTime))
+          if ((uint16_t)(time - RX_SFD_DELAY) > (uint16_t)(capturedTime))
             // we had an overflow between SFD capture and read of LocalTime
             capturedTime -= (uint32_t) 1<<16;
           capturedTime += (uint16_t)(time - RX_SFD_DELAY) - (uint16_t)(capturedTime);
@@ -1698,19 +1735,20 @@ implementation {
     nop();
   }
 
-  // FIFOP interrupt, last byte received
-  async event void FifopInterrupt.fired(){
-    if(receiving == FALSE){
+  // FIFOP interrupt, last byte received, ah not really.
+  async event void FifopInterrupt.fired() {
+    if (receiving == FALSE) {
       atomic receiving = TRUE;
       downloadMessage();
     }
   }
 
-  inline void serviceRadio(){
-    atomic if( isSpiAcquired() ){
+
+//  inline
+  void serviceRadio() {
+    atomic if (isSpiAcquired()) {
       radioIrq = FALSE;
-      switch(state)
-      {
+      switch(state) {
         case STATE_TX_ON:
           continueTx();
           break;
@@ -1718,22 +1756,21 @@ implementation {
         case STATE_BUSY_TX_2_RX_ON:
           state = STATE_RX_ON;
           cmd = CMD_NONE;
-          if(sending){
+          if (sending) {
             atomic sending = FALSE;
             call SfdCapture.captureRisingEdge(); // JK release this to enable rx side sfd.
+
             // do not signal success if the packet requested for an ack
             // In this case call a timer instead and signal success once the timer expires or an ack is received
             call Leds.led2Toggle();
 
 #ifdef RADIO_DEBUG_MESSAGES
-	    if( call DiagMsg.record() ){
+	    if (call DiagMsg.record()) {
 	      call DiagMsg.str("RadioSend.sendDone");
 	      call DiagMsg.send();
 	    }
 #endif
 	    signal RadioSend.sendDone(SUCCESS);
-
-
           }
 
         default:
@@ -1743,198 +1780,194 @@ implementation {
   }
 
 
-default tasklet_async event bool RadioReceive.header(message_t* msg){
-  return TRUE;
-}
-
-default tasklet_async event message_t* RadioReceive.receive(message_t* msg){
-  return msg;
-}
-
-
-
-/*----------------- TASKLET -----------------*/
-
-tasklet_async event void Tasklet.run(){
-
-  if( radioIrq ){
-    serviceRadio();
+  default tasklet_async event bool RadioReceive.header(message_t *msg) {
+    return TRUE;
   }
 
-  if( cmd != CMD_NONE ){
-    if( cmd == CMD_DOWNLOAD && state == STATE_RX_ON){ // receive state
-      //downloadMessage();
-    }
-    else if( CMD_TURNOFF <= cmd && cmd <= CMD_TURNON )
-      changeState();
-    else if( cmd == CMD_CHANNEL )
-      changeChannel();
-
-    if( cmd == CMD_SIGNAL_DONE ){
-      cmd = CMD_NONE;
-      signal RadioState.done();
-    }
+  default tasklet_async event message_t* RadioReceive.receive(message_t *msg) {
+    return msg;
   }
 
-  if( cmd == CMD_NONE && state == STATE_RX_ON && ! radioIrq )
-    signal RadioSend.ready();
+  /*----------------- TASKLET -----------------*/
 
-  if( cmd == CMD_NONE )
-    call SpiResource.release();
-}
+  tasklet_async event void Tasklet.run() {
+    if (radioIrq) {
+      serviceRadio();
+    }
 
-/*----------------- RadioPacket -----------------*/
+    if (cmd != CMD_NONE) {
+      if (cmd == CMD_DOWNLOAD && state == STATE_RX_ON) { // receive state
+        //    downloadMessage();
+      } else if (CMD_TURNOFF <= cmd && cmd <= CMD_TURNON)
+        changeState();
+      else if (cmd == CMD_CHANNEL)
+        changeChannel();
+      if (cmd == CMD_SIGNAL_DONE) {
+        cmd = CMD_NONE;
+        signal RadioState.done();
+      }
+    }
 
-async command uint8_t RadioPacket.headerLength(message_t* msg){
-  return call Config.headerLength(msg) + sizeof(cc2520_header_t);
-}
+    if (cmd == CMD_NONE && state == STATE_RX_ON && ! radioIrq)
+      signal RadioSend.ready();
 
-async command uint8_t RadioPacket.payloadLength(message_t* msg){
-  return getHeader(msg)->length - 2;
-}
+    if (cmd == CMD_NONE)
+      call SpiResource.release();
+  }
 
-async command void RadioPacket.setPayloadLength(message_t* msg, uint8_t length){
-  RADIO_ASSERT( 1 <= length && length <= 125 );
-  RADIO_ASSERT( call RadioPacket.headerLength(msg) + length + call RadioPacket.metadataLength(msg) <= sizeof(message_t) );
+  /*----------------- RadioPacket -----------------*/
 
-  // we add the length of the CRC, which is automatically generated
-  getHeader(msg)->length = length + 2;
-}
+  async command uint8_t RadioPacket.headerLength(message_t *msg) {
+    return call Config.headerLength(msg) + sizeof(cc2520_header_t);
+  }
 
-async command uint8_t RadioPacket.maxPayloadLength(){
-  RADIO_ASSERT( call Config.maxPayloadLength() - sizeof(cc2520_header_t) <= 125 );
 
-  return call Config.maxPayloadLength() - sizeof(cc2520_header_t);
-}
+  async command uint8_t RadioPacket.payloadLength(message_t *msg) {
+    return getHeader(msg)->length - 2;
+  }
 
-async command uint8_t RadioPacket.metadataLength(message_t* msg){
-  return call Config.metadataLength(msg) + sizeof(cc2520_metadata_t);
-}
 
-async command void RadioPacket.clear(message_t* msg){
-  // all flags are automatically cleared
-}
+  async command void RadioPacket.setPayloadLength(message_t *msg, uint8_t length) {
+    RADIO_ASSERT( 1 <= length && length <= 125 );
+    RADIO_ASSERT( call RadioPacket.headerLength(msg) + length + call RadioPacket.metadataLength(msg) <= sizeof(message_t) );
 
-/*----------------- PacketTransmitPower -----------------*/
+    // we add the length of the CRC, which is automatically generated
+    getHeader(msg)->length = length + 2;
+  }
 
-async command bool PacketTransmitPower.isSet(message_t* msg){
-  return call TransmitPowerFlag.get(msg);
-}
 
-async command uint8_t PacketTransmitPower.get(message_t* msg){
-  return getMeta(msg)->power;
-}
+  async command uint8_t RadioPacket.maxPayloadLength() {
+    RADIO_ASSERT( call Config.maxPayloadLength() - sizeof(cc2520_header_t) <= 125 );
 
-async command void PacketTransmitPower.clear(message_t* msg){
-  call TransmitPowerFlag.clear(msg);
-}
+    return call Config.maxPayloadLength() - sizeof(cc2520_header_t);
+  }
 
-async command void PacketTransmitPower.set(message_t* msg, uint8_t value){
-  call TransmitPowerFlag.set(msg);
-  getMeta(msg)->power = value;
-}
 
-/*----------------- PacketRSSI -----------------*/
+  async command uint8_t RadioPacket.metadataLength(message_t *msg) {
+    return call Config.metadataLength(msg) + sizeof(cc2520_metadata_t);
+  }
 
-async command bool PacketRSSI.isSet(message_t* msg)
-{
-  return call RSSIFlag.get(msg);
-}
 
-async command uint8_t PacketRSSI.get(message_t* msg)
-{
-  return getMeta(msg)->rssi;
-}
+  async command void RadioPacket.clear(message_t *msg) {
+    // all flags are automatically cleared
+  }
 
-async command void PacketRSSI.clear(message_t* msg)
-{
-  call RSSIFlag.clear(msg);
-}
+  /*----------------- PacketTransmitPower -----------------*/
 
-async command void PacketRSSI.set(message_t* msg, uint8_t value)
-{
-  // just to be safe if the user fails to clear the packet
-  call TransmitPowerFlag.clear(msg);
+  async command bool PacketTransmitPower.isSet(message_t *msg) {
+    return call TransmitPowerFlag.get(msg);
+  }
 
-  call RSSIFlag.set(msg);
-  getMeta(msg)->rssi = value;
-}
 
-/*----------------- PacketTimeSyncOffset -----------------*/
+  async command uint8_t PacketTransmitPower.get(message_t *msg) {
+    return getMeta(msg)->power;
+  }
 
-async command bool PacketTimeSyncOffset.isSet(message_t* msg)
-{
-  return call TimeSyncFlag.get(msg);
-}
 
-async command uint8_t PacketTimeSyncOffset.get(message_t* msg)
-{
-  return call RadioPacket.headerLength(msg) + call RadioPacket.payloadLength(msg) - sizeof(timesync_absolute_t);
-}
+  async command void PacketTransmitPower.clear(message_t *msg) {
+    call TransmitPowerFlag.clear(msg);
+  }
 
-async command void PacketTimeSyncOffset.clear(message_t* msg)
-{
-  call TimeSyncFlag.clear(msg);
-}
 
-async command void PacketTimeSyncOffset.set(message_t* msg, uint8_t value)
-{
-  // we do not store the value, the time sync field is always the last 4 bytes
-  RADIO_ASSERT( call PacketTimeSyncOffset.get(msg) == value );
+  async command void PacketTransmitPower.set(message_t *msg, uint8_t value) {
+    call TransmitPowerFlag.set(msg);
+    getMeta(msg)->power = value;
+  }
 
-  call TimeSyncFlag.set(msg);
-}
 
-/*----------------- PacketLinkQuality -----------------*/
+  /*----------------- PacketRSSI -----------------*/
 
-async command bool PacketLinkQuality.isSet(message_t* msg)
-{
-  return TRUE;
-}
+  async command bool PacketRSSI.isSet(message_t *msg) {
+    return call RSSIFlag.get(msg);
+  }
 
-async command uint8_t PacketLinkQuality.get(message_t* msg)
-{
-  return getMeta(msg)->lqi;
-}
 
-async command void PacketLinkQuality.clear(message_t* msg)
-{
-}
+  async command uint8_t PacketRSSI.get(message_t *msg) {
+    return getMeta(msg)->rssi;
+  }
 
-async command void PacketLinkQuality.set(message_t* msg, uint8_t value)
-{
-  getMeta(msg)->lqi = value;
-}
 
-ieee154_simple_header_t* getIeeeHeader(message_t* msg)
-{
-  return (ieee154_simple_header_t*) (void*)msg;//getHeader(msg);//((void*)msg) + call SubPacket.headerLength(msg);
-}
+  async command void PacketRSSI.clear(message_t *msg) {
+    call RSSIFlag.clear(msg);
+  }
 
-async command error_t PacketAcknowledgements.requestAck(message_t* msg)
-{
-  //call SoftwareAckConfig.setAckRequired(msg, TRUE);
-  getIeeeHeader(msg)->fcf |= (1 << IEEE154_FCF_ACK_REQ);
 
-  return SUCCESS;
-}
+  async command void PacketRSSI.set(message_t *msg, uint8_t value) {
+    // just to be safe if the user fails to clear the packet
+    call TransmitPowerFlag.clear(msg);
 
-async command error_t PacketAcknowledgements.noAck(message_t* msg)
-{
-  getIeeeHeader(msg)->fcf &= ~(uint16_t)(1 << IEEE154_FCF_ACK_REQ);
-  return SUCCESS;
-}
+    call RSSIFlag.set(msg);
+    getMeta(msg)->rssi = value;
+  }
 
-async command bool PacketAcknowledgements.wasAcked(message_t* msg)
-{
+
+  /*----------------- PacketTimeSyncOffset -----------------*/
+
+  async command bool PacketTimeSyncOffset.isSet(message_t *msg) {
+    return call TimeSyncFlag.get(msg);
+  }
+
+
+  async command uint8_t PacketTimeSyncOffset.get(message_t *msg) {
+    return call RadioPacket.headerLength(msg) + call RadioPacket.payloadLength(msg) - sizeof(timesync_absolute_t);
+  }
+
+
+  async command void PacketTimeSyncOffset.clear(message_t *msg) {
+    call TimeSyncFlag.clear(msg);
+  }
+
+
+  async command void PacketTimeSyncOffset.set(message_t *msg, uint8_t value) {
+    // we do not store the value, the time sync field is always the last 4 bytes
+    RADIO_ASSERT( call PacketTimeSyncOffset.get(msg) == value );
+    call TimeSyncFlag.set(msg);
+  }
+
+
+  /*----------------- PacketLinkQuality -----------------*/
+
+  async command bool PacketLinkQuality.isSet(message_t *msg) {
+    return TRUE;
+  }
+
+
+  async command uint8_t PacketLinkQuality.get(message_t *msg) {
+    return getMeta(msg)->lqi;
+  }
+
+  async command void PacketLinkQuality.clear(message_t *msg) { }
+
+  async command void PacketLinkQuality.set(message_t *msg, uint8_t value) {
+    getMeta(msg)->lqi = value;
+  }
+
+
+  ieee154_simple_header_t* getIeeeHeader(message_t* msg) {
+    return (ieee154_simple_header_t*) (void *) msg;
+    //getHeader(msg);
+    //((void*)msg) + call SubPacket.headerLength(msg);
+  }
+
+
+  async command error_t PacketAcknowledgements.requestAck(message_t *msg) {
+    //call SoftwareAckConfig.setAckRequired(msg, TRUE);
+    getIeeeHeader(msg)->fcf |= (1 << IEEE154_FCF_ACK_REQ);
+    return SUCCESS;
+  }
+
+
+  async command error_t PacketAcknowledgements.noAck(message_t* msg) {
+    getIeeeHeader(msg)->fcf &= ~(uint16_t)(1 << IEEE154_FCF_ACK_REQ);
+    return SUCCESS;
+  }
+
+  async command bool PacketAcknowledgements.wasAcked(message_t* msg) {
 #ifdef CC2520_HARDWARE_ACK
-  return call AckReceivedFlag.get(msg);
+    return call AckReceivedFlag.get(msg);
 #else
-  RADIO_ASSERT(1);
-  return FALSE;
+    RADIO_ASSERT(1);
+    return FALSE;
 #endif
-}
-
-
-
+  }
 }
