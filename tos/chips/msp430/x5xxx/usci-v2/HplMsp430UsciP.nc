@@ -77,8 +77,8 @@
  * for what you are doing.
  *
  * Also note that many of the fields in various registers shouldn't be
- * set unless the device is in reset.   See the Users guide for details
- * ie. SLAU208M for the x5 family cpus.
+ * set unless the device (that is the module) is in reset.   See the
+ * Users guide for details ie. SLAU208M for the x5 family cpus.
  */
 
 #ifndef MSP430_USCI_ATOMIC_LOWLEVEL
