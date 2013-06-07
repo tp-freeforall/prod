@@ -247,22 +247,20 @@ implementation {
     call CSN.clr();                     /* assert CSN, need the falling edge */
 
     if (reg <= CC2520_FREG_MASK) {
-      // we can use 1 byte less to write this register using the
-      // register write command
-
+      /*
+       * uses one less byte to write the register using REGWR
+       */
       RADIO_ASSERT( reg == (reg & CC2520_FREG_MASK) );
-
-
-      status.value = call SpiByte.write(CC2520_CMD_REGISTER_WRITE | reg);
+      status.value = call SpiByte.write(CC2520_CMD_REGWR | reg);
     } else {
-      // we have to use the memory write command as the register is in
-      // SREG
-
+      /*
+       * Use larger command (MEMWR), addr in SREG area
+       * This is a register write which means the address is < 0x100 which
+       * means we don't need to or in the high addr bits into the memwr
+       * command.
+       */
       RADIO_ASSERT(reg == (reg & CC2520_SREG_MASK));
-
-      // the register has to be below the 0x100 memory address. Thus, we
-      // don't have to add anything to the MEMORY_WRITE command.
-      status.value = call SpiByte.write(CC2520_CMD_MEMORY_WRITE);
+      status.value = call SpiByte.write(CC2520_CMD_MEMWR);
       status.value = call SpiByte.write(reg);
     }
     v = call SpiByte.write(value);
@@ -274,6 +272,8 @@ implementation {
    * writeMemory (MEMWR function)
    *
    * Used to write data to memory above 0x0200
+   * FIFO memory is 0x0100 to 0x01ff.   General memory along
+   * with local address info is above 0x0200
    */
 
 //  inline
@@ -282,17 +282,17 @@ implementation {
     uint8_t v __attribute__((unused));
     uint8_t i;
 
-    if (mem_addr < 0x200)
+    if (mem_addr < 0x200)               /* lower limit is 0x200 */
       mem_addr = 0x200;
 
     RADIO_ASSERT( call SpiResource.isOwner() );
     call CSN.set();
     call CSN.clr();
 
-    status.value = call SpiByte.write(CC2520_CMD_MEMORY_WRITE | HI_UINT16(mem_addr));
+    status.value = call SpiByte.write(CC2520_CMD_MEMWR | HI_UINT16(mem_addr));
     status.value = call SpiByte.write(LO_UINT16(mem_addr));
 
-    for (i=0; i < count; i++)
+    for (i = 0; i < count; i++)
       v = call SpiByte.write(value[i]);
 
 #ifdef notdef
@@ -309,7 +309,30 @@ implementation {
     return status;
   }
 
-  // JK: Need to check!
+//  inline
+  uint8_t readRegister(uint8_t reg) {
+    uint8_t value = 0;
+
+    RADIO_ASSERT( call SpiResource.isOwner() );
+    call CSN.set();
+    call CSN.clr();
+
+    if (reg <= CC2520_FREG_MASK) {
+      RADIO_ASSERT( reg == (reg & CC2520_FREG_MASK) );
+      call SpiByte.write(CC2520_CMD_REGRD | reg);
+    } else {
+      RADIO_ASSERT( reg == (reg & CC2520_SREG_MASK) );
+      call SpiByte.write(CC2520_CMD_MEMRD);
+      call SpiByte.write(reg);
+    }
+
+    value = call SpiByte.write(0);
+    call CSN.set();
+    return value;
+  }
+
+
+// JK: Need to check!
 //  inline
   uint8_t readMemory(uint16_t mem_addr, uint8_t *buf, uint8_t count) {
     uint8_t i, value = 0;
@@ -318,7 +341,7 @@ implementation {
     call CSN.set();
     call CSN.clr();
 
-    call SpiByte.write(CC2520_CMD_MEMORY_READ | HI_UINT16(mem_addr));
+    call SpiByte.write(CC2520_CMD_MEMRD | HI_UINT16(mem_addr));
     call SpiByte.write(LO_UINT16(mem_addr));
 
     for (i=0; i < count; i++)
@@ -475,29 +498,6 @@ implementation {
   cc2520_status_t getStatus() {
     return strobe(CC2520_CMD_SNOP);
   }
-
-//  inline
-  uint8_t readRegister(uint8_t reg) {
-    uint8_t value = 0;
-
-    RADIO_ASSERT( call SpiResource.isOwner() );
-    call CSN.set();
-    call CSN.clr();
-
-    if (reg <= CC2520_FREG_MASK) {
-      RADIO_ASSERT( reg == (reg & CC2520_FREG_MASK) );
-      call SpiByte.write(CC2520_CMD_REGISTER_READ | reg);
-    } else {
-      RADIO_ASSERT( reg == (reg & CC2520_SREG_MASK) );
-      call SpiByte.write(CC2520_CMD_MEMORY_WRITE);
-      call SpiByte.write(reg);
-    }
-
-    value = call SpiByte.write(0);
-    call CSN.set();
-    return value;
-  }
-
 
 //  inline
   cc2520_status_t writeTxFifo(uint8_t *data, uint8_t length) {

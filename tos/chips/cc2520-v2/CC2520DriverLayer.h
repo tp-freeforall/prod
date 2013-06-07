@@ -419,9 +419,8 @@ enum cc2520_spi_command_enums {
   CC2520_CMD_SIBUFEX        = 0x03,
   CC2520_CMD_SSAMPLECCA     = 0x04,
   CC2520_CMD_SRES           = 0x0f,
-  CC2520_CMD_MEMORY_MASK    = 0x0f,
-  CC2520_CMD_MEMORY_READ    = 0x10,
-  CC2520_CMD_MEMORY_WRITE   = 0x20,
+  CC2520_CMD_MEMRD          = 0x10,
+  CC2520_CMD_MEMWR          = 0x20,
   CC2520_CMD_RXBUF          = 0x30,
   CC2520_CMD_RXBUFCP        = 0x38,
   CC2520_CMD_RXBUFMOV       = 0x32,
@@ -460,8 +459,8 @@ enum cc2520_spi_command_enums {
   CC2520_CMD_ECBX           = 0x74,
   CC2520_CMD_INC            = 0x78,
   CC2520_CMD_ABORT          = 0x7F,
-  CC2520_CMD_REGISTER_READ  = 0x80,
-  CC2520_CMD_REGISTER_WRITE = 0xC0,
+  CC2520_CMD_REGRD          = 0x80,
+  CC2520_CMD_REGWR          = 0xC0,
 };
 
 #endif // __CC2520XDRIVERLAYER_H__
