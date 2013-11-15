@@ -40,10 +40,45 @@
  * Implement the SPI-related interfaces for a MSP430 USCI module
  * instance.
  *
+ * Uses Panic to call out abnormal conditions.  These conditions are
+ * assumed to be out of normal behaviour and aren't recoverable.
+ *
+ * Uses Platform to obtain raw timing information for timeout functions.
+ *
+ * WARNING: By default, null versions for both Panic and timing modules are
+ * used.  This effectively disables any timeout checks or panic invocations.
+ * This preserves the original behaviour and doesn't require changing lots
+ * of things all at once.  When a Platform wants to use the new functionality
+ * it can wire in the required components.  This is the recommended
+ * configuration
+ *
+ * To enable Panic signalling and timeout functions, you must wire in
+ * appropriate routines into Panic and Platform in this module.
+ *
+ * WARNING: If you don't wire in platform timing functions, it is possible
+ * for routines in this module to hang in an infinite loop (this duplicates
+ * the original behaviour when the busy waits were infinite).  If a platform
+ * has enabled a watchdog timer, it is possible that the watchdog would
+ * then be invoked.  However most platforms don't enable the watchdog.
+ *
+ * It is recommended that you define REQUIRE_PLATFORM and REQUIRE_PANIC in
+ * your platform.h file.  This will require that appropriate wiring exists
+ * for Panic and Platform and is wired in.
+ *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
  * @author João Gonçalves <joao.m.goncalves@ist.utl.pt>
  * @author Eric B. Decker <cire831@gmail.com>
  */
+
+#ifndef PANIC_USCI
+
+enum {
+  __panic_usci = unique(UQ_PANIC_SUBSYS)
+};
+
+#define PANIC_USCI __panic_usci
+#endif
+
 
 generic module Msp430UsciSpiP () @safe() {
   provides {
@@ -62,13 +97,22 @@ generic module Msp430UsciSpiP () @safe() {
 
     interface Msp430UsciConfigure[ uint8_t client ];
     interface ArbiterInfo;
+    interface Panic;
+    interface Platform;
   }
 }
 implementation {
   
   enum {
     SPI_ATOMIC_SIZE = 2,
+    SPI_MAX_BUSY_WAIT = 1000,           /* 1ms max busy wait */
   };
+
+#define __PANIC_USCI(where, x, y, z) do { \
+	call Panic.panic(PANIC_USCI, where, call Usci.getModuleIdentifier(), \
+			 x, y, z); \
+	call Usci.enterResetMode_(); \
+  } while (0)
 
   norace uint16_t m_len;
   norace uint8_t* COUNT_NOK(m_len) m_tx_buf;
@@ -82,12 +126,25 @@ implementation {
     atomic signalDone();
   }
   
-  /** The SPI is busy if it's actively transmitting/receiving, or if
-   * there is an active buffered I/O operation.
+  /**
+   * The SPI is busy if it's actively transmitting/receiving.
+   * What we really want is to know if the h/w is still
+   * transmitting (we shut down or change state if not Txing)
+   * But that isn't how this h/w behaves.  Rather an incomning
+   * but will tell us we are busy thwarting the intent of the
+   * h/w check on tx.  oh well.
    */
   bool isBusy () {
+    uint16_t t0, t1;
+
+    t0 = call Platform.usecsRaw();
     while (UCBUSY & (call Usci.getStat())) {
-      ;/* busy-wait */
+      /* busy-wait */
+      t1 = call Platform.usecsRaw();
+      if (t1 - t0 > SPI_MAX_BUSY_WAIT) {
+	__PANIC_USCI(1, t1, t0, 0);
+	return TRUE;
+      }
     }
     return 0;
   }
@@ -118,8 +175,8 @@ implementation {
    * Errata UCS6 doesn't apply as UCS6 only hits when in UART mode.
    */
   void unconfigure_ () {
-    while (UCBUSY & (call Usci.getStat())) {
-      ;/* busy-wait */
+    while (isBusy()) {
+      /* above checks and panics if it takes too long */
     }
 
     /* going into reset, clears all interrupt enables */
@@ -132,6 +189,7 @@ implementation {
     call CLK.selectIOFunc();
   }
 
+
   /** Configure the USCI for SPI mode.
    *
    * Invoke the USCI configuration to set up the serial speed, but
@@ -142,8 +200,10 @@ implementation {
    */
   error_t configure_ (const msp430_usci_config_t* config) {
     if (! config) {
+      __PANIC_USCI(2, 0, 0, 0);
       return FAIL;
     }
+
 
     /*
      * Do basic configuration, leaving USCI in reset mode.  Configure
@@ -167,17 +227,32 @@ implementation {
     return SUCCESS;
   }
 
+
+  bool bail_wait_for(uint8_t condition) {
+    uint16_t t0, t1;
+
+    t0 = call Platform.usecsRaw();
+    while (! (condition & call Usci.getIfg())) {
+      /* busywait */
+      t1 = call Platform.usecsRaw();
+      if (t1 - t0 > SPI_MAX_BUSY_WAIT) {
+	__PANIC_USCI(3, t1, t0, 0);
+	return TRUE;
+      }
+    }
+    return FALSE;
+  }
+
+
   async command uint8_t SpiByte.write (uint8_t data) {
     uint8_t stat;
 
-    while (! (UCTXIFG & call Usci.getIfg())) {
-      ; /* busywait */
-    }
+    if (bail_wait_for(UCTXIFG))
+      return 0;
     call Usci.setTxbuf(data);
 
-    while (! (UCRXIFG & call Usci.getIfg())) {
-      ; /* busywait */
-    }
+    if (bail_wait_for(UCRXIFG))
+      return 0;
     stat = call Usci.getStat();
     data = call Usci.getRxbuf();
     stat = MSP430_USCI_ERR_UCxySTAT & (stat | (call Usci.getStat()));
@@ -192,14 +267,17 @@ implementation {
     uint8_t byt;
 
     while (len) {
-      while (!call Usci.isTxIntrPending())
-	;				/* busy wait */
+      if (bail_wait_for(UCTXIFG))
+        return;
+
       byt = 0;
       if (txBuf)
 	byt = *txBuf++;
       call Usci.setTxbuf(byt);
-      while (!call Usci.isRxIntrPending())
-	;				/* busy wait */
+
+      if (bail_wait_for(UCRXIFG))
+        return;
+
       byt = call Usci.getRxbuf();
       if (rxBuf)
 	*rxBuf++ = byt;
@@ -219,11 +297,19 @@ implementation {
 	    end = m_len;
 
       while ( ++m_pos < end ) {
-        while( !call Usci.isRxIntrPending() );
-          tmp = call Usci.getRxbuf();
-          if ( m_rx_buf )
-            m_rx_buf[ m_pos - 1 ] = tmp;
-          call Usci.setTxbuf( m_tx_buf ? m_tx_buf[ m_pos ] : 0 );
+        /*
+         * formerly a busy wait.  replaced with panic checks.
+         * if panic returns, just go grab garbage from the
+         * h/w.  We died, if panic doesn't trap and yell,
+         * who cares.  Previously, we would just hang.
+         */
+        bail_wait_for(UCRXIFG);
+        tmp = call Usci.getRxbuf();
+        if ( m_rx_buf )
+          m_rx_buf[ m_pos - 1 ] = tmp;
+
+        /* is it possible for there to not be room?  */
+        call Usci.setTxbuf( m_tx_buf ? m_tx_buf[ m_pos ] : 0 );
       }
     }
   }
@@ -291,4 +377,20 @@ implementation {
 
   default async event void Msp430UsciError.condition(unsigned int errors) { }
   default async event void Msp430UsciError.timeout() { }
+
+
+  async event void Panic.hook() { }
+
+
+#ifndef REQUIRE_PLATFORM
+  default async command uint16_t Platform.usecsRaw()    { return 0; }
+  default async command uint16_t Platform.jiffiesRaw() { return 0; }
+#endif
+
+#ifndef REQUIRE_PANIC
+  default async command void Panic.panic(uint8_t pcode, uint8_t where, uint16_t arg0,
+					 uint16_t arg1, uint16_t arg2, uint16_t arg3) { }
+  default async command void  Panic.warn(uint8_t pcode, uint8_t where, uint16_t arg0,
+					 uint16_t arg1, uint16_t arg2, uint16_t arg3) { }
+#endif
 }
