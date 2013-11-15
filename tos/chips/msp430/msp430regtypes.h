@@ -192,6 +192,9 @@
 #define TYPE_DMA2SZ uint16_t
 #define TYPE_DMACTL0 uint16_t
 #define TYPE_DMACTL1 uint16_t
+#define TYPE_DMACTL2 uint16_t
+#define TYPE_DMACTL3 uint16_t
+#define TYPE_DMACTL4 uint16_t
 #define TYPE_EPCTL uint8_t
 #define TYPE_ESPCTL uint16_t
 #define TYPE_FCTL1 uint16_t
