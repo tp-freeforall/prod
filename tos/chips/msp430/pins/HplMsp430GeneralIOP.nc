@@ -106,6 +106,9 @@ implementation {
   async command void IO.selectIOFunc() { MSP430_PINS_ATOMIC_LOWLEVEL PORTxSEL &= ~(0x01 << pin); }
   async command bool IO.isIOFunc() { return (PORTxSEL & (0x01<<pin)) == 0; }
   async command error_t IO.setResistor(uint8_t mode) { return EINVAL; }
+  async command void    IO.resistorOff()      { }
+  async command void    IO.resistorPullDown() { }
+  async command void    IO.resistorPullUp()   { };
   async command uint8_t IO.getResistor() { return MSP430_PORT_RESISTOR_INVALID; }
   async command error_t IO.setDriveStrength(uint8_t mode) { return EINVAL; }
   async command uint8_t IO.getDriveStrength() { return MSP430_PORT_DRIVE_STRENGTH_INVALID;}

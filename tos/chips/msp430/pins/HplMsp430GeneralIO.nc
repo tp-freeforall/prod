@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, Eric B. Decker
+ * Copyright (c) 2012-2013, Eric B. Decker
  * Copyright (c) 2000-2003 The Regents of the University of California.  
  * All rights reserved.
  *
@@ -42,8 +42,7 @@
 
 #include "TinyError.h"
 
-interface HplMsp430GeneralIO
-{
+interface HplMsp430GeneralIO {
   /**
    * Set pin to high.
    */
@@ -78,28 +77,24 @@ interface HplMsp430GeneralIO
    * Set pin direction to input.
    */
   async command void makeInput();
-
   async command bool isInput();
   
   /**
    * Set pin direction to output.
    */
   async command void makeOutput();
-  
   async command bool isOutput();
   
   /**
    * Set pin for module specific functionality.
    */
   async command void selectModuleFunc();
-  
   async command bool isModuleFunc();
   
   /**
    * Set pin for I/O functionality.
    */
   async command void selectIOFunc();
-  
   async command bool isIOFunc();
 
   /**
@@ -110,6 +105,26 @@ interface HplMsp430GeneralIO
    * SUCCESS if pin supports resistor configuration, is an input, and mode is valid
    */
   async command error_t setResistor(uint8_t mode);
+
+  /**
+   * set resistor mode directly.
+   *
+   * You have to know what you are doing when you use these.  These routines
+   * assume that the port is set for input (PxDIR).  The routines explicitly
+   * change the value of the bits setting in PxOUT.
+   *
+   * The advantage of using these routines is efficiency because there is no
+   * mode checking.  In addition, no error check is done to make sure that the
+   * port is in input mode.  The thing is, first, this is something that you
+   * get right once and then it doesn't change so why check and, second no
+   * one actually checks the error return because there really isn't any
+   * point to doing the check because this isn't something you actually need
+   * to check the return code for.  So why have one.
+   */
+  async command void resistorOff();
+  async command void resistorPullDown();
+  async command void resistorPullUp();
+
 
   /**
    * Get the pin pullup / pulldown resistor mode.
