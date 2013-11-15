@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 Eric B. Decker
+ * Copyright (c) 2011-2013 Eric B. Decker
  * Copyright (c) 2011 João Gonçalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
@@ -49,9 +49,14 @@ generic configuration Msp430UsciSpiB0C() {
     interface SpiPacket;
     interface SpiBlock;
     interface SpiByte;
+    interface FastSpiByte;
     interface Msp430UsciError;
   }
-  uses interface Msp430UsciConfigure;
+  uses {
+    interface Msp430UsciConfigure;
+    interface Panic;
+    interface Platform;
+  }
 }
 implementation {
   enum {
@@ -63,11 +68,14 @@ implementation {
   ResourceRequested = UsciC.ResourceRequested[CLIENT_ID];
 
   components Msp430UsciSpiB0P as SpiC;
-  SpiPacket = SpiC.SpiPacket[CLIENT_ID];
-  SpiBlock  = SpiC.SpiBlock;
-  SpiByte   = SpiC.SpiByte;
-  Msp430UsciError = SpiC.Msp430UsciError;
+  SpiPacket           = SpiC.SpiPacket[CLIENT_ID];
+  SpiBlock            = SpiC.SpiBlock;
+  SpiByte             = SpiC.SpiByte;
+  FastSpiByte         = SpiC.FastSpiByte;
+  Msp430UsciError     = SpiC.Msp430UsciError;
   Msp430UsciConfigure = SpiC.Msp430UsciConfigure[CLIENT_ID];
+  Panic               = SpiC;
+  Platform            = SpiC;
 
   UsciC.ResourceConfigure[CLIENT_ID] -> SpiC.ResourceConfigure[CLIENT_ID];
 }

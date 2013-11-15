@@ -3,6 +3,7 @@ configuration Msp430UsciSpiB0P {
     interface SpiPacket[ uint8_t client ];
     interface SpiBlock;
     interface SpiByte;
+    interface FastSpiByte;
     interface Msp430UsciError;
     interface ResourceConfigure[ uint8_t client ];
   }
@@ -11,24 +12,29 @@ configuration Msp430UsciSpiB0P {
     interface HplMsp430GeneralIO as SIMO;
     interface HplMsp430GeneralIO as SOMI;
     interface HplMsp430GeneralIO as CLK;
+    interface Panic;
+    interface Platform;
  }
 }
 implementation {
 
-  components Msp430UsciB0P as UsciC;
+  components     Msp430UsciB0P    as UsciC;
   components new Msp430UsciSpiP() as SpiC;
 
-  SpiC.Usci -> UsciC;
-  SpiC.Interrupts -> UsciC.Interrupts[MSP430_USCI_SPI];
-  SpiC.ArbiterInfo -> UsciC;
+  SpiC.Usci           -> UsciC;
+  SpiC.Interrupts     -> UsciC.Interrupts[MSP430_USCI_SPI];
+  SpiC.ArbiterInfo    -> UsciC;
 
   Msp430UsciConfigure = SpiC;
-  ResourceConfigure = SpiC;
-  SpiPacket = SpiC;
-  SpiBlock  = SpiC;
-  SpiByte   = SpiC;
-  Msp430UsciError = SpiC;
-  SIMO = SpiC.SIMO;
-  SOMI = SpiC.SOMI;
-  CLK = SpiC.CLK;
+  ResourceConfigure   = SpiC;
+  SpiPacket           = SpiC;
+  SpiBlock            = SpiC;
+  SpiByte             = SpiC;
+  FastSpiByte         = SpiC;
+  Msp430UsciError     = SpiC;
+  Panic               = SpiC;
+  Platform            = SpiC;
+  SIMO                = SpiC.SIMO;
+  SOMI                = SpiC.SOMI;
+  CLK                 = SpiC.CLK;
 }
