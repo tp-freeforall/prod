@@ -53,7 +53,8 @@ implementation {
 			  uint16_t src_addr, 
 			  uint16_t dst_addr, 
 			  uint16_t size) {
-    call HplChannel.setSrc(src_addr);
+    call HplChannel.disableDMA();               /* must be off prior */
+    call HplChannel.setSrc(src_addr);           /* to setting triggers */
     call HplChannel.setDst(dst_addr);
     call HplChannel.setSize(size);
     call HplChannel.setTrigger(trigger);
@@ -85,17 +86,10 @@ implementation {
   }
   
   async command error_t Channel.stopDma() {
-    uint16_t control;
-
-    control = call HplChannel.getChannelControl();
-    control &= DMADT_3;			/* isolate low two bits of DT field */
-    if (control != DMA_DT_BURST_BLOCK)
-      return FAIL;
     call HplChannel.disableDMA();
     return SUCCESS;
-    
   }
-  
+
   async event void HplChannel.transferDone() {
     signal Channel.transferDone();
   }
