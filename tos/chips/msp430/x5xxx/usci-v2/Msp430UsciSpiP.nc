@@ -85,6 +85,7 @@ generic module Msp430UsciSpiP () @safe() {
     interface SpiPacket[ uint8_t client ];
     interface SpiBlock;
     interface SpiByte;
+    interface FastSpiByte;
     interface Msp430UsciError;
     interface ResourceConfigure[ uint8_t client ];
   }
@@ -260,6 +261,40 @@ implementation {
       signal Msp430UsciError.condition(stat);
     }
     return data;
+  }
+
+
+  async command void FastSpiByte.splitWrite(uint8_t data) {
+    if (bail_wait_for(UCTXIFG))
+      return;
+    call Usci.setTxbuf(data);
+  }
+
+
+  async command uint8_t FastSpiByte.splitRead() {
+    if (bail_wait_for(UCRXIFG))
+      return 0;
+    return call Usci.getRxbuf();
+  }
+
+
+  async command uint8_t FastSpiByte.splitReadWrite(uint8_t data) {
+    uint8_t b;
+
+    if (bail_wait_for(UCRXIFG))
+      return 0;
+    b = call Usci.getRxbuf();
+
+    if (bail_wait_for(UCTXIFG))
+      return b;
+    call Usci.setTxbuf(data);     
+    return b;
+  }
+
+
+  async command uint8_t FastSpiByte.write(uint8_t data) {
+    call FastSpiByte.splitWrite(data);
+    return call FastSpiByte.splitRead();
   }
 
 
