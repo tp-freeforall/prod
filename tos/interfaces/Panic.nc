@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, Eric B. Decker
+ * Copyright (c) 2012-2013, Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -100,4 +100,5 @@ interface Panic {
 			   uint16_t arg1, uint16_t arg2, uint16_t arg3);
   async command void  warn(uint8_t pcode, uint8_t where, uint16_t arg0,
 			   uint16_t arg1, uint16_t arg2, uint16_t arg3);
+  async event   void  hook();
 }

@@ -38,4 +38,7 @@ implementation {
 	trace_nxt = 0;
     }
   }
+
+
+  async event void Panic.hook() { }
 }
