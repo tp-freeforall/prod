@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Eric B. Decker
+ * Copyright (c) 2011, 2013 Eric B. Decker
  * Copyright (c) 2005-2006 Arch Rock Corporation
  * Copyright (c) 2000-2005 The Regents of the University of California.  
  * All rights reserved.
@@ -101,4 +101,11 @@ implementation {
   }
 
   default async event void Channel.transferDone() {}
+
+  async command bool Channel.dmaComplete() {
+    uint16_t control;
+
+    control = call HplChannel.getChannelControl();
+    return (control & DMAIFG);
+  }
 }

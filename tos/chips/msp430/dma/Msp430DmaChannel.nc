@@ -79,4 +79,10 @@ interface Msp430DmaChannel {
    * because of an ABORT.  This has been nuked.
    */
   async event void transferDone();
+
+  /**
+   * Poll to see if the transfer has completed.
+   *
+   */
+  async command bool dmaComplete();
 }
