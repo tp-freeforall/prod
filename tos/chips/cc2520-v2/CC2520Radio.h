@@ -62,8 +62,16 @@ typedef nx_struct security_header_t {
 } security_header_t;
 
 
-typedef nx_struct cc2520packet_header_t
-{
+/*
+ * cc2520packet_header contains first the PHR (PHY Hdr)
+ * and then the MPDU header (ieee154).   The ieee154 header
+ * is actually a simple 802.15.4 header that only has 16 bit
+ * addresses and a dpan (compressed PAN id).
+ *
+ * depending on defines we may also have a network byte as
+ * an am_type ("am").
+ */
+typedef nx_struct cc2520packet_header {
   cc2520_header_t cc2520;
   ieee154_simple_header_t ieee154;
 
@@ -75,17 +83,16 @@ typedef nx_struct cc2520packet_header_t
   network_header_t network;
 #endif
 #ifndef IEEE154FRAMES_ENABLED
-  activemessage_header_t am;
+  activemessage_header_t am_type;
 #endif
 } cc2520packet_header_t;
 
-typedef nx_struct cc2520packet_footer_t
-{
-  // the time stamp is not recorded here, time stamped messaged cannot have max length
+typedef nx_struct cc2520packet_footer {
+  // the time stamp is not recorded here, time stamped messages cannot have max length
+  // which means what?
 } cc2520packet_footer_t;
 
-typedef struct cc2520packet_metadata_t
-{
+typedef struct cc2520packet_metadata {
 #ifdef LOW_POWER_LISTENING
   lpl_metadata_t lpl;
 #endif
@@ -97,7 +104,7 @@ typedef struct cc2520packet_metadata_t
   cc2520_metadata_t cc2520;
 } cc2520packet_metadata_t;
 
-enum cc2520_security_enums{
+enum cc2520_security_enums {
   NO_SEC = 0,
   CBC_MAC_4 = 1,
   CBC_MAC_8 = 2,

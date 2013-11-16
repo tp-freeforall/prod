@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2007, Vanderbilt University
  * All rights reserved.
  *
@@ -17,7 +18,7 @@
  *   from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
  * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE
  * COPYRIGHT HOLDER OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -31,40 +32,40 @@
  */
 
 /**
- *
  * Author: Miklos Maroti
  * Author: Thomas Schmid (port to CC2520)
+ * Author: Eric B. Decker (rewrite)
  */
 
-interface CC2520DriverConfig
-{
-	/**
-	 * Returns the length of a dummy header to align the payload properly.
-	 */
-	async command uint8_t headerLength(message_t* msg);
+interface CC2520DriverConfig {
+  /**
+   * Returns the offset in the message buffer to proper align and place
+   * the drivers low level header.
+   */
+  async command uint8_t headerOffset(message_t* msg);
 
-	/**
-	 * Returns the maximum length of the PHY payload including the
-	 * length field but not counting the FCF field.
-	 */
-	async command uint8_t maxPayloadLength();
+  /**
+   * Returns the maximum length of the PHY payload including the
+   * length field but not counting the FCS field.
+   */
+  async command uint8_t maxPayloadLength();
 
-	/**
-	 * Returns the length of a dummy metadata section to align the
-	 * metadata section properly.
-	 */
-	async command uint8_t metadataLength(message_t* msg);
+  /**
+   * Returns the length of a dummy metadata section to align the
+   * metadata section properly.
+   */
+  async command uint8_t metadataLength(message_t* msg);
 
-	/**
-	 * Gets the number of bytes we should read before the RadioReceive.header
-	 * event is fired. If the length of the packet is less than this amount,
-	 * then that event is fired earlier. The header length must be at least one.
-	 */
-	async command uint8_t headerPreloadLength();
+  /**
+   * Gets the number of bytes we should read before the RadioReceive.header
+   * event is fired. If the length of the packet is less than this amount,
+   * then that event is fired earlier. The header length must be at least one.
+   */
+  async command uint8_t headerPreloadLength();
 
-	/**
-	 * Returns TRUE if before sending this message we should make sure that
-	 * the channel is clear via a very basic (and quick) RSSI check.
-	 */
-	async command bool requiresRssiCca(message_t* msg);
+  /**
+   * Returns TRUE if before sending this message we should make sure that
+   * the channel is clear via a very basic RSSI or CCA check.
+   */
+  async command bool requiresRssiCca(message_t* msg);
 }

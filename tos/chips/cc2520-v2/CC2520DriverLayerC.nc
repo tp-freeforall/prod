@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013, Eric B. Decker
  * Copyright (c) 2010, Vanderbilt University
  * All rights reserved.
  *
@@ -28,13 +29,14 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Fix formatting.
  */
 
 /**
  * Author: Janos Sallai, Miklos Maroti
  * Author: Thomas Schmid (adapted to CC2520)
+ * Author: Eric B. Decker (rewritten for cc2520/cc2591)
+ *
+ * Requires Panic and Platform.
  */
 
 #include <RadioConfig.h>
@@ -73,10 +75,9 @@ configuration CC2520DriverLayerC {
 
 implementation {
   components CC2520DriverLayerP as DriverLayerP,
-             BusyWaitMicroC,
              TaskletC,
 	     MainC,
-	     HplCC2520C as HplC;
+             HplCC2520C as HplChip;
 
   MainC.SoftwareInit -> DriverLayerP.SoftwareInit;
 
@@ -87,16 +88,20 @@ implementation {
   RadioPacket = DriverLayerP;
   PacketAcknowledgements = DriverLayerP;
 
-  LocalTimeRadio = HplC;
+  LocalTimeRadio = HplChip;
   Config = DriverLayerP;
 
-  DriverLayerP.VREN -> HplC.VREN;
-  DriverLayerP.CSN -> HplC.CSN;
-  DriverLayerP.CCA -> HplC.CCA;
-  DriverLayerP.RSTN -> HplC.RSTN;
-  DriverLayerP.FIFO -> HplC.FIFO;
-  DriverLayerP.FIFOP -> HplC.FIFOP;
-  DriverLayerP.SFD -> HplC.SFD;
+  DriverLayerP.RSTN  -> HplChip.RSTN;
+  DriverLayerP.VREN  -> HplChip.VREN;
+  DriverLayerP.CSN   -> HplChip.CSN;
+
+  DriverLayerP.SFD   -> HplChip.SFD;
+  DriverLayerP.TXA   -> HplChip.TXA;
+  DriverLayerP.EXCA  -> HplChip.EXCA;
+
+  DriverLayerP.CCA   -> HplChip.CCA;
+  DriverLayerP.FIFO  -> HplChip.FIFO;
+  DriverLayerP.FIFOP -> HplChip.FIFOP;
 
   PacketTransmitPower = DriverLayerP.PacketTransmitPower;
   DriverLayerP.TransmitPowerFlag = TransmitPowerFlag;
@@ -119,33 +124,54 @@ implementation {
   PacketTimeStamp = DriverLayerP.PacketTimeStamp;
 
   RadioAlarm = DriverLayerP.RadioAlarm;
-  Alarm = HplC.Alarm;
+  Alarm = HplChip.Alarm;
 
-  DriverLayerP.SpiResource -> HplC.SpiResource;
-  DriverLayerP.SpiByte -> HplC;
+  DriverLayerP.SpiResource -> HplChip.SpiResource;
+  DriverLayerP.FastSpiByte -> HplChip;
+  DriverLayerP.SpiByte     -> HplChip;
 
-  DriverLayerP.SfdCapture -> HplC;
-  DriverLayerP.FifopInterrupt -> HplC.FifopInterrupt;
-  DriverLayerP.FifoInterrupt -> HplC.FifoInterrupt;
+  DriverLayerP.ExcAInterrupt -> HplChip.ExcAInterrupt;
+  DriverLayerP.SfdCapture    -> HplChip;
 
   DriverLayerP.Tasklet -> TaskletC;
-  DriverLayerP.BusyWait -> BusyWaitMicroC;
 
-  DriverLayerP.LocalTime-> HplC.LocalTimeRadio;
+  DriverLayerP.LocalTime-> HplChip.LocalTimeRadio;
 
 #ifdef RADIO_DEBUG_MESSAGES
   components DiagMsgC;
   DriverLayerP.DiagMsg -> DiagMsgC;
 #endif
 
-  components LedsC, NoLedsC;
-  DriverLayerP.Leds -> NoLedsC;
-
-#ifdef RADIO_LCD_DEBUG
-  components LcdC;
-  DriverLayerP.Draw -> LcdC;
-#endif
-
   components CC2520SecurityP;
   DriverLayerP.CC2520Security -> CC2520SecurityP;
+
+  components PlatformCC2520P;
+  DriverLayerP.PlatformCC2520       -> PlatformCC2520P;
+  PlatformCC2520P.CC2520BasicAccess -> DriverLayerP;
+
+  PlatformCC2520P.P_CSN    -> HplChip.P_CSN;
+  PlatformCC2520P.P_RSTN   -> HplChip.P_RSTN;
+  PlatformCC2520P.P_SO     -> HplChip.P_SO;
+  PlatformCC2520P.P_VREN   -> HplChip.P_VREN;
+  PlatformCC2520P.P_GPIO0  -> HplChip.P_GPIO0;
+  PlatformCC2520P.P_GPIO1  -> HplChip.P_GPIO1;
+  PlatformCC2520P.P_GPIO2  -> HplChip.P_GPIO2;
+  PlatformCC2520P.P_GPIO3  -> HplChip.P_GPIO3;
+  PlatformCC2520P.P_GPIO4  -> HplChip.P_GPIO4;
+  PlatformCC2520P.P_GPIO5  -> HplChip.P_GPIO5;
+
+  components TraceC;
+  DriverLayerP.Trace       -> TraceC;
+
+#ifdef REQUIRE_PLATFORM
+  components PlatformC;
+  PlatformCC2520P.Platform -> PlatformC;
+  DriverLayerP.Platform    -> PlatformC;
+#endif
+
+#ifdef REQUIRE_PANIC
+  components PanicC;
+  PlatformCC2520P.Panic    -> PanicC;
+  DriverLayerP.Panic       -> PanicC;
+#endif
 }

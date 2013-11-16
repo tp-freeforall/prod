@@ -1,0 +1,295 @@
+
+CC2520 Notes:
+
+fullInitRadio (includes chip reset, Xosc verification, and register writing):
+
+    non-pipelined SPI xactions: 1076us for entire procedure.
+    pipelined (FastSPI):
+
+
+Chip Initialization:
+
+When the chip is powered off (LPM2), VREN 0, it loses all of its
+configuration.  The chart below show initial (POR) value followed
+by any changes we want to make.
+
+In addition (see Reset section below), it turns out that when the
+chip is reset it also reverts back to the POR state.  So anytime
+the chip is reset it will need to be reinitialized.
+
+All numbers in hex.  Table 21 is from the CC2520 datasheet
+(SWRS068, dec 2007) page 103.
+
+
+addr  Name          POR         Table 21        Operational
+                                                Settings
+
+00    frmfilt0      0d                          08
+01    frmfilt1      78                          f8
+02    srcmatch      07                          06
+03
+04    srcshorten0   00
+05    srcshorten1   00
+06    srcshorten2   00
+07
+08    srcexten0     00
+09    srcexten1     00
+0A    srcexten2     00
+0B
+0C    frmctrl0      40
+0D    frmctrl1      01
+0E    rxenable0     00
+0F    rxenable1     00
+10    excflag0      00
+11    excflag1      00
+12    excflag2      00
+13
+14    excmaska0     00                          7e
+15    excmaska1     00                          01
+16    excmaska2     00                          3f
+17
+18    excmaskb0     00                          00
+19    excmaskb1     00                          00
+1A    excmaskb2     00                          00
+1B
+1C    excbindx0     00
+1D    excbindx1     12
+1E    excbindy0     00
+1F    excbindy1     12
+20    gpioctrl0     00                          2a      sfd
+21    gpioctrl1     27                          44      tx_active
+22    gpioctrl2     28                          21      exca
+23    gpioctrl3     29                          29      cca
+24    gpioctrl4     2a                          27      fifo
+25    gpioctrl5     90                          28      fifop
+26    gpiopolarity  3f
+27
+28    gpioctrl      00
+29
+2A    dpucon        01
+2B
+2C    dpustat       00
+2D
+2E    freqctrl      0b
+2F    freqtune      0f
+30    txpower       06          32              32
+31    txctrl        91
+32    fsmstat0      00
+33    fsmstat1      00
+34    fifopctrl     40                          7f
+35    fsmctrl       01
+36    ccactrl0      e0          f8              f8
+37    ccactrl1      1a
+38    rssi          80
+39    rssistat      00
+3A
+3B
+3C    rxfirst       00
+3D
+3E    rxfifocnt     00
+3F    txfifocnt     00
+40    chipid        84
+41
+42    version       00
+43
+44    extclock      20
+45
+46    mdmctrl0      45          85              85
+47    mdmctrl1      2e          14              14
+48    freqest       00
+49
+4A    rxctrl        29          3f              3f
+4B
+4C    fsctrl        55          5a              5a
+4D
+4E    fscal0        24
+4F    fscal1        01          2b              2b
+50    fscal2        20
+51    fscal3        2a
+52    agcctrl0      5f
+53    agcctrl1      0e          11              11
+54    agcctrl2      fe
+55    agcctrl3      2e
+56    adctest0      66          10              10
+57    adctest1      0a          0e              0e
+58    adctest2      05          03              03
+59
+5A    mdmtest0      05
+5B    mdmtest1      08
+5C    dactest0      00
+5D    dactest1      00
+5E    atest         00
+5F    dactest2      00
+60    ptest0        00
+61    ptest1        00
+62    reserved      00
+...
+7A    dpubist       00
+7C    actbist       00
+7E    rambist       02  
+
+
+Another issue is what happens when the chip is reset.  Chip behaviour when
+reset isn't documented in the datasheet (should be but isn't).  Chip is
+powered on, CSn 1, RESETn 1, VREN 1 and then RESETn is taken low then high.
+What happens?
+
+A test was done where we put the radio into RX_OVERFLOW, dump state, reset
+then dump state again and looked for differences.  One thing noticed is that
+all the gpio settings go back to POR state when changes what is connected
+to fifo and fifop.   Until the GPIO state is set back to the desired setting
+fifo and fifop will be incorrect.   This is also true for any signals connected
+to any of the gpio pins.
+
+
+Before Reset (Overflow RXFIFO):
+
+fifo/fifop: 0/1, excflag: rx_ovr, sfd/fifop/rx_frm_done
+
+csn: 1pO  rstn: 1pO   vren: 1pO  so: 0mI  sfd: 0mI  excA: 1pI  excB: 1pI
+cca: 1pI  fifo: 0pI  fifop: 1pI  configured: 1
+intr:  sfd: (0x070c) 0EV1  excA: rE1  excB: rE1  ta0iv: 06  p1iv: 0c
+
+status = 0xf0, excflag0 = 0x40, excflag1 = 0x31, excflag2 = 0x0,
+    rxfirst = 0x11, rxfifocnt = 0x80, txfifocnt = 0x0,
+    fsmstat0 = 0x11, fsmstat1 = 0x54
+
+
+
+After Reset....
+
+sfd, excA, excB, cca, fifo, and fifop are incorrect because the gpio settings
+have reverted to POR values.
+
+csn: 1pO  rstn: 1pO   vren: 1pO  so: 0mI  sfd: 1mI  excA: 0pI  excB: 0pI
+cca: 0pI  fifo: 0pI  fifop: 1pI  configured: 1
+intr:  sfd: (0x2e70) 1EV1  excA: rE1  excB: rE1  ta0iv: 06  p1iv: 0c
+
+status = 0x80, excflag0 = 0x0, excflag1 = 0x0, excflag2 = 0x0,
+    rxfirst = 0x0, rxfifocnt = 0x0, txfifocnt = 0x0,
+    fsmstat0 = 0x0, fsmstat1 = 0x0
+
+
+addr  Name          POR       Before    After       Desired
+                              Reset     Reset       Setting
+
+00    frmfilt0      0d        08        0d          08
+01    frmfilt1      78        f8        78          f8
+02    srcmatch      07        06        07          06
+04    srcshorten0   00        00        00
+05    srcshorten1   00        00        00
+06    srcshorten2   00        00        00
+08    srcexten0     00        00        00
+09    srcexten1     00        00        00
+0A    srcexten2     00        00        00
+0C    frmctrl0      40        40        40
+0D    frmctrl1      01        01        01
+0E    rxenable0     00        00        00
+0F    rxenable1     00        80        00
+10    excflag0      00        40        00
+11    excflag1      00        31        00
+12    excflag2      00        00        00
+14    excmaska0     00        7e        00          7e
+15    excmaska1     00        01        00          01
+16    excmaska2     00        3f        00          3f
+18    excmaskb0     00        00        00          00
+19    excmaskb1     00        00        00          00
+1A    excmaskb2     00        00        00          00
+1C    excbindx0     00        00        00
+1D    excbindx1     12        12        12
+1E    excbindy0     00        00        00
+1F    excbindy1     12        12        12
+20    gpioctrl0     00        2a        00          2a
+21    gpioctrl1     27        44        27          44
+22    gpioctrl2     28        21        28          21
+23    gpioctrl3     29        29        29          29
+24    gpioctrl4     2a        27        2a          27
+25    gpioctrl5     90        28        90          28
+26    gpiopolarity  3f        3f        3f
+28    gpioctrl      00        00        00
+2A    dpucon        01        01        01
+2C    dpustat       00        00        00
+2E    freqctrl      0b        56        0b
+2F    freqtune      0f        0f        0f
+30    txpower       06        32        06          32
+31    txctrl        91        91        91
+32    fsmstat0      00        11        00
+33    fsmstat1      00        54        00
+34    fifopctrl     40        7f        40          7f
+35    fsmctrl       01        01        01
+36    ccactrl0      e0        f8        e0          f8
+37    ccactrl1      1a        1a        1a
+38    rssi          80        e2        80
+39    rssistat      00        01        00
+3C    rxfirst       00        11        00
+3E    rxfifocnt     00        80        00
+3F    txfifocnt     00        00        00
+40    chipid        84        84        84
+42    version       00        00        00
+44    extclock      20        20        20
+46    mdmctrl0      45        85        45          85
+47    mdmctrl1      2e        14        2e          14
+48    freqest       00        0b        00
+4A    rxctrl        29        3f        29          3f
+4C    fsctrl        55        5a        55          5a
+4E    fscal0        24        24        24
+4F    fscal1        01        33        01          2b
+50    fscal2        20        22        20
+51    fscal3        2a        2a        2a
+52    agcctrl0      5f        5f        5f
+53    agcctrl1      0e        11        0e          11
+54    agcctrl2      fe        fe        fe
+55    agcctrl3      2e        2e        2e
+56    adctest0      66        10        66          10
+57    adctest1      0a        0e        0a          0e
+58    adctest2      05        03        05          03
+5A    mdmtest0      05        05        05
+5B    mdmtest1      08        08        08
+5C    dactest0      00        00        00
+5D    dactest1      00        00        00
+5E    atest         00        00        00
+5F    dactest2      00        00        00
+60    ptest0        00        00        00
+61    ptest1        00        00        00
+62    reserved      00        00        00
+7A    dpubist       00        00        00
+7C    actbist       00        00        00
+7E    rambist       02        02        02
+
+
+When resetting the chip...
+
+1) issue the reset
+2) make sure XOSC is up.   Assumes 2520 is in ActiveMode state.
+3) load radio configuration
+
+
+
+
+Design Choices:
+
+1) RX Overflow: When the rxfifo overflows, we flush the entire rxfifo.
+
+   We could on the other hand, pull any packets in front of the last
+   packet (which will most likely be incomplete).  However, the mote is
+   backed up, which is why we are overflowing, so why add any more work.
+
+   If we are backed, up the question also rises about how much buffering
+   is stil available.  The assumption here is that buffering is an
+   issue too, also encouraging us towards load shedding.
+
+2) SFDQueue overwrites.   When SFDQueueing starts to be overwritten (TI
+   calls this overflow, the OVR bit in the CCR control register), we
+   mark the whole queue as overwritten.  Any packets associated with
+   these SFD values won't get timestamps.   Any timesync packets going
+   out will be marked with invalid markers.
+
+   This is done just because it is easier than trying to sort out which
+   timestamps (in the SFDQueue) are valid and can be used.  While that isn't
+   that difficult, it is unclear whether that will be necessary or needed.
+
+   If we go into an overwrite condition, it is because someone is keeping
+   the SFDCapture interrupt from running quickly enough (some kind of
+   latency).   This implies that the system is starting to backup.
+
+   If we start getting overwrites, we should revisit this issue.
