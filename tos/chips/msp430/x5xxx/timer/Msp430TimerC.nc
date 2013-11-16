@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 Eric B. Decker
+ * Copyright (c) 2011, 2013 Eric B. Decker
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -54,6 +54,9 @@
  * Timer_B instances use the same interfaces as Timer_A instances.
  * Ditto for Timer_D.
  *
+ * This module implements the Msp430CaptureV2 interface which
+ * includes support for Capture Overflow indications.
+ *
  * @note As of this writing, only T0A5 and T1A3 have been tested.
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
@@ -66,24 +69,24 @@ configuration Msp430TimerC {
 
   provides interface Msp430TimerControl as Control0_A0;
   provides interface Msp430Compare as Compare0_A0;
-  provides interface Msp430Capture as Capture0_A0;
+  provides interface Msp430CaptureV2 as Capture0_A0;
 
   provides interface Msp430TimerControl as Control0_A1;
   provides interface Msp430Compare as Compare0_A1;
-  provides interface Msp430Capture as Capture0_A1;
+  provides interface Msp430CaptureV2 as Capture0_A1;
 
   provides interface Msp430TimerControl as Control0_A2;
   provides interface Msp430Compare as Compare0_A2;
-  provides interface Msp430Capture as Capture0_A2;
+  provides interface Msp430CaptureV2 as Capture0_A2;
 
 #if defined(__MSP430_HAS_T0A5__)
   provides interface Msp430TimerControl as Control0_A3;
   provides interface Msp430Compare as Compare0_A3;
-  provides interface Msp430Capture as Capture0_A3;
+  provides interface Msp430CaptureV2 as Capture0_A3;
 
   provides interface Msp430TimerControl as Control0_A4;
   provides interface Msp430Compare as Compare0_A4;
-  provides interface Msp430Capture as Capture0_A4;
+  provides interface Msp430CaptureV2 as Capture0_A4;
 #endif /* __MSP430_HAS_T0A5__ */
 #endif /* __MSP430_HAS_T0A3__ || __MSP430_HAS_T0A5__ */
 
@@ -92,31 +95,31 @@ configuration Msp430TimerC {
 
   provides interface Msp430TimerControl as Control0_B0;
   provides interface Msp430Compare as Compare0_B0;
-  provides interface Msp430Capture as Capture0_B0;
+  provides interface Msp430CaptureV2 as Capture0_B0;
 
   provides interface Msp430TimerControl as Control0_B1;
   provides interface Msp430Compare as Compare0_B1;
-  provides interface Msp430Capture as Capture0_B1;
+  provides interface Msp430CaptureV2 as Capture0_B1;
 
   provides interface Msp430TimerControl as Control0_B2;
   provides interface Msp430Compare as Compare0_B2;
-  provides interface Msp430Capture as Capture0_B2;
+  provides interface Msp430CaptureV2 as Capture0_B2;
 
   provides interface Msp430TimerControl as Control0_B3;
   provides interface Msp430Compare as Compare0_B3;
-  provides interface Msp430Capture as Capture0_B3;
+  provides interface Msp430CaptureV2 as Capture0_B3;
 
   provides interface Msp430TimerControl as Control0_B4;
   provides interface Msp430Compare as Compare0_B4;
-  provides interface Msp430Capture as Capture0_B4;
+  provides interface Msp430CaptureV2 as Capture0_B4;
 
   provides interface Msp430TimerControl as Control0_B5;
   provides interface Msp430Compare as Compare0_B5;
-  provides interface Msp430Capture as Capture0_B5;
+  provides interface Msp430CaptureV2 as Capture0_B5;
 
   provides interface Msp430TimerControl as Control0_B6;
   provides interface Msp430Compare as Compare0_B6;
-  provides interface Msp430Capture as Capture0_B6;
+  provides interface Msp430CaptureV2 as Capture0_B6;
 #endif /* __MSP430_HAS_T0B7__ */
 
 #if defined(__MSP430_HAS_T1A2__) || defined(__MSP430_HAS_T1A3__) || defined(__MSP430_HAS_T1A5__)
@@ -124,25 +127,25 @@ configuration Msp430TimerC {
 
   provides interface Msp430TimerControl as Control1_A0;
   provides interface Msp430Compare as Compare1_A0;
-  provides interface Msp430Capture as Capture1_A0;
+  provides interface Msp430CaptureV2 as Capture1_A0;
 
   provides interface Msp430TimerControl as Control1_A1;
   provides interface Msp430Compare as Compare1_A1;
-  provides interface Msp430Capture as Capture1_A1;
+  provides interface Msp430CaptureV2 as Capture1_A1;
 
 #if defined(__MSP430_HAS_T1A3__) || defined(__MSP430_HAS_T1A5__)
   provides interface Msp430TimerControl as Control1_A2;
   provides interface Msp430Compare as Compare1_A2;
-  provides interface Msp430Capture as Capture1_A2;
+  provides interface Msp430CaptureV2 as Capture1_A2;
 
 #if defined(__MSP430_HAS_T1A5__)
   provides interface Msp430TimerControl as Control1_A3;
   provides interface Msp430Compare as Compare1_A3;
-  provides interface Msp430Capture as Capture1_A3;
+  provides interface Msp430CaptureV2 as Capture1_A3;
 
   provides interface Msp430TimerControl as Control1_A4;
   provides interface Msp430Compare as Compare1_A4;
-  provides interface Msp430Capture as Capture1_A4;
+  provides interface Msp430CaptureV2 as Capture1_A4;
 #endif /* __MSP430_HAS_T1A5__ */
 #endif /* __MSP430_HAS_T1A3__ || __MSP430_HAS_T1A5__ */
 #endif /* __MSP430_HAS_T1A2__ || __MSP430_HAS_T1A3__ || __MSP430_HAS_T1A5__ */
@@ -153,15 +156,15 @@ configuration Msp430TimerC {
 
   provides interface Msp430TimerControl as Control2_A0;
   provides interface Msp430Compare as Compare2_A0;
-  provides interface Msp430Capture as Capture2_A0;
+  provides interface Msp430CaptureV2 as Capture2_A0;
 
   provides interface Msp430TimerControl as Control2_A1;
   provides interface Msp430Compare as Compare2_A1;
-  provides interface Msp430Capture as Capture2_A1;
+  provides interface Msp430CaptureV2 as Capture2_A1;
 
   provides interface Msp430TimerControl as Control2_A2;
   provides interface Msp430Compare as Compare2_A2;
-  provides interface Msp430Capture as Capture2_A2;
+  provides interface Msp430CaptureV2 as Capture2_A2;
 #endif /* __MSP430_HAS_T2A3__ */
 
 }
