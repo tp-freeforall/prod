@@ -71,9 +71,16 @@ module PlatformP {
 
 implementation {
 
+/*
+ * See PlatformClockP.nc for assignments
+ */
+
+#define USEC_REG    TA0R
+#define JIFFIES_REG TA1R
+
   void uwait(uint16_t u) {
-    uint16_t t0 = TA0R;
-    while((TA0R - t0) <= u);
+    uint16_t t0 = USEC_REG;
+    while((USEC_REG - t0) <= u);
   }
 
   command error_t Init.init() {
@@ -87,11 +94,8 @@ implementation {
     return SUCCESS;
   }
 
-  /*
-   * See PlatformClockP.nc for assignments
-   */
-  async command uint16_t Platform.usecsRaw()   { return TA1R; }
-  async command uint16_t Platform.jiffiesRaw() { return TA0R; }
+  async command uint16_t Platform.usecsRaw()   { return USEC_REG; }
+  async command uint16_t Platform.jiffiesRaw() { return JIFFIES_REG; }
 
   /***************** Defaults ***************/
   default command error_t PeripheralInit.init() {
