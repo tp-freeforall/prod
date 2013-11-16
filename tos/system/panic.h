@@ -25,4 +25,10 @@
  */
 #define PANIC_HC_START 16
 
+/*
+ * main system hardcoded pcodes start at 0x70
+ */
+
+#define PANIC_KERN 0x70
+
 #endif /* __PANIC_H__ */
