@@ -46,9 +46,9 @@ end
 define dt
 printf "TA0:  r: %04x  ctl: %04x  ex: %04x  iv: %04x\n", \
     *((uint16_t *)0x350),*((uint16_t *)0x340),*((uint16_t *)0x360),*((uint16_t *)0x36e)
-printf "  cctl0: %04x    1: %04x   2:  %04x  3: %04x  4: %04x\n", \
+printf "  cctl0: %04x    1: %04x   2: %04x   3: %04x  4: %04x\n", \
     *((uint16_t *)0x342),*((uint16_t *)0x344),*((uint16_t *)0x346),*((uint16_t *)0x348),*((uint16_t *)0x34a)
-printf "   ccr0: %04x    1: %04x   2:  %04x  3: %04x  4: %04x\n\n", \
+printf "   ccr0: %04x    1: %04x   2: %04x   3: %04x  4: %04x\n\n", \
     *((uint16_t *)0x352),*((uint16_t *)0x354),*((uint16_t *)0x356),*((uint16_t *)0x358),*((uint16_t *)0x35a)
 
 printf "TA1:  r: %04x  ctl: %04x  ex: %04x  iv: %04x\n", \
@@ -60,13 +60,13 @@ printf "   ccr0: %04x    1: %04x   2: %04x\n\n", \
 
 #printf "TB0:  r: %04x  ctl: %04x  ex: %04x  iv: %04x\n", \
 #    *((uint16_t *)0x3d0),*((uint16_t *)0x3c0),*((uint16_t *)0x3e0),*((uint16_t *)0x3ee)
-#printf "    cctl0: %04x  1: %04x  2: %04x  3: %04x\n", \
+#printf "  cctl0: %04x    1: %04x   2: %04x   3: %04x\n", \
 #    *((uint16_t *)0x3c2),*((uint16_t *)0x3c4),*((uint16_t *)0x3c6),*((uint16_t *)0x3c8)
-#printf "     ccr0: %04x  1: %04x  2: %04x  3: %04x\n", \
+#printf "   ccr0: %04x    1: %04x   2: %04x   3: %04x\n", \
 #    *((uint16_t *)0x3d2),*((uint16_t *)0x3d4),*((uint16_t *)0x3d6),*((uint16_t *)0x3d8)
-#printf "    cctl4: %04x  5: %04x  6: %04x\n", \
+#printf "  cctl4: %04x    5: %04x   6: %04x\n", \
 #    *((uint16_t *)0x3ca),*((uint16_t *)0x3cc),*((uint16_t *)0x3ce)
-#printf "     ccr4: %04x  5: %04x  6: %04x\n\n", \
+#printf "   ccr4: %04x    5: %04x   6: %04x\n\n", \
 #    *((uint16_t *)0x3da),*((uint16_t *)0x3dc),*((uint16_t *)0x3de)
 
 end
