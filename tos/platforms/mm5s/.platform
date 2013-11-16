@@ -13,15 +13,18 @@ for (split(/\n/, <<'EOText'
   %P/hardware/clock
   %P/hardware/leds
   %P/hardware/pins
+  %P/hardware/timer
   %P/hardware/usci
 
   %T/chips/msp430/x5xxx
   %T/chips/msp430/x5xxx/lpm
   %T/chips/msp430/x5xxx/pins
   %T/chips/msp430/x5xxx/timer
+  %T/chips/msp430/x2x5/timer
   %T/chips/msp430/x5xxx/usci-v2
   %T/chips/msp430/x5xxx/usci-v2/i2c-sm
   %T/chips/msp430
+  %T/chips/msp430/dma
   %T/chips/msp430/pins
   %T/chips/msp430/timer
 
@@ -31,9 +34,9 @@ for (split(/\n/, <<'EOText'
   %T/chips/tmp112
   %T/chips/lis3dh
 
-  %T/chips/cc2520
-  %T/chips/cc2520/layers
-  %T/chips/cc2520/util
+  %T/chips/cc2520-v2
+  %T/chips/cc2520-v2/layers
+  %T/chips/cc2520-v2/util
 
   %T/lib/timer
   %T/lib/serial
