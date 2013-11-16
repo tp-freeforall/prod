@@ -1,5 +1,6 @@
-
-/* Copyright (c) 2000-2003 The Regents of the University of California.
+/*
+ * Copyright (c) 2013 Eric B. Decker
+ * Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +33,7 @@
 
 /**
  * @author Cory Sharp <cssharp@eecs.berkeley.edu>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include "msp430regtypes.h"
@@ -123,13 +125,29 @@ implementation
     TxCTL = (TxCTL & ~(ID0|ID1)) | ((inputDivider << 6) & (ID0|ID1));
   }
 
-  async event void VectorTimerX0.fired()
-  {
+  /*
+   * All 3 major Msp430 families (x1, x2, and x5) provide TimerA timer
+   * modules.  These modules allow various interrupt and capture/compare
+   * possibilites.  Two interrupt vectors are provided.  The first is
+   * dedicated  to TACCR0.   The TACCR0 IFG (interrupt flag) is automatically
+   * cleared by the h/w.
+   *
+   * VectorTimerX0 handles TxCCR0 interrupts.
+   */
+  async event void VectorTimerX0.fired() {
     signal Event.fired[0]();
   }
 
-  async event void VectorTimerX1.fired()
-  {
+  /*
+   * VectorTimerX1 handles interrupts for other TimerX interrupts,
+   * TAIFG (timer overflow), and TACCRn for n > 0.  A interrupt
+   * vector register (TxIV) provides an indication of which interrupt
+   * has occured (with priority, highest is presented first).
+   *
+   * When TxIV is red the highest priority interrupt is cleared (IFG
+   * is cleared) by the h/w.
+   */
+  async event void VectorTimerX1.fired() {
     uint8_t n = TxIV;
     signal Event.fired[ n >> 1 ]();
   }

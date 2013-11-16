@@ -482,9 +482,15 @@ enum {
   MSP430_POWER_LPM4   = 5
 };
 
+#ifndef INLINE
+#define INLINE inline __attribute__((always_inline))
+#endif
+
 inline void __nesc_disable_interrupt(void) __attribute__((always_inline)) @safe() {
   dint();
+#ifndef __MSPGCC__
   nop();
+#endif
 }
 
 inline void __nesc_enable_interrupt(void) __attribute__((always_inline)) @safe() {
