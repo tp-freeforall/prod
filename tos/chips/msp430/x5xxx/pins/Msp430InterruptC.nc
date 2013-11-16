@@ -43,8 +43,8 @@
  * @author Jonathan Hui
  * @author Joe Polastre
  * @author Eric B. Decker <cire831@gmail.com>
- * @see  Please refer to TEP 117 for more information about this component and its
- *          intended use.
+ * @see  Please refer to TEP 117 for more information about this component
+ *          and its intended use.
  */
 
 generic module Msp430InterruptC() @safe() {
@@ -56,7 +56,7 @@ implementation {
   async command error_t Interrupt.enableRisingEdge() {
     atomic {
       call Interrupt.disable();
-      call HplInterrupt.clear();
+      call HplInterrupt.clear();        /* clear interrupt flag */
       call HplInterrupt.edgeRising();
       call HplInterrupt.enable();
     }
@@ -66,7 +66,7 @@ implementation {
   async command error_t Interrupt.enableFallingEdge() {
     atomic {
       call Interrupt.disable();
-      call HplInterrupt.clear();
+      call HplInterrupt.clear();        /* clear interrupt flag */
       call HplInterrupt.edgeFalling();
       call HplInterrupt.enable();
     }
@@ -77,13 +77,15 @@ implementation {
     call HplInterrupt.disable();
 
     /*
-     * formerly, this also cleared out any pending interrupt that came in after the disable too.
-     * If it came in prior to the disable, it would have interrupted us and been handled.
+     * formerly, this also cleared out any pending interrupt (the interrupt
+     * flag) that came in after the disable too.  If it came in prior to the
+     * disable, it would have interrupted us and been handled.
      *
-     * So there is a window between the disable happening and the clear happening where an
-     * event will get thrown away.   This is bad.   It is better to simply let the disable
-     * happen and maybe later decide if we are shutting down the system or not.  If not
-     * we may very well want to see the event.
+     * So there is a window between the disable happening and the clear
+     * happening where an event will get thrown away.   This is bad.   It is
+     * better to simply let the disable happen and maybe later decide if we
+     * are shutting down the system or not.  If not we may very well want to
+     * see the event.
      */
     return SUCCESS;
   }
@@ -97,8 +99,10 @@ implementation {
      * Don't do it again or we could potentially throw away yet another
      * event.  Bad bad bad.
      *
-     * There used to be a clear here that the x1/x2 processors need.  But x5
-     * processors don't.
+     * There used to be a clear here that the x1/x2 processors used.  For the
+     * x1/x2 mcus this has been moved to the first level interrupt handler to
+     * make those mcus closer to the x5 mcus.  The x5 mcus clear the highest
+     * priority interrupt flag when the P{1,2}IV register is accessed.
      */
     signal Interrupt.fired();
   }

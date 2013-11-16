@@ -3,9 +3,6 @@
  * Copyright (c) 2000-2005 The Regents of the University of California.  
  * All rights reserved.
  *
- * Deprecated, deprecated, deprecated.
- * replaced by family specific versions, see x1x2/pins and x5xxx/pins.
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -37,9 +34,19 @@
  *
  * @author Joe Polastre
  * @author Eric B. Decker <cire831@gmail.com>
+ *
+ * x1x2 family version.  The x1 and x2 processors do not have the P1IV or
+ * P2IV interrupt vector registers like the x5 processors have.
+ *
+ * When P1IV or P2IV is accessed it will automatically clear the highest
+ * priority interrupt.  We want the x1x2 interrupt handlers to behave
+ * the same so need to clear the IFG of the highest interrupt pending.
+ * This needs to be accounted for in any code that interfaces to the
+ * pin interrupts.
+ *
+ * To Do: verify that x1x2 port interrupt users no longer clear the
+ * interrupt flag.   This is now handled in this code.
  */
-
-#error pins/HplMsp430InterruptP replaced by x1x2/pins or x5xxx/pins
 
 module HplMsp430InterruptP @safe() {
 
@@ -79,26 +86,31 @@ implementation {
      * This costs repeated interrupt overhead.  Getting to the interrupt
      * routine and the RETI overhead.  However we really want those higher
      * priority interrupts to have a crack.
+     *
+     * This code also clears the interrupt flag.   This makes
+     * the user of this code (the <port>.fired() routine
+     * behave the same as the x5 processors so interrupt handlers
+     * can be the same and potentially could be reused.
      */
 
-    if (n & (1 << 0)) { signal Port10.fired(); return; }
-    if (n & (1 << 1)) { signal Port11.fired(); return; }
-    if (n & (1 << 2)) { signal Port12.fired(); return; }
-    if (n & (1 << 3)) { signal Port13.fired(); return; }
-    if (n & (1 << 4)) { signal Port14.fired(); return; }
-    if (n & (1 << 5)) { signal Port15.fired(); return; }
-    if (n & (1 << 6)) { signal Port16.fired(); return; }
-    if (n & (1 << 7)) { signal Port17.fired(); return; }
+    if (n & (1 << 0)) { call Port10.clear(); signal Port10.fired(); return; }
+    if (n & (1 << 1)) { call Port11.clear(); signal Port11.fired(); return; }
+    if (n & (1 << 2)) { call Port12.clear(); signal Port12.fired(); return; }
+    if (n & (1 << 3)) { call Port13.clear(); signal Port13.fired(); return; }
+    if (n & (1 << 4)) { call Port14.clear(); signal Port14.fired(); return; }
+    if (n & (1 << 5)) { call Port15.clear(); signal Port15.fired(); return; }
+    if (n & (1 << 6)) { call Port16.clear(); signal Port16.fired(); return; }
+    if (n & (1 << 7)) { call Port17.clear(); signal Port17.fired(); return; }
   }
 
-  default async event void Port10.fired() { call Port10.clear(); }
-  default async event void Port11.fired() { call Port11.clear(); }
-  default async event void Port12.fired() { call Port12.clear(); }
-  default async event void Port13.fired() { call Port13.clear(); }
-  default async event void Port14.fired() { call Port14.clear(); }
-  default async event void Port15.fired() { call Port15.clear(); }
-  default async event void Port16.fired() { call Port16.clear(); }
-  default async event void Port17.fired() { call Port17.clear(); }
+  default async event void Port10.fired() { }
+  default async event void Port11.fired() { }
+  default async event void Port12.fired() { }
+  default async event void Port13.fired() { }
+  default async event void Port14.fired() { }
+  default async event void Port15.fired() { }
+  default async event void Port16.fired() { }
+  default async event void Port17.fired() { }
 
   async command void Port10.enable() { P1IE |= (1 << 0); }
   async command void Port11.enable() { P1IE |= (1 << 1); }
@@ -215,24 +227,24 @@ implementation {
   TOSH_SIGNAL(PORT2_VECTOR) {
     volatile uint8_t n = P2IFG & P2IE;	/* why volatile? */
 
-    if (n & (1 << 0)) { signal Port20.fired(); return; }
-    if (n & (1 << 1)) { signal Port21.fired(); return; }
-    if (n & (1 << 2)) { signal Port22.fired(); return; }
-    if (n & (1 << 3)) { signal Port23.fired(); return; }
-    if (n & (1 << 4)) { signal Port24.fired(); return; }
-    if (n & (1 << 5)) { signal Port25.fired(); return; }
-    if (n & (1 << 6)) { signal Port26.fired(); return; }
-    if (n & (1 << 7)) { signal Port27.fired(); return; }
+    if (n & (1 << 0)) { call Port20.clear(); signal Port20.fired(); return; }
+    if (n & (1 << 1)) { call Port21.clear(); signal Port21.fired(); return; }
+    if (n & (1 << 2)) { call Port22.clear(); signal Port22.fired(); return; }
+    if (n & (1 << 3)) { call Port23.clear(); signal Port23.fired(); return; }
+    if (n & (1 << 4)) { call Port24.clear(); signal Port24.fired(); return; }
+    if (n & (1 << 5)) { call Port25.clear(); signal Port25.fired(); return; }
+    if (n & (1 << 6)) { call Port26.clear(); signal Port26.fired(); return; }
+    if (n & (1 << 7)) { call Port27.clear(); signal Port27.fired(); return; }
   }
 
-  default async event void Port20.fired() { call Port20.clear(); }
-  default async event void Port21.fired() { call Port21.clear(); }
-  default async event void Port22.fired() { call Port22.clear(); }
-  default async event void Port23.fired() { call Port23.clear(); }
-  default async event void Port24.fired() { call Port24.clear(); }
-  default async event void Port25.fired() { call Port25.clear(); }
-  default async event void Port26.fired() { call Port26.clear(); }
-  default async event void Port27.fired() { call Port27.clear(); }
+  default async event void Port20.fired() { }
+  default async event void Port21.fired() { }
+  default async event void Port22.fired() { }
+  default async event void Port23.fired() { }
+  default async event void Port24.fired() { }
+  default async event void Port25.fired() { }
+  default async event void Port26.fired() { }
+  default async event void Port27.fired() { }
 
   async command void Port20.enable() { P2IE |= (1 << 0); }
   async command void Port21.enable() { P2IE |= (1 << 1); }
