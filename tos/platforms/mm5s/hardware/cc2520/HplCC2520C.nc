@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2013 Eric B. Decker
- * Copyright (c) 2011 University of Utah. 
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +33,6 @@
  */
 
 /**
- * @author Thomas Schmid
  * @author Eric B. Decker <cire831@gmail.com>
  */
 
@@ -43,65 +41,126 @@
 configuration HplCC2520C {
   provides {
 
-    interface GeneralIO as CCA;
-    interface GeneralIO as CSN;
-    interface GeneralIO as FIFO;
-    interface GeneralIO as FIFOP;
-    interface GeneralIO as RSTN;
-    interface GeneralIO as SFD;
-    interface GeneralIO as VREN;
-    interface GpioCapture as SfdCapture;
-    interface GpioInterrupt as FifopInterrupt;
-    interface GpioInterrupt as FifoInterrupt;
+    interface GeneralIO     as RSTN;
+    interface GeneralIO     as VREN;
+    interface GeneralIO     as CSN;
+
+    interface GeneralIO     as SFD;             /* gp0 -> sfd   */
+    interface GeneralIO     as TXA;             /* gp1 -> tx_active  */
+    interface GeneralIO     as EXCA;            /* gp2 -> exca  */
+
+    interface GeneralIO     as CCA;             /* gp3 -> cca   */
+    interface GeneralIO     as FIFO;            /* gp4 -> fifo  */
+    interface GeneralIO     as FIFOP;           /* gp5 -> fifop */
+
+    interface GenericCapture<uint16_t>
+                            as SfdCapture;
+    interface GpioInterrupt as ExcAInterrupt;
 
     interface SpiByte;
+    interface FastSpiByte;
     interface SpiPacket;
 
     interface Resource as SpiResource;
 
     interface Alarm<TRadio, uint16_t> as Alarm;
     interface LocalTime<TRadio> as LocalTimeRadio;
+
+    /*
+     * P_SO and P_GPIO[1-5] are platform specific pins that are used by the
+     * platform specific CC2520 code.   When the cc2520 chip gets turned off
+     * these pins get handled so that the chip doesn't get powered by a high
+     * voltage on the pin.  Basically they get tied to ground through a pull
+     * down (as provided by the mcu).  See PlatformCC2520P for details.
+     */
+    interface HplMsp430GeneralIO as P_SO;
+    interface HplMsp430GeneralIO as P_CSN;
+    interface HplMsp430GeneralIO as P_RSTN;
+    interface HplMsp430GeneralIO as P_VREN;
+    interface HplMsp430GeneralIO as P_GPIO0;
+    interface HplMsp430GeneralIO as P_GPIO1;
+    interface HplMsp430GeneralIO as P_GPIO2;
+    interface HplMsp430GeneralIO as P_GPIO3;
+    interface HplMsp430GeneralIO as P_GPIO4;
+    interface HplMsp430GeneralIO as P_GPIO5;
   }
 }
 implementation {
   components new Msp430UsciSpiB0C() as SpiC;
   SpiResource = SpiC;
   SpiByte     = SpiC;
+  FastSpiByte = SpiC;
   SpiPacket   = SpiC;
 
   components CC2520SpiConfigP;
   CC2520SpiConfigP.Msp430UsciConfigure <- SpiC;
 
-  components HplMsp430GeneralIOC as GeneralIOC;
-  components new Msp430GpioC() as CCAM;
-  components new Msp430GpioC() as CSNM;
-  components new Msp430GpioC() as FIFOM;
-  components new Msp430GpioC() as FIFOPM;
-  components new Msp430GpioC() as RSTNM;
-  components new Msp430GpioC() as SFDM;
-  components new Msp430GpioC() as VRENM;
+  /* _G pins are GeneralIO pins that we export */
+  components new Msp430GpioC() as RSTN_G;
+  components new Msp430GpioC() as VREN_G;
+  components new Msp430GpioC() as CSN_G;
 
-  CCAM   -> GeneralIOC.Port13; 
-  CSNM   -> GeneralIOC.Port30;
-  FIFOM  -> GeneralIOC.Port15; 
-  FIFOPM -> GeneralIOC.Port16;
-  RSTNM  -> GeneralIOC.Port12;
-  SFDM   -> GeneralIOC.Port81;
-  VRENM  -> GeneralIOC.Port17;
-  
-  CCA   = CCAM;
-  CSN   = CSNM;
-  FIFO  = FIFOM;
-  FIFOP = FIFOPM;
-  RSTN  = RSTNM;
-  SFD   = SFDM;
-  VREN  = VRENM;
+  components new Msp430GpioC() as SFD_G;
+  components new Msp430GpioC() as TXA_G;
+  components new Msp430GpioC() as EXCA_G;
 
-  components P81SfdCaptureC as SfdCaptureC;
-  components Msp430TimerC;
-  SfdCapture = SfdCaptureC;
+  components new Msp430GpioC() as CCA_G;
+  components new Msp430GpioC() as FIFO_G;
+  components new Msp430GpioC() as FIFOP_G;
+
+  components HplMsp430GeneralIOC as P_IOC;
+
+  // SO, Port32
+
+  CSN_G   -> P_IOC.Port30;
+  RSTN_G  -> P_IOC.Port12;
+  VREN_G  -> P_IOC.Port17;
+
+  SFD_G   -> P_IOC.Port14;
+  TXA_G   -> P_IOC.Port15;
+  EXCA_G  -> P_IOC.Port16;
+
+  CCA_G   -> P_IOC.Port13; 
+  FIFO_G  -> P_IOC.Port81; 
+  FIFOP_G -> P_IOC.Port82;
+
+
+  RSTN     = RSTN_G;
+  VREN     = VREN_G;
+  CSN      = CSN_G;
+
+  SFD      = SFD_G;
+  TXA      = TXA_G;
+  EXCA     = EXCA_G;
+
+  CCA      = CCA_G;
+  FIFO     = FIFO_G;
+  FIFOP    = FIFOP_G;
+
+  /* platform specific pins (see PlatformCC2520) */
+  P_SO     = P_IOC.Port32;
+  P_CSN    = P_IOC.Port30;
+  P_RSTN   = P_IOC.Port12;
+  P_VREN   = P_IOC.Port17;
+  P_GPIO0  = P_IOC.Port14;
+  P_GPIO1  = P_IOC.Port15;
+  P_GPIO2  = P_IOC.Port16;
+  P_GPIO3  = P_IOC.Port13;
+  P_GPIO4  = P_IOC.Port81;
+  P_GPIO5  = P_IOC.Port82;
 
   /*
+   * The default configuration for timers on x5 processors is
+   * TA0 -> 32KiHz and TA1 -> TMicro (1uis).  But we want to
+   * use TA0 for uS timestamping of the SFD signal.   So we
+   * swap the usage.
+   *
+   * If the clock being used for SFDcapture goes to sleep, then when
+   * we receive a packet there is no clock source for the capture.
+   * This makes the capture unreliable.   However, if we are actively
+   * using the 1us clock (like for a timer) it doesn't go to sleep and
+   * should remain reasonable.
+   *
    * We should use Msp430TimerMicro for this except that TimerMicroC
    * doesn't export Capture.
    *
@@ -109,27 +168,46 @@ implementation {
    *     SfdCaptureC.Msp430TimerControl = TM.Msp430TimerControl;
    *     SfdCaptureC.Msp430Capture      = TM.Msp430Capture;
    *
-   * The SFD pin on the 2520EM module for the 5438A eval board is wired
-   * to P8.1/TA0.1 on the cpu.   This connects to the capture module for
-   * TA0 via TA0.CCI1B which requires using TA0CCTL1.   The capture will
-   * show up in TA0CCR1 and will set CCIFG in TA0CCTL1.  Units in TA0CCR1
-   * will be 32KiHz jiffies.
+   * The SFD pin on the 2520EM module for the 5438A eval board is configured
+   * to use P1.4/TA0.3 on the cpu.   This connects to the capture module for
+   * TA0 via TA0.CCI3A which requires using TA0CCTL3.   The capture will
+   * show up in TA0CCR3 and will set CCIFG in TA0CCTL3.  Units in TA0CCR3
+   * will be TMicro ticks.
+   *
+   * This also requires a modification to Msp430TimerMicroMap so control
+   * cells for T0A1 aren't exposed for use by other users.  A custom
+   * version is present in tos/platforms/mm5s/hardware/timer.  This directory
+   * is also were files swapping the definition of which timer is which live.
    */
-  SfdCaptureC.Msp430TimerControl -> Msp430TimerC.Control0_A1;
-  SfdCaptureC.Msp430Capture      -> Msp430TimerC.Capture0_A1;
-  SfdCaptureC.GeneralIO          -> GeneralIOC.Port81;
+
+  /*
+   * uses GenericCapture and Msp430CaptureV2, which export capture overwrite
+   * (overflow).
+   */
+  components new GpioCaptureC() as SfdCaptureC;
+  components Msp430TimerC;
+  SfdCapture = SfdCaptureC;
+
+  SfdCaptureC.Msp430TimerControl -> Msp430TimerC.Control0_A3;
+  SfdCaptureC.MCap2              -> Msp430TimerC.Capture0_A3;
+  SfdCaptureC.CaptureBit         -> P_IOC.Port14;
 
   components HplMsp430InterruptC;
-  components new Msp430InterruptC() as InterruptFIFOC;
-  components new Msp430InterruptC() as InterruptFIFOPC;
-  FifoInterrupt  = InterruptFIFOC.Interrupt;
-  FifopInterrupt = InterruptFIFOPC.Interrupt;
-  InterruptFIFOC.HplInterrupt  -> HplMsp430InterruptC.Port15;
-  InterruptFIFOPC.HplInterrupt -> HplMsp430InterruptC.Port16;
+  components new Msp430InterruptC() as InterruptExcAC;
+  ExcAInterrupt = InterruptExcAC.Interrupt;
+  InterruptExcAC.HplInterrupt -> HplMsp430InterruptC.Port16;
 
+#ifdef notdef
   components new Alarm32khz16C() as AlarmC;
   Alarm = AlarmC;
 
   components LocalTime32khzC;
   LocalTimeRadio = LocalTime32khzC.LocalTime;
+#endif
+
+  components new AlarmMicro16C() as AlarmC;
+  Alarm = AlarmC;
+
+  components LocalTimeMicroC;
+  LocalTimeRadio = LocalTimeMicroC.LocalTime;
 }

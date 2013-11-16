@@ -38,15 +38,21 @@
  * captured via TA0.CCI1B and is controlled by TA0CCTL1.   And
  * the captured time shows up in TA0CCR1.
  *
+ * This effects what Timer components are exposed via Msp430Timer32khzMap
+ * The platform needs to provide a modified map file.
+ *
  * See tos/platforms/mm5s/hardware/cc2520/HplCC2520C for details of
  * nesc wiring.
+ *
+ * This version of GpioCapture does not clear the IFG but rather relies
+ * on the h/w clearing done by reading the IV.   X5 processors.
  */
 
-module P81SfdCaptureC {
-  provides interface GpioCapture as Capture;
+module P14SfdCaptureC {
+  provides interface GpioCaptureV2 as CaptureV2;
   uses {
     interface Msp430TimerControl;
-    interface Msp430Capture;
+    interface Msp430CaptureV2;
     interface HplMsp430GeneralIO as GeneralIO;
   }
 }
@@ -63,30 +69,32 @@ implementation {
        * setControlAsCapture clears out both CCIE (pending Interrupt
        * as well as COV (overflow).
        */
-      call Msp430TimerControl.setControlAsCapture( mode, MSP430TIMER_CCI_B );
+      call Msp430TimerControl.setControlAsCapture( mode, MSP430TIMER_CCI_A );
       call Msp430TimerControl.enableEvents();
     }
     return SUCCESS;
   }
 
-  async command error_t Capture.captureRisingEdge() {
+  async command error_t CaptureV2.captureRisingEdge() {
     return enableCapture( MSP430TIMER_CM_RISING );
   }
 
-  async command error_t Capture.captureFallingEdge() {
+  async command error_t CaptureV2.captureFallingEdge() {
     return enableCapture( MSP430TIMER_CM_FALLING );
   }
 
-  async command void Capture.disable() {
+  async command error_t CaptureV2.captureBothEdges() {
+    return enableCapture( MSP430TIMER_CM_BOTH );
+  }
+
+  async command void CaptureV2.disable() {
     atomic {
       call Msp430TimerControl.disableEvents();
       call GeneralIO.selectIOFunc();
     }
   }
 
-  async event void Msp430Capture.captured( uint16_t time ) {
-    call Msp430TimerControl.clearPendingInterrupt();
-    call Msp430Capture.clearOverflow();
-    signal Capture.captured( time );
+  async event void Msp430CaptureV2.captured( uint16_t time, bool overflowed ) {
+    signal CaptureV2.captured( time, overflowed );
   }
 }

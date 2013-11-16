@@ -44,7 +44,7 @@
 
 /* This is the default value of the PA_POWER field of the TXCTL register. */
 #ifndef CC2520_DEF_RFPOWER
-#define CC2520_DEF_RFPOWER	0
+#define CC2520_DEF_RFPOWER	0x32
 #endif
 
 /* This is the default value of the CHANNEL field of the FSCTRL register. */
@@ -56,6 +56,8 @@
 #ifndef SOFTWAREACK_TIMEOUT
 #define SOFTWAREACK_TIMEOUT	800
 #endif
+
+#ifdef notdef
 
 /**
  * This is the timer type of the radio alarm interface
@@ -92,6 +94,47 @@ enum cc2520_timing_enums {
  * 2**5 = 32.  Actually 32.7 which is about 2.3% off.
  */
 #define RADIO_ALARM_MILLI_EXP	5
+
+#endif
+
+
+/**
+ * This is the timer type of the radio alarm interface
+ */
+typedef TMicro   TRadio;
+typedef uint16_t tradio_size;
+
+/**
+ * The number of radio alarm ticks per one microsecond .
+ *
+ * The main mm5s clock is at 8MHz (decimal), TA1 is used to
+ * provide TMicro (DCO -> MCLK -> SMCLK -> /8 -> TA1).
+ *
+ * However, the SFD capture is on pin 8.1 which is connected to
+ * TA0.CCI1B.  TA0 is run off the 32KiHz clock so we use TA0
+ * for the capture and runs T32khz and TMilli.
+ */
+#define RADIO_ALARM_MICROSEC    1
+
+enum cc2520_timing_enums {
+  CC2520_SYMBOL_TIME =  17 * RADIO_ALARM_MICROSEC, //  16us, actual 16.2us
+  IDLE_2_RX_ON_TIME  =  12 * CC2520_SYMBOL_TIME,   // 192us, actual 194.5us
+  PD_2_IDLE_TIME     = 902 * RADIO_ALARM_MICROSEC, // 860us, actual 860.2us
+};
+
+
+/**
+ * The base two logarithm of the number of radio alarm ticks per one millisecond
+ *
+ * Originally TinyOS defined time in terms of powers of two.  And 
+ * RADIO_ALARM_MILLI_EXP expressing millisecs (actually mis, binary millisecs)
+ * isn't a problem.
+ *
+ * 2**10 = 1024
+ */
+#define RADIO_ALARM_MILLI_EXP	10
+
+
 
 /**
  * Make PACKET_LINK automaticaly enabled for Ieee154MessageC

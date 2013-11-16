@@ -54,7 +54,7 @@ const msp430_usci_config_t cc2520_spi_config = {
    * UCSYNC: 1,
    * UCSSEL: SMCLK,
    */
-  ctl0 : (UCMSB | UCMST | UCSYNC),
+  ctl0 : (UCCKPH | UCMSB | UCMST | UCSYNC),
   ctl1 : UCSSEL__SMCLK,
   br0  : 2,			/* 8MHz -> 4 MHz */
   br1  : 0,
