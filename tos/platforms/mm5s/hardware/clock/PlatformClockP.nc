@@ -37,20 +37,22 @@
  *
  * Initilization of the Clock system for the MM5 series motes.
  *
- * The MM5S mote is based on msp430f5438a series cpus.
+ * The MM5S mote is based on msp430f5438a series cpus.  It lives
+ * on the TI MSP-EXP430F5438 evaluation board and has a CC2520EM
+ * radio evaluation module attached to it.
  *
  * MCLK (Main Clock) - 8MHz, DCOCLK/1
  * SMCLK (submain)   DCOCLK/1
- * SMCLK/8 -> TA1 (1us) -> TMicro
- * ACLK/1 (32KiHz) -> TA0 (1/32768) -> TMilli
+ * SMCLK/8 -> TA0 (1us) -> TMicro
+ * ACLK/1 (32KiHz) -> TA1 (1/32768) -> TMilli
  *
  * The 5438 runs at 2.2V and can clock up to 18MHz.   The 5438a
  * can run at 1.8V (up to 8 MHz), and its core can be tweaked to
  * enable faster clocking.   We default to using 8MHz so allow
  * low power execution on the 5438a.
  *
- * Previous ports of TinyOS to msp430 cpus, would set the cpu to
- * clock at a power of 2 (MiHz).   This was to facilitate syncronizing
+ * Previous ports of TinyOS to msp430 cpus, would set the cpu to a
+ * binary clock (power of 2, MiHz).   This was to facilitate syncronizing
  * with the 32768 (32 KiHz) XT1 crystal.   The Timer TEP talks about
  * time in TinyOS being binary time.  1 mis (binary millisec = 1/1024)
  * is provided by TMilli and 1 uis (binary microsec = 1/1024/1024)
@@ -65,17 +67,18 @@
  * We ignore the 5438 because it is quite buggy.  The 5438a has better specs
  * and is a pin for pin replacement.   Do not support the 5438, its a pig.
  *
- * The default timer configuration for the x5 is arbitrarily chosen to be
- * DCOCLK -> SMCLK/8 -> TA1 (1MHz) and ACLK -> TA0 (32 KIHz).  TA0 is used
- * to provide TMilli.   We use this configuration.
+ * The default timer configuration for the x5 was chosen to be
+ * DCOCLK -> SMCLK/8 -> TA1 (1MHz) and ACLK -> TA0 (32 KIHz).  TA0 drives TMilli.
+ *
+ * We use DCOCLK -> SMCLK/8 -> T0A (1MHZ) and ACLK -> T1A to allow attaching
+ * TMicro timestamps to SFDCaptures.  (See below).
  *
  * The 2520EM module ties cc_gpio4 (default SFD) to p8.1 on the CPU.  This
  * input is used to time stamp SFD (start of frame delimiter) via the
  * timer capture facility.  P8.1 is TA0.CCI1B when the pin is
- * configured for Module Input and will have jiffy resolution
- * (1/32768 ~ 30.5us).
+ * configured for Module Input and will have TMicro resolution.
  *
- * The TMicro timer (TA1) is run off DCOCLK/8 which yields 1us (not 1uis)
+ * The TMicro timer (TA0) is run off DCOCLK/8 which yields 1us (not 1uis)
  * ticks.  However, TMilli is the long term timer that runs when the system
  * is sleeping.   It is clocked off XT1 at 32KiHz.   This is a power of 2
  * and TMilli is defined by TEP to be in terms of 1mis.
@@ -94,8 +97,8 @@
  * (.0576% error, it'll do).
  *
  * DCOCLK -> MCLK, SMCLK.   Also drives high speed timer that
- * provides TMicro -> TA1.   1us (note, decimal microsecs).  DCOCLK
- * sync'd to FLL/XT1/32KiHz.
+ * provides TMicro -> TA0.   1us (note, decimal microsecs).  DCOCLK
+ * sync'd to FLL/XT1/32KiHz (ACLK).
  *
  * MCLK /1: main  cpu clock.  Off DCOCLK.
  *
@@ -107,7 +110,7 @@
  * dividing down will slow down any bus being run off SMCLK.
  *
  * ACLK: 32 KiHz.   Primarily used for the slow speed timer that
- * provides TMilli.  Used to clock TA0.
+ * provides TMilli.  Used to clock TA1.
  *
  * FLL: in use and clocked off the 32 KiHz XT1 input.
  *
@@ -118,7 +121,7 @@
  * is not achieved, the XT1 functionality is disabled.  This should
  * cause a hcf_panic which results in writing a panic block in slow
  * mode.  Should never happen.  Famous last words (right before the
- * rocket blows up).
+ * rocket does a 180 and we need to blow it up).
  *
  * Stabilization appears to take roughly 150ms.
  *
@@ -146,25 +149,25 @@ uint16_t last_xt1, last_dco;
 
 noinit uint16_t ucsctl0[STUFF_SIZE];
 
-noinit bool clear_stuff;
-noinit uint16_t nxt;
-
-void set_stuff() {
-  if (clear_stuff) {
-    memset(ucsctl0, 0, sizeof(ucsctl0));
-    clear_stuff = 0;
-    nxt = 0;
-  }
-  if (nxt >= STUFF_SIZE)
-    nxt = 0;
-  ucsctl0[nxt] = UCSCTL0;
-  nxt++;
-}
-
-
 module PlatformClockP {
   provides interface Init;
 } implementation {
+
+  noinit bool clear_stuff;
+  noinit uint16_t nxt;
+
+  void set_stuff() {
+    if (clear_stuff) {
+      memset(ucsctl0, 0, sizeof(ucsctl0));
+      clear_stuff = 0;
+      nxt = 0;
+    }
+    if (nxt >= STUFF_SIZE)
+      nxt = 0;
+    ucsctl0[nxt] = UCSCTL0;
+    nxt++;
+  }
+
 
   /*
    * wait_for_32K()
@@ -180,7 +183,7 @@ module PlatformClockP {
    * amount of time to actual home to its base frequency.
    *
    * We haven't looked to see if the same is true of the XT1 start up on the
-   * 5438a but we assume it does need stabilize.  (same physics).
+   * 5438a but we assume it does need to stabilize.  (same physics).
    *
    * Give it time to stabilize before using it.   This should only be true
    * coming out of reset.  Anytime we reset, P7.0 and P7.1 (XT1IN, XT1OUT)
@@ -214,8 +217,8 @@ module PlatformClockP {
   uint16_t maj_xt1() {
     uint16_t a, b, c;
 
-    /* TA0 is 32KiHz ticker */
-    a = TA0R; b = TA0R; c = TA0R;
+    /* TA1 is 32KiHz ticker */
+    a = TA1R; b = TA1R; c = TA1R;
     if (a == b) return a;
     if (a == c) return a;
     if (b == c) return b;
@@ -234,13 +237,13 @@ module PlatformClockP {
     bool cap;
 
     /*
-     * TA0 -> XT1 32768   (just for fun and to compare against TA1 (1uis ticker)
-     * TA1 -> SMCLK/1 (should be 1uis ticker)
+     * TA0 -> SMCLK/1     (should be ~1us ticker, dco clock)
+     * TA1 -> XT1 32768   (just for fun and to compare against TA0 (1us ticker)
      */
-    TA0CTL = TACLR;			// also zeros out control bits
+    TA0CTL = TACLR;     			// also zeros out control bits
     TA1CTL = TACLR;
-    TA0CTL = TASSEL__ACLK   | MC__CONTINUOUS;	//  ACLK/1, continuous
-    TA1CTL = TASSEL__SMCLK  | MC__CONTINUOUS;	// SMCLK/1, continuous
+    TA0CTL = TASSEL__SMCLK  | MC__CONTINUOUS;	// SMCLK/1, continuous
+    TA1CTL = TASSEL__ACLK   | MC__CONTINUOUS;	//  ACLK/1, continuous
 
     /*
      * wait for about a sec for the 32KHz to come up and
@@ -252,23 +255,23 @@ module PlatformClockP {
      * has a good looking waveform but what about its frequency
      * stability.  Needs to be measured.
      *
-     * One thing to try is watching successive edges (ticks, TA0R, changing
-     * by one) and seeing how many TA1 (1 uis) ticks have gone by.   When it is
+     * One thing to try is watching successive edges (ticks, TA1R, changing
+     * by one) and seeing how many TA0 (1 uis) ticks have gone by.   When it is
      * around 30-31 ticks then we are in the right neighborhood.
      *
      * We should see about PWR_UP_SEC (16) * 64Ki(16bits) * 1/1024/1024 seconds which just
      * happens to majikly equal 1 second.   whew!
      */
 
-    xt1_cap = 16;
+    xt1_cap = 16;                       /* do 16 cycles, captures of 32KiHz ticks */
     left = PWR_UP_SEC;
     cap = FALSE;
     while (1) {
-      if (TA1CTL & TAIFG) {
+      if (TA0CTL & TAIFG) {             /* look at 1us ticker, has it wrapped? */
 	/*
 	 * wrapped, clear IFG, and decrement major count
 	 */
-	TA1CTL &= ~TAIFG;
+	TA0CTL &= ~TAIFG;               /* 1us ticker */
 	if (--left == 0)
 	  break;
 	if (left <= xt1_cap) {
@@ -276,7 +279,7 @@ module PlatformClockP {
 	  xt1_cap = 0;			/* disable future capture triggers */
 	  xt1_idx = 0;
 	  last_xt1 = maj_xt1();
-	  last_dco = TA1R;
+	  last_dco = TA0R;
 	}
       }
       if (cap) {
@@ -284,9 +287,9 @@ module PlatformClockP {
 	if (last_xt1 == xt1_read)
 	  continue;
 	if (last_xt1 != xt1_read) {
-	  xt1_deltas[xt1_idx++] = TA1R - last_dco;
+	  xt1_deltas[xt1_idx++] = TA0R - last_dco;
 	  last_xt1 = xt1_read;
-	  last_dco = TA1R;
+	  last_dco = TA0R;
 	  if (xt1_idx >= XT1_DELTAS) {
 	    cap = FALSE;
 	    nop();
@@ -322,8 +325,8 @@ module PlatformClockP {
      */
 
     /*
-     * P7.0 and P7.1 connect to the 32 KiHz Xtal.  Pins 13, 14 checked
-     * out for the 5437 and 5438.
+     * P7.0 and P7.1 connect to the 32 KiHz Xtal.  Pins 13, 14 on the
+     * 5437 and 5438.
      */
     P7SEL |= (BIT0 | BIT1);
 
@@ -406,7 +409,7 @@ module PlatformClockP {
 
     /*
      * ACLK is to be set to XT1CLK, assumed to be 32KiHz (2^15Hz).
-     * This drives TA0 for TMilli.
+     * This drives TA1 for TMilli.
      *
      * We run DCO into the integrator as /1 (FLLD_0).  This also makes
      * DCOCLKDIV = DCO.  FLLN gets set to 243.   32768 * (243 + 1)
@@ -491,22 +494,22 @@ module PlatformClockP {
      * ACLK is XT1/1, 32KiHz.
      * MCLK is set to DCOCLK/1.   8 MHz
      * SMCLK is set to DCOCLK/1.  8 MHz.
-     * DCO drives TA1 for TMicro and is set to provide 1us ticks.
-     * ACLK  drives TA0 for TMilli.  Jiffy clock (32KiHz)
+     * DCO drives TA0 for TMicro and is set to provide 1us ticks.
+     * ACLK  drives TA1 for TMilli.  Jiffy clock (32KiHz)
      */
     UCSCTL4 = SELA__XT1CLK | SELS__DCOCLK | SELM__DCOCLK;
     UCSCTL5 = DIVA__1 | DIVS__1 | DIVM__1;
 
     /*
-     * TA0 clocked off XT1, used for TMilli, 32KiHz.
+     * TA0 clocked off SMCLK off DCO, /8, 1us tick
      */
-    TA0CTL = TASSEL__ACLK | TACLR | MC__CONTINUOUS | TAIE;
+    TA0CTL = TASSEL__SMCLK | ID__8 | TACLR | MC__CONTINUOUS | TAIE;
     TA0R = 0;
 
     /*
-     * TA1 clocked off SMCLK off DCO, /8, 1us tick
+     * TA1 clocked off XT1, used for TMilli, 32KiHz.
      */
-    TA1CTL = TASSEL__SMCLK | ID__8 | TACLR | MC__CONTINUOUS | TAIE;
+    TA1CTL = TASSEL__ACLK | TACLR | MC__CONTINUOUS | TAIE;
     TA1R = 0;
 
     return SUCCESS;

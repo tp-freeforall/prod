@@ -52,33 +52,52 @@ implementation {
     atomic {
 
       /*
-       * Assume connected to a CC2520EM module.  Need to make sure to set
-       * the various enables and control signals to reasonable values to
-       * make sure we don't confuse the chip.
+       * The mm5s is a msp430-exp5438a that can have a CC2520EM or
+       * CC2520-2591EM radio module.
        *
-       * After reset all the digitial I/O pins are set to input.  Contents
-       * of PxOUT will be random or what ever is left over from prior to the
-       * reset.
+       * Set the various enables and control signals to reasonable values
+       * to make sure we don't confuse the chip.
+       *
+       * On boot, we put the CC2520 into LPM2  (RESETn 0, CSn 1, and VREN 0).
+       *
+       * After reset all the MCU digital I/O pins are inputs.  Contents
+       * of PxOUT will be random (power up) or what ever is left over from
+       * prior to the reset (effectively random).
        */
 
       /*
-       * four bits in P1 we care about, cc_resetn (1pO) and cc_vreg_en (0pO).
-       * clear out the two LED bits (to turn the leds off).
+       * P1 has two bits we care about, the two LED bits (turn them off),
+       * cc_resetn (0, assert), and cc_vreg_en (0, deassert).  cc_g0 by
+       * default will have a 1 MHz clock on it.  Later, when we bring the
+       * chip out of LPM2, cc_g0 (gp0) will be programmed to output sfd.
+       * The MCU pin remains as an input.
        */
-      P1OUT = 0x04;
+      P1OUT = 0x00;
       P1DIR = 0x87;
 
-      /* 1 bit in P3, cc_cs_n (1pO) */
-      P3OUT = 0x01;
+      /*
+       * One bit in P3, cc_cs_n (1pO), set (deasserted).  SO is an input to
+       * the MCU.  We pull it down to minimize power consumption and make sure
+       * we don't inadvertantly power the chip through the pin.
+       */
+      P3OUT = 0x01;                     /* csn up, also SO resistor is pull down */
       P3DIR = 0x01;
+      P3REN = 0x04;                     /* turn on pull down resistor */
 
       /* 1 bit in P4, turn unused LED off, nothing there */
       P4OUT = 0x00;
       P4DIR = 0x20;
 
-      /* all other unused pins are left as inputs */
+      /*
+       * cc_g5 leave as an input, but turn on its pull down resistor.
+       * cc_g5 defaults to an input, don't leave it floating
+       * P8DIR defaults to 0x00 after POR.
+       */
+      P8OUT = 0x00;                     /* make sure its a pull down */
+      P8REN = 0x04;                     /* resistor on */
 
-#if 0 /* Disabled: these specific setting are defaults, but others might not be */
+/* Disabled: these specific setting are defaults, but others might not be */
+#ifdef notdef
       PMAPPWD = PMAPPW;                         // Get write-access to port mapping regs
       P1MAP5 = PM_UCA0RXD;                      // Map UCA0RXD output to P1.5
       P1MAP6 = PM_UCA0TXD;                      // Map UCA0TXD output to P1.6
