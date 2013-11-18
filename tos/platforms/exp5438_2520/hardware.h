@@ -49,7 +49,7 @@
  * Hardware Notes:
  *
  * Main CPU clock 8 MHz.  (DCOCLK) sync'd to 32KiHz (ACLK)
- * see mm5s/hardware/clock/PlatformClockP.nc for details.
+ * see exp5438_2520/hardware/clock/PlatformClockP.nc for details.
  *
  * DCOCLK -> MCLK, SMCLK (8 MHz) /8 -> TMicro (1 MHz) TA1
  * ACLK   -> TA0 (32 KiHz) -> TMilli
@@ -91,8 +91,8 @@
  *       .3	0pI   	           		      .3	0pI
  *       .4	0pI   	        		      .4	0pI
  *       .5	0pI   	        		      .5	0pI
- *       .6	0pI   	       			      .6	0pI
- *       .7	0pI   	       			      .7	0pI
+ *       .6	0pI     user_1 (S1)		      .6	0pI
+ *       .7	0pI   	user_2 (S2)		      .7	0pI
  *
  * port 3.0	1pO	cc_cs_n			port 7.0	0mI	xin   (32KiHZ)
  *       .1	0pI	cc_si   (b0simo)	      .1	0mO	xout
@@ -136,24 +136,5 @@ enum {
 TOSH_ASSIGN_PIN(RED_LED, 1, 0);
 TOSH_ASSIGN_PIN(GREEN_LED, 1, 1);
 TOSH_ASSIGN_PIN(YELLOW_LED, 4, 6);
-
-#ifdef notdef
-// CC2520 RADIO #defines
-TOSH_ASSIGN_PIN(RADIO_CSN, 3, 0);
-TOSH_ASSIGN_PIN(RADIO_VREN, 1, 7);
-TOSH_ASSIGN_PIN(RADIO_RESET, 1, 2);
-TOSH_ASSIGN_PIN(RADIO_FIFOP, 1, 6);
-TOSH_ASSIGN_PIN(RADIO_SFD, 8, 1);
-TOSH_ASSIGN_PIN(RADIO_GIO0, 1, 4);
-TOSH_ASSIGN_PIN(RADIO_FIFO, 1, 5);
-TOSH_ASSIGN_PIN(RADIO_GIO1, 1, 5);
-TOSH_ASSIGN_PIN(RADIO_CCA, 1, 3);
-
-TOSH_ASSIGN_PIN(CC_FIFOP, 1, 6);
-TOSH_ASSIGN_PIN(CC_FIFO, 1, 5);
-TOSH_ASSIGN_PIN(CC_SFD, 8, 1);
-TOSH_ASSIGN_PIN(CC_VREN, 1, 7);
-TOSH_ASSIGN_PIN(CC_RSTN, 1, 2);
-#endif
 
 #endif // _H_hardware_h

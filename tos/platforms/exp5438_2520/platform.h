@@ -17,7 +17,7 @@
 #define DISABLE_HYBRID_MICRO
 
 /*
- * mm5s uses a msp430f5438a and when we use -Os h/w access (mem mapped i/o)
+ * The exp5438 motes use a msp430f5438a and when we use -Os h/w access (mem mapped i/o)
  * occurs using single instructions.  So we turn on various port access
  * optimizations if we are compiling using -Os.
  *

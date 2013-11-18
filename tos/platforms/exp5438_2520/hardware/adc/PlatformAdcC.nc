@@ -69,13 +69,13 @@ implementation {
   /*
    * wire the ADC timer into the 32KiHz timer.
    *
-   * the mm5s uses T0A as the 32KiHz timer.
+   * exp5438_2520 uses T1A as the 32KiHz timer.
    * this probably should use the mapper.
    */
   components  Msp430TimerC;
-  TimerA    = Msp430TimerC.Timer0_A;
-  ControlA0 = Msp430TimerC.Control0_A0;
-  CompareA0 = Msp430TimerC.Compare0_A0;
-  ControlA1 = Msp430TimerC.Control0_A1;
-  CompareA1 = Msp430TimerC.Compare0_A1;
+  TimerA    = Msp430TimerC.Timer1_A;
+  ControlA0 = Msp430TimerC.Control1_A0;
+  CompareA0 = Msp430TimerC.Compare1_A0;
+  ControlA1 = Msp430TimerC.Control1_A1;
+  CompareA1 = Msp430TimerC.Compare1_A1;
 }

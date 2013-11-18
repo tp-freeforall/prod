@@ -176,8 +176,9 @@ implementation {
    *
    * This also requires a modification to Msp430TimerMicroMap so control
    * cells for T0A1 aren't exposed for use by other users.  A custom
-   * version is present in tos/platforms/mm5s/hardware/timer.  This directory
-   * is also were files swapping the definition of which timer is which live.
+   * version is present in tos/platforms/exp5438_2520/hardware/timer.  This
+   * directory is also were which timer block is used for what function
+   * (TMicro vs. TMilli) live.
    */
 
   /*
@@ -196,14 +197,6 @@ implementation {
   components new Msp430InterruptC() as InterruptExcAC;
   ExcAInterrupt = InterruptExcAC.Interrupt;
   InterruptExcAC.HplInterrupt -> HplMsp430InterruptC.Port16;
-
-#ifdef notdef
-  components new Alarm32khz16C() as AlarmC;
-  Alarm = AlarmC;
-
-  components LocalTime32khzC;
-  LocalTimeRadio = LocalTime32khzC.LocalTime;
-#endif
 
   components new AlarmMicro16C() as AlarmC;
   Alarm = AlarmC;

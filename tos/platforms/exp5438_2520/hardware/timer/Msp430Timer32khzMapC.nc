@@ -54,7 +54,7 @@
  * The defaults from tos/chips/msp430/x5xxx/timer are T0An -> 32 KiHZ and
  * T1An -> TMicro.
  *
- * The MM5S platform based on the TI MSP-EXP430F5438 eval board with
+ * The exp5438_2520 platform (TI MSP-EXP430F5438 eval board) with the
  * CC2520EM (radio eval module) uses TMicro on T0An for SFD capture
  * from the Radio (CC2520).   This leaves T1An for use by the 32KiHz
  * subsystem.

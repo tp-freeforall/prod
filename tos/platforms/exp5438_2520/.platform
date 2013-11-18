@@ -5,7 +5,7 @@
 
 for (split(/\n/, <<'EOText'
 
-# %P, tos/platforms/mm5s is automatically included by the build system
+# %P, tos/platforms/exp5438_2520 is automatically included by the build system
 
   %P/hardware/adc
   %P/hardware/buttons

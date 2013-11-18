@@ -38,12 +38,13 @@
  * The defaults from tos/chips/msp430/x5xxx/timer are T0An -> 32 KiHZ and
  * T1An -> TMicro.
  *
- * The MM5S platform based on the TI MSP-EXP430F5438 eval board with
- * CC2520EM (radio eval module) wants TMicro on T0An because the SFD
- * pin is wired to T0A1 for timestamping (gpio4 from the CC2520 chip,
+ * The exp5438 platforms use the TI MSP-EXP430F5438 eval board possibly
+ * coupled with a radio eval module (CC2520EM or CC2520-2591EM).  The
+ * exp5438_2520 platform uses the CC2520EM and wants TMicro on T0An because
+ * the SFD pin is wired to T0A1 for timestamping (gpio4 from the CC2520 chip,
  * wired to P81/TA0.1/CCI1B on the MCU).
  *
- * See tos/platforms/mm5s/hardware/cc2520/{HplCC2520C,P81SfdCaptureC}.nc.
+ * See tos/platforms/exp5438_2520/hardware/cc2520/{HplCC2520C,P81SfdCaptureC}.nc.
  *
  * We also use a TMicro MSP430 Timer for running the CC2520 state machine.
  * T0An has more control modules (5, T0A0- T0A4) so this works better.
@@ -53,9 +54,10 @@
  * Control0_A1 and Compare0_A1 are dedicated to SFDCapture and aren't
  * available for assignment.
  *
- * For the mm5s we've needed to flip which timer block is assigned
+ * For the exp5438_2520 mote we need to flip which timer block is assigned
  * to Tmicro and Tmilli/32KiHz).  Default is TA0 -> 32KiHz (TMilli)
- * and TA1 -> 1MHz.   We flip this.
+ * and TA1 -> 1MHz.   We flip this.  We need TMicro on TA0 for TMicro
+ * timestamps for SFD captures.
  */
 
 configuration Msp430TimerMicroMapC {

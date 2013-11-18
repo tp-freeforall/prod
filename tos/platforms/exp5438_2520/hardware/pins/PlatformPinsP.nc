@@ -52,8 +52,8 @@ implementation {
     atomic {
 
       /*
-       * The mm5s is a msp430-exp5438a that can have a CC2520EM or
-       * CC2520-2591EM radio module.
+       * exp5438 motescan have a CC2520EM or CC2520-2591EM radio module.
+       * what pins are used depends on what radio module is being used.
        *
        * Set the various enables and control signals to reasonable values
        * to make sure we don't confuse the chip.

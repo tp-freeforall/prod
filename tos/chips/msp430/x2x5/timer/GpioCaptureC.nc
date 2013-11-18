@@ -35,7 +35,7 @@
  *
  * The default for GpioCapture is CCIxA.  Other channels are available
  * (like B) but they need to be hardcoded in another module.  See
- * tos/platforms/mm5s/hardware/cc2520/P81SfdCaptureC.nc
+ * tos/platforms/exp5438_2520/hardware/cc2520/P81SfdCaptureC.nc
  *
  * Lower levels have been modified to support being able to change
  * CCIS in the control registers.

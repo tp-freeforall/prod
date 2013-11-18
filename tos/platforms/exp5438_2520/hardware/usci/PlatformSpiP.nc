@@ -1,5 +1,5 @@
 
-#warning mm5s/hardware/usci/PlatformSpi being used.
+#warning exp5438_2520/hardware/usci/PlatformSpi being used.
 
 module PlatformSpiP {
   provides interface Init;

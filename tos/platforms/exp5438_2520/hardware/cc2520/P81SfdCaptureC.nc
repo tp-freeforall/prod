@@ -33,15 +33,18 @@
 /**
  * @author Eric B. Decker <cire831@gmail.com>
  *
- * Set up wiring and code for SFD capture for the CC2520EM module.
- * SFD is connected to P8.1 on the eval_5438/CC2520EM mote.  P8.1 is
- * captured via TA0.CCI1B and is controlled by TA0CCTL1.   And
- * the captured time shows up in TA0CCR1.
+ * The default for cc_gpio4 is to be SFD.  The CC2520EM module has this
+ * pin wired to P8.1 on the mcu which is TA0.CCI1B.  Originally this
+ * is what we used and required various mods to the timing system to
+ * support the B variant.
  *
- * This effects what Timer components are exposed via Msp430Timer32khzMap
+ * However, later we switched SFD over to cc_gpio0 which we program to
+ * be SFD.  cc_gpio0 is wired to P1.4 on the mcu and is TA0.CCI3A.
+ *
+ * This effects what Timer components are exposed via Msp430TimerMicroMap
  * The platform needs to provide a modified map file.
  *
- * See tos/platforms/mm5s/hardware/cc2520/HplCC2520C for details of
+ * See tos/platforms/exp5438_2520/hardware/cc2520/HplCC2520C for details of
  * nesc wiring.
  *
  * This version of GpioCapture does not clear the IFG but rather relies

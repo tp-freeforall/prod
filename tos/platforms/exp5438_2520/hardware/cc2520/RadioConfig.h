@@ -32,7 +32,7 @@
  *
  * Author: Janos Sallai, Miklos Maroti
  * Author: Thomas Schmid (adapted for CC2520)
- * Author: Eric B. Decker (mm5s, 5438a, CC2520)
+ * Author: Eric B. Decker (exp5438_2520, 5438a, CC2520)
  */
 
 #ifndef __RADIOCONFIG_H__
@@ -40,7 +40,6 @@
 
 #include <Timer.h>
 #include <message.h>
-//#include <CC2520DriverLayer.h>
 
 /* This is the default value of the PA_POWER field of the TXCTL register. */
 #ifndef CC2520_DEF_RFPOWER
@@ -57,47 +56,6 @@
 #define SOFTWAREACK_TIMEOUT	800
 #endif
 
-#ifdef notdef
-
-/**
- * This is the timer type of the radio alarm interface
- */
-typedef T32khz   TRadio;
-typedef uint16_t tradio_size;
-
-/**
- * The number of radio alarm ticks per one microsecond .
- *
- * The main mm5s clock is at 8MHz (decimal), TA1 is used to
- * provide TMicro (DCO -> MCLK -> SMCLK -> /8 -> TA1).
- *
- * However, the SFD capture is on pin 8.1 which is connected to
- * TA0.CCI1B.  TA0 is run off the 32KiHz clock so we use TA0
- * for the capture and runs T32khz and TMilli.
- */
-#define RADIO_ALARM_MICROSEC    1/32
-
-enum cc2520_timing_enums {
-  CC2520_SYMBOL_TIME =  17 * RADIO_ALARM_MICROSEC, //  16us, actual 16.2us
-  IDLE_2_RX_ON_TIME  =  12 * CC2520_SYMBOL_TIME,   // 192us, actual 194.5us
-  PD_2_IDLE_TIME     = 902 * RADIO_ALARM_MICROSEC, // 860us, actual 860.2us
-};
-
-
-/**
- * The base two logarithm of the number of radio alarm ticks per one millisecond
- *
- * Originally TinyOS defined time in terms of powers of two.  And 
- * RADIO_ALARM_MILLI_EXP expressing millisecs (actually mis, binary millisecs)
- * isn't a problem.
- *
- * 2**5 = 32.  Actually 32.7 which is about 2.3% off.
- */
-#define RADIO_ALARM_MILLI_EXP	5
-
-#endif
-
-
 /**
  * This is the timer type of the radio alarm interface
  */
@@ -107,12 +65,12 @@ typedef uint16_t tradio_size;
 /**
  * The number of radio alarm ticks per one microsecond .
  *
- * The main mm5s clock is at 8MHz (decimal), TA1 is used to
- * provide TMicro (DCO -> MCLK -> SMCLK -> /8 -> TA1).
+ * The main exp5438 clock is at 8MHz (decimal), TA0 is used to
+ * provide TMicro (DCO -> MCLK -> SMCLK -> /8 -> TA0).
  *
- * However, the SFD capture is on pin 8.1 which is connected to
- * TA0.CCI1B.  TA0 is run off the 32KiHz clock so we use TA0
- * for the capture and runs T32khz and TMilli.
+ * The SFD pin is on pin 8.1 which is connected to TA0.CCI1B.
+ * TA0 is run off the TMicro so we use TA0 for the capture and also
+ * runs the TMicro clocks.
  */
 #define RADIO_ALARM_MICROSEC    1
 

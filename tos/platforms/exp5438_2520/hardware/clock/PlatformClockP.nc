@@ -37,9 +37,10 @@
  *
  * Initilization of the Clock system for the MM5 series motes.
  *
- * The MM5S mote is based on msp430f5438a series cpus.  It lives
- * on the TI MSP-EXP430F5438 evaluation board and has a CC2520EM
- * radio evaluation module attached to it.
+ * The exp5438 motes are based on msp430f5438a series cpus.  They live
+ * physically on the TI MSP-EXP430F5438 eval boards.  They may have
+ * various radio eval modules plugged in.  We currently support the
+ * CC2520EM and CC2520-2591EM modules.
  *
  * MCLK (Main Clock) - 8MHz, DCOCLK/1
  * SMCLK (submain)   DCOCLK/1
@@ -49,7 +50,10 @@
  * The 5438 runs at 2.2V and can clock up to 18MHz.   The 5438a
  * can run at 1.8V (up to 8 MHz), and its core can be tweaked to
  * enable faster clocking.   We default to using 8MHz so allow
- * low power execution on the 5438a.
+ * low power execution on the 5438a.  Going faster starts to eat
+ * power and doesn't seem to buy that much as far as getting things
+ * done faster.   (The power seems to increase faster than what we
+ * gain by doing things faster).
  *
  * Previous ports of TinyOS to msp430 cpus, would set the cpu to a
  * binary clock (power of 2, MiHz).   This was to facilitate syncronizing
@@ -73,9 +77,9 @@
  * We use DCOCLK -> SMCLK/8 -> T0A (1MHZ) and ACLK -> T1A to allow attaching
  * TMicro timestamps to SFDCaptures.  (See below).
  *
- * The 2520EM module ties cc_gpio4 (default SFD) to p8.1 on the CPU.  This
- * input is used to time stamp SFD (start of frame delimiter) via the
- * timer capture facility.  P8.1 is TA0.CCI1B when the pin is
+ * The 2520EM module ties cc_gpio0 (default clock) to p1.4 on the CPU.  We
+ * reprogram this gpio to be SFD and will time stamp SFD edges via the
+ * timer capture facility.  P1.4 is TA0.CCI3A when the pin is
  * configured for Module Input and will have TMicro resolution.
  *
  * The TMicro timer (TA0) is run off DCOCLK/8 which yields 1us (not 1uis)
@@ -120,8 +124,9 @@
  * The code loops up to 625ms waiting for XT1 stability.  If stability
  * is not achieved, the XT1 functionality is disabled.  This should
  * cause a hcf_panic which results in writing a panic block in slow
- * mode.  Should never happen.  Famous last words (right before the
- * rocket does a 180 and we need to blow it up).
+ * mode (simple_panic doesn't support this).  Should never happen.
+ * Famous last words (right before the rocket does a 180 and we need to
+ * blow it up).
  *
  * Stabilization appears to take roughly 150ms.
  *
