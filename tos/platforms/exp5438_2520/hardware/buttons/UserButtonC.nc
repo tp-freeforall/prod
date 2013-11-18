@@ -34,7 +34,7 @@
  */
 
 /**
- * Implementation of the user button for the mm5s platform. Get
+ * Implementation of the user button for the exp5438 platforms. Get
  * returns the current state of the button by reading the pin,
  * regardless of whether enable() or disable() has been called on the
  * Interface. Notify.enable() and Notify.disable() modify the

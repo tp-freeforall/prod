@@ -34,10 +34,9 @@
  */
 
 /**
- * Implementation of the user button for the em430 platform
+ * Implementation of the user button for the exp5438 platforms.
  *
- * FIXME: review port assignments for what is available on the mm5s
- * platform (msp-exp430f5438 eval board).
+ * We use S2 for the user button which is connected to P2.7.
  *
  * @author Gilman Tolle <gtolle@archrock.com>
  * @author Peter A. Bigot <pab@peoplepowerco.com>
@@ -52,9 +51,9 @@ implementation {
   components HplMsp430GeneralIOC as GeneralIOC;
   components HplMsp430InterruptC as InterruptC;
 
-  HplMsp430GeneralIO = GeneralIOC.Port17;
+  HplMsp430GeneralIO = GeneralIOC.Port27;
 
   components new Msp430InterruptC() as InterruptUserButtonC;
-  InterruptUserButtonC.HplInterrupt -> InterruptC.Port17;
+  InterruptUserButtonC.HplInterrupt -> InterruptC.Port27;
   GpioInterrupt = InterruptUserButtonC.Interrupt;
 }
