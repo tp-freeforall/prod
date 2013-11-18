@@ -2,9 +2,19 @@
 #ifndef _H_PLATFORM_H_
 #define _H_PLATFORM_H_
 
-//#define REQUIRE_PANIC
-//#define REQUIRE_PLATFORM
+#define REQUIRE_PANIC
+#define REQUIRE_PLATFORM
 #define FORCE_ATOMIC
+#define TRACE_MICRO
+//#define TRACE_USE_PLATFORM
+
+/*
+ * The msp430 LocalTimeMicro implementation by default uses LocalTimeHybridMicro
+ * implementation which is very expensive and busy waits on the 32Khz timer.
+ *
+ * We don't want this.
+ */
+#define DISABLE_HYBRID_MICRO
 
 /*
  * mm5s uses a msp430f5438a and when we use -Os h/w access (mem mapped i/o)
