@@ -1,0 +1,24 @@
+#-*-Makefile-*- vim:syntax=make
+#
+# The exp5438_2591 platform is based on the TI MSP-EXP430F5438
+# evaluation board.   The platform has connectors that allow the
+# addition of various radio modules as well as other devices.
+#
+# This platform provides support for the CC2520 radio coupled
+# to a 2591 range extender.  A TI MSP-EXP430F5438 eval board
+# with a CC2520-2591EM radio eval module.
+#
+
+PLATFORM = exp5438_2591
+MSP_MCU =  msp430f5438a
+
+#
+# The exp5438_2520 platform uses panic_simple to provide Panic support
+#
+
+PFLAGS += -I$(TOSROOT)/tos/system/panic_simple
+
+$(call TOSMake_include_platform,msp)
+
+exp5438_2591: $(BUILD_DEPS)
+        @:
