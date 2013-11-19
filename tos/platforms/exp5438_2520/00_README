@@ -1,0 +1,7 @@
+The exp5438 platforms are based on the MSP-EXP430F5438 TI Evaluation Board using a 
+msp430f5438a processor.  The eval board has a socket for various radio modules.
+
+The following configurations are currently supported:
+
+exp5438_2520: cc2520 (CC2520EM radio module)
+exp5438_2591: cc2520 with 2591 range extender (CC2520-2591EM radio module).
