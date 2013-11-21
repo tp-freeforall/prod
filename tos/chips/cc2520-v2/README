@@ -1,32 +1,67 @@
 
 CC2520 Notes:
 
+The driver has been purposedly written so it can be used with or without
+a range extender.  The only differences are a few settings in ccactrl0 and
+agcctrl1.  These values for the dual chip solution came from the TI driver
+TIMAC 1.5.
+
+We use SFD, TX_active, and EXC_A signals to invoke the driver.  And values
+from the exception registers to figure out the processing needed.  The same
+structure can be used for both the single and dual chip solutions.
+
+
 fullInitRadio (includes chip reset, Xosc verification, and register writing):
 
     non-pipelined SPI xactions: 1076us for entire procedure.
-    pipelined (FastSPI):
+    pipelined (FastSPI):  ~450us
 
 
 Chip Initialization:
 
 When the chip is powered off (LPM2), VREN 0, it loses all of its
-configuration.  The chart below show initial (POR) value followed
-by any changes we want to make.
+configuration.  The chart below show initial (POR) value followed by any
+changes we want to make.
 
-In addition (see Reset section below), it turns out that when the
-chip is reset it also reverts back to the POR state.  So anytime
-the chip is reset it will need to be reinitialized.
+In addition (see Reset section below), when the chip is reset it also reverts
+back to the POR state.  So anytime the chip is reset it will need to be
+reinitialized.
 
-All numbers in hex.  Table 21 is from the CC2520 datasheet
-(SWRS068, dec 2007) page 103.
+All numbers in hex.  Table 21 is from the CC2520 datasheet (SWRS068, dec 2007)
+page 103.
 
+The TIMAC column refers to what the TIMAC dual chip code (ver 1.5) sets the
+CC2520 registers to.
 
-addr  Name          POR         Table 21        Operational
-                                                Settings
+TIMAC:
+#if (defined HAL_PA_LNA || defined HAL_PA_LNA_CC2590)
+    if (macRxGain == 1) {
+        gp3      = 7f (hgm 1)
+        ccactrl0 = 06
+    } else {
+        gp3      = 7e (hgm 0)
+        ccactrl0 = fc
+    }
+    gp4          = 46
+    gp5          = 47
+    gpiopolarity = 0f
+    agcctrl1     = 16
+#else
+    gp4          = exc_sfd_sync
+    gp3          = sniffer_data
+    gp5          = sniffer_clock
+    agcctrl1     = 11
+    ccactrl0     = fc
+#endif
 
-00    frmfilt0      0d                          08
-01    frmfilt1      78                          f8
-02    srcmatch      07                          06
+Operational Settings: (xx) = dual chip, other single chip or both
+
+addr  Name          POR   TIMAC         Table 21        Operational
+                          dual chip                     Settings
+
+00    frmfilt0      0d                                  08
+01    frmfilt1      78                                  f8
+02    srcmatch      07                                  06
 03
 04    srcshorten0   00
 05    srcshorten1   00
@@ -44,26 +79,26 @@ addr  Name          POR         Table 21        Operational
 11    excflag1      00
 12    excflag2      00
 13
-14    excmaska0     00                          7e
-15    excmaska1     00                          01
-16    excmaska2     00                          3f
+14    excmaska0     00                                  7e
+15    excmaska1     00                                  01
+16    excmaska2     00                                  3f
 17
-18    excmaskb0     00                          00
-19    excmaskb1     00                          00
-1A    excmaskb2     00                          00
+18    excmaskb0     00                                  00
+19    excmaskb1     00                                  00
+1A    excmaskb2     00                                  00
 1B
 1C    excbindx0     00
 1D    excbindx1     12
 1E    excbindy0     00
 1F    excbindy1     12
-20    gpioctrl0     00                          2a      sfd
-21    gpioctrl1     27                          44      tx_active
-22    gpioctrl2     28                          21      exca
-23    gpioctrl3     29                          29      cca
-24    gpioctrl4     2a                          27      fifo
-25    gpioctrl5     90                          28      fifop
-26    gpiopolarity  3f
-27
+20    gpioctrl0     00    21 exca                       2a      sfd
+21    gpioctrl1     27    27 fifo                       44      tx_active
+22    gpioctrl2     28    28 fifop                      21      exca
+23    gpioctrl3     29    7f/7e HGM (1/0)               7f/7e   hgm (1/0)
+24    gpioctrl4     2a    46 EN    !lna_pd[1]           46      en   !lna_pd[1]
+25    gpioctrl5     90    47 PAEN  !pa_pd               47      paen !pa_pd
+26    gpiopolarity  3f    0f invert 5 & 4               0f      invert (5 & 4)
+27                                           (46 & 47 undocumented)
 28    gpioctrl      00
 29
 2A    dpucon        01
@@ -72,13 +107,13 @@ addr  Name          POR         Table 21        Operational
 2D
 2E    freqctrl      0b
 2F    freqtune      0f
-30    txpower       06          32              32
+30    txpower       06                  32              32
 31    txctrl        91
 32    fsmstat0      00
 33    fsmstat1      00
-34    fifopctrl     40                          7f
+34    fifopctrl     40                                  7f
 35    fsmctrl       01
-36    ccactrl0      e0          f8              f8
+36    ccactrl0      e0    06/fc         f8              fc (06/fc) from TIMAC
 37    ccactrl1      1a
 38    rssi          80
 39    rssistat      00
@@ -94,25 +129,25 @@ addr  Name          POR         Table 21        Operational
 43
 44    extclock      20
 45
-46    mdmctrl0      45          85              85
-47    mdmctrl1      2e          14              14
+46    mdmctrl0      45    85            85              85
+47    mdmctrl1      2e    14            14              14
 48    freqest       00
 49
-4A    rxctrl        29          3f              3f
+4A    rxctrl        29    3f            3f              3f
 4B
-4C    fsctrl        55          5a              5a
+4C    fsctrl        55    5a            5a              5a
 4D
 4E    fscal0        24
-4F    fscal1        01          2b              2b
+4F    fscal1        01    2b            2b              2b
 50    fscal2        20
 51    fscal3        2a
 52    agcctrl0      5f
-53    agcctrl1      0e          11              11
+53    agcctrl1      0e    16            11              11 (16) undocumented
 54    agcctrl2      fe
 55    agcctrl3      2e
-56    adctest0      66          10              10
-57    adctest1      0a          0e              0e
-58    adctest2      05          03              03
+56    adctest0      66    10            10              10
+57    adctest1      0a    0e            0e              0e
+58    adctest2      05    03            03              03
 59
 5A    mdmtest0      05
 5B    mdmtest1      08
@@ -176,12 +211,15 @@ addr  Name          POR       Before    After       Desired
 00    frmfilt0      0d        08        0d          08
 01    frmfilt1      78        f8        78          f8
 02    srcmatch      07        06        07          06
+
 04    srcshorten0   00        00        00
 05    srcshorten1   00        00        00
 06    srcshorten2   00        00        00
+
 08    srcexten0     00        00        00
 09    srcexten1     00        00        00
 0A    srcexten2     00        00        00
+
 0C    frmctrl0      40        40        40
 0D    frmctrl1      01        01        01
 0E    rxenable0     00        00        00
@@ -189,12 +227,15 @@ addr  Name          POR       Before    After       Desired
 10    excflag0      00        40        00
 11    excflag1      00        31        00
 12    excflag2      00        00        00
+
 14    excmaska0     00        7e        00          7e
 15    excmaska1     00        01        00          01
 16    excmaska2     00        3f        00          3f
+
 18    excmaskb0     00        00        00          00
 19    excmaskb1     00        00        00          00
 1A    excmaskb2     00        00        00          00
+
 1C    excbindx0     00        00        00
 1D    excbindx1     12        12        12
 1E    excbindy0     00        00        00
@@ -206,9 +247,13 @@ addr  Name          POR       Before    After       Desired
 24    gpioctrl4     2a        27        2a          27
 25    gpioctrl5     90        28        90          28
 26    gpiopolarity  3f        3f        3f
+
 28    gpioctrl      00        00        00
+
 2A    dpucon        01        01        01
+
 2C    dpustat       00        00        00
+
 2E    freqctrl      0b        56        0b
 2F    freqtune      0f        0f        0f
 30    txpower       06        32        06          32
@@ -221,17 +266,26 @@ addr  Name          POR       Before    After       Desired
 37    ccactrl1      1a        1a        1a
 38    rssi          80        e2        80
 39    rssistat      00        01        00
+
+
 3C    rxfirst       00        11        00
+
 3E    rxfifocnt     00        80        00
 3F    txfifocnt     00        00        00
 40    chipid        84        84        84
+
 42    version       00        00        00
+
 44    extclock      20        20        20
+
 46    mdmctrl0      45        85        45          85
 47    mdmctrl1      2e        14        2e          14
 48    freqest       00        0b        00
+
 4A    rxctrl        29        3f        29          3f
+
 4C    fsctrl        55        5a        55          5a
+
 4E    fscal0        24        24        24
 4F    fscal1        01        33        01          2b
 50    fscal2        20        22        20
@@ -243,6 +297,7 @@ addr  Name          POR       Before    After       Desired
 56    adctest0      66        10        66          10
 57    adctest1      0a        0e        0a          0e
 58    adctest2      05        03        05          03
+
 5A    mdmtest0      05        05        05
 5B    mdmtest1      08        08        08
 5C    dactest0      00        00        00
@@ -268,15 +323,23 @@ When resetting the chip...
 
 Design Choices:
 
-1) RX Overflow: When the rxfifo overflows, we flush the entire rxfifo.
+1) RX Overflow:
 
-   We could on the other hand, pull any packets in front of the last
-   packet (which will most likely be incomplete).  However, the mote is
-   backed up, which is why we are overflowing, so why add any more work.
+   Two approaches, a) dump the rxfifo, b) process any valid packets
+   in front of the overflowed packet.
 
-   If we are backed, up the question also rises about how much buffering
-   is stil available.  The assumption here is that buffering is an
-   issue too, also encouraging us towards load shedding.
+   The question is why are we overflowing.  One reason is the mote
+   is backed up and that is why the rxfifo is overflowing.  However,
+   if we are backed up, the upper layers will be cycling buffer
+   quickly (its out of buffers) so the driver should catch up.  So
+   this scenrio is unlikely.
+
+   Another, reason is someone out there sent us a big packet.  If we
+   simply dumped everything, we wouldn't be making very much forward
+   progress.
+
+   So instead of dumping, the driver processes any packet that is
+   complete, prior to the overflowed packet.
 
 2) SFDQueue overwrites.   When SFDQueueing starts to be overwritten (TI
    calls this overflow, the OVR bit in the CCR control register), we
