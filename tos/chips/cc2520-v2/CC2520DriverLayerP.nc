@@ -41,6 +41,9 @@
  *   and Active Mode (all the rest).  The CC2420 driver didn't implement
  *   full power down just the equivalent of LPM1.
  *
+ * o This drivers supports a stand-alone CC2520 as well as the dual-chip
+ *   CC2520-CC2591 range extender combination.
+ *
  * o SPI via immediateRequest (arbitration is still supported).  Written for
  *   X5 msp430 processors that have lots of ports.   Assumes dedicated port.
  *   Uses immediateRequest.
@@ -126,7 +129,8 @@
  * o Support for the 2591 range extender.  Requires modification from the
  *   default (power up default, cc2420 compatability) GPIO setup.  Depending
  *   on the h/w design, GP3-GP5 (at least GP4 and GP5) are used to control
- *   the the 2591 range extender.
+ *   the the 2591 range extender.  The CC2591 HGM pin must either be
+ *   connected to the CC2520 or to an MCU pin.
  *
  * o Same driver used for both 2520 standalone and 2520/2591 combination.
  *   Easier to support.
@@ -184,7 +188,9 @@
  *     GPIO3.  TI in their examples, use the CC2520 to set or clear this
  *     signal, but this is stupid because it takes SPI traffic to do this.
  *     But if you don't have the pins, it lets you still take care of it
- *     but shouldn't be the default design.
+ *     but shouldn't be the default design.  The eval boards, EXP430F5438
+ *     with the CC2520-2591EM module, uses GPIO3 from the CC2520 to control
+ *     HGM on the 2591.
  *
  *     setHighGain encapsulates how this is actually implemented.
  *
@@ -192,11 +198,11 @@
  * "SO is configured as an input when CSn is high or RESETn is low."   When
  * normally being used (Active Mode) but idle CSn will be high, the port will
  * be in SPI mode and the SO pin will be an input to the MCU.   Is this a
- * problem or do we need to play games with driving SO when CSn is high?   Which
- * would be a royal pain in the ass.
+ * problem or do we need to play games with driving SO when CSn is high?
+ * Which would be a royal pain in the ass.
  *
  *
- * H/W reconfiguration:  (simple cc2520 implementation)
+ * H/W reconfiguration:  (supports both single and dual chip implementations)
  *
  * 1) RESETN, VREG, CSN, SO, SI, and SCLK on individual pins.
  * 2) gp0 -> SFD.  It must be on a capture capable pin
@@ -267,6 +273,8 @@
  * Note: There can be multiple RX packets in the fifo and the RX_FRM_DONE
  * exception is a single indicator.  If it is cleared, it won't be asserted
  * again until a new frame is received.
+ *
+ * Define CC2520_2591 if using 2591 h/w.
  */
 
 /**
@@ -611,12 +619,12 @@ static const uint8_t reg_vals_14[] = {
  *    slotted_ack[1]:    0
  *    rx2rx_time_off[0]: 1          12 symbol delay
  *
- * ccactrl0: (36, e0/f8) per Table 21
+ * ccactrl0: (36, e0/fc) per TIMAC code
  */
 static const uint8_t reg_vals_34[] = {
   0x7f,                                 /* fifopctrl */
   0x01,                                 /* fsmctrl   */
-  0xf8                                  /* ccactrl0  */
+  0xfc                                  /* ccactrl0  */
 };
 
 /* POR ccactrl1: (37, 1a), cca_mode 0, cca_hyst: 2 */
@@ -647,6 +655,9 @@ static const uint8_t reg_vals_46[] = {
  * dactest0 (5c, 00)        dactest1 (5d, 00)       atest    (5e, 00)
  * dactest2 (5f, 00)        ptest0   (60, 00)       ptest1   (61, 00)
  * dpubist  (7a, 00)        actbist  (7c, 00)       rambist  (7e, 02)
+ *
+ * agcctrl1 may get changed to 16 by Platform dependent code (if the platform
+ * has a 2591 it gets changed to 16).  per TIMAC
  */
 static const uint8_t reg_vals_4a[] = {
   0x3f,                                 /* rxctrl  (4a) */
@@ -1424,7 +1435,6 @@ implementation {
     /* Manual register settings.  See Table 21 */
     writeReg(CC2520_TXPOWER,  0x32);
     writeReg(CC2520_FSCAL1,   0x2B);
-    writeReg(CC2520_AGCCTRL1, 0x11);
     m_hw_configured = TRUE;
   }
 

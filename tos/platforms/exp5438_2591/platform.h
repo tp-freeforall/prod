@@ -8,6 +8,9 @@
 #define TRACE_MICRO
 //#define TRACE_USE_PLATFORM
 
+/* tell the cc2520 driver we have 2591 h/w */
+#define CC2520_2591
+
 /*
  * The msp430 LocalTimeMicro implementation by default uses LocalTimeHybridMicro
  * implementation which is very expensive and busy waits on the 32Khz timer.

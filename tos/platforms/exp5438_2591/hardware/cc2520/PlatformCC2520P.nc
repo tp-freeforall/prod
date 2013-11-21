@@ -30,10 +30,10 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
+ *
  * @author Eric B. Decker <cire831@gmail.com>
+ *
+ * Define CC2520_2591 if you have 2591 h/w hooked up.
  */
 
 #ifndef PANIC_RADIO
@@ -51,18 +51,33 @@ norace uint16_t vren_turn_on;
 norace uint16_t vren_out_of_reset;
 
 /*
- * set up GPIO h/w,  gpiopolarity (26, 3f) positive polarity
+ * set up GPIO h/w,  gpiopolarity (26, 0f) positive polarity,
+ * gpio4 and 5 are inverted.
+ *
  * gpioctrl (28, 00) other options  both defaults to POR values.
- * gpio5 done non-block.
+ *
+ * AGCCTRL1 is also platform dependent.  If we have a 2591 we want
+ * to tweak it to 0x16 otherwise 0x11.  This is done manually in
+ * the PlatformCC2520.powerUP.
  */
 static const uint8_t reg_vals_20[] = {
   0x2a,                                 /* sfd       -> gp0 */
   0x44,                                 /* tx_active -> gp1 */
   0x21,                                 /* exc_a     -> gp2 */
-  0x29,                                 /* cca       -> gp3 */
-  0x27,                                 /* fifo      -> gp4 */
-  0x28                                  /* fifop     -> gp5 */
+  0x7e,                                 /* hgm(0)    -> gp3 */
+  0x7f, 0x7f,
+//  0x46,                                 /* !lna_pd   -> gp4 */
+//  0x47,                                 /* !pa_pd    -> gp5 */
+  0x0f                                  /* gpiopolarity     */
+                                        /* 4/5 inverted     */
 };
+
+
+#ifdef CC2520_2591
+#define CC2520_AGCCTRL1_VAL 0x16
+#else
+#define CC2520_AGCCTRL1_VAL 0x11
+#endif
 
 
 module PlatformCC2520P {
@@ -113,13 +128,19 @@ implementation {
 
   void resistorsOff() {
     call    P_SO.resistorOff();
-    call P_GPIO5.resistorOff();
+//  call P_GPIO5.resistorOff();
   }
 
 
   void resistorsPullDown() {
     call    P_SO.resistorPullDown();
-    call P_GPIO5.resistorPullDown();
+//  call P_GPIO5.resistorPullDown();
+  }
+
+
+  void writePlatformRegisters() {
+    call CC2520BasicAccess.writeRegBlock(0x20, (void *) reg_vals_20, 7);
+    call CC2520BasicAccess.writeReg(CC2520_AGCCTRL1, CC2520_AGCCTRL1_VAL);
   }
 
 
@@ -242,7 +263,7 @@ implementation {
         if (call P_SO.getRaw()) {               /* XOSC stable? SO will be 1 */
           call P_CSN.set();                     /* and deassert */
           m_pwr_state = CC2520_PWR_AM;
-          call CC2520BasicAccess.writeRegBlock(0x20, (void *) reg_vals_20, 6);
+          writePlatformRegisters();
           resistorsOff();
           return 0;
         }
@@ -343,7 +364,7 @@ implementation {
       }
     }
     call P_CSN.set();               /* and deassert */
-    call CC2520BasicAccess.writeRegBlock(0x20, (void *) reg_vals_20, 6);
+    writePlatformRegisters();       /* reinit platform dependent regs */
   }
 
 
@@ -351,11 +372,21 @@ implementation {
    * setLowGain:
    * setHighGain: control HGM pin of the CC2591.
    *
-   * Only applicable for combo CC2520/2591 set ups.
+   * Only applicable for combo CC2520/2591 set ups.  A nop on non-2591
+   * platforms.  Still shouldn't hurt anything.
    */
-  async command void PlatformCC2520.setLowGain()  { }
+  async command void PlatformCC2520.setLowGain() {
+    /*
+     * set HGM (gpio3) to 0, and adjust CCA threshold
+     */
+    call CC2520BasicAccess.writeReg(CC2520_GPIOCTRL3, 0x7e);
+    call CC2520BasicAccess.writeReg(CC2520_CCACTRL0,  0xfc);
+  }
 
-  async command void PlatformCC2520.setHighGain() { }
+  async command void PlatformCC2520.setHighGain() {
+    call CC2520BasicAccess.writeReg(CC2520_GPIOCTRL3, 0x7f);
+    call CC2520BasicAccess.writeReg(CC2520_CCACTRL0,  0x06);
+  }
 
 
   async event void Panic.hook() { }
