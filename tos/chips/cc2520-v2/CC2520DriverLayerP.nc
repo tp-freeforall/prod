@@ -1190,6 +1190,16 @@ implementation {
   }
 
 
+  bool checkCCA() {
+    cc2520_fsmstat1_t fsmstat1;
+
+    fsmstat1.value  = readReg(CC2520_FSMSTAT1);
+    if (fsmstat1.f.cca)
+      return TRUE;
+    return FALSE;
+  }
+
+
   /* drs: dump_radio_short */
   void drs(bool with_fifos) __attribute__((noinline)) {
 
@@ -2096,10 +2106,8 @@ implementation {
     if (dvr_cmd != CMD_NONE || dvr_state != STATE_RX_ON)
       return EBUSY;
 
-    if (call CCA.get())
-      signal RadioCCA.done(SUCCESS);
-    else
-      signal RadioCCA.done(EBUSY);
+    dvr_cmd = CMD_CCA;
+    call Tasklet.schedule();        /* still can signal out of here */
     return SUCCESS;
   }
 
@@ -3348,7 +3356,11 @@ implementation {
 
       case CMD_TRANSMIT:
       case CMD_RECEIVE:
+        break;
+
       case CMD_CCA:
+        signal RadioCCA.done(checkCCA() ? SUCCESS : EBUSY);
+        dvr_cmd = CMD_NONE;
         break;
 
       case CMD_CHANNEL:
