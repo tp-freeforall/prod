@@ -74,9 +74,6 @@ module PlatformCC2520P {
     interface HplMsp430GeneralIO as P_GPIO0;
     interface HplMsp430GeneralIO as P_GPIO1;
     interface HplMsp430GeneralIO as P_GPIO2;
-    interface HplMsp430GeneralIO as P_GPIO3;
-    interface HplMsp430GeneralIO as P_GPIO4;
-    interface HplMsp430GeneralIO as P_GPIO5;
     interface HplMsp430GeneralIO as P_SO;
 
     interface CC2520BasicAccess;

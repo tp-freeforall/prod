@@ -61,24 +61,6 @@ configuration HplCC2520C {
 
     interface Alarm<TRadio, uint16_t> as Alarm;
     interface LocalTime<TRadio> as LocalTimeRadio;
-
-    /*
-     * P_SO and P_GPIO[1-5] are platform specific pins that are used by the
-     * platform specific CC2520 code.   When the cc2520 chip gets turned off
-     * these pins get handled so that the chip doesn't get powered by a high
-     * voltage on the pin.  Basically they get tied to ground through a pull
-     * down (as provided by the mcu).  See PlatformCC2520P for details.
-     */
-    interface HplMsp430GeneralIO as P_SO;
-    interface HplMsp430GeneralIO as P_CSN;
-    interface HplMsp430GeneralIO as P_RSTN;
-    interface HplMsp430GeneralIO as P_VREN;
-    interface HplMsp430GeneralIO as P_GPIO0;
-    interface HplMsp430GeneralIO as P_GPIO1;
-    interface HplMsp430GeneralIO as P_GPIO2;
-    interface HplMsp430GeneralIO as P_GPIO3;
-    interface HplMsp430GeneralIO as P_GPIO4;
-    interface HplMsp430GeneralIO as P_GPIO5;
   }
 }
 implementation {
@@ -121,21 +103,20 @@ implementation {
   TXA      = TXA_G;
   EXCA     = EXCA_G;
 
-  CCA      = CCA_G;
-  FIFO     = FIFO_G;
-  FIFOP    = FIFOP_G;
+  components PlatformCC2520P;
+  PlatformCC2520P.P_SO     -> P_IOC.Port32;
+  PlatformCC2520P.P_CSN    -> P_IOC.Port30;
+  PlatformCC2520P.P_RSTN   -> P_IOC.Port12;
+  PlatformCC2520P.P_VREN   -> P_IOC.Port17;
 
-  /* platform specific pins (see PlatformCC2520) */
-  P_SO     = P_IOC.Port32;
-  P_CSN    = P_IOC.Port30;
-  P_RSTN   = P_IOC.Port12;
-  P_VREN   = P_IOC.Port17;
-  P_GPIO0  = P_IOC.Port14;
-  P_GPIO1  = P_IOC.Port15;
-  P_GPIO2  = P_IOC.Port16;
-  P_GPIO3  = P_IOC.Port13;
-  P_GPIO4  = P_IOC.Port81;
-  P_GPIO5  = P_IOC.Port82;
+  PlatformCC2520P.P_GPIO0  -> P_IOC.Port14;
+  PlatformCC2520P.P_GPIO1  -> P_IOC.Port15;
+  PlatformCC2520P.P_GPIO2  -> P_IOC.Port16;
+
+  /* straight CC2520 has all 5 GPIO pins */
+  PlatformCC2520P.P_GPIO3  -> P_IOC.Port13;
+  PlatformCC2520P.P_GPIO4  -> P_IOC.Port81;
+  PlatformCC2520P.P_GPIO5  -> P_IOC.Port82;
 
   /*
    * The default configuration for timers on x5 processors is
@@ -191,4 +172,14 @@ implementation {
 
   components LocalTimeMicroC;
   LocalTimeRadio = LocalTimeMicroC.LocalTime;
+
+#ifdef REQUIRE_PLATFORM
+  components PlatformC;
+  PlatformCC2520P.Platform -> PlatformC;
+#endif
+
+#ifdef REQUIRE_PANIC
+  components PanicC;
+  PlatformCC2520P.Panic    -> PanicC;
+#endif
 }

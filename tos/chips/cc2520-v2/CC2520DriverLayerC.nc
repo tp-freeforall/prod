@@ -145,29 +145,16 @@ implementation {
   DriverLayerP.PlatformCC2520       -> PlatformCC2520P;
   PlatformCC2520P.CC2520BasicAccess -> DriverLayerP;
 
-  PlatformCC2520P.P_CSN    -> HplChip.P_CSN;
-  PlatformCC2520P.P_RSTN   -> HplChip.P_RSTN;
-  PlatformCC2520P.P_SO     -> HplChip.P_SO;
-  PlatformCC2520P.P_VREN   -> HplChip.P_VREN;
-  PlatformCC2520P.P_GPIO0  -> HplChip.P_GPIO0;
-  PlatformCC2520P.P_GPIO1  -> HplChip.P_GPIO1;
-  PlatformCC2520P.P_GPIO2  -> HplChip.P_GPIO2;
-  PlatformCC2520P.P_GPIO3  -> HplChip.P_GPIO3;
-  PlatformCC2520P.P_GPIO4  -> HplChip.P_GPIO4;
-  PlatformCC2520P.P_GPIO5  -> HplChip.P_GPIO5;
-
   components TraceC;
   DriverLayerP.Trace       -> TraceC;
 
 #ifdef REQUIRE_PLATFORM
   components PlatformC;
-  PlatformCC2520P.Platform -> PlatformC;
   DriverLayerP.Platform    -> PlatformC;
 #endif
 
 #ifdef REQUIRE_PANIC
   components PanicC;
-  PlatformCC2520P.Panic    -> PanicC;
   DriverLayerP.Panic       -> PanicC;
 #endif
 }
