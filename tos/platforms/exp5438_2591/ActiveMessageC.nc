@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 3013 Eric B. Decker
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2010, Vanderbilt University
  * All rights reserved.
  *

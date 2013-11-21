@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2010, Vanderbilt University
  * All rights reserved.
  *
@@ -20,6 +21,7 @@
  *
  * Author: Janos Sallai
  * Author: Thomas Schmid (adapted to CC2520)
+ * Author: Eric B. Decker (CC2520-2591 rewrite)
  */
 
 #include <RadioConfig.h>
@@ -43,7 +45,6 @@ configuration ActiveMessageC
     interface PacketLink;
     interface RadioChannel;
 
-//  interface PacketTimeStamp<TMicro, uint32_t> as PacketTimeStampMicro;
     interface PacketTimeStamp<TRadio, uint32_t> as PacketTimeStampRadio;
     interface PacketTimeStamp<TMilli, uint32_t> as PacketTimeStampMilli;
   }
@@ -52,14 +53,7 @@ configuration ActiveMessageC
 implementation
 {
   components CC2520ActiveMessageC as MessageC;
-
-//  components RadioControlP, HplSam3TCC;
-
   SplitControl = MessageC;
-//  SplitControl = RadioControlP;
-//  RadioControlP.LowRadioControl -> MessageC;
-//  RadioControlP.TC -> HplSam3TCC.TC0; // We use TIOA1 which is channel 1 on TC0
-
   AMSend = MessageC;
   Receive = MessageC.Receive;
   Snoop = MessageC.Snoop;
@@ -75,5 +69,4 @@ implementation
 
   PacketTimeStampRadio = MessageC;
   PacketTimeStampMilli = MessageC;
-//  PacketTimeStampMicro = MessageC;
 }
