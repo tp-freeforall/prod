@@ -299,13 +299,13 @@ implementation {
      * various parts of the chip and then turn XOSC off.   So
      * using PlatformCC2520.sleep to do this doesn't really work.
      *
-     * But we still need to tell the state machine that we are in
-     * PWR_STANDBY.
+     * So we let the main driver shut the RF down (RFOFF), do the
+     * house cleaning, and then we put the chip into sleep mode.
      */
     call CC2520BasicAccess.strobe(CC2520_CMD_SRFOFF);
+#endif
     call CC2520BasicAccess.strobe(CC2520_CMD_SXOSCOFF);
     call CC2520BasicAccess.strobe(CC2520_CMD_SNOP);
-#endif
     m_pwr_state = CC2520_PWR_STANDBY;
   }
 

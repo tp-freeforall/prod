@@ -1772,9 +1772,7 @@ implementation {
       flushRxFifo();                    /* nuke rxfifo             */
       flushSfdQueue();                  /* reset sfd queue         */
       resetExc();                       /* blow out exceptions     */
-      timesync_absolute = 0;          /* no timesync in progress */
-      strobe(CC2520_CMD_SXOSCOFF);
-      strobe(CC2520_CMD_SNOP);
+      timesync_absolute = 0;            /* no timesync in progress */
       call PlatformCC2520.sleep();      /* tell PlatformCC2520 we are in standby */
       next_state(STATE_STANDBY);        /* no need to idle first */
       dvr_cmd = CMD_SIGNAL_DONE;
