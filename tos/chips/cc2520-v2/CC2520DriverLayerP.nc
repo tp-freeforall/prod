@@ -163,9 +163,12 @@
  *    GPIO1     FIFO, (input, default, switched to TXA).
  *    GPIO2     FIFOP, (input, default, switched to EXCA).
  *
+ *    gpio3-5 are not used by the driver directly.  PlatformCC2520 is
+ *    responsible for dealing with the gp5 default being input.
+ *
  *    GPIO3     (defaults to CCA, reserved for 2591, HGM)
- *    GPIO4     (defaults to SFD, reserved for 2591, EN)
- *    GPIO5     (defaults to CC2520 input, reserved for PAEN) in LPM2
+ *    GPIO4     (defaults to SFD, reserved for 2591, EN, !lna_pd[1]
+ *    GPIO5     (defaults to CC2520 input, reserved for PAEN, !pa_pd) in LPM2
  *              needs to be driven to avoid excessive power consumption.
  *    SO        MISO (master in, slave out).  Data from CC2520 to the MCU.
  *              When the CC2520 XOSC is running, dropping CSN (asserted CS)
@@ -199,9 +202,9 @@
  * 2) gp0 -> SFD.  It must be on a capture capable pin
  * 3) gp1 -> tx_active for SFD capture
  * 4) gp2 -> EXCEP_A (completions and errors)
- * 5) gp3 -> CCA
- * 6) aux pins (not avail with 2591):
- *    gp4 -> fifo, gp5 -> fifop
+ * 5) gp3 -> not used.   reserved for HGM
+ * 6) gp4 -> not used.   reserved for EN
+ * 7) gp5 -> not used.   reserved for PA_EN
  * 7) FIFO, FIFOP, SFD, and CCA, are available in FSMSTAT1.
  * 8) Current size of the rxfifo is determined from RXFIFOCNT.
  *
@@ -271,7 +274,7 @@
  * Author: Janos Sallai, Miklos Maroti
  * Author: Eric B. Decker <cire831@gmail.com>
  *
- * Extensively rewritten Eric B. Decker (2013)
+ * complete rewrite: Eric B. Decker (2013)
  */
 
 #define CC2520_ATOMIC_SPI
@@ -315,9 +318,6 @@ typedef struct {
   uint8_t SFD_pin;
   uint8_t TXA_pin;
   uint8_t EXCA_pin;
-  uint8_t CCA_pin;
-  uint8_t FIFO_pin;
-  uint8_t FIFOP_pin;
 } rd_hw_t;
 
 
@@ -439,7 +439,7 @@ typedef struct {
   uint8_t actbist;                      /* 0x7C */
   uint8_t rambist;                      /* 0x7E */
   uint8_t status;
-  uint16_t timestamp;                   /* microsec timestmap */
+  uint16_t timestamp;                   /* microsec timestamp */
 } radio_dump_t;
 
 /* first 0x64 bytes contiguous, last 3 done by hand. */
@@ -722,9 +722,6 @@ module CC2520DriverLayerP {
     interface GeneralIO      as SFD;             /* gp0 -> sfd   */
     interface GeneralIO      as TXA;             /* gp1 -> tx_active  */
     interface GeneralIO      as EXCA;            /* gp2 -> exca  */
-    interface GeneralIO      as CCA;             /* gp3 -> cca   */
-    interface GeneralIO      as FIFO;            /* gp4 -> fifo  */
-    interface GeneralIO      as FIFOP;           /* gp5 -> fifop */
 
     interface GenericCapture<uint16_t>
                              as SfdCapture;
@@ -1169,9 +1166,6 @@ implementation {
     rd_hw_state.SFD_pin     = call SFD.get();
     rd_hw_state.TXA_pin     = call TXA.get();
     rd_hw_state.EXCA_pin    = call EXCA.get();
-    rd_hw_state.CCA_pin     = call CCA.get();
-    rd_hw_state.FIFO_pin    = call FIFO.get();
-    rd_hw_state.FIFOP_pin   = call FIFOP.get();
   }
 
 
@@ -1589,7 +1583,6 @@ implementation {
       fullInitRadio();                /* in LOAD_CONFIG */
     else
       standbyInitRadio();             /* one of the STANDBYs */
-    nop();
     next_state(STATE_IDLE);
     call Tasklet.schedule();
     call Tasklet.resume();

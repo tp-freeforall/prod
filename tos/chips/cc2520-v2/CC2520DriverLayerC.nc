@@ -99,10 +99,6 @@ implementation {
   DriverLayerP.TXA   -> HplChip.TXA;
   DriverLayerP.EXCA  -> HplChip.EXCA;
 
-  DriverLayerP.CCA   -> HplChip.CCA;
-  DriverLayerP.FIFO  -> HplChip.FIFO;
-  DriverLayerP.FIFOP -> HplChip.FIFOP;
-
   PacketTransmitPower = DriverLayerP.PacketTransmitPower;
   DriverLayerP.TransmitPowerFlag = TransmitPowerFlag;
 

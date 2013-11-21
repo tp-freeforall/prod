@@ -49,10 +49,6 @@ configuration HplCC2520C {
     interface GeneralIO     as TXA;             /* gp1 -> tx_active  */
     interface GeneralIO     as EXCA;            /* gp2 -> exca  */
 
-    interface GeneralIO     as CCA;             /* gp3 -> cca   */
-    interface GeneralIO     as FIFO;            /* gp4 -> fifo  */
-    interface GeneralIO     as FIFOP;           /* gp5 -> fifop */
-
     interface GenericCapture<uint16_t>
                             as SfdCapture;
     interface GpioInterrupt as ExcAInterrupt;
@@ -104,10 +100,7 @@ implementation {
   components new Msp430GpioC() as TXA_G;
   components new Msp430GpioC() as EXCA_G;
 
-  components new Msp430GpioC() as CCA_G;
-  components new Msp430GpioC() as FIFO_G;
-  components new Msp430GpioC() as FIFOP_G;
-
+  /* Low level platform I/O */
   components HplMsp430GeneralIOC as P_IOC;
 
   // SO, Port32
@@ -119,11 +112,6 @@ implementation {
   SFD_G   -> P_IOC.Port14;
   TXA_G   -> P_IOC.Port15;
   EXCA_G  -> P_IOC.Port16;
-
-  CCA_G   -> P_IOC.Port13; 
-  FIFO_G  -> P_IOC.Port81; 
-  FIFOP_G -> P_IOC.Port82;
-
 
   RSTN     = RSTN_G;
   VREN     = VREN_G;
