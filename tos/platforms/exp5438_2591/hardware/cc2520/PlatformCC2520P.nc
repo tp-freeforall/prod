@@ -296,11 +296,14 @@ implementation {
 #ifdef notdef
     /*
      * The problem is we need to first turn the RFOFF,  clean out
-     * various parts of the chip and then turn XOSC off.   So
-     * using PlatformCC2520.sleep to do this doesn't really work.
+     * various parts of the chip and then turn XOSC off.   So shutting
+     * RF down (RFOFF) in .sleep doesn't work because we need the
+     * RF off before cleaning out the controlling data structures.  The
+     * RFOFF has to be done by the driver.  Then we can use sleep
+     * to shut down XOSC.
      *
-     * So we let the main driver shut the RF down (RFOFF), do the
-     * house cleaning, and then we put the chip into sleep mode.
+     * We also need to modify the current power state.  This is done by
+     * .sleep.
      */
     call CC2520BasicAccess.strobe(CC2520_CMD_SRFOFF);
 #endif

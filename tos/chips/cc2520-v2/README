@@ -10,6 +10,12 @@ We use SFD, TX_active, and EXC_A signals to invoke the driver.  And values
 from the exception registers to figure out the processing needed.  The same
 structure can be used for both the single and dual chip solutions.
 
+Warning: Use of the 2591 range extender changes the power budget considerably.
+For example if we are using txpower of 0 dBm (TXPOWER 0x32), the 2591 will
+transmit at approximately 20 dBm with about 110 mA.   This may pull more power
+than what the power supply can provide.  This needs to be handled especially
+in battery powered systems.
+
 
 fullInitRadio (includes chip reset, Xosc verification, and register writing):
 

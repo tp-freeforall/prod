@@ -541,6 +541,14 @@ typedef struct {
  *
  * Also see SWRS068, December 2007, Section 28.1  (Table 21)
  * CC2520 datasheet/manual
+ *
+ * This code supports both single chip (CC2520 standalone) and dual chip
+ * (CC2520/CC2591) implementations.  We set the h/w up for low-gain receive
+ * HGM = 0, (dual chip LGM is similar to single chip) with ccactrl0
+ * (CCA threshold) of 0xfc.
+ *
+ * The other significant difference is agcctrl1.  It is set to 0x11 for
+ * single chip and 0x16 for dual chip.  This is handled by PlatformCC2520.
  */
 
   /*
