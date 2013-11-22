@@ -65,9 +65,8 @@ static const uint8_t reg_vals_20[] = {
   0x44,                                 /* tx_active -> gp1 */
   0x21,                                 /* exc_a     -> gp2 */
   0x7e,                                 /* hgm(0)    -> gp3 */
-  0x7f, 0x7f,
-//  0x46,                                 /* !lna_pd   -> gp4 */
-//  0x47,                                 /* !pa_pd    -> gp5 */
+  0x46,                                 /* !lna_pd   -> gp4 */
+  0x47,                                 /* !pa_pd    -> gp5 */
   0x0f                                  /* gpiopolarity     */
                                         /* 4/5 inverted     */
 };
