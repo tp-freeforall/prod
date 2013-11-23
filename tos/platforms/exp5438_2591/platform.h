@@ -1,4 +1,3 @@
-
 #ifndef _H_PLATFORM_H_
 #define _H_PLATFORM_H_
 

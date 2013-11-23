@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -34,10 +35,12 @@
 
 #include "msp430usci.h"
 
-/**
- * Connect the appropriate pins for USCI support on a CC430.
+/*
+ * 
+ * Connect the appropriate pins for USCI support on a 5438a
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 configuration PlatformUsciMapC {
@@ -55,13 +58,4 @@ configuration PlatformUsciMapC {
   SpiB0C.CLK      -> GIO.UCB0CLK;
   SpiB0C.Platform -> PlatformC;
   SpiB0C.Panic    -> PanicC;
-
-#ifdef notdef
-  components Msp430UsciSpiA3P as SpiA3C;
-  SpiA3C.SIMO     -> GIO.UCA3SIMO;
-  SpiA3C.SOMI     -> GIO.UCA3SOMI;
-  SpiA3C.CLK      -> GIO.UCA3CLK;
-  SpiA3C.Platform -> PlatformC;
-  SpiA3C.Panic    -> PanicC;
-#endif
 }

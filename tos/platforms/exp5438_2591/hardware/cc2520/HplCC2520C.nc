@@ -64,6 +64,9 @@ configuration HplCC2520C {
   }
 }
 implementation {
+
+  /* see exp5438_2520/hardware/usci/PlatformUsciMapC.nc for pin mappage */
+
   components new Msp430UsciSpiB0C() as SpiC;
   SpiResource = SpiC;
   SpiByte     = SpiC;

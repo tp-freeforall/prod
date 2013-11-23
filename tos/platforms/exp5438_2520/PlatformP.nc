@@ -62,7 +62,6 @@ module PlatformP {
   uses {
     interface Init as PlatformPins;
     interface Init as PlatformLeds;
-    interface Init as Msp430Pmm;
     interface Init as PlatformClock;
     interface Init as MoteInit;
     interface Init as PeripheralInit;

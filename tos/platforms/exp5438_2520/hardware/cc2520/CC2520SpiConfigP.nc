@@ -39,18 +39,18 @@
 #include "msp430usci.h"
 
 /*
- * MM5, 5437a, USCI, SPI
+ * exp5438_2520, 5438a, USCI, SPI
  * x5 usci configuration
  */
 
 const msp430_usci_config_t cc2520_spi_config = {
   /*
-   * UCCKPH: 0,
+   * UCCKPH: 1,                         for talking to the cc2520
    * UCCKPL: 0,
    * UCMSB:  1,
    * UC7BIT: 0,
    * UCMST:  1,
-   * UCMODE: 0b00,
+   * UCMODE: 0b00,                      3 wire SPI
    * UCSYNC: 1,
    * UCSSEL: SMCLK,
    */
@@ -70,5 +70,4 @@ implementation {
   async command const msp430_usci_config_t *Msp430UsciConfigure.getConfiguration() {
     return &cc2520_spi_config;
   }
-
 }

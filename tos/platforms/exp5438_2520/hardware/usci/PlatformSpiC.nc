@@ -9,12 +9,7 @@ configuration PlatformSpiC {
 }
 
 implementation {
-
   components PlatformSpiP;
-
-//  components MainC;
-//  MainC.SoftwareInit -> PlatformSpiP;
-
   components new Msp430UsciSpiB0C() as SpiC;
 
   SpiByte = SpiC;

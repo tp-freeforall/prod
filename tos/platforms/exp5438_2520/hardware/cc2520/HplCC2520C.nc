@@ -64,6 +64,9 @@ configuration HplCC2520C {
   }
 }
 implementation {
+
+  /* see exp5438_2520/hardware/usci/PlatformUsciMapC.nc for pin mappage */
+
   components new Msp430UsciSpiB0C() as SpiC;
   SpiResource = SpiC;
   SpiByte     = SpiC;
@@ -113,7 +116,7 @@ implementation {
   PlatformCC2520P.P_GPIO1  -> P_IOC.Port15;
   PlatformCC2520P.P_GPIO2  -> P_IOC.Port16;
 
-  /* straight CC2520 has all 5 GPIO pins */
+  /* single chip CC2520 has all 5 GPIO pins wired to MCU */
   PlatformCC2520P.P_GPIO3  -> P_IOC.Port13;
   PlatformCC2520P.P_GPIO4  -> P_IOC.Port81;
   PlatformCC2520P.P_GPIO5  -> P_IOC.Port82;
@@ -137,14 +140,14 @@ implementation {
    *     SfdCaptureC.Msp430TimerControl = TM.Msp430TimerControl;
    *     SfdCaptureC.Msp430Capture      = TM.Msp430Capture;
    *
-   * The SFD pin on the 2520EM module for the 5438A eval board is configured
-   * to use P1.4/TA0.3 on the cpu.   This connects to the capture module for
-   * TA0 via TA0.CCI3A which requires using TA0CCTL3.   The capture will
-   * show up in TA0CCR3 and will set CCIFG in TA0CCTL3.  Units in TA0CCR3
+   * The SFD pin (gpio0) on the 2520EM module for the 5438A eval board is
+   * configured to use P1.4/TA0.3 on the cpu.   This connects to the capture
+   * module for TA0 via TA0.CCI3A which requires using TA0CCTL3.   The capture
+   * will show up in TA0CCR3 and will set CCIFG in TA0CCTL3.  Units in TA0CCR3
    * will be TMicro ticks.
    *
    * This also requires a modification to Msp430TimerMicroMap so control
-   * cells for T0A1 aren't exposed for use by other users.  A custom
+   * cells for T0A3 aren't exposed for use by other users.  A custom
    * version is present in tos/platforms/exp5438_2520/hardware/timer.  This
    * directory is also were which timer block is used for what function
    * (TMicro vs. TMilli) live.

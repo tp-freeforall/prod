@@ -66,7 +66,7 @@ implementation {
        */
 
       /*
-       * P1 has two bits we care about, the two LED bits (turn them off),
+       * P1 has four bits we care about, the two LED bits (turn them off),
        * cc_resetn (0, assert), and cc_vreg_en (0, deassert).  cc_g0 by
        * default will have a 1 MHz clock on it.  Later, when we bring the
        * chip out of LPM2, cc_g0 (gp0) will be programmed to output sfd.

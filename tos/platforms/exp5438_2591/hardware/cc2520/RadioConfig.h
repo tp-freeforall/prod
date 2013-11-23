@@ -74,12 +74,6 @@ typedef uint16_t tradio_size;
  */
 #define RADIO_ALARM_MICROSEC    1
 
-enum cc2520_timing_enums {
-  CC2520_SYMBOL_TIME =  17 * RADIO_ALARM_MICROSEC, //  16us, actual 16.2us
-  IDLE_2_RX_ON_TIME  =  12 * CC2520_SYMBOL_TIME,   // 192us, actual 194.5us
-  PD_2_IDLE_TIME     = 902 * RADIO_ALARM_MICROSEC, // 860us, actual 860.2us
-};
-
 
 /**
  * The base two logarithm of the number of radio alarm ticks per one millisecond

@@ -44,7 +44,7 @@
  *
  * MCLK (Main Clock) - 8MHz, DCOCLK/1
  * SMCLK (submain)   DCOCLK/1
- * SMCLK/8 -> TA0 (1us) -> TMicro
+ * SMCLK/8 -> TA0 (1us) -> TMicro  (because of SFD capture)
  * ACLK/1 (32KiHz) -> TA1 (1/32768) -> TMilli
  *
  * The 5438 runs at 2.2V and can clock up to 18MHz.   The 5438a
