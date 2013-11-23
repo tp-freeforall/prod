@@ -52,7 +52,7 @@ implementation {
     atomic {
 
       /*
-       * exp5438 motescan have a CC2520EM or CC2520-2591EM radio module.
+       * exp5438 motes can have a CC2520EM or CC2520-2591EM radio module.
        * what pins are used depends on what radio module is being used.
        *
        * Set the various enables and control signals to reasonable values
@@ -66,7 +66,7 @@ implementation {
        */
 
       /*
-       * P1 has two bits we care about, the two LED bits (turn them off),
+       * P1 has four bits we care about, the two LED bits (turn them off),
        * cc_resetn (0, assert), and cc_vreg_en (0, deassert).  cc_g0 by
        * default will have a 1 MHz clock on it.  Later, when we bring the
        * chip out of LPM2, cc_g0 (gp0) will be programmed to output sfd.
@@ -88,22 +88,7 @@ implementation {
       P4OUT = 0x00;
       P4DIR = 0x20;
 
-      /*
-       * cc_g5 leave as an input, but turn on its pull down resistor.
-       * cc_g5 defaults to an input, don't leave it floating
-       * P8DIR defaults to 0x00 after POR.
-       */
-      P8OUT = 0x00;                     /* make sure its a pull down */
-      P8REN = 0x04;                     /* resistor on */
-
-/* Disabled: these specific setting are defaults, but others might not be */
-#ifdef notdef
-      PMAPPWD = PMAPPW;                         // Get write-access to port mapping regs
-      P1MAP5 = PM_UCA0RXD;                      // Map UCA0RXD output to P1.5
-      P1MAP6 = PM_UCA0TXD;                      // Map UCA0TXD output to P1.6
-      PMAPPWD = 0;                              // Lock port mapping registers
-#endif //
-
+      /* cc_g5 is not connected to the MCU on the dual chip platform. */
     }
     return SUCCESS;
   }
