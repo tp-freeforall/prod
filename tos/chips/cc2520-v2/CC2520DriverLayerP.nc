@@ -2735,9 +2735,26 @@ implementation {
     bool          tx_pending, rx_pending;
 
     /*
-     * bailing out of the do {} while(0) structure after an exception has been
-     * processed.  Additional per exception checks are done, ie. recovery and
-     * overwrite resyncing.
+     * before starting let other interrupts in, just incase
+     * something else needs to get executed before we dive
+     * in to processing the exception.
+     *
+     * We just open a brief window and if anything is pending
+     * it will take.
+     *
+     * Later, if we start something that will take a while (like
+     * receiving a packet (pulling from the RXFIFO) we will reenable
+     * interrupts while that is occuring.
+     */
+
+    __nesc_enable_interrupt();
+    __nesc_disable_interrupt();
+
+
+    /*
+     * The do {} while(0) structure is used to allow exception processing to
+     * bail out easily.  After the do {} while {}, additional per exception
+     * checks are done, ie. recovery and overwrite resyncing.
      */
 
     do {
