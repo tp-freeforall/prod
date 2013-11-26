@@ -1818,28 +1818,6 @@ implementation {
         bad_state();
         break;
     }
-
-
-#ifdef notdef
-    else if( (dvr_cmd == CMD_TURNOFF || dvr_cmd == CMD_STANDBY)
-        && dvr_state == STATE_RX_ON && isSpiAcquired() ){
-      // stop receiving
-      strobe(CC2520_CMD_SRFOFF);
-
-      next_state(STATE_IDLE);
-    }
-
-    if( dvr_cmd == CMD_TURNOFF && dvr_state == STATE_IDLE  && isSpiAcquired() ){
-      // stop oscillator
-      strobe(CC2520_CMD_SXOSCOFF);
-
-      resetRadio();
-      next_state(STATE_PD);
-      dvr_cmd = CMD_SIGNAL_DONE;
-    }
-    else if( dvr_cmd == CMD_STANDBY && dvr_state == STATE_IDLE )
-      dvr_cmd = CMD_SIGNAL_DONE;
-#endif
   }
 
 
@@ -3003,19 +2981,11 @@ implementation {
             /*
              * see if anything nasty happened
              *
-             * We could just let the rx machine continue to cycle, pulling
-             * packets.   eventually, we will run off the end of the fifo
-             * and stop.
+             * If really nasty, blow the chip up.  If rx_overflow, then
+             * continue processing the rxfifo until all good packets
+             * are gone, then handle the overflow.
              *
-             * But it seems more expedient to blow the chip up when something
-             * strange happens.  This also makes the RX_OVERFLOW behave the
-             * same when we have it on entry or when it happens while we are
-             * pulling packets.  In other words always throw the entire
-             * rxfifo away when an RX OVERFLOW happens.
-             *
-             * And we have to at least fetch an updated value for exc0 to
-             * check for TX_FRM_DONE.  So it didn't seem that hard to
-             * check for other crap while we are here.
+             * Fetch an updated value for exc0 to check for TX_FRM_DONE.
              */
             exc0 = readReg(CC2520_EXCFLAG0);
             exc1 = readReg(CC2520_EXCFLAG1);
