@@ -533,6 +533,24 @@ implementation {
 
     m_buf[m_pos++] = call Usci.getRxbuf();
 
+    /*
+     * If the CPU is slow or running in debug mode, the timing 
+     * works out in such a way that the interrupt for the very last byte
+     * doesn't trigger. This seems to happen because setTxStop is called right
+     * before the last byte which causes the hardware to proceed with receiving
+     * the last byte instead of waiting until the one-before-last byte is read
+     * from the RX buffer. The interrupt flag actually gets set, but the CPU
+     * doesn't get interrupted. Thus, we can check the flag and read the last
+     * byte, if it's available.
+     */
+    if (m_left == 1){
+      uint8_t ifg = call Usci.getIfg();
+      if (ifg & UCRXIFG){
+        m_left--;
+        m_buf[m_pos++] = call Usci.getRxbuf();
+      }
+    }
+
     if (m_left == 0) {
       /*
        * all done receiving...
