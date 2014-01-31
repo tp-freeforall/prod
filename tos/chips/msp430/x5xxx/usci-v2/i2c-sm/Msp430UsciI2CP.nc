@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013 Eric B. Decker
+ * Copyright (c) 2012-2014 Eric B. Decker
  * All rights reserved.
  *
  * Single Master driver.
@@ -1089,6 +1089,8 @@ nack_abort:
     return SUCCESS;
   }
 
+
+  async event void Panic.hook() { }
 
 #ifndef REQUIRE_PLATFORM
   default async command uint16_t Platform.usecsRaw()    { return 0; }

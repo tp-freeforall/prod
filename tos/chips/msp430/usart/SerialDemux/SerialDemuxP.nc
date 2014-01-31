@@ -174,6 +174,8 @@ implementation {
     return serial_defowner != 0;
   }
 
+  async event void Panic.hook() { }
+
   default async event void SerialDefOwnerClient.granted[uint8_t client_id]() {}
   default async event void SerialDefOwnerClient.requested[uint8_t client_id]() {}
 
