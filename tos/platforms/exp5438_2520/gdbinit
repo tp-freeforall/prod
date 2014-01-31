@@ -1,0 +1,214 @@
+
+# exp5438_2520 version
+
+set remoteaddresssize 0d64
+set remotetimeout 0d999999
+set remote memory-write-packet-size 1024
+set remote memory-write-packet-size fixed
+set remote memory-read-packet-size 1024
+set remote memory-read-packet-size fixed
+
+#source ../../.gdb_x1
+#source ../../.gdb_x2
+source ../../.gdb_x5
+
+target remote localhost:2000
+
+disp/i $pc
+x/i $pc
+set pri ele 0
+
+b RealMainP.nc:94
+b RealMainP.nc:102
+b SchedulerBasicP.nc:159
+b SchedulerBasicP.nc:163
+b VirtualizeTimerC.nc:92
+dis
+
+b PanicP.nc:45
+comm
+printf "p: %d  w: %d  0: %04x  1: %04x  2: %04x  3: %04x\n", \
+    _p, _w, _a0, _a1, _a2, _a3
+end
+
+# b CC2520DriverLayerP.nc:3006
+# b CC2520DriverLayerP.nc:3085
+# dis 7-8
+
+# b CC2520DriverLayerP.nc:2323
+# b CC2520DriverLayerP.nc:2401
+# b CC2520DriverLayerP.nc:2444
+
+# b CC2520DriverLayerP.nc:2174
+# b CC2520DriverLayerP.nc:2179
+# dis 12 13
+
+# b CC2520DriverLayerP.nc:1970
+# b CC2520DriverLayerP.nc:2567
+
+define nx
+fini
+ni 3
+si 2
+end
+
+define noint
+printf "cur sr: %02x\n", $r2
+set $r2=0
+end
+
+define npc
+x/16i $pc
+end
+document npc
+display next (16) instructions from $pc
+end
+
+define radio
+set $_cur_t   = *(uint16_t ) 0x0350
+set $_p1in    = *(uint8_t *) 0x0200
+set $_p1out   = *(uint8_t *) 0x0202
+set $_p1dir   = *(uint8_t *) 0x0204
+set $_p1ren   = *(uint8_t *) 0x0206
+set $_p1sel   = *(uint8_t *) 0x020a
+set $_p3in    = *(uint8_t *) 0x0220
+set $_p3out   = *(uint8_t *) 0x0222
+set $_p3dir   = *(uint8_t *) 0x0224
+set $_p3ren   = *(uint8_t *) 0x0226
+set $_p3sel   = *(uint8_t *) 0x022a
+set $_p1x04rc = (($_p1dir & 0x04) ? 'o' :  (($_p1ren & 0x04) ? (($_p1out & 0x04) ? 'u' : 'd') : 'o'))
+set $_p1x10rc = (($_p1dir & 0x10) ? 'o' :  (($_p1ren & 0x10) ? (($_p1out & 0x10) ? 'u' : 'd') : 'o'))
+set $_p1x20rc = (($_p1dir & 0x20) ? 'o' :  (($_p1ren & 0x20) ? (($_p1out & 0x20) ? 'u' : 'd') : 'o'))
+set $_p1x40rc = (($_p1dir & 0x40) ? 'o' :  (($_p1ren & 0x40) ? (($_p1out & 0x40) ? 'u' : 'd') : 'o'))
+set $_p1x80rc = (($_p1dir & 0x80) ? 'o' :  (($_p1ren & 0x80) ? (($_p1out & 0x80) ? 'u' : 'd') : 'o'))
+set $_p3x01rc = (($_p3dir & 0x01) ? 'o' :  (($_p3ren & 0x01) ? (($_p3out & 0x01) ? 'u' : 'd') : 'o'))
+set $_p3x04rc = (($_p3dir & 0x04) ? 'o' :  (($_p3ren & 0x04) ? (($_p3out & 0x04) ? 'u' : 'd') : 'o'))
+printf "cur: 0x%04x\n", $_cur_t
+printf "csn: %d%c%c%c  rstn: %d%c%c%c   vren: %d%c%c%c  so: %d%c%c%c  sfd: %d%c%c%c  tx_a: %d%c%c%c  excA: %d%c%c%c\n", \
+        ($_p3out & 0x01),             \
+        ($_p3sel & 0x01) ? 'm' : 'p', \
+        ($_p3dir & 0x01) ? 'O' : 'I', \
+        $_p3x01rc,                    \
+        ($_p1out & 0x04) >> 2,        \
+        ($_p1sel & 0x04) ? 'm' : 'p', \
+        ($_p1dir & 0x04) ? 'O' : 'I', \
+        $_p1x04rc,                    \
+        ($_p1out & 0x80) >> 7,        \
+        ($_p1sel & 0x80) ? 'm' : 'p', \
+        ($_p1dir & 0x80) ? 'O' : 'I', \
+        $_p1x80rc,                    \
+        ($_p3dir & 0x04) ? (($_p3out & 0x04) >> 2) \
+                : (($_p3in & 0x04) >> 2), \
+        ($_p3sel & 0x04) ? 'm' : 'p', \
+        ($_p3dir & 0x04) ? 'O' : 'I', \
+        $_p3x04rc,                    \
+        ($_p1in  & 0x10) >> 4,        \
+        ($_p1sel & 0x10) ? 'm' : 'p', \
+        ($_p1dir & 0x10) ? 'O' : 'I', \
+        $_p1x10rc,                    \
+        ($_p1in  & 0x20) >> 5,        \
+        ($_p1sel & 0x20) ? 'm' : 'p', \
+        ($_p1dir & 0x20) ? 'O' : 'I', \
+        $_p1x20rc,                    \
+        ($_p1in  & 0x40) >> 6,        \
+        ($_p1sel & 0x40) ? 'm' : 'p', \
+        ($_p1dir & 0x40) ? 'O' : 'I', \
+        $_p1x40rc
+
+set $_p8in  = *(uint8_t *) 0x0261
+set $_p8out = *(uint8_t *) 0x0263
+set $_p8ren = *(uint8_t *) 0x0267
+set $_p8sel = *(uint8_t *) 0x026b
+set $_p8dir = *(uint8_t *) 0x0265
+set $_p1es  = *(uint8_t *) 0x0218
+set $_p1ie  = *(uint8_t *) 0x021a
+set $_p1ifg = *(uint8_t *) 0x021c
+set $_p1x08rc = (($_p1dir & 0x08) ? 'o' :  (($_p1ren & 0x08) ? (($_p1out & 0x08) ? 'u' : 'd') : 'o'))
+set $_p8x02rc = (($_p8dir & 0x02) ? 'o' :  (($_p8ren & 0x02) ? (($_p8out & 0x02) ? 'u' : 'd') : 'o'))
+set $_p8x04rc = (($_p8dir & 0x04) ? 'o' :  (($_p8ren & 0x04) ? (($_p8out & 0x04) ? 'u' : 'd') : 'o'))
+printf "cca: %d%c%c%c  fifo: %d%c%c%c  fifop: %d%c%c%c  configured: %d\n", \
+        ($_p1in  & 0x08) >> 3,        \
+        ($_p1sel & 0x08) ? 'm' : 'p', \
+        ($_p1dir & 0x08) ? 'O' : 'I', \
+        $_p1x08rc,                    \
+        ($_p8in  & 0x02) >> 1,        \
+        ($_p8sel & 0x02) ? 'm' : 'p', \
+        ($_p8dir & 0x02) ? 'O' : 'I', \
+        $_p8x02rc,                    \
+        ($_p8in  & 0x04) >> 2,        \
+        ($_p8sel & 0x04) ? 'm' : 'p', \
+        ($_p8dir & 0x04) ? 'O' : 'I', \
+        $_p8x04rc,                    \
+        (m_hw_configured == 1)
+
+set $_ta0cctl3 = *(uint16_t *) 0x0348
+set $_ta0ccr3  = *(uint16_t *) 0x0358
+set $_ta0iv    = *(uint8_t  *) 0x036e
+set $_p1iv     = *(uint8_t  *) 0x020e
+
+# intr: sfd: (sfd cap time)  <CCI><int_enable><cap_overflow><CCIFG>
+#       excA: <edge><int_enable><IFG>  ta0iv: %02x  p1iv: %02x
+printf "intr:  sfd: (0x%04x) %d%c%c%d  excA: %c%c%d  ta0iv: %02x  p1iv: %02x\n", \
+        ($_ta0ccr3),                     \
+        ($_ta0cctl3 & 0x08) >> 3,        \
+        ($_ta0cctl3 & 0x10) ? 'E' : 'd', \
+        ($_ta0cctl3 & 0x02) ? 'V' : 'v', \
+        ($_ta0cctl3 & 0x01),             \
+        ($_p1es  & 0x40) ? 'F' : 'r',    \
+        ($_p1ie  & 0x40) ? 'E' : 'd',    \
+        ($_p1ifg & 0x40) >> 6,           \
+        $_ta0iv, $_p1iv
+
+printf "sfd_entries: %d  sfd_drain: %d  sfd_fill: %d  sfd_lost: %d\n", \
+    sfd_entries, sfd_drain, sfd_fill, sfd_lost
+output sfd_stamps[0]
+printf "\n"
+output sfd_stamps[1]
+printf "\n"
+output sfd_stamps[2]
+printf "\n"
+output sfd_stamps[3]
+printf "\n"
+output sfd_stamps[4]
+printf "\n"
+output sfd_stamps[5]
+printf "\n"
+output sfd_stamps[6]
+printf "\n"
+output sfd_stamps[7]
+printf "\ncmd:   "
+output CC2520DriverLayerP__dvr_cmd
+printf "\nstate: "
+output CC2520DriverLayerP__dvr_state
+printf "\ntx_state: "
+output tx_user_state
+printf "\npwr:   "
+output PlatformCC2520P__m_pwr_state
+printf "\nradioIrq: %d\n", CC2520DriverLayerP__radioIrq
+printf "stateAlarm_active: %d\n", CC2520DriverLayerP__stateAlarm_active
+printf "TaskletC__state: 0x%02x\n", Tasklet_state
+output rds
+printf "\n"
+end
+document radio
+display cc2520 fixed pins
+end
+
+define set-stamps
+set sfd_stamps[0].sfd_status=0x8013
+set sfd_stamps[1].sfd_status=0
+set sfd_stamps[2].sfd_status=0x8013
+set sfd_stamps[3].sfd_status=0x8013
+set sfd_stamps[4].sfd_status=0x8013
+set sfd_stamps[5].sfd_status=0x8013
+set sfd_stamps[6].sfd_status=0x8013
+set sfd_stamps[7].sfd_status=0x8013
+set sfd_entries=1
+set sfd_drain=0
+set sfd_fill=1
+end
+
+define go
+set wait=0
+c
+end
