@@ -1,0 +1,4 @@
+
+Simple serial port packet observer.
+
+Needs Python3 and python3-serial.
