@@ -7,6 +7,8 @@
 #define TRACE_MICRO
 //#define TRACE_USE_PLATFORM
 
+#include "platform_panic.h"
+
 /* tell the cc2520 driver we have 2591 h/w */
 #define CC2520_2591
 
