@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Eric B. Decker
+ * Copyright (c) 2013-2014, Eric B. Decker
  * Copyright (c) 2010, Vanderbilt University
  * All rights reserved.
  *
@@ -44,11 +44,8 @@
 /*
  * TXPOWER register value, see Table 17 of the 2520 data sheet
  * Note.   Using a 2591 range extender will change the actual
- * power emitted.
- *
- * This can no long be done here because the 2591 changes what
- * must be programmed into the PA_POWER field.  It is no longer
- * a RadioConfig thing but is now a h/w platform thing.
+ * power emitted.  But this is the RadioConfig for the 2520
+ * only platform so that is moot.
  */
 #ifdef notdef
 #ifndef CC2520_DEF_RFPOWER
