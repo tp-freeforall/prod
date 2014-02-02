@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 (c) Eric B. Decker
+ * Copyright 2013-2014 (c) Eric B. Decker
  * All rights reserved.
  *
  * @author Eric B. Decker, <cire831@gmail.com>
@@ -55,6 +55,12 @@ typedef enum {
   T_R_RX_OVR_1,
   T_R_RX_LOOP,
   T_R_RECOVER,
+
+  T_TL                  =64,
+  T_INT_OVR,
+  T_INT_T0A0,
+  T_INT_T0A1,
+  T_INT_P1,
 
   /*
    * For debugging Arbiter 1
