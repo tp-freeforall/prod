@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Eric B. Decker
+ * Copyright (c) 2013-2014, Eric B. Decker
  * Copyright (c) 2010, Vanderbilt University
  * All rights reserved.
  *
@@ -317,6 +317,7 @@ typedef struct {
   uint8_t p1ie;
   uint8_t p1ifg;
   uint8_t p3;
+  uint8_t p7;
   uint8_t p8;
   uint8_t ta0ccr3;
   uint8_t ta0cctl3;
@@ -1171,11 +1172,17 @@ implementation {
   }
 
 
+  /*
+   * FIXME: this needs to get moved to PlatformCC2520
+   *
+   * Wiring and platform dependent.
+   */
   void dr_hw_state() {
     rd_hw_state.p1          = P1IN;
     rd_hw_state.p1ie        = P1IE;
     rd_hw_state.p1ifg       = P1IFG;
     rd_hw_state.p3          = P3IN;
+    rd_hw_state.p7          = P7IN;
     rd_hw_state.p8          = P8IN;
     rd_hw_state.ta0ccr3     = TA0CCR3;
     rd_hw_state.ta0cctl3    = TA0CCTL3;
