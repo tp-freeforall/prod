@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Eric B. Decker
+ * Copyright (c) 2013-2014, Eric B. Decker
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -108,10 +108,13 @@
  *       .2	0pI   	                    	      .2	0pI	cc_g5 xxx (cc2520 input, fifop, PAEN)
  *       .3	0pI   	                    	      .3	0pI
  *       .4	0pI   	       			      .4	0pI
- *       .5	0pO   	led3 (unused)		      .5	0pI
+ *       .5	0pO   	led3 (green)		      .5	0pI
  *       .6	0pI   				      .6	0pI
  *       .7	0pI   				      .7	0pI
  *
+ * 4.5 is wired to a plain led.  It needs a pull up to Vcc.  It is wired weird
+ * so we can get the REN in series.  Use P4REN 1 to turn the led on.  P4REN.5 1
+ * controls led on off, P4DIR.5 0, P4OUT.5 1 (Vcc).
  */
 
 
@@ -129,7 +132,7 @@ enum {
 
 // LEDs
 TOSH_ASSIGN_PIN(RED_LED, 1, 0);
-TOSH_ASSIGN_PIN(GREEN_LED, 1, 1);
-TOSH_ASSIGN_PIN(YELLOW_LED, 4, 6);
+TOSH_ASSIGN_PIN(YELLOW_LED, 1, 1);
+TOSH_ASSIGN_PIN(GREEN_LED, 4, 5);
 
 #endif // _H_hardware_h
