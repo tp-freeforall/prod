@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Eric B. Decker
+ * Copyright (c) 2013-2014 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,7 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
+ *
  * @author Eric B. Decker <cire831@gmail.com>
  */
 
@@ -47,9 +45,6 @@ enum {
 
 #include <CC2520DriverLayer.h>
 
-norace uint16_t vren_turn_on;
-norace uint16_t vren_out_of_reset;
-
 /*
  * set up GPIO h/w,  gpiopolarity (26, 3f) positive polarity
  * gpioctrl (28, 00) other options  both defaults to POR values.
@@ -63,6 +58,12 @@ static const uint8_t reg_vals_20[] = {
   0x27,                                 /* fifo      -> gp4 */
   0x28                                  /* fifop     -> gp5 */
 };
+
+#define REG_VALS_20_SIZE 6
+
+
+/* 2520 only. */
+#define CC2520_AGCCTRL1_VAL 0x11
 
 
 module PlatformCC2520P {
@@ -123,6 +124,12 @@ implementation {
   void resistorsPullDown() {
     call    P_SO.resistorPullDown();
     call P_GPIO5.resistorPullDown();
+  }
+
+
+  void writePlatformRegisters() {
+    call CC2520BasicAccess.writeRegBlock(0x20, (void *) reg_vals_20, REG_VALS_20_SIZE);
+    call CC2520BasicAccess.writeReg(CC2520_AGCCTRL1, CC2520_AGCCTRL1_VAL);
   }
 
 
@@ -218,12 +225,12 @@ implementation {
           /*
            * VREN is off,  Turn it on and wait for it to stablize.
            */
-          vren_turn_on = TA0R;
           call P_VREN.set();                    /* turn Volt Regulators on */
 
           /*
            * return how long to wait for VREN to stablize.  data sheet says
            * >= 100uS, 50 additional miks isn't going to hurt anything
+           * VREN_WAIT_TIME is enum'd to 150
            */
           m_iterations++;
           return VREN_WAIT_TIME;
@@ -232,9 +239,6 @@ implementation {
         /* fall through, VREN already on */
 
       case CC2520_PWR_VREN:
-        vren_out_of_reset = TA0R;
-        if (vren_out_of_reset - vren_turn_on > 200)
-          __PANIC_RADIO(99, vren_turn_on, vren_out_of_reset, (vren_out_of_reset - vren_turn_on), 0);
         call P_RSTN.set();                  /* out of reset */
         call P_CSN.clr();                   /* assert CS    */
         m_pwr_state = CC2520_PWR_XOSC_POLL;
@@ -245,7 +249,7 @@ implementation {
         if (call P_SO.getRaw()) {               /* XOSC stable? SO will be 1 */
           call P_CSN.set();                     /* and deassert */
           m_pwr_state = CC2520_PWR_AM;
-          call CC2520BasicAccess.writeRegBlock(0x20, (void *) reg_vals_20, 6);
+          writePlatformRegisters();
           resistorsOff();
           return 0;
         }
@@ -278,16 +282,19 @@ implementation {
 #ifdef notdef
     /*
      * The problem is we need to first turn the RFOFF,  clean out
-     * various parts of the chip and then turn XOSC off.   So
-     * using PlatformCC2520.sleep to do this doesn't really work.
+     * various parts of the chip and then turn XOSC off.   So shutting
+     * RF down (RFOFF) in .sleep doesn't work because we need the
+     * RF off before cleaning out the controlling data structures.  The
+     * RFOFF has to be done by the driver.  Then we can use sleep
+     * to shut down XOSC.
      *
-     * But we still need to tell the state machine that we are in
-     * PWR_STANDBY.
+     * We also need to modify the current power state.  This is done by
+     * .sleep.
      */
     call CC2520BasicAccess.strobe(CC2520_CMD_SRFOFF);
+#endif
     call CC2520BasicAccess.strobe(CC2520_CMD_SXOSCOFF);
     call CC2520BasicAccess.strobe(CC2520_CMD_SNOP);
-#endif
     m_pwr_state = CC2520_PWR_STANDBY;
   }
 
@@ -346,7 +353,7 @@ implementation {
       }
     }
     call P_CSN.set();               /* and deassert */
-    call CC2520BasicAccess.writeRegBlock(0x20, (void *) reg_vals_20, 6);
+    writePlatformRegisters();       /* reinit platform dependent regs */
   }
 
 

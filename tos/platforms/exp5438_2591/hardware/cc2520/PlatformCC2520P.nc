@@ -47,9 +47,6 @@ enum {
 
 #include <CC2520DriverLayer.h>
 
-norace uint16_t vren_turn_on;
-norace uint16_t vren_out_of_reset;
-
 /*
  * set up GPIO h/w,  gpiopolarity (26, 0f) positive polarity,
  * gpio4 and 5 are inverted.
@@ -70,6 +67,8 @@ static const uint8_t reg_vals_20[] = {
   0x0f                                  /* gpiopolarity     */
                                         /* 4/5 inverted     */
 };
+
+#define REG_VALS_20_SIZE 7
 
 
 #ifdef CC2520_2591
@@ -138,7 +137,7 @@ implementation {
 
 
   void writePlatformRegisters() {
-    call CC2520BasicAccess.writeRegBlock(0x20, (void *) reg_vals_20, 7);
+    call CC2520BasicAccess.writeRegBlock(0x20, (void *) reg_vals_20, REG_VALS_20_SIZE);
     call CC2520BasicAccess.writeReg(CC2520_AGCCTRL1, CC2520_AGCCTRL1_VAL);
   }
 
@@ -235,12 +234,12 @@ implementation {
           /*
            * VREN is off,  Turn it on and wait for it to stablize.
            */
-          vren_turn_on = TA0R;
           call P_VREN.set();                    /* turn Volt Regulators on */
 
           /*
            * return how long to wait for VREN to stablize.  data sheet says
            * >= 100uS, 50 additional miks isn't going to hurt anything
+           * VREN_WAIT_TIME is enum'd to 150
            */
           m_iterations++;
           return VREN_WAIT_TIME;
@@ -249,9 +248,6 @@ implementation {
         /* fall through, VREN already on */
 
       case CC2520_PWR_VREN:
-        vren_out_of_reset = TA0R;
-        if (vren_out_of_reset - vren_turn_on > 200)
-          __PANIC_RADIO(99, vren_turn_on, vren_out_of_reset, (vren_out_of_reset - vren_turn_on), 0);
         call P_RSTN.set();                  /* out of reset */
         call P_CSN.clr();                   /* assert CS    */
         m_pwr_state = CC2520_PWR_XOSC_POLL;
