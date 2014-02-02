@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Eric B. Decker
+ * Copyright (c) 2013-2014 Eric B. Decker
  * Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
  *
@@ -80,8 +80,15 @@ implementation
     }
   }
 
-  async command bool Timer.isOverflowPending()
-  {
+  /*
+   * Note: on x5 processors, reading IV clears pending IFG,
+   * depends on which interrupt is happening.  Screwy interrupt
+   * system.  So relying on IFG bits to tell us stuff in interrupt
+   * routines is problematic.  The signalling still works but there
+   * are very tiny windows where calling upper level .get functions
+   * may not detect overflow properly.
+   */
+  async command bool Timer.isOverflowPending() {
     return TxCTL & TxIFG;
   }
 
@@ -157,12 +164,7 @@ implementation
     signal Timer.overflow();
   }
 
-  default async event void Timer.overflow()
-  {
-  }
-
-  default async event void Event.fired[uint8_t n]()
-  {
-  }
+  default async event void Timer.overflow() { }
+  default async event void Event.fired[uint8_t n]() { }
 }
 
