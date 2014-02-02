@@ -41,12 +41,24 @@
 #include <Timer.h>
 #include <message.h>
 
-/* This is the default value of the PA_POWER field of the TXCTL register. */
+/*
+ * TXPOWER register value, see Table 17 of the 2520 data sheet
+ * Note.   Using a 2591 range extender will change the actual
+ * power emitted.
+ *
+ * This can no long be done here because the 2591 changes what
+ * must be programmed into the PA_POWER field.  It is no longer
+ * a RadioConfig thing but is now a h/w platform thing.
+ */
+#ifdef notdef
 #ifndef CC2520_DEF_RFPOWER
 #define CC2520_DEF_RFPOWER	0x32
 #endif
+#endif
 
-/* This is the default value of the CHANNEL field of the FSCTRL register. */
+/*
+ * channel to use for FREQCTRL
+ */
 #ifndef CC2520_DEF_CHANNEL
 #define CC2520_DEF_CHANNEL	26
 #endif

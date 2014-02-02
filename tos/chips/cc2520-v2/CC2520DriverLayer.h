@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Eric B. Decker
+ * Copyright (c) 2013-2014 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,13 +53,22 @@
 #ifndef __CC2520_DRIVERLAYER_H__
 #define __CC2520_DRIVERLAYER_H__
 
+/*
+ * default channel for setting FREQCTRL
+ */
 #ifndef CC2520_DEF_CHANNEL
 #define CC2520_DEF_CHANNEL 25
 #endif
 
+/* See Table 17 of the cc2520 data sheet */
 #ifndef CC2520_DEF_RFPOWER
+#ifdef CC2520_2591
+/* -18 dBm */
+#define CC2520_DEF_RFPOWER 0x03
+#else
 /* 0 dBm */
 #define CC2520_DEF_RFPOWER 0x32
+#endif
 #endif
 
 
