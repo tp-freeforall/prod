@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Eric B. Decker
+ * Copyright (c) 2010-2011, 2013-2014 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,9 +38,10 @@
  * @author Eric B. Decker
  */
 
-#ifdef notdef
 #include "hardware.h"
 #include "platform_version.h"
+#include "panic.h"
+#include "cpu_stack.h"
 
 const uint8_t _major = MAJOR;
 const uint8_t _minor = MINOR;
@@ -50,14 +51,34 @@ const uint8_t _build = _BUILD;
 #define BOOT_MAJIK 0x01021910
 noinit uint32_t boot_majik;
 noinit uint16_t boot_count;
+noinit uint16_t stack_size;
 
-#endif
+
+extern uint16_t _etext, _end;
+static void PanicP__Panic__panic(uint8_t pcode, uint8_t where, uint16_t arg0,
+                                 uint16_t arg1, uint16_t arg2, uint16_t arg3);
+
+void check_weeds(void * chk) {
+  register void *sp asm("r1");
+    uint16_t *p = &_end;
+
+  if (chk > (void *) &_etext) {
+    PanicP__Panic__panic(PANIC_KERN, 0xff, (uint16_t) sp, (uint16_t) chk, (uint16_t) &_etext, 0);
+  }
+  if (chk < (void *) 0x5c00) {
+    PanicP__Panic__panic(PANIC_KERN, 0xef, (uint16_t) sp, (uint16_t) chk, (uint16_t) 0x5c00, 0);
+  }
+  if (*p != STACK_GUARD) {
+    PanicP__Panic__panic(PANIC_KERN, 0xfd, (uint16_t) sp, *p, 0, 0);
+  }
+}
 
 
 module PlatformP {
   provides {
     interface Init;
     interface Platform;
+    interface BootParams;
   }
   uses {
     interface Init as PlatformPins;
@@ -65,6 +86,7 @@ module PlatformP {
     interface Init as PlatformClock;
     interface Init as MoteInit;
     interface Init as PeripheralInit;
+    interface Stack;
   }
 }
 
@@ -86,12 +108,46 @@ implementation {
     WDTCTL = WDTPW + WDTHOLD;    // Stop watchdog timer
 
     call PlatformPins.init();   // Initializes the GIO pins
+
+    /*
+     * check to see if memory is okay.   The boot_majik cell tells the story.
+     * If it isn't okay we lost RAM, reinitilize boot_count.
+     */
+
+    if (boot_majik != BOOT_MAJIK) {
+      boot_majik = BOOT_MAJIK;
+      boot_count = 0;
+    }
+    boot_count++;
+
+    call Stack.init();
+    stack_size = call Stack.size();
+
     call PlatformLeds.init();   // Initializes the Leds
     call PlatformClock.init();  // Initializes UCS
-    nop();
     call PeripheralInit.init();
     return SUCCESS;
   }
+
+  async command uint16_t BootParams.getBootCount() {
+    return boot_count;
+  }
+
+
+  async command uint8_t BootParams.getMajor() {
+    return _major;
+  }
+
+
+  async command uint8_t BootParams.getMinor() {
+    return _minor;
+  }
+
+
+  async command uint8_t BootParams.getBuild() {
+    return _build;
+  }
+
 
   async command uint16_t Platform.usecsRaw()   { return USEC_REG; }
   async command uint16_t Platform.jiffiesRaw() { return JIFFIES_REG; }

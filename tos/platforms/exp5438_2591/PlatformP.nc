@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011 Eric B. Decker
+ * Copyright (c) 2010-2011, 2013-2014 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,9 +38,10 @@
  * @author Eric B. Decker
  */
 
-#ifdef notdef
 #include "hardware.h"
 #include "platform_version.h"
+#include "panic.h"
+#include "cpu_stack.h"
 
 const uint8_t _major = MAJOR;
 const uint8_t _minor = MINOR;
@@ -50,14 +51,13 @@ const uint8_t _build = _BUILD;
 #define BOOT_MAJIK 0x01021910
 noinit uint32_t boot_majik;
 noinit uint16_t boot_count;
-
-#endif
-
+noinit uint16_t stack_size;
 
 module PlatformP {
   provides {
     interface Init;
     interface Platform;
+    interface BootParams;
   }
   uses {
     interface Init as PlatformPins;
@@ -65,6 +65,7 @@ module PlatformP {
     interface Init as PlatformClock;
     interface Init as MoteInit;
     interface Init as PeripheralInit;
+    interface Stack;
   }
 }
 
@@ -86,12 +87,46 @@ implementation {
     WDTCTL = WDTPW + WDTHOLD;    // Stop watchdog timer
 
     call PlatformPins.init();   // Initializes the GIO pins
+
+    /*
+     * check to see if memory is okay.   The boot_majik cell tells the story.
+     * If it isn't okay we lost RAM, reinitilize boot_count.
+     */
+
+    if (boot_majik != BOOT_MAJIK) {
+      boot_majik = BOOT_MAJIK;
+      boot_count = 0;
+    }
+    boot_count++;
+
+    call Stack.init();
+    stack_size = call Stack.size();
+
     call PlatformLeds.init();   // Initializes the Leds
     call PlatformClock.init();  // Initializes UCS
-    nop();
     call PeripheralInit.init();
     return SUCCESS;
   }
+
+  async command uint16_t BootParams.getBootCount() {
+    return boot_count;
+  }
+
+
+  async command uint8_t BootParams.getMajor() {
+    return _major;
+  }
+
+
+  async command uint8_t BootParams.getMinor() {
+    return _minor;
+  }
+
+
+  async command uint8_t BootParams.getBuild() {
+    return _build;
+  }
+
 
   async command uint16_t Platform.usecsRaw()   { return USEC_REG; }
   async command uint16_t Platform.jiffiesRaw() { return JIFFIES_REG; }

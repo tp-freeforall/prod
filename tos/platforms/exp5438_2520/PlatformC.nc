@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2013-2014 Eric B. Decker
  * Copyright (c) 2009-2010 People Power Co.
  * Copyright (c) 2000-2005 The Regents of the University of California.
  * All rights reserved.
@@ -37,6 +38,7 @@
  * @author Joe Polastre
  * @author Cory Sharp
  * @author David Moss
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include "hardware.h"
@@ -45,16 +47,19 @@ configuration PlatformC {
   provides {
     interface Init as PlatformInit;
     interface Platform;
+    interface BootParams;
   }
   uses interface Init as PeripheralInit;
 }
 
 implementation {
-
-  components PlatformP;
+  components PlatformP, StackC;
   Platform = PlatformP;
+  BootParams = PlatformP;
   PlatformInit = PlatformP;
   PeripheralInit = PlatformP.PeripheralInit;
+
+  PlatformP.Stack -> StackC;
 
   components PlatformPinsC;
   PlatformP.PlatformPins -> PlatformPinsC;
