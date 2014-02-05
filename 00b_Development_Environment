@@ -9,9 +9,9 @@ Linux only.
 
 State:
 
-2012-12-12:
-    Ubuntu 10.04 - 12.04.   Debian Squeeze works as well.
-    Tested directly on 10.04 and 11.10, (12.04 in progress)
+2014-02-05:
+    Ubuntu 12.04 - 13.10.   Debian Squeeze works as well.
+    Tested directly on 13.10
 
     T2 (TinyProd) github:tp-freeforall/prod(tp-master),
     mspdebug JTAG debugging.   4.6.3 based msp430 toolchain
@@ -31,14 +31,12 @@ Most commands are entered from a terminal window.
 1) OS Install.
 
 Development is only supported on Linux hosts, in particular the Ubuntu and/or Debian
-strains.  Ubuntu 10.04 and 11.10 have been directly tested (on Apple MacBookPro laptops).
-Ubuntu 12.04 is currently being tested.  Mac support can be added to 10.04 and 10.10 and
-is included directly in 11.10 and later versions.   (MacBookPro 3,1 has been directly
-tested).
+strains.  Ubuntu 13.10 has been directly tested (on ASUS i7 quad core).
 
 Obtain an ISO image from releases/ubuntu.com or alternatively from tinyprod.net/downloads.
-Burn the iso to a CD and install on your box.  A simple install is fine and will
-take less time.
+Put the iso on to a bootable media (dvd or usb stick).  You can also use grub loopback 
+for installation on an exiting Linux installation.  (Actual how to is beyond the scope
+of this document).  A simple install is fine and will take less time.
 
 When the install is complete, boot the system, and use "apt-get" to install the following
 packages:
@@ -86,7 +84,7 @@ The following should be equivilent.  With some additions...
 #
 # add the keys for Eric Decker, the package signer
 #
-gpg --keyserver subkeys.pgp.net --recv-keys 34EC655A
+gpg --keyserver keyserver.ubuntu.com --recv-keys 34EC655A
 gpg -a --export 34EC655A | sudo apt-key add -
 
 sudo -s
@@ -104,13 +102,16 @@ exit
 
 3) TinyOS 2.x tree checkout
 
+GIT is used to manage the TinyOS trees.   These trees are held in git repositories.  You should
+read 00c_Getting_Started_Git for details.
+
 There are several repositories of note for TinyOS 2.1.2+.  You should choose the one that makes
 the most sense for what you are working on.   These repositories are all related and pains have
 been taken to track appropriately.
 
 gh:tp-freeforall/prod (tp-master): This repository contains additional code beyond the current
-development core that has been made public.  Currently its major feature is an enhanced msp430
-core that supports newer chips.   It actively tracks the main tinyos development repo.
+development core that has been made public.  See 00a_Repo_Notes for details on what the
+repository contains.   It actively tracks the main tinyos development repo.
 
 gh:tinyos/tinyos-main(master): This is the main tinyos development repository.
 

@@ -20,25 +20,36 @@ The intent is to provide an integration platform for new code proposed for addit
 to the TinyProd code base.
 
 
-The current major feature of TP-freeforall is an integrated msp430 core.  This 
-includes support for the 3 major TI msp430 families (x1, x2, and x5).  See 
-tos/chips/msp430/00_Chip_Notes for more details.  When the first TP release occurs,
-a better release note will be written.  This will occur immediately after the 
-TinyOS 2.1.2 release occurs.
+Major features (vs. tinyos-main [gh:tinyos/tinyos-main]):
+
+1) Integrated msp430 core.  Includes support for the 3 major TI msp430 families
+   (x1, x2, and x5).  See tos/chips/msp430/00_Chip_Notes for more details.
+
+2) Rewrite of the cc2520 driver.  Now includes support for the cc2591 range
+   extender.
+
+3) support for the exp5438_2520 and exp5438_2591 platforms.   These are based
+   on the TI MSP-EXP430F5438 development platform.  These platforms can take
+   various radio development modules.  The exp5438_2520 supports a stand alone
+   CC2520 (CC2520EM).   The exp5438_2591 supports a CC2520/2591 combination
+   (CC2520-2591EM).
+
+4) support for the LS Research ProFlex01-R2 module which is a MSP430F5437A
+   talking to a CC2520/2591 combination.
 
 
 ** Default (Main working) Branch:** (2012-12-03)   tp-master
    motenet_rel, msp430-int, etc.  all merged.
 
-<current feature branch>
-msp430-int:     msp430 integration (merged).
+<current feature branch>    none
+
 
 If in doubt, branch off tp-master.
 
 Status: 2012-12-03
 
 tinyprod-base: integrated with the tip of tinyos-main trunk (0e4829, r6209)
-msp430-int:    integrated with updated tinyprod-base.
+
 
 Merge with Z1 (x2) tinyos-main code complete.
 
