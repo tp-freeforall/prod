@@ -1,57 +1,63 @@
 
-this file documents how to merge the TinyProd trunk with the upstream T2-SVN trunk.
+This file documents how to merge the TinyProd development trunk (tp-freeforall)
+with the upstream tinyos-main trunk.
 
-remote t2-svn points at the svn-git mirror: git://hinrg.cs.jhu.edu/git/tinyos-2.x.svn
-remote ffa points at the git repo: gh:tp-freeforall/prod (git@github.com:tp-freeforall/prod.git)
+remote tos points at the tinyos development mainline gh:tinyos/tinyos-main
+remote ffa points at the tp-freeforall repo: gh:tp-freeforall/prod
+  (git@github.com:tp-freeforall/prod.git)
 
-the tinyprod repository is the main release repository.
-
-the tp-freeforall repository actively tracks the tinyos development mainline.  Via the tp-freeforall
-tinyos branches.   And also tracks the mainline tinyprod trunk.   This forms the main tp-freeforall
-mainline that new development is based on.
+tp-freeforall actively tracks both the tinyprod trunk and the tinyos-main
+  (development) mainline. This is managed using various tags and branches.
 
 
 Branches:
 
-t2-svn/master: master branch from t2-svn, sync'd tip of the svn trunk.
-ffa/svn/current: snapshot of t2-svn/master in the ffa repo.  Typically becomes the new
-    upstream-next.
-ffa/upstream: last merge point.  TinyProd has included all t2-svn changes (from the trunk)
-    up to this point on the t2-svn trunk.
+tos/master: master branch from tinyos-main.
+ffa/tinyos-main/current: snapshot of tos/master in the ffa repo.  Typically
+  becomes the new upstream-next.
+ffa/tinyos-main/upstream: last merge point.  TinyProd has included all tos changes (from
+  the trunk) up to this point on the tinyos-main trunk.
 
-ffa/tinyprod-base: minimal base changes forming the TinyProd trunk.   ffa/upstream-next is merged
-    into tinyprod-base to form the new tinyprod-base-next (which will become tinyprod-base).
+ffa/tinyprod-base: minimal base changes forming the TinyProd trunk.
+  ffa/upstream-next is merged into tinyprod-base to form the new
+  tinyprod-base-next (which will become the new tinyprod-base).
 
-ffa/tp-master: working tinyprod master.   Tracks tinyprod-base.  TinyProd Main (master)
+ffa/tp-master: working tinyprod master.   Tracks tinyprod-base.
+  TinyProd Main (master)
 
-ffa/msp430-int: integration branch for new msp430 code.   Tracks tinyprod-base.  Example
-    integration branch on tp-freeforall.  Topic branch.
+ffa/msp430-int: integration branch for new msp430 code.   Tracks
+  tinyprod-base.  Example integration branch on tp-freeforall.  Topic branch.
 
 Tags:
-upstream-<date>: marks state of upstream on said date.
+upstream-<date>: marks state of upstream (tinyos-main) on said date.
 tinyprod-base-<date>: marks state of tinyprod-base on said date.
 
-tos-2_1_2_<n>: a mainline tinyos maintanence release.   ie.  2.1.2.0, 2.1.2.1, etc.
-tpm-2_1_2-prod_<n>: a tinyprod main maintanence release.   ie.  tpm-2.1.2-prod.1 etc.
+Note: tinyprod-base-<date> is the point in the tinyprod repo where the
+  upstream at upstream-<date> was merged.
+
+tos-2_1_2_<n>: a mainline tinyos maintanence release.   ie.  2.1.2.0,
+  2.1.2.1, etc.
+tpm-2_1_2-prod_<n>: a tinyprod main maintanence release.   ie.
+  tpm-2.1.2-prod.1 etc.
 
 
 All work is done on a local repository.
 
-1) Fetch current state of ffa and t2-svn.
+1) Fetch current state of ffa and tos.
 
    git fetch ffa
-   git fetch t2-svn
+   git fetch tos
 
-2) Advance ffa/svn/current <- t2-svn/master
+2) Advance ffa/tinyos-main/current <- tos/master (or other appropriate merge point)
 
-   git checkout -t t2-svn/master
-   git push ffa master:svn/current  (should be a fast-forward)
+   git checkout -t tos/master
+   git push ffa master:tinyos-main/current  (should be a fast-forward)
 
-3) Determine appropriate upstream-next, typically will be ffa/svn/current.
+3) Determine appropriate upstream-next, typically will be ffa/tinyos-main/current.
 
 4) Create upstream-next branch from merge point.
 
-   git branch upstream-next ffa/svn/current   (or appropriate commit, ie. rc_4_tinyos_2_1_2)
+   git branch upstream-next ffa/tinyos-main/current   (or appropriate commit, ie. rc_4_tinyos_2_1_2)
 
 5) Create tinyprod-base-next and merge upstream-next.
 
@@ -74,6 +80,11 @@ All work is done on a local repository.
    git tag -a -m"upstream movement" upstream-<date> upstream-next
    git tag -a -m"tinyprod-base movement" tinyprod-base-<date> tinyprod-base-next
 
+   push new tags to the ffa repository:
+
+   git push ffa upstream-<date>
+   git push ffa tinyprod-base-<date>
+
 7) Advance any main branches (such as tp-master).
 
    git checkout -b tp-master-next tp-master
@@ -93,11 +104,13 @@ All work is done on a local repository.
 
 
 9) When happy, advance the branches.
-   ie. upstream, tinyprod-base, msp430-int.
+   ie. upstream, tinyprod-base, tp-master, msp430-int.
 
    git branch -M upstream-next upstream
    git branch -M tinyprod-base-next tinyprod-base
+   git branch -M tp-master-next tp-master
    git branch -M msp430-int-next msp430-int
-   git push ffa upstream:svn/upstream
+   git push ffa upstream:tinyos-main/upstream
    git push ffa tinyprod-base
+   git push ffa tp-master
    git push ffa msp430-int
