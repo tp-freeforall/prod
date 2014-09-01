@@ -20,12 +20,17 @@
  *
  */
 
+/*
+ * @author Stephen Dawson-Haggerty <stevedh@cs.berkeley.edu>
+ */
+
 #include <lib6lowpan/lib6lowpan.h>
 #include <lib6lowpan/6lowpan.h>
 
 module IPAddressP {
   provides {
     interface IPAddress;
+    interface SetIPAddress @exactlyonce();
   }
   uses {
     interface Ieee154Address;
@@ -35,14 +40,12 @@ module IPAddressP {
   struct in6_addr m_addr;
 
   command bool IPAddress.getLLAddr(struct in6_addr *addr) {
-    ieee154_panid_t panid = letohs(call Ieee154Address.getPanId());
     ieee154_saddr_t saddr = letohs(call Ieee154Address.getShortAddr());
     ieee154_laddr_t laddr = call Ieee154Address.getExtAddr();
 
     memclr(addr->s6_addr, 16);
     addr->s6_addr16[0] = htons(0xfe80);
     if (m_short_addr) {
-      addr->s6_addr16[4] = htons(panid);
       addr->s6_addr16[5] = htons(0x00FF);
       addr->s6_addr16[6] = htons(0xFE00);
       addr->s6_addr16[7] = htons(saddr);
@@ -64,7 +67,7 @@ module IPAddressP {
 
   command bool IPAddress.setSource(struct ip6_hdr *hdr) {
     enum { LOCAL, GLOBAL } type = GLOBAL;
-      
+
     if (hdr->ip6_dst.s6_addr[0] == 0xff) {
       // link-local multicast sent from local address
       if ((hdr->ip6_dst.s6_addr[1] & 0x0f) <= 0x2) {
@@ -85,22 +88,20 @@ module IPAddressP {
   }
 
   command bool IPAddress.isLocalAddress(struct in6_addr *addr) {
-    ieee154_panid_t panid = letohs(call Ieee154Address.getPanId());
     ieee154_saddr_t saddr = letohs(call Ieee154Address.getShortAddr());
     ieee154_laddr_t eui = call Ieee154Address.getExtAddr();
 
     if (addr->s6_addr16[0] == htons(0xfe80)) {
       // link-local
-      if (m_short_addr && 
+      if (m_short_addr &&
           addr->s6_addr16[5] == htons(0x00FF) &&
           addr->s6_addr16[6] == htons(0xFE00)) {
-        if (ntohs(addr->s6_addr16[4]) == (panid & ~0x200) && 
-            ntohs(addr->s6_addr16[7]) == saddr) {
+           if(ntohs(addr->s6_addr16[7]) == saddr) {
           return TRUE;
         } else {
           return FALSE;
         }
-      } 
+      }
 
       return (addr->s6_addr[8] == (eui.data[7] ^ 0x2) && /* invert U/L bit */
               addr->s6_addr[9] == eui.data[6] &&
@@ -133,7 +134,7 @@ module IPAddressP {
     return FALSE;
   }
 
-  command error_t IPAddress.setAddress(struct in6_addr *addr) {
+  command error_t SetIPAddress.setAddress(struct in6_addr *addr) {
     m_addr = *addr;
 #ifdef BLIP_DERIVE_SHORTADDRS
     if (m_addr.s6_addr[8] == 0 &&

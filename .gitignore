@@ -1,7 +1,9 @@
 *.[oa]
 *~
 *.pyc
+*.class
 build
 #*#
 .#*
 .gdb*
+TAGS

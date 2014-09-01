@@ -9,7 +9,7 @@
 # binutils	2.22
 # gcc		4.7.0
 # gdb		7.2a - disabled
-# mspgcc	20120716
+# mspgcc	20120911
 # msp430-libc	20120716
 # msp430mcu	20120716
 #
@@ -19,21 +19,23 @@
 #
 # TOSROOT	head of the tinyos source tree root.  Used for base of default repo
 # PACKAGES_DIR	where packages get stashed.  Defaults to ${BUILD_ROOT}/packages
-# REPO_DEST	Where the repository is being built (defaults to ${TOSROOT}/tools/repo)
+# REPO_DEST	Where the repository is being built (${TOSROOT}/packaging/repo)
 # DEB_DEST	final home once installed.
 # CODENAME	which part of the repository to place this build in.
 #
 # REPO_DEST	must contain a conf/distributions file for reprepro to work
-#		properly.   One can be copied from $(TOSROOT)/tools/repo/conf.
+#		properly.   Examples of reprepo configuration can be found in
+#               ${TOSROOT}/packaging/repo/conf.
 #
 # we use opt for these tools to avoid conflicting with placement from normal
 # distribution paths (debian or ubuntu repositories).
 #
 
 BUILD_ROOT=$(pwd)
+POST_VER=-expr
 : ${POST_VER:=-tinyos}
 
-DEB_DEST=opt/msp430-47
+DEB_DEST=opt/msp430-47-expr
 CODENAME=msp430-47
 REL=EXP
 MAKE_J=-j8
@@ -61,7 +63,7 @@ GMP=gmp-${GMP_VER}
 MPFR=mpfr-${MPFR_VER}
 MPC=mpc-${MPC_VER}
 
-MSPGCC_VER=20120716
+MSPGCC_VER=20120911
 MSPGCC=mspgcc-${MSPGCC_VER}
 MSPGCC_DIR=DEVEL-4.7.x/
 
@@ -264,7 +266,7 @@ package_binutils_deb()
     VER=${BINUTILS_VER}
     LAST_PATCH=$(last_patch msp430-binutils-*.patch)
     DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}${POST_VER}
-    echo -e "\n***" debian archive: ${BINUTILS}
+    echo -e "\n***" debian archive: ${BINUTILS} \-\> ${PACKAGES_DIR}
     (
 	cd ${BINUTILS}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
@@ -323,7 +325,7 @@ package_gcc_deb()
     VER=${GCC_VER}
     LAST_PATCH=$(last_patch msp430-gcc-*.patch)
     DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}${POST_VER}
-    echo -e "\n***" debian archive: ${GCC}
+    echo -e "\n***" debian archive: ${GCC} \-\> ${PACKAGES_DIR}
     (
 	cd ${GCC}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
@@ -383,7 +385,7 @@ package_mcu_deb()
     else
 	DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}${POST_VER}
     fi
-    echo -e "\n***" debian archive: ${MSP430MCU}
+    echo -e "\n***" debian archive: ${MSP430MCU} \-\> ${PACKAGES_DIR}
     (
 	cd ${MSP430MCU}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
@@ -446,7 +448,7 @@ package_libc_deb()
     else
 	DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}${POST_VER}
     fi
-    echo -e "\n***" debian archive: ${MSP430LIBC}
+    echo -e "\n***" debian archive: ${MSP430LIBC} \-\> ${PACKAGES_DIR}
     (
 	cd ${MSP430LIBC}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
@@ -504,7 +506,7 @@ package_gdb_deb()
 	LAST_PATCH=$(last_patch gdb-*.patch)
     fi
     DEB_VER=${VER}-${REL}${MSPGCC_VER}${LAST_PATCH}${POST_VER}
-    echo -e "\n***" debian archive: ${GDB}
+    echo -e "\n***" debian archive: ${GDB} \-\> ${PACKAGES_DIR}
     (
 	cd ${GDB}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
@@ -538,7 +540,7 @@ package_gdb_rpm()
 package_dummy_deb()
 {
     set -e
-    echo -e "\n***" debian archive: msp430-47
+    echo -e "\n***" debian archive: msp430-47 \-\> ${PACKAGES_DIR}
     (
 	mkdir -p tinyos
 	cd tinyos
@@ -568,7 +570,7 @@ case $1 in
     test)
 	setup_deb
 	download
-#	patch_dirs
+	patch_dirs
 #	build_binutils
 #	package_binutils_deb
 #	build_gcc
@@ -579,7 +581,7 @@ case $1 in
 #	package_libc_deb
 #	build_gdb
 #	package_gdb_deb
-	package_dummy_deb
+#	package_dummy_deb
 	;;
 
     download)
@@ -619,10 +621,19 @@ case $1 in
 	package_dummy_deb
  	;;
 
+    sign)
+        setup_deb
+        if [[ -z "$2" ]]; then
+            dpkg-sig -s builder ${PACKAGES_DIR}/*
+        else
+            dpkg-sig -s builder -k $2 ${PACKAGES_DIR}/*
+        fi
+        ;;
+
     repo)
 	setup_deb
 	if [[ -z "${REPO_DEST}" ]]; then
-	    REPO_DEST=${TOSROOT}/tools/repo
+	    REPO_DEST=${TOSROOT}/packaging/repo
 	fi
 	echo -e "\n*** Building Repository: [${CODENAME}] -> ${REPO_DEST}"
 	echo -e   "*** Using packages from ${PACKAGES_DIR}\n"
@@ -658,5 +669,5 @@ case $1 in
 
     *)
 	echo -e "\n./build.sh <target>"
-	echo -e "    local | rpm | deb | repo | clean | veryclean | download"
+	echo -e "    local | rpm | deb | sign | repo | clean | veryclean | download"
 esac

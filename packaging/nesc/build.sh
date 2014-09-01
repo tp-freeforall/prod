@@ -1,23 +1,21 @@
 #!/bin/bash
 #
-# Duplicates what is in tools/platforms/msp430/toolchain*
-#
 # BUILD_ROOT is assumed to be the same directory as the build.sh file.
 #
 # set TOSROOT to the head of the tinyos source tree root.
 # used to find default PACKAGES_DIR.
 #
-#
 # Env variables used....
 #
 # TOSROOT	head of the tinyos source tree root.  Used for base of default repo
-# PACKAGES_DIR	where packages get stashed.  Defaults to $(TOSROOT)/packages
-# REPO_DEST	Where the repository is being built (no default)
+# PACKAGES_DIR	where packages get stashed.  Defaults to ${BUILD_ROOT}/packages
+# REPO_DEST	Where the repository is being built (${TOSROOT}/packaging/repo)
 # DEB_DEST	final home once installed.
 # CODENAME	which part of the repository to place this build in.
 #
 # REPO_DEST	must contain a conf/distributions file for reprepro to work
-#		properly.   One can be copied from $(TOSROOT)/tools/repo/conf.
+#		properly.   Examples of reprepo configuration can be found in
+#               ${TOSROOT}/packaging/repo/conf.
 #
 
 BUILD_ROOT=$(pwd)
@@ -25,7 +23,7 @@ BUILD_ROOT=$(pwd)
 
 DEB_DEST=usr
 CODENAME=squeeze
-MAKE_J=-j8
+MAKE_J=-j1
 
 if [[ -z "${TOSROOT}" ]]; then
     TOSROOT=$(pwd)/../..
@@ -33,7 +31,7 @@ fi
 echo -e "\n*** TOSROOT: $TOSROOT"
 echo      "*** Destination: ${DEB_DEST}"
 
-NESC_VER=1.3.4
+NESC_VER=1.3.5
 NESC=nesc-${NESC_VER}
 
 setup_deb()
@@ -64,7 +62,7 @@ download()
 {
     echo -e "\n*** Downloading ... ${NESC}"
     [[ -a ${NESC}.tar.gz ]] \
-	|| wget http://downloads.sourceforge.net/project/nescc/nescc/v${NESC_VER}/${NESC}.tar.gz
+	|| wget https://github.com/tinyos/nesc/archive/v${NESC_VER}.tar.gz -O ${NESC}.tar.gz
 }
 
 build()
@@ -75,6 +73,7 @@ build()
     set -e
     (
 	cd ${NESC}
+	./Bootstrap
 	./configure --prefix=${PREFIX}
 	make ${MAKE_J}
 	make install-strip
@@ -85,7 +84,7 @@ package_deb()
 {
     VER=${NESC_VER}
     DEB_VER=${VER}${POST_VER}
-    echo -e "\n***" debian archive: ${DEB_VER}
+    echo -e "\n***" debian archive: ${NESC} \-\> ${PACKAGES_DIR}
     cd ${NESC}
     mkdir -p debian/DEBIAN debian/${DEB_DEST}
     find debian/${DEB_DEST}/bin/ -type f \
@@ -153,6 +152,15 @@ case $1 in
 	package_deb
 	;;
 
+    sign)
+        setup_deb
+        if [[ -z "$2" ]]; then
+            dpkg-sig -s builder ${PACKAGES_DIR}/*
+        else
+            dpkg-sig -s builder -k $2 ${PACKAGES_DIR}/*
+        fi
+        ;;
+
     rpm)
 	setup_rpm
 	download
@@ -163,7 +171,7 @@ case $1 in
     repo)
 	setup_deb
 	if [[ -z "${REPO_DEST}" ]]; then
-	    REPO_DEST=${TOSROOT}/tools/repo
+	    REPO_DEST=${TOSROOT}/packaging/repo
 	fi
 	echo -e "\n*** Building Repository: [${CODENAME}] -> ${REPO_DEST}"
 	echo -e   "*** Using packages from ${PACKAGES_DIR}\n"
@@ -178,5 +186,5 @@ case $1 in
 
     *)
 	echo -e "\n./build.sh <target>"
-	echo -e "    local | rpm | deb | repo | clean | veryclean | download"
+	echo -e "    local | rpm | deb | sign | repo | clean | veryclean | download"
 esac
