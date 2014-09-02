@@ -137,6 +137,12 @@ implementation
 		CMD_SIGNAL_DONE = 8,		// signal the end of the state transition
 		CMD_DOWNLOAD = 9,		// download the received message
 	};
+	
+	
+	enum {
+		// this disables the RF212OffP component
+		RF212RADIOON = unique("RF212RadioOn"),
+	};
 
 	norace bool radioIrq;
 
@@ -376,6 +382,8 @@ implementation
 			&& state == STATE_RX_ON && isSpiAcquired() )
 		{
 			call IRQ.disable();
+			radioIrq = FALSE;
+			
 			writeRegister(RF212_TRX_STATE, RF212_FORCE_TRX_OFF);
 			state = STATE_TRX_OFF;
 		}
@@ -443,7 +451,7 @@ implementation
 		uint8_t upload1;
 		uint8_t upload2;
 
-		if( cmd != CMD_NONE || state != STATE_RX_ON || ! isSpiAcquired() || radioIrq )
+		if( cmd != CMD_NONE || state != STATE_RX_ON || radioIrq || ! isSpiAcquired() )
 			return EBUSY;
 
 		length = call PacketTransmitPower.isSet(msg) ?
@@ -456,8 +464,11 @@ implementation
 		}
 
 		if( call Config.requiresRssiCca(msg)
-				&& (readRegister(RF212_PHY_RSSI) & RF212_RSSI_MASK) > ((rssiClear + rssiBusy) >> 3) )
+			&& (readRegister(RF212_PHY_RSSI) & RF212_RSSI_MASK) > ((rssiClear + rssiBusy) >> 3) )
+		{
+			call SpiResource.release();
 			return EBUSY;
+		}
 
 		writeRegister(RF212_TRX_STATE, RF212_PLL_ON);
 
@@ -490,6 +501,7 @@ implementation
 			RADIO_ASSERT( (readRegister(RF212_TRX_STATUS) & RF212_TRX_STATUS_MASK) == RF212_BUSY_RX );
 
 			writeRegister(RF212_TRX_STATE, RF212_RX_ON);
+			call SpiResource.release();
 			return EBUSY;
 		}
 
@@ -540,6 +552,10 @@ implementation
 
 			*(timesync_absolute_t*)data = absolute;
 		}
+		
+		//dummy bytes for FCS. Otherwise we'll get an TRX_UR interrupt. It's strange though, the RF23x, doesn't need this
+		call FastSpiByte.splitReadWrite(0);
+		call FastSpiByte.splitReadWrite(0);
 
 		// wait for the SPI transfer to finish
 		call FastSpiByte.splitRead();
@@ -699,7 +715,7 @@ implementation
 
 	void serviceRadio()
 	{
-		if( isSpiAcquired() )
+		if( state != STATE_SLEEP && isSpiAcquired() )
 		{
 			uint16_t time;
 			uint32_t time32;

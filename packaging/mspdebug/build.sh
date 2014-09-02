@@ -4,12 +4,13 @@
 #
 # TOSROOT	head of the tinyos source tree root.  Used for base of default repo
 # PACKAGES_DIR	where packages get stashed.  Defaults to ${BUILD_ROOT}/packages
-# REPO_DEST	Where the repository is being built (defaults to ${TOSROOT}/tools/repo)
+# REPO_DEST	Where the repository is being built (${TOSROOT}/packaging/repo)
 # DEB_DEST	final home once installed.
 # CODENAME	which part of the repository to place this build in.
 #
 # REPO_DEST	must contain a conf/distributions file for reprepro to work
-#		properly.   One can be copied from $(TOSROOT)/tools/repo/conf.
+#		properly.   Examples of reprepo configuration can be found in
+#               ${TOSROOT}/packaging/repo/conf.
 #
 # we use opt for these tools to avoid conflicting with placement from normal
 # distribution paths (debian or ubuntu repositories).
@@ -28,7 +29,7 @@ fi
 echo -e "\n*** TOSROOT: $TOSROOT"
 echo "*** Destination: ${DEB_DEST}"
 
-MSPDEBUG_VER=0.20
+MSPDEBUG_VER=0.22
 MSPDEBUG=mspdebug-${MSPDEBUG_VER}
 
 setup_deb()
@@ -80,7 +81,7 @@ package_mspdebug_deb()
     (
 	VER=${MSPDEBUG_VER}
 	DEB_VER=${VER}${POST_VER}
-	echo -e "\n***" debian archive: ${MSPDEBUG}${POST_VER}
+	echo -e "\n***" debian archive: ${MSPDEBUG}${POST_VER} \-\> ${PACKAGES_DIR}
 	mkdir -p debian/DEBIAN debian/${DEB_DEST}
 	cat mspdebug.control \
 	    | sed 's/@version@/'${DEB_VER}'/' \
@@ -133,11 +134,30 @@ case $1 in
 	package_mspdebug_deb
 	;;
 
+    sign)
+        setup_deb
+        if [[ -z "$2" ]]; then
+            dpkg-sig -s builder ${PACKAGES_DIR}/*
+        else
+            dpkg-sig -s builder -k $2 ${PACKAGES_DIR}/*
+        fi
+        ;;
+
     rpm)
 	setup_rpm
 	download
 	build_mspdebug
 	package_mspdebug_rpm
+	;;
+
+    repo)
+	setup_deb
+	if [[ -z "${REPO_DEST}" ]]; then
+	    REPO_DEST=${TOSROOT}/packaging/repo
+	fi
+	echo -e "\n*** Building Repository: [${CODENAME}] -> ${REPO_DEST}"
+	echo -e   "*** Using packages from ${PACKAGES_DIR}\n"
+	find ${PACKAGES_DIR} -iname "*.deb" -exec reprepro -b ${REPO_DEST} includedeb ${CODENAME} '{}' \;
 	;;
 
     local)
@@ -148,5 +168,5 @@ case $1 in
 
     *)
 	echo -e "\n./build.sh <target>"
-	echo -e "    local | rpm | deb | clean | veryclean | download"
+	echo -e "    local | rpm | deb | sign | repo | clean | veryclean | download"
 esac

@@ -486,7 +486,7 @@ tasklet_async command uint8_t RadioState.getChannel()
 		uint8_t upload1;
 		uint8_t upload2;
 
-		if( cmd != CMD_NONE || state != STATE_RX_ON || ! isSpiAcquired() || radioIrq )
+		if( cmd != CMD_NONE || state != STATE_RX_ON || radioIrq || ! isSpiAcquired() )
 			return EBUSY;
 
 		length = (call PacketTransmitPower.isSet(msg) ?
@@ -529,6 +529,7 @@ tasklet_async command uint8_t RadioState.getChannel()
 			RADIO_ASSERT( (readRegister(RF230_TRX_STATUS) & RF230_TRX_STATUS_MASK) == RF230_BUSY_RX_AACK );
 
 			writeRegister(RF230_TRX_STATE, RF230_RX_AACK_ON);
+			call SpiResource.release();
 			return EBUSY;
 		}
 
@@ -761,7 +762,7 @@ tasklet_async command uint8_t RadioState.getChannel()
 
 	void serviceRadio()
 	{
-		if( isSpiAcquired() )
+		if( state != STATE_SLEEP && isSpiAcquired() )
 		{
 			uint16_t time;
 			uint32_t time32;

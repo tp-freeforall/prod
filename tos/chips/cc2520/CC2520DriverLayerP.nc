@@ -5,7 +5,7 @@
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
- * are met:  
+ * are met:
  *
  * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
@@ -120,12 +120,12 @@ implementation {
   };
 
   uint8_t decNonce[]= {
-    0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
   };
 
   uint8_t encNonce[]= {
-    0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+    0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
   };
 
@@ -1028,20 +1028,26 @@ implementation {
         call DiagMsg.int8(tmp2);
         call DiagMsg.send();
       }
-      if (tmp1 && !tmp2)
+      if( tmp1 && !tmp2) {
+        call SpiResource.release();
         return EBUSY;
+      }
     }
 #else
-    if (call Config.requiresRssiCca(msg) && !call CCA.get())
+    if( call Config.requiresRssiCca(msg) && !call CCA.get() ) {
+      call SpiResource.release();
       return EBUSY;
+    }
 #endif
 
     // there's a chance that there was a receive SFD interrupt in such a
     // short time.
     // TODO: there's still a chance
 
-    atomic if (call SFD.get() == 1 || radioIrq)
+    atomic if (call SFD.get() == 1 || radioIrq) {
+      call SpiResource.release();
       return EBUSY;
+    }
     else
       // stop receiving
       strobe(CC2520_CMD_SRFOFF);
@@ -1172,7 +1178,7 @@ implementation {
      *****************************************/
 
     // prepare for end of TX on falling SFD
-    
+
     timesync = call PacketTimeSyncOffset.isSet(txMsg) ? ((void*)txMsg) + call PacketTimeSyncOffset.get(txMsg) : 0;
 
     time32 = capturedTime;
@@ -1602,7 +1608,7 @@ implementation {
 
         while(status.dpu_h_active && decLimit++ < 0xFFFF)
 	  status = getStatus();
-	
+
 	call Leds.led0Toggle();
 
         // copy data from the memory to msg buffer and delete security header
@@ -1652,8 +1658,7 @@ implementation {
   // SFD (rising edge) for timestamps in RX & TX, falling for TX end
   async event void SfdCapture.captured( uint16_t time )  {
 
-//  call SfdCapture.disable(); 
-
+    // call SfdCapture.disable();
     // if canceling the above takes care of the stopping issue, then
     // the state machine is getting stuck at some point in the disable
     // state

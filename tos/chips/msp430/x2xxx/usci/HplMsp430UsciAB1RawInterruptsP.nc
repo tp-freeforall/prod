@@ -58,6 +58,7 @@ implementation {
    * a call to postAmble at the end of every interrupt handler.
    */
 
+  // ISR Priority 17 (depends on which x2 cpu)
   TOSH_SIGNAL(USCIAB1RX_VECTOR) {
     uint8_t temp;
     uint8_t ints_pending;
@@ -78,7 +79,12 @@ implementation {
 	signal UsciA.rxDone(temp);
 	break;
       }
-      if (ints_pending & UCB1RXIFG) {
+
+      // USCI_B1 RX interrupt SPI mode
+      // make sure USCI_B1 is not in I2C mode
+      // if USCI_B1 is in I2C mode TOSH_SIGNAL(USCIAB1TX_VECTOR) with priority 16 will be invoked
+      if ((ints_pending & UCB1RXIFG) && (UCB1CTL0 & UCSYNC) &&
+          ((UCB1CTL0 & (UCMODE1 | UCMODE0)) != UCMODE_3)) {
 	temp = UCB1RXBUF;
 	signal UsciB.rxDone(temp);
 	break;
@@ -88,25 +94,35 @@ implementation {
   }
 
 
+  // ISR Priority 16
   TOSH_SIGNAL(USCIAB1TX_VECTOR) {
+    uint8_t temp;
     uint8_t ints_pending;
 
     do {
       ints_pending = UC1IFG & UC1IE;
-      /*
-       * This strange stuff is because the way the interrupts works
-       * changes around depending on the mode.  Right now we just
-       * do the following.   Needs to be fixed.
-       */
-      if ((ints_pending & UCA1TXIFG) | (ints_pending & UCA1RXIFG)) {
-	signal UsciA.txDone();
-	break;
+      // USCI_A1 TX interrupt UART and SPI mode
+      if (ints_pending & UCA1TXIFG) {
+        signal UsciA.txDone();
+        break;
       }
-      if ((ints_pending & UCB1TXIFG) | (ints_pending & UCB1RXIFG)) {
-	signal UsciB.txDone();
-	break;
+    
+      // USCI_B1 RX interrupt I2C mode
+      // make sure USCI_B1 is in I2C mode
+      // if USCI_B1 is in I2C mode the receive interrupt has to be handled here
+      if ((ints_pending & UCB1RXIFG) && (UCB1CTL0 &  UCSYNC) &&
+          ((UCB1CTL0 & (UCMODE1 | UCMODE0)) == UCMODE_3)) {
+        temp = UCB1RXBUF;
+        signal UsciB.rxDone(temp);
+        break;
       }
-    } while (0);
+
+      // USCI_B1 TX interrupt UART and SPI mode
+      if (ints_pending & UCB1TXIFG) {
+        signal UsciB.txDone();
+        break;
+      }
+    } while(0);
     return;
   }
 
@@ -121,4 +137,5 @@ implementation {
   default async event void UsciA.rxDone(uint8_t temp)	{ return; }
   default async event void UsciB.txDone()		{ return; }
   default async event void UsciB.rxDone(uint8_t temp)	{ return; }
+
 }
