@@ -4,20 +4,20 @@
 #
 # BUILD_ROOT is assumed to be the same directory as the build.sh file.
 #
-# set TOSROOT to the head of the tinyos source tree root.
+# set TINYOS_ROOT_DIR to the head of the tinyos source tree root.
 # used to find default PACKAGES_DIR.
 #
 #
 # Env variables used....
 #
-# TOSROOT	head of the tinyos source tree root.  Used for base of default repo
-# PACKAGES_DIR	where packages get stashed.  Defaults to $(TOSROOT)/packages
+# TINYOS_ROOT_DIR	head of the tinyos source tree root.  Used for base of default repo
+# PACKAGES_DIR	where packages get stashed.  Defaults to $(TINYOS_ROOT_DIR)/packages
 # REPO_DEST	Where the repository is being built (no default)
 # DEB_DEST	final home once installed.
 # CODENAME	which part of the repository to place this build in.
 #
 # REPO_DEST	must contain a conf/distributions file for reprepro to work
-#		properly.   One can be copied from $(TOSROOT)/tools/repo/conf.
+#		properly.   One can be copied from $(TINYOS_ROOT_DIR)/tools/repo/conf.
 #
 
 COMMON_FUNCTIONS_SCRIPT=../../functions-build.sh
@@ -46,24 +46,19 @@ download()
 unpack()
 {
   tar -xjf ${SOURCEFILENAME}
+  pushd ${SOURCEDIRNAME}
+  patch -p1 < ../atmel-binutils-3.4.4-autotool.patch
+  popd
 }
 
 build()
 {
   set -e
   (
-    cd ${SOURCEDIRNAME}
+    pushd ${SOURCEDIRNAME}
 
-    #don't force old autoconf
-    sed -i 's/  \[m4_fatal(\[Please use exactly Autoconf \]/  \[m4_errprintn(\[Please use exactly Autoconf \]/g' ./config/override.m4
-
-
-    autoconf
-    cd ld
-    autoreconf
-    cd ..
     mkdir -p ${BUILDDIR}
-    cd ${BUILDDIR}
+    pushd ${BUILDDIR}
     CFLAGS="-Os -g0 -s" ../configure\
                       --prefix=${PREFIX}\
                       --disable-nls\
@@ -75,12 +70,11 @@ build()
                       --docdir=${PREFIX}/share/doc/avr-binutils\
                       --disable-werror\
                       --enable-install-libiberty\
-                      --enable-instal-libbfd\
-                      --enable-maintainer-mode
-    ${MAKE} all-bfd TARGET-bfd=headers
-    rm bfd/Makefile
+                      --enable-instal-libbfd
     ${MAKE} configure-host
     ${MAKE} all
+    popd
+    popd
   )
 }
 
@@ -125,6 +119,7 @@ cleaninstall(){
 BUILD_ROOT=$(pwd)
 case $1 in
   test)
+    unpack
     ;;
 
   download)

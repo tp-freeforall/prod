@@ -1,3 +1,0 @@
-TOSTHREAD_MAIN=Blink.c
-
-include $(MAKERULES)

@@ -90,7 +90,6 @@ implementation {
     I2C_BUSY         = 2,      
     I2C_DATA         = 3,
     I2C_STARTING     = 4,
-    I2C_STOPPING     = 5,
     I2C_SLAVE_ACK    = 6
   } atm128_i2c_state_t;
 
@@ -207,6 +206,15 @@ implementation {
       signal I2CPacket.writeDone(SUCCESS, packetAddr, packetLen, packetPtr);
     }
   }
+  
+  task void stopTask(){
+    atomic{
+      if(reading)
+        readNextByte(TRUE);
+      else
+        writeNextByte();
+    }
+  }
 
   async command error_t I2CPacket.read(i2c_flags_t flags, uint16_t addr, uint8_t len, uint8_t* data) {
     atomic {
@@ -251,9 +259,8 @@ implementation {
         state = I2C_DATA;
       }
       else if (flags & I2C_STOP) {
-        state = I2C_STOPPING;
-        call I2C.enableAck(FALSE);
-        call I2C.setStop(TRUE);
+        post stopTask();//unfortunatly, the only way to prevent unwanted recursion is posting a task. That's slow, but safe
+        return SUCCESS;
       }
       call I2C.sendCommand();
     }
@@ -300,9 +307,8 @@ implementation {
         return SUCCESS;
       }
       else if (flags & I2C_STOP) {
-        state = I2C_STOPPING;
-        call I2C.enableAck(FALSE);
-        call I2C.setStop(TRUE);
+        post stopTask();//unfortunatly, the only way to prevent unwanted recursion is posting a task. That's slow, but safe
+        return SUCCESS;
       }
       else { // A 0-length packet with no start and no stop....
         state = I2C_IDLE;
@@ -340,11 +346,11 @@ implementation {
   async event void I2C.commandComplete() {
     call I2C.readCurrent();
     atomic {
+      uint8_t i2c_status=call I2C.status();
       switch(state){
         case I2C_SLAVE_ACK: {  //check for slave addr ack     
-          uint8_t i2c_status=call I2C.status();
           if (reading == TRUE) {     
-              if(i2c_status==0x40){
+              if(i2c_status==ATM128_I2C_MR_SLA_ACK){
                 state = I2C_DATA;
                 readNextByte(TRUE);
               } else {
@@ -352,7 +358,7 @@ implementation {
                 return;
               }
           } else{
-            if(i2c_status==0x18){
+            if(i2c_status==ATM128_I2C_MW_SLA_ACK){
               state = I2C_DATA;
               writeNextByte();
             } else {
@@ -361,28 +367,37 @@ implementation {
             }
           }
         }
-	break;
+        break;
 
         case I2C_DATA: 
-          if (reading == TRUE)
-            readNextByte(FALSE);
-          else // Writing
-            writeNextByte();
+          if (reading == TRUE){
+            if( i2c_status == ATM128_I2C_MR_DATA_ACK || i2c_status == ATM128_I2C_MR_DATA_NACK){
+              readNextByte(FALSE);
+            } else {
+              i2c_abort(FAIL);
+            }
+          } else{ // Writing
+            if( i2c_status == ATM128_I2C_MW_DATA_ACK || i2c_status == ATM128_I2C_MW_DATA_NACK){
+              writeNextByte();
+            } else {
+              i2c_abort(FAIL);
+            }
+          }
         break;
 
         case I2C_STARTING: 
           packetFlags &= ~I2C_START;
           call I2C.setStart(FALSE);
-          if (call I2C.status() != ATM128_I2C_START && call I2C.status() != ATM128_I2C_RSTART) {
+          if (i2c_status == ATM128_I2C_START || i2c_status == ATM128_I2C_RSTART) {
+            //after the START condition, we write the address
+            call I2C.enableAck(TRUE);
+            call I2C.write(((packetAddr & 0x7f) << 1) | 
+              ((reading == TRUE) ? ATM128_I2C_SLA_READ : ATM128_I2C_SLA_WRITE));
+            state = I2C_SLAVE_ACK;
+            call I2C.sendCommand();
+          } else {
             i2c_abort(FAIL);
-            return;
           }
-          //after the START condition, we write the address
-          call I2C.enableAck(TRUE);
-          call I2C.write(((packetAddr & 0x7f) << 1) | 
-            ((reading == TRUE) ? ATM128_I2C_SLA_READ : ATM128_I2C_SLA_WRITE));
-          state = I2C_SLAVE_ACK;
-          call I2C.sendCommand();
         break;
       }
     }

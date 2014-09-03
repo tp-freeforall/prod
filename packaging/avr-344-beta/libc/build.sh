@@ -4,20 +4,20 @@
 #
 # BUILD_ROOT is assumed to be the same directory as the build.sh file.
 #
-# set TOSROOT to the head of the tinyos source tree root.
+# set TINYOS_ROOT_DIR to the head of the tinyos source tree root.
 # used to find default PACKAGES_DIR.
 #
 #
 # Env variables used....
 #
-# TOSROOT	head of the tinyos source tree root.  Used for base of default repo
-# PACKAGES_DIR	where packages get stashed.  Defaults to $(TOSROOT)/packages
+# TINYOS_ROOT_DIR	head of the tinyos source tree root.  Used for base of default repo
+# PACKAGES_DIR	where packages get stashed.  Defaults to $(TINYOS_ROOT_DIR)/packages
 # REPO_DEST	Where the repository is being built (no default)
 # DEB_DEST	final home once installed.
 # CODENAME	which part of the repository to place this build in.
 #
 # REPO_DEST	must contain a conf/distributions file for reprepro to work
-#		properly.   One can be copied from $(TOSROOT)/tools/repo/conf.
+#		properly.   One can be copied from $(TINYOS_ROOT_DIR)/tools/repo/conf.
 #
 
 COMMON_FUNCTIONS_SCRIPT=../../functions-build.sh
@@ -42,35 +42,34 @@ download()
   if [ "$?" -eq "1" ]; then
     wget http://distribute.atmel.no/tools/opensource/Atmel-AVR-GNU-Toolchain/${ATMELVERSION}/${SOURCEFILENAME}
   fi
-  check_download ${HEADERFILENAME}
-  if [ "$?" -eq "1" ]; then
-    wget http://distribute.atmel.no/tools/opensource/Atmel-AVR-GNU-Toolchain/${ATMELVERSION}/${HEADERFILENAME}
-  fi
+#The header files are already included in the tarball
+#   check_download ${HEADERFILENAME}
+#   if [ "$?" -eq "1" ]; then
+#     wget http://distribute.atmel.no/tools/opensource/Atmel-AVR-GNU-Toolchain/${ATMELVERSION}/${HEADERFILENAME}
+#   fi
 }
 
 unpack()
 {
   tar -xjf ${SOURCEFILENAME}
-  unzip ${HEADERFILENAME}
+#   unzip ${HEADERFILENAME}
 }
 
 build()
 {
   set -e
   (
-    cd ${HEADERDIRNAME}
-    for i in io[0-9a-zA-Z]*.h
-    do
-      cp --verbose --force $i ../${SOURCEDIRNAME}/include/avr
-    done
-    cd ..
+#     cd ${HEADERDIRNAME}
+#     for i in io[0-9a-zA-Z]*.h
+#     do
+#       cp --verbose --force $i ../${SOURCEDIRNAME}/include/avr
+#     done
+#     cd ..
     cd ${SOURCEDIRNAME}
     ./bootstrap
     ./configure --host=avr\
                 --prefix="${PREFIX}" \
-                --disable-versioned-doc \
-                --mandir="${PREFIX}/share/man" \
-                --datadir="$PREFIX"
+                --disable-versioned-doc
     ${MAKE}
   )
 }
