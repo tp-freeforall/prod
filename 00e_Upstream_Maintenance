@@ -106,11 +106,11 @@ All work is done on a local repository.
 9) When happy, advance the branches.
    ie. upstream, tinyprod-base, tp-master, msp430-int.
 
-   git branch -M upstream-next upstream
+   git branch -M upstream-next tinyos-main/upstream
    git branch -M tinyprod-base-next tinyprod-base
    git branch -M tp-master-next tp-master
    git branch -M msp430-int-next msp430-int
-   git push ffa upstream:tinyos-main/upstream
+   git push ffa tinyos-main/upstream
    git push ffa tinyprod-base
    git push ffa tp-master
    git push ffa msp430-int
