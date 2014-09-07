@@ -1,4 +1,4 @@
 COMPONENT=TestMpuProtectionSyscallAppC
-CFLAGS += -I$(TOSDIR)/lib/tosthreads/sensorboards/universal
 
-include $(MAKERULES)
+TINYOS_ROOT_DIR?=../../../../..
+include $(TINYOS_ROOT_DIR)/Makefile.include

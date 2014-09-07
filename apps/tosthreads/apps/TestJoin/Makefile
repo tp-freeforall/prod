@@ -1,3 +1,0 @@
-COMPONENT=TestJoinAppC
-
-include $(MAKERULES)

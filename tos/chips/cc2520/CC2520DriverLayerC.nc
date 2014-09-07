@@ -68,15 +68,15 @@ configuration CC2520DriverLayerC {
     interface PacketFlag as TimeSyncFlag; 
     interface PacketFlag as AckReceivedFlag;
     interface RadioAlarm;     
+    interface Tasklet;
   }
 }
 
 implementation {
   components CC2520DriverLayerP as DriverLayerP,
-             BusyWaitMicroC,
-             TaskletC,
-	     MainC,
-	     HplCC2520C as HplC;
+    BusyWaitMicroC,
+    MainC,
+    HplCC2520C as HplC;
 
   MainC.SoftwareInit -> DriverLayerP.SoftwareInit;
 
@@ -128,7 +128,7 @@ implementation {
   DriverLayerP.FifopInterrupt -> HplC.FifopInterrupt;
   DriverLayerP.FifoInterrupt -> HplC.FifoInterrupt;
 
-  DriverLayerP.Tasklet -> TaskletC;
+  Tasklet = DriverLayerP.Tasklet;
   DriverLayerP.BusyWait -> BusyWaitMicroC;
 
   DriverLayerP.LocalTime-> HplC.LocalTimeRadio;

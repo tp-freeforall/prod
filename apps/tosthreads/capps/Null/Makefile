@@ -1,3 +1,0 @@
-TOSTHREAD_MAIN=Null.c
-
-include $(MAKERULES)
