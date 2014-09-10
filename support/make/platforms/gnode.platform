@@ -1,0 +1,45 @@
+#-*-Makefile-*- vim:syntax=make
+
+PFLAGS += -I%T/platforms/gnode
+PFLAGS += -I%T/platforms/gnode/interfaces
+PFLAGS += -I%T/platforms/gnode/chips/msp430
+PFLAGS += -I%T/platforms/gnode/chips/msp430/flash
+PFLAGS += -I%T/platforms/gnode/chips/msp430/pins
+PFLAGS += -I%T/platforms/gnode/chips/msp430/timer
+PFLAGS += -I%T/platforms/gnode/chips/cc1101
+PFLAGS += -I%T/platforms/gnode/chips/ccpacket
+PFLAGS += -I%T/platforms/gnode/chips/ccpacket/spi
+PFLAGS += -I%T/platforms/gnode/chips/ccpacket/hal
+PFLAGS += -I%T/platforms/gnode/chips/ccpacket/rxtx
+PFLAGS += -I%T/platforms/gnode/chips/ccpacket/ack
+PFLAGS += -I%T/platforms/gnode/chips/ccpacket/lpl
+PFLAGS += -I%T/platforms/gnode/chips/ccpacket/packet
+PFLAGS += -I%T/platforms/gnode/chips/ccpacket/am
+PFLAGS += -I%T/platforms/gnode/chips/ccpacket/timesync
+PFLAGS += -I%T/platforms/gnode/chips/at45db
+PFLAGS += -I%T/platforms/gnode/chips/23axxx
+PFLAGS += -I%T/platforms/gnode/lib/assert
+PFLAGS += -I%T/platforms/gnode/lib/printf
+PFLAGS += -I%T/platforms/gnode/lib/spi
+
+PFLAGS += -I%T/chips/msp430
+PFLAGS += -I%T/chips/msp430/adc12
+PFLAGS += -I%T/chips/msp430/clock_bcs
+PFLAGS += -I%T/chips/msp430/dma
+PFLAGS += -I%T/chips/msp430/pins
+PFLAGS += -I%T/chips/msp430/sensors
+PFLAGS += -I%T/chips/msp430/timer
+PFLAGS += -I%T/chips/msp430/x1x2/pins
+PFLAGS += -I%T/chips/msp430/x1x2/timer
+PFLAGS += -I%T/chips/msp430/x2xxx
+PFLAGS += -I%T/chips/msp430/x2xxx/usci
+
+PFLAGS += -I%T/chips/at45db
+PFLAGS += -I%T/lib/timer
+PFLAGS += -I%T/lib/serial
+PFLAGS += -I%T/lib/adc
+PFLAGS += -I%T/lib/power
+
+PFLAGS += -mmcu=msp430f2317
+PFLAGS += -fnesc-target=msp430
+PFLAGS += -fnesc-no-debug

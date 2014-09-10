@@ -1,0 +1,50 @@
+#-*-Makefile-*- vim:syntax=make
+
+PFLAGS += -I%T/platforms/exp5438_2591
+PFLAGS += -I%T/platforms/exp5438_2591/hardware/cc2520
+PFLAGS += -I%T/platforms/exp5438_2591/hardware/pins
+
+PFLAGS += -I%T/platforms/exp5438_2520/hardware/adc
+PFLAGS += -I%T/platforms/exp5438_2520/hardware/buttons
+PFLAGS += -I%T/platforms/exp5438_2520/hardware/cc2520
+PFLAGS += -I%T/platforms/exp5438_2520/hardware/clock
+PFLAGS += -I%T/platforms/exp5438_2520/hardware/leds
+PFLAGS += -I%T/platforms/exp5438_2520/hardware/pins
+PFLAGS += -I%T/platforms/exp5438_2520/hardware/timer
+PFLAGS += -I%T/platforms/exp5438_2520/hardware/usci
+
+PFLAGS += -I%T/chips/msp430/x5xxx
+PFLAGS += -I%T/chips/msp430/x5xxx/lpm
+PFLAGS += -I%T/chips/msp430/x5xxx/pins
+PFLAGS += -I%T/chips/msp430/x5xxx/timer
+PFLAGS += -I%T/chips/msp430/x2x5/timer
+PFLAGS += -I%T/chips/msp430/x5xxx/usci-v2
+PFLAGS += -I%T/chips/msp430/x5xxx/usci-v2/i2c-sm
+PFLAGS += -I%T/chips/msp430
+PFLAGS += -I%T/chips/msp430/dma
+PFLAGS += -I%T/chips/msp430/pins
+PFLAGS += -I%T/chips/msp430/timer
+
+PFLAGS += -I%T/chips/msp430/pmm
+PFLAGS += -I%T/chips/msp430/adc12
+
+PFLAGS += -I%T/chips/tmp112
+PFLAGS += -I%T/chips/lis3dh
+
+PFLAGS += -I%T/chips/cc2520-v2
+PFLAGS += -I%T/chips/cc2520-v2/layers
+PFLAGS += -I%T/chips/cc2520-v2/util
+
+PFLAGS += -I%T/lib/timer
+PFLAGS += -I%T/lib/serial
+PFLAGS += -I%T/lib/power
+PFLAGS += -I%T/lib/printf
+
+PFLAGS += -I%T/lib/rfxlink/layers
+PFLAGS += -I%T/lib/rfxlink/util
+
+PFLAGS += -I%T/lib/diagmsg
+
+PFLAGS += -mmcu=msp430f5438a
+PFLAGS += -fnesc-target=msp430
+PFLAGS += -fnesc-no-debug

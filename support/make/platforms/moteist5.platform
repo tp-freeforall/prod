@@ -1,0 +1,58 @@
+#-*-Makefile-*- vim:syntax=make
+
+PFLAGS += -I%T/platforms/moteist5
+PFLAGS += -I%T/platforms/moteist5/hardware/pins
+PFLAGS += -I%T/platforms/moteist5/hardware/buttons
+PFLAGS += -I%T/platforms/moteist5/hardware/leds
+PFLAGS += -I%T/platforms/moteist5/hardware/usci
+PFLAGS += -I%T/platforms/moteist5/hardware/adc
+PFLAGS += -I%T/platforms/moteist5/hardware/clock
+PFLAGS += -I%T/platforms/moteist5/hardware/pmm
+PFLAGS += -I%T/platforms/moteist5/chips/adg715
+PFLAGS += -I%T/platforms/moteist5/chips/cc2420
+
+PFLAGS += -I%T/platforms/moteist5/tests/DVSTest/Tasks
+PFLAGS += -I%T/platforms/moteist5/tests/DVSTest
+
+PFLAGS += -I%T/chips/msp430/x5xxx
+PFLAGS += -I%T/chips/msp430/x5xxx/lpm
+PFLAGS += -I%T/chips/msp430/x5xxx/pins
+PFLAGS += -I%T/chips/msp430/x5xxx/timer
+PFLAGS += -I%T/chips/msp430/x5xxx/usci
+PFLAGS += -I%T/chips/msp430
+PFLAGS += -I%T/chips/msp430/pins
+PFLAGS += -I%T/chips/msp430/timer
+
+PFLAGS += -I%T/chips/msp430/pmm/pmm-msp430
+PFLAGS += -I%T/chips/msp430/pmm
+PFLAGS += -I%T/chips/msp430/adc12
+
+PFLAGS += -I%T/chips/msp430/flash/settings
+PFLAGS += -I%T/chips/msp430/flash/driver
+PFLAGS += -I%T/chips/msp430/flash/constants
+PFLAGS += -I%T/chips/msp430/crc16
+PFLAGS += -I%T/chips/msp430/wdt
+
+PFLAGS += -I%T/chips/cc2420
+PFLAGS += -I%T/chips/cc2420/alarm
+PFLAGS += -I%T/chips/cc2420/control
+PFLAGS += -I%T/chips/cc2420/csma
+PFLAGS += -I%T/chips/cc2420/interfaces
+PFLAGS += -I%T/chips/cc2420/link
+PFLAGS += -I%T/chips/cc2420/lowpan
+PFLAGS += -I%T/chips/cc2420/lpl
+PFLAGS += -I%T/chips/cc2420/packet
+PFLAGS += -I%T/chips/cc2420/receive
+PFLAGS += -I%T/chips/cc2420/spi
+PFLAGS += -I%T/chips/cc2420/transmit
+PFLAGS += -I%T/chips/cc2420/unique
+
+PFLAGS += -I%T/lib/timer
+PFLAGS += -I%T/lib/serial
+PFLAGS += -I%T/lib/power
+
+PFLAGS += -I%T/lib/util/keyvaluerecord
+PFLAGS += -I%T/lib/printf
+
+PFLAGS += -mmcu=msp430f5438a
+PFLAGS += -fnesc-target=msp430
