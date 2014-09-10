@@ -9,9 +9,9 @@ Linux only.
 
 State:
 
-2014-02-05:
-    Ubuntu 12.04 - 13.10.   Debian Squeeze works as well.
-    Tested directly on 13.10
+2014-09-08:
+    Ubuntu 14.04+   Debian Wheezy works as well.
+    Tested directly on 14.04
 
     T2 (TinyProd) github:tp-freeforall/prod(tp-master),
     mspdebug JTAG debugging.   4.6.3 based msp430 toolchain
@@ -31,11 +31,11 @@ Most commands are entered from a terminal window.
 1) OS Install.
 
 Development is only supported on Linux hosts, in particular the Ubuntu and/or Debian
-strains.  Ubuntu 13.10 has been directly tested (on ASUS i7 quad core).
+strains.  Ubuntu 14.04 has been directly tested (on ASUS i7 quad core).
 
 Obtain an ISO image from releases/ubuntu.com or alternatively from tinyprod.net/downloads.
 Put the iso on to a bootable media (dvd or usb stick).  You can also use grub loopback 
-for installation on an exiting Linux installation.  (Actual how to is beyond the scope
+for installation on an exiting Linux installation.  (How to do this is beyond the scope
 of this document).  A simple install is fine and will take less time.
 
 When the install is complete, boot the system, and use "apt-get" to install the following
@@ -63,12 +63,12 @@ exit
 
 We want the tinyos toolset for msp430 based motes (ie, telosb, msp430f1611). Debian packages
 are available from Stanford and TinyProd.net.   The toolchain at TinyProd.Net as of
-(April 4, 2012) is more up to date.
+(Sept 8, 2014) is more up to date.
 
 We want the following packages:
 
            nesc
-	   tinyos-tools
+	   tinyos-tools-devel
 	   mspdebug
            msp430-46
            msp430-binutils-46
@@ -79,23 +79,26 @@ We want the following packages:
 
 You want to follow the instructions at: http://tinyprod.net/repos/debian.
 
-The following should be equivilent.  With some additions...
+#
+# add the TinyProd signing key
+#
 
-#
-# add the keys for Eric Decker, the package signer
-#
-gpg --keyserver keyserver.ubuntu.com --recv-keys 34EC655A
-gpg -a --export 34EC655A | sudo apt-key add -
+wget -O - http://tinyprod.net/repos/debian/tinyprod.key | sudo apt-key add -
+
+      ... or ...
+
+gpg --keyserver keyserver.ubuntu.com --recv-keys A9B913B9
+gpg -a --export A9B913B9 | sudo apt-key add -
+
 
 sudo -s
-
 #
 # teach dpkg/apt-get/aptitude about where to find the tinyprod tools repository
 #
-echo "deb http://tinyprod.net/repos/debian squeeze main"   >> /etc/apt/sources.list.d/tinyprod-debian.list
+echo "deb http://tinyprod.net/repos/debian wheezy    main" >> /etc/apt/sources.list.d/tinyprod-debian.list
 echo "deb http://tinyprod.net/repos/debian msp430-46 main" >> /etc/apt/sources.list.d/tinyprod-debian.list
 apt-get update
-apt-get install nesc tinyos-tools msp430-46 mspdebug
+apt-get install nesc tinyos-tools-devel msp430-46 mspdebug
 exit
 
 **************************************************************************************
@@ -109,7 +112,7 @@ There are several repositories of note for TinyOS 2.1.2+.  You should choose the
 the most sense for what you are working on.   These repositories are all related and pains have
 been taken to track appropriately.
 
-gh:tp-freeforall/prod (tp-master): This repository contains additional code beyond the current
+gh:tp-freeforall/prod(tp-master): This repository contains additional code beyond the current
 development core that has been made public.  See 00a_Repo_Notes for details on what the
 repository contains.   It actively tracks the main tinyos development repo.
 
@@ -156,12 +159,12 @@ To set up for contibuting to the main repository, the instructions in
 
 4) Set up build environment settings
 
-The following environment variables must be set to build.
+The development (gh:tinyos/tinyos-main) and tinyprod trunk have been converted to
+using the version 3 build system.  The new build system no longer uses a set of
+environment variables.  See gh:tinyos/tinyos-main(master)/support/make/README.md
+for details.
 
-    TOSROOT
-    TOSDIR
-    MAKERULES
-    CLASSPATH
+Set TINYOS_ROOT_DIR to point at the top of the tinyprod tree.
 
     for example:  working dir ~/top
   
@@ -169,16 +172,11 @@ The following environment variables must be set to build.
   
   	MOTECOM="serial@/dev/ttyUSB0:telosb"
   
-  	TOSROOT=~/top/t2_cur/tinyos-2.x
-  	TOSDIR=$TOSROOT/tos
+  	TINYOS_ROOT_DIR=~/top/t2_cur/tinyos-2.x
+  	CLASSPATH=.:$TINYOS_ROOT_DIR/support/sdk/java/tinyos.jar
+  	PYTHONPATH=$TINYOS_ROOT_DIR/support/sdk/python:$PYTHONPATH
   
-  	MAKERULES=$TOSROOT/support/make/Makerules
-  	CLASSPATH=.:$TOSROOT/support/sdk/java/tinyos.jar
-  
-  	PYTHONPATH=$TOSROOT/support/sdk/python:$PYTHONPATH
-  
-  	export MAKERULES TOSDIR TOSROOT CLASSPATH PYTHONPATH
-  	export MOTECOM
+  	export TINYOS_ROOT_DIR CLASSPATH PYTHONPATH MOTECOM
 
 
 **************************************************************************************
@@ -204,7 +202,7 @@ is a work in progress and should be considered experimental.
 
     Build the serial forwarder and associated library (also includes direct serial access)
 
-      cd $TOSROOT/support/sdk/c/sf
+      cd $TINYOS_ROOT_DIR/tools/tinyos/c/sf
       ./bootstrap
       ./configure --prefix=/opt/stow/sf_c
       make
@@ -212,7 +210,7 @@ is a work in progress and should be considered experimental.
       sudo -s
       make install
 
-      ("sudo make install" for some reason doesn't pick up the value of $TOSROOT properly so
+      ("sudo make install" for some reason doesn't pick up the value of $TINYOS_ROOT_DIR properly so
       the make install doesn't work write unless you are root first)
 
       This will install bin/{sf, sflisten, sfsend, seriallisten, serialsend}, include/{message.h,
@@ -249,10 +247,10 @@ Documentation on getting started with T2 can be found at:
 
 8) Using the serialforwarder/seriallistener
 
-    a) make sure that tinyos.jar has been built.  It should live in $TOSROOT/support/sdk/java/tinyos.jar
+    a) make sure that tinyos.jar has been built.  It should live in $TINYOS_ROOT_DIR/support/sdk/java/tinyos.jar
     b) to rebuild:
   
-       cd $TOSROOT/support/sdk/java/
+       cd $TINYOS_ROOT_DIR/support/sdk/java/
        make tinyos.jar
   
     c) Install TOSComm JNI support if needed.  Did java bitch about not finding TOSComm JNI support?
@@ -263,7 +261,7 @@ Documentation on getting started with T2 can be found at:
   
     d) To watch raw bytes coming from the serial port
   
-       Make sure CLASSPATH includes $TOSROOT/support/sdk/java/tinyos.jar, ie:
+       Make sure CLASSPATH includes $TINYOS_ROOT_DIR/support/sdk/java/tinyos.jar, ie:
   
            CLASSPATH=.:/home/joe/mm/t2_cur/tinyos-2.x/support/sdk/java/tinyos.jar
 
@@ -303,5 +301,8 @@ If you define MOTECOM you won't need to specify the -comm parameter.  ie:
 
 9) Repos:
 
-See $(TOSROOT)/00a_Repo_Notes for details about how the TinyProd/prod repo is organized.
-github:tinyprod/prod or github:tp-freeforall/prod hold the main t2 repository.
+See $(TINYOS_ROOT_DIR)/00a_Repo_Notes for details about how the TinyProd/prod repo is organized.
+
+TinyOS release trees can be found at gh:tinyos/tinyos-release, development trees at
+gh:tinyos/tinyos-main.  TinyProd release trees can be found at gh:tinyprod/prod and
+development trees at gh:tp-freeforall/prod.
