@@ -8,23 +8,16 @@
 # to a 2591 range extender.  A TI MSP-EXP430F5438 eval board
 # with a CC2520-2591EM radio eval module.
 #
+# support/make/platforms/exp5438_2591.platform sets what cpu we are using.
+#
 
 TARGET = exp5438_2591
-
-MSP_MCU =  msp430f5438a
-
 PLATFORMDIR = $(TINYOS_ROOT_DIR)/tos/platforms/$(TARGET)
 
 BUILD_NUM_FILE = $(PLATFORMDIR)/_Build
 BUILD_NUM := $(shell if [ -f $(BUILD_NUM_FILE) ]; then echo $$(($$(cat $(BUILD_NUM_FILE)) + 1)); else echo 0; fi)
 
 PFLAGS += -D_BUILD=$(BUILD_NUM)
-
-#
-# The exp5438_2591 platform uses panic_simple to provide Panic support
-#
-
-PFLAGS += -I$(TINYOS_ROOT_DIR)/tos/system/panic_simple
 
 $(call TOSMake_include_platform,exp5438_2591)
 $(call TOSMake_include_make_platform,msp)
