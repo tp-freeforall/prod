@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011 Eric B. Decker
+ * Copyright (c) 2011, 2014 Eric B. Decker
  * Copyright (c) 2009 DEXMA SENSORS SL
  * Copyright (c) 2000-2003 The Regents of the University of California.  
  * All rights reserved.
@@ -38,14 +38,8 @@
  * @author Eric B. Decker <cire831@gmail.com>
  */
 
-/*
- * @author Cory Sharp <cssharp@eecs.berkeley.edu>
- * @author Xavier Orduna <xorduna@dexmatech.com>
- * @author Eric B. Decker <cire831@gmail.com>
- */
-
-#ifndef _H_msp430regtypes_h
-#define _H_msp430regtypes_h
+#ifndef _H_MSP430REGTYPES_H
+#define _H_MSP430REGTYPES_H
 
 /*
  * With the mspgcc (gcc 3.2.3) toolchain the following was used to
@@ -60,8 +54,7 @@
  * it may make sense to figure a different way to do this and then get rid
  * of this file.   Well maybe next year.  :-)
  *
- * No longer supported.   Kept for historical reference:
- *
+ * (The following is no longer supported.   Kept for historical reference).
  * To generate the primary contents of this file seen below, in
  * mspgcc/msp430/include/, execute the following command:
  *
@@ -286,6 +279,7 @@
 /*
  * Port 0?  very odd.  TI starts with P1 so where did P0 come from?
  */
+#ifdef notdef
 #define TYPE_P0IN  uint8_t
 #define TYPE_P0OUT uint8_t
 #define TYPE_P0DIR uint8_t
@@ -293,72 +287,98 @@
 #define TYPE_P0IES uint8_t
 #define TYPE_P0IE  uint8_t
 #define TYPE_P0SEL uint8_t
+#endif
 
 #define TYPE_P1IN  uint8_t
 #define TYPE_P1OUT uint8_t
 #define TYPE_P1DIR uint8_t
-#define TYPE_P1IFG uint8_t
+#define TYPE_P1REN uint8_t
+#define TYPE_P1DS  uint8_t
+#define TYPE_P1SEL uint8_t
 #define TYPE_P1IES uint8_t
 #define TYPE_P1IE  uint8_t
-#define TYPE_P1SEL uint8_t
-#define TYPE_P1REN uint8_t
+#define TYPE_P1IFG uint8_t
 
 #define TYPE_P2IN  uint8_t
 #define TYPE_P2OUT uint8_t
 #define TYPE_P2DIR uint8_t
-#define TYPE_P2IFG uint8_t
+#define TYPE_P2REN uint8_t
+#define TYPE_P2DS  uint8_t
+#define TYPE_P2SEL uint8_t
 #define TYPE_P2IES uint8_t
 #define TYPE_P2IE  uint8_t
-#define TYPE_P2SEL uint8_t
-#define TYPE_P2REN uint8_t
+#define TYPE_P2IFG uint8_t
 
-#define TYPE_P3DIR uint8_t
-#define TYPE_P3IN uint8_t
+#define TYPE_P3IN  uint8_t
 #define TYPE_P3OUT uint8_t
 #define TYPE_P3DIR uint8_t
-#define TYPE_P3SEL uint8_t
 #define TYPE_P3REN uint8_t
+#define TYPE_P3DS  uint8_t
+#define TYPE_P3SEL uint8_t
 
-#define TYPE_P4DIR uint8_t
-#define TYPE_P4IN uint8_t
+#define TYPE_P4IN  uint8_t
 #define TYPE_P4OUT uint8_t
 #define TYPE_P4DIR uint8_t
-#define TYPE_P4SEL uint8_t
 #define TYPE_P4REN uint8_t
+#define TYPE_P4DS  uint8_t
+#define TYPE_P4SEL uint8_t
 
-#define TYPE_P5DIR uint8_t
-#define TYPE_P5IN uint8_t
+#define TYPE_P5IN  uint8_t
 #define TYPE_P5OUT uint8_t
 #define TYPE_P5DIR uint8_t
-#define TYPE_P5SEL uint8_t
 #define TYPE_P5REN uint8_t
+#define TYPE_P5DS  uint8_t
+#define TYPE_P5SEL uint8_t
 
-#define TYPE_P6DIR uint8_t
-#define TYPE_P6IN uint8_t
+#define TYPE_P6IN  uint8_t
 #define TYPE_P6OUT uint8_t
 #define TYPE_P6DIR uint8_t
-#define TYPE_P6SEL uint8_t
 #define TYPE_P6REN uint8_t
+#define TYPE_P6DS  uint8_t
+#define TYPE_P6SEL uint8_t
 
-#define TYPE_P7DIR uint8_t
-#define TYPE_P7IN uint8_t
+#define TYPE_P7IN  uint8_t
 #define TYPE_P7OUT uint8_t
+#define TYPE_P7DIR uint8_t
+#define TYPE_P7REN uint8_t
+#define TYPE_P7DS  uint8_t
 #define TYPE_P7SEL uint8_t
 
-#define TYPE_P8DIR uint8_t
-#define TYPE_P8IN uint8_t
+#define TYPE_P8IN  uint8_t
 #define TYPE_P8OUT uint8_t
+#define TYPE_P8DIR uint8_t
+#define TYPE_P8REN uint8_t
+#define TYPE_P8DS  uint8_t
 #define TYPE_P8SEL uint8_t
 
-#define TYPE_P9DIR uint8_t
-#define TYPE_P9IN uint8_t
+#define TYPE_P9IN  uint8_t
 #define TYPE_P9OUT uint8_t
+#define TYPE_P9DIR uint8_t
+#define TYPE_P9REN uint8_t
+#define TYPE_P9DS  uint8_t
 #define TYPE_P9SEL uint8_t
 
-#define TYPE_P10DIR uint8_t
-#define TYPE_P10IN uint8_t
+#define TYPE_P10IN  uint8_t
 #define TYPE_P10OUT uint8_t
+#define TYPE_P10DIR uint8_t
+#define TYPE_P10REN uint8_t
+#define TYPE_P10DS  uint8_t
 #define TYPE_P10SEL uint8_t
+
+#define TYPE_P11IN  uint8_t
+#define TYPE_P11OUT uint8_t
+#define TYPE_P11DIR uint8_t
+#define TYPE_P11REN uint8_t
+#define TYPE_P11DS  uint8_t
+#define TYPE_P11SEL uint8_t
+
+#define TYPE_PJIN   uint8_t
+#define TYPE_PJOUT  uint8_t
+#define TYPE_PJDIR  uint8_t
+#define TYPE_PJREN  uint8_t
+#define TYPE_PJDS   uint8_t
+
+/* no PJSEL */
 
 #ifdef notdef
 /*
@@ -378,6 +398,7 @@ pasel
 paren
 
 #endif
+
 
 #define TYPE_MPY uint16_t
 #define TYPE_MPYS uint16_t
@@ -676,4 +697,4 @@ paren
 #define TYPE_UTCTL_1 uint8_t
 #define TYPE_WDTCTL uint16_t
 
-#endif  //_H_msp430regtypes_h
+#endif  //_H_MSP430REGTYPES_H
