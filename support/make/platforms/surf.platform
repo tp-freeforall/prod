@@ -1,48 +1,49 @@
-%P
-%P/hardware/pins
-%P/hardware/buttons
-%P/hardware/leds
-%P/hardware/usci
-%P/hardware/onewire
-%P/hardware/flash
-%P/hardware/radio
-%P/hardware/adc
-%P/hardware/clock
-%P/hardware/rtc
+PFLAGS += -I%T/platforms/surf
+PFLAGS += -I%T/platforms/surf/hardware/pins
+PFLAGS += -I%T/platforms/surf/hardware/buttons
+PFLAGS += -I%T/platforms/surf/hardware/leds
+PFLAGS += -I%T/platforms/surf/hardware/usci
+PFLAGS += -I%T/platforms/surf/hardware/onewire
+PFLAGS += -I%T/platforms/surf/hardware/flash
+PFLAGS += -I%T/platforms/surf/hardware/radio
+PFLAGS += -I%T/platforms/surf/hardware/adc
+PFLAGS += -I%T/platforms/surf/hardware/clock
+PFLAGS += -I%T/platforms/surf/hardware/rtc
 
-%P/compatibility/system
+PFLAGS += -I%T/platforms/surf/compatibility/system
 
-%T/chips/msp430/x5xxx
-%T/chips/msp430/x5xxx/lpm
-%T/chips/msp430/x5xxx/pins
-%T/chips/msp430/x5xxx/timer
-%T/chips/msp430/x5xxx/usci
+PFLAGS += -I%T/chips/msp430/x5xxx
+PFLAGS += -I%T/chips/msp430/x5xxx/lpm
+PFLAGS += -I%T/chips/msp430/x5xxx/pins
+PFLAGS += -I%T/chips/msp430/x5xxx/timer
+PFLAGS += -I%T/chips/msp430/x5xxx/usci
+PFLAGS += -I%T/chips/msp430/x2x5/timer
 
-%T/chips/msp430
-%T/chips/msp430/pins
-%T/chips/msp430/timer
-%T/chips/msp430/pmm
-%T/chips/msp430/adc12
-%T/chips/msp430/sensors
+PFLAGS += -I%T/chips/msp430
+PFLAGS += -I%T/chips/msp430/pins
+PFLAGS += -I%T/chips/msp430/timer
+PFLAGS += -I%T/chips/msp430/pmm
+PFLAGS += -I%T/chips/msp430/adc12
+PFLAGS += -I%T/chips/msp430/sensors
 
-%T/chips/memory
-%T/chips/memory/norflash
+PFLAGS += -I%T/chips/memory
+PFLAGS += -I%T/chips/memory/norflash
 
-%T/chips/msp430/rf1a
-%T/chips/msp430/rf1a/interfaces
-%T/chips/msp430/rf1a/system
-%T/chips/msp430/rf1a/physical
-%T/chips/msp430/rf1a/am
-%T/chips/msp430/rf1a/ieee154
-%T/chips/msp430/rf1a/layers
+PFLAGS += -I%T/chips/msp430/rf1a
+PFLAGS += -I%T/chips/msp430/rf1a/interfaces
+PFLAGS += -I%T/chips/msp430/rf1a/system
+PFLAGS += -I%T/chips/msp430/rf1a/physical
+PFLAGS += -I%T/chips/msp430/rf1a/am
+PFLAGS += -I%T/chips/msp430/rf1a/ieee154
+PFLAGS += -I%T/chips/msp430/rf1a/layers
 
-%T/lib/timer
+PFLAGS += -I%T/lib/timer
 
-%T/lib/util/keyvaluerecord
+PFLAGS += -I%T/lib/util/keyvaluerecord
 
-%T/lib/serial
-%T/lib/printf
+PFLAGS += -I%T/lib/serial
+PFLAGS += -I%T/lib/printf
 
--gcc=msp430-gcc
--mmcu=cc430f5137
--fnesc-target=msp430
+PFLAGS += -gcc=msp430-gcc
+PFLAGS += -mmcu=cc430f5137
+PFLAGS += -fnesc-target=msp430

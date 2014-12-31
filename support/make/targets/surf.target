@@ -1,23 +1,29 @@
-# Target definition for the People Power Company Sensor Ultra Radio Frequency
-# development board.
+#-*-Makefile-*- vim:syntax=make
+
+TARGET = surf
+
+MSP_BSL ?= cc430-bsl
+MOTELIST ?= motelist
+
+MSP_BSL_FLAGS = --surf
+
+MSP_MCU ?= cc430f5137
+MSP_GCC ?= msp430-gcc
+MSP_NESC_TARGET ?= msp430
 
 # Unless otherwise specified, assume revision B2 of the SuRF board
-SURF_REV ?= B2
+SURF_REV ?= A
 HAS_FLASH ?= 1
 
-#IAR_MCU_GROUP = cc430x513x
-#IAR_LINKER_XCL = lnkcc430F5137.xcl
 
 PLATFORM ?= surf
 MSP_MCU = cc430f5137
 PFLAGS += -DSURF_REV_$(SURF_REV)
 PFLAGS += -DPLATFORM_HAS_FLASH=$(HAS_FLASH)
 
-MSP_BSL ?= cc430-bsl
-MSP_BSL_FLAGS += --surf
-
-$(call TOSMake_include_platform,msp)
 $(call TOSMake_include_platform,surf)
+$(call TOSMake_include_make_platform,msp)
 
 surf: $(BUILD_DEPS)
         @:
+
