@@ -114,3 +114,8 @@ All work is done on a local repository.
    git push ffa tinyprod-base
    git push ffa tp-master
    git push ffa msp430-int
+
+10) Clean up
+
+   git b -d tinyprod-base master tinyos-main/upstream
+
