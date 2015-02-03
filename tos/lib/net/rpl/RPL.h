@@ -130,7 +130,7 @@ enum {
 
 enum {
   RPL_IFACE = ROUTE_IFACE_154,
-  RPL_HBH_RANK_TYPE = 0x6b,     /* per draft-ietf-6man-rpl-option-02 */
+  RPL_HBH_RANK_TYPE = 0x63,     /* per rfc6553 */
 };
 
 struct dis_base_t {
@@ -321,7 +321,8 @@ enum {
   NUMBER_OF_PARENTS = 10,
   DIS_INTERVAL = 3*1024U,
   //DEFAULT_LIFETIME = 1024L * 60 * 20, // 20 mins
-  DEFAULT_LIFETIME = 0xFF, // all ones for now
+  //DEFAULT_LIFETIME = 0xFF, // all ones for now
+  DEFAULT_LIFETIME = 0xCC, // some other value
 };
 
 /*RFC defined parameters*/
