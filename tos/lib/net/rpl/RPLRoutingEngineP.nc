@@ -109,7 +109,6 @@ implementation{
 
   struct in6_addr DEF_PREFIX;
 
-  struct in6_addr ADDR_MY_IP;
   struct in6_addr ROOT_ADDR;
   struct in6_addr MULTICAST_ADDR;
   struct in6_addr UNICAST_DIO_ADDR;
@@ -128,13 +127,11 @@ implementation{
 
   /* Start the routing with DIS message probing */
   task void init() {
-#ifdef RPL_STORING_MODE
+#if RPL_STORING_MODE
     MOP = RPL_MOP_Storing_No_Multicast;
 #else
     MOP = RPL_MOP_No_Storing;
 #endif
-
-    call IPAddress.getGlobalAddr(&ADDR_MY_IP);
 
     ROOT_RANK = MinHopRankInc;
 
@@ -186,7 +183,7 @@ implementation{
     msg.icmpv6.checksum = 0;
     msg.instance_id.id = RPLInstanceID;
     msg.version = DODAGVersionNumber;
-    msg.rank = call RPLRankInfo.getRank(&ADDR_MY_IP);
+    msg.rank = call RPLRankInfo.getRank(NULL);
     msg.flags = 0;
     msg.flags |= GROUND_STATE << DIO_G_SHIFT;
     msg.flags |= MOP << DIO_MOP_SHIFT;
@@ -203,8 +200,8 @@ implementation{
     dodag_config.reserved_flags |= (0 << DIO_DODAG_A_SHIFT); // no auth
     dodag_config.reserved_flags |= (0 << DIO_DODAG_PCS_SHIFT);
     dodag_config.ocp = call RPLOF.getOCP();
-    dodag_config.default_lifetime = 0xFF;//6;  // six
-    dodag_config.lifetime_unit = 0xFFFF;//3600; // hours
+    dodag_config.default_lifetime = 6;  // six
+    dodag_config.lifetime_unit = 3600; // hours
     dodag_config.DIOIntDoubl = DIOIntDouble;
     dodag_config.DIOIntMin = DIOIntMin;
     dodag_config.DIORedun = DIORedun;
@@ -309,7 +306,7 @@ implementation{
     INCONSISTENCY_COUNT++;
 
     // inconsistency on my on node detected?
-    call RPLRankInfo.inconsistencyDetected(/*&ADDR_MY_IP*/);
+    call RPLRankInfo.inconsistencyDetected();
 
     /* JK: This reaction is TinyRPL specific -- to reduce the amount
        of DIO traffic -- helps when minmal leaf nodes exist */
@@ -414,7 +411,7 @@ implementation{
   }
 
   command uint16_t RPLRouteInfo.getRank() {
-    return call RPLRankInfo.getRank(&ADDR_MY_IP);
+    return call RPLRankInfo.getRank(NULL);
   }
 
   command void RPLRouteInfo.setDTSN(uint8_t dtsn) {
@@ -539,7 +536,7 @@ implementation{
     /* JK: The if () statement below is TinyRPL specific and ties up
        with the inconsistencyDectect case above */
     if (dio->rank == INFINITE_RANK) {
-      if ((call RPLRankInfo.getRank(&ADDR_MY_IP) != INFINITE_RANK) &&
+      if ((call RPLRankInfo.getRank(NULL) != INFINITE_RANK) &&
           ((call InitDISTimer.getNow()%2) == 1)) { // send DIO if I can help!
         post sendDIOTask();
       }
@@ -578,19 +575,19 @@ implementation{
       call RPLRouteInfo.resetTrickle();
 
       // type 3 inconsistency
-    } else if (call RPLRankInfo.getRank(&ADDR_MY_IP) != node_rank &&
+    } else if (call RPLRankInfo.getRank(NULL) != node_rank &&
                hasDODAG &&
                node_rank != INFINITE_RANK) {
       // inconsistency detected because rank is not what I previously advertised
-      if (call RPLRankInfo.getRank(&ADDR_MY_IP) > LOWRANK + MaxRankInc &&
+      if (call RPLRankInfo.getRank(NULL) > LOWRANK + MaxRankInc &&
           node_rank != INFINITE_RANK) {
         hasDODAG = FALSE;
         node_rank = INFINITE_RANK;
       } else {
-        if (LOWRANK > call RPLRankInfo.getRank(&ADDR_MY_IP)) {
-          LOWRANK = call RPLRankInfo.getRank(&ADDR_MY_IP);
+        if (LOWRANK > call RPLRankInfo.getRank(NULL)) {
+          LOWRANK = call RPLRankInfo.getRank(NULL);
         }
-        node_rank = call RPLRankInfo.getRank(&ADDR_MY_IP);
+        node_rank = call RPLRankInfo.getRank(NULL);
       }
       // type 2 inconsistency
       inconsistencyDetected();
