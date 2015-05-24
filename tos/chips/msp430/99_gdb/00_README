@@ -66,6 +66,10 @@ debugging mechanism.  From within emacs use M-x gdb and then
 
     Run gdb (like this): msp430-gdb --annotate=3 build/z1/main.exe
 
+       or if you are running a more modern version of Emacs (like 24+)
+
+    run gdb (like this): msp430-gdb -i=mi build/z1/main.exe
+
 
 Slow Debugging:  (from David Brown, <david@westcontrol.com>, thanks David)
 
