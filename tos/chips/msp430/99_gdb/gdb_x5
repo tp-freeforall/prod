@@ -230,29 +230,29 @@ display port 2
 end
 
 define ports
-printf " in  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
+printf " in  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x  pj: %02x\n", \
     (*(uint8_t *)0x200), (*(uint8_t *)0x201), \
     (*(uint8_t *)0x220), (*(uint8_t *)0x221), \
     (*(uint8_t *)0x240), (*(uint8_t *)0x241), \
     (*(uint8_t *)0x260), (*(uint8_t *)0x261), \
     (*(uint8_t *)0x280), (*(uint8_t *)0x281), \
-    (*(uint8_t *)0x2a0)
+    (*(uint8_t *)0x2a0), (*(uint8_t *)0x320)
 
-printf "out  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
+printf "out  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x  pj: %02x\n", \
     (*(uint8_t *)0x202), (*(uint8_t *)0x203), \
     (*(uint8_t *)0x222), (*(uint8_t *)0x223), \
     (*(uint8_t *)0x242), (*(uint8_t *)0x243), \
     (*(uint8_t *)0x262), (*(uint8_t *)0x263), \
     (*(uint8_t *)0x282), (*(uint8_t *)0x283), \
-    (*(uint8_t *)0x2a2)
+    (*(uint8_t *)0x2a2), (*(uint8_t *)0x322)
 
-printf "dir  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
+printf "dir  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x  pj: %02x\n", \
     (*(uint8_t *)0x204), (*(uint8_t *)0x205), \
     (*(uint8_t *)0x224), (*(uint8_t *)0x225), \
     (*(uint8_t *)0x244), (*(uint8_t *)0x245), \
     (*(uint8_t *)0x264), (*(uint8_t *)0x265), \
     (*(uint8_t *)0x284), (*(uint8_t *)0x285), \
-    (*(uint8_t *)0x2a4)
+    (*(uint8_t *)0x2a4), (*(uint8_t *)0x324)
 
 printf "sel  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
     (*(uint8_t *)0x20a), (*(uint8_t *)0x20b), \
@@ -262,21 +262,21 @@ printf "sel  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02
     (*(uint8_t *)0x28a), (*(uint8_t *)0x28b), \
     (*(uint8_t *)0x2aa)
 
-printf "ren  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
+printf "ren  p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x  pj: %02x\n", \
     (*(uint8_t *)0x206), (*(uint8_t *)0x207), \
     (*(uint8_t *)0x226), (*(uint8_t *)0x227), \
     (*(uint8_t *)0x246), (*(uint8_t *)0x247), \
     (*(uint8_t *)0x266), (*(uint8_t *)0x267), \
     (*(uint8_t *)0x286), (*(uint8_t *)0x287), \
-    (*(uint8_t *)0x2a6)
+    (*(uint8_t *)0x2a6), (*(uint8_t *)0x326)
 
-printf " ds: p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x\n", \
+printf " ds: p1: %02x %02x %02x %02x  p5: %02x %02x %02x %02x  p9: %02x %02x %02x  pj: %02x\n", \
     (*(uint8_t *)0x208), (*(uint8_t *)0x209), \
     (*(uint8_t *)0x228), (*(uint8_t *)0x229), \
     (*(uint8_t *)0x248), (*(uint8_t *)0x249), \
     (*(uint8_t *)0x268), (*(uint8_t *)0x269), \
     (*(uint8_t *)0x288), (*(uint8_t *)0x289), \
-    (*(uint8_t *)0x2a8)
+    (*(uint8_t *)0x2a8), (*(uint8_t *)0x328)
 
 printf "ifg  p1: %02x %02x\n", \
     (*(uint8_t *)0x21c), (*(uint8_t *)0x21d)
