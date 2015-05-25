@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Eric B. Decker
+ * Copyright (c) 2013, 2015 Eric B. Decker
  * Copyright (c) 2010, Vanderbilt University
  * All rights reserved.
  *
@@ -69,13 +69,13 @@ configuration CC2520DriverLayerC {
     interface PacketFlag as RSSIFlag;    
     interface PacketFlag as TimeSyncFlag; 
     interface PacketFlag as AckReceivedFlag;
-    interface RadioAlarm;     
+    interface RadioAlarm;
+    interface Tasklet;
   }
 }
 
 implementation {
   components CC2520DriverLayerP as DriverLayerP,
-             TaskletC,
 	     MainC,
              HplCC2520C as HplChip;
 
@@ -129,7 +129,7 @@ implementation {
   DriverLayerP.ExcAInterrupt -> HplChip.ExcAInterrupt;
   DriverLayerP.SfdCapture    -> HplChip;
 
-  DriverLayerP.Tasklet -> TaskletC;
+  Tasklet = DriverLayerP.Tasklet;
 
   DriverLayerP.LocalTime-> HplChip.LocalTimeRadio;
 
