@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 João Gonçalves
+ * Copyright (c) 2011 Joao Goncalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -33,7 +33,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @author Peter Bigot
- * @author João Gonçalves
+ * @author Joao Goncalves
  */
 
 #ifndef _H_hardware_h

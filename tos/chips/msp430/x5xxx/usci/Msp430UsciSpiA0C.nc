@@ -2,7 +2,7 @@
  * This file cloned from Msp430UsciSpiB0C.nc for A0 */
 /*
  * Copyright (c) 2011 Eric B. Decker
- * Copyright (c) 2011 João Gonçalves
+ * Copyright (c) 2011 Joao Goncalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 João Gonçalves
+ * Copyright (c) 2011 Joao Goncalves
  * Copyright (c) 2005-2006 Arch Rock Corporation
  * All rights reserved.
  *
@@ -43,7 +43,7 @@
 /**
  * Adapted for MSP430f5438 TestBoard - Moteist++s5 prototype
  *
- * @author João Gonçalves <joao.m.goncalves@ist.utl.pt>
+ * @author Joao Goncalves <joao.m.goncalves@ist.utl.pt>
  * Thesis: PowerEmb; http://gems.leme.org.pt/PmWiki/index.php/Projects/PowerEmb
  * www.ist.utl.pt
  * $Date: 2011/05/26 17:15:00 $

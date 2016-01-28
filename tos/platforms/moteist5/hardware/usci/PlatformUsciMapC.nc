@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 João Gonçalves
+ * Copyright (c) 2012 Joao Goncalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *

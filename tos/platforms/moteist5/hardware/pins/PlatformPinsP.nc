@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 João Gonçalves
+ * Copyright (c) 2012 Joao Goncalves
  * Copyright (c) 2009-2010 People Power Company
  * All rights reserved.
  *
@@ -39,7 +39,7 @@
  * @author David Moss
  * @author Peter A. Bigot <pab@peoplepowerco.com>
  * 
- * @author João Gonçalves
+ * @author Joao Goncalves
  * Initialize all pins to output and set them low
  */
 

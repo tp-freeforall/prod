@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2012 Eric B. Decker
- * Copyright (c) 2011 João Gonçalves
+ * Copyright (c) 2011 Joao Goncalves
  * Copyright (c) 2011 Eric B. Decker
  * Copyright (c) 2009 DEXMA SENSORS SL
  * Copyright (c) 2000-2003 The Regents of the University of California.  
@@ -41,7 +41,7 @@
  * @author Xavier Orduna <xorduna@dexmatech.com>
  * @author Peter A. Bigot <pab@peoplepowerco.com>
  * @author Eric B. Decker <cire831@gmail.com>
- * @author João Gonçalves <joao.m.goncalves@ist.utl.pt>
+ * @author Joao Goncalves <joao.m.goncalves@ist.utl.pt>
  */
 
 configuration HplMsp430GeneralIOC {

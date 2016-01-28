@@ -36,7 +36,7 @@
 * 3 LED implementation
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
- * @author João Gonçalves
+ * @author Joao Goncalves
  */
 
 module LedsP @safe() {

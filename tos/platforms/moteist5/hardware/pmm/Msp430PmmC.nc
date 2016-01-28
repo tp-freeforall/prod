@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 João Gonçalves
+ * Copyright (c) 2011 Joao Goncalves
  * Copyright (c) 2011 Eric B. Decker
  * Copyright (c) 2010 People Power Co.
  * All rights reserved.

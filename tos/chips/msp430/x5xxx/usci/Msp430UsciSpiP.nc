@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 João Gonçalves
+ * Copyright (c) 2011-2012 Joao Goncalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -40,7 +40,7 @@
  * instance.
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
- * @author João Gonçalves <joao.m.goncalves@ist.utl.pt>
+ * @author Joao Goncalves <joao.m.goncalves@ist.utl.pt>
  */
 
 generic module Msp430UsciSpiP () @safe() {

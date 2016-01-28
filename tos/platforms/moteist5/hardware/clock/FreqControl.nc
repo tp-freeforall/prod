@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, João Gonçalves
+ * Copyright (c) 2011, Joao Goncalves
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

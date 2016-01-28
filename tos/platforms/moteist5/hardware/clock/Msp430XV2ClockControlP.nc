@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011 João Gonçalves
+ * Copyright (c) 2011 Joao Goncalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -41,7 +41,7 @@
  * T1A is used for 1MiHz.
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
- * @author João Gonçalves <joao.m.goncalves@ist.utl.pt>
+ * @author Joao Goncalves <joao.m.goncalves@ist.utl.pt>
  */
 
 #include "hardware.h"

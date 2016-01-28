@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2012-2014, Eric B. Decker
- * Copyright (c) 2011-2012 João Gonçalves
+ * Copyright (c) 2011-2012 Joao Goncalves
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -66,7 +66,7 @@
  * for Panic and Platform and is wired in.
  *
  * @author Peter A. Bigot <pab@peoplepowerco.com>
- * @author João Gonçalves <joao.m.goncalves@ist.utl.pt>
+ * @author Joao Goncalves <joao.m.goncalves@ist.utl.pt>
  * @author Eric B. Decker <cire831@gmail.com>
  */
 

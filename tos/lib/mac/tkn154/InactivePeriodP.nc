@@ -36,7 +36,7 @@
  * crystal oscillator, which saves a significant amount energy compard to the
  * idle state. 
  *
- * @author João Faria <jfff@kth.se>
+ * @author Joao Faria <jfff@kth.se>
  * @author Aitor Hernandez <aitorhh@kth.se>
  * @author Jan Hauer <hauer@tkn.tu-berlin.de>
  */
