@@ -30,14 +30,10 @@ typedef nx_struct cc2420x_header_t
 	nxle_uint8_t length;
 } cc2420x_header_t;
 
-typedef struct cc2420x_metadata_t
-{
-	uint8_t lqi;
-	union
-	{
-		uint8_t power;
-		uint8_t rssi;
-	}__attribute__((packed)); 
+typedef struct cc2420x_metadata {
+  uint8_t lqi;
+  uint8_t power;
+  uint8_t rssi;
 } __attribute__((packed)) cc2420x_metadata_t; 
 
 enum cc2420X_timing_enums {

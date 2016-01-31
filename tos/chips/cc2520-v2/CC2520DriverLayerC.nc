@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2016, Eric B. Decker
  * Copyright (c) 2013, 2015 Eric B. Decker
  * Copyright (c) 2010, Vanderbilt University
  * All rights reserved.
@@ -107,12 +108,6 @@ implementation {
 
   PacketTimeSyncOffset = DriverLayerP.PacketTimeSyncOffset;
   DriverLayerP.TimeSyncFlag = TimeSyncFlag;
-
-/*
-  AckReceived = DriverLayerP.AckReceived;
-  components new CC2520MetadataFlagC() as AckFlagC;
-  DriverLayerP.AckFlag -> AckFlagC;
-*/
 
   AckReceivedFlag = DriverLayerP.AckReceivedFlag;
 

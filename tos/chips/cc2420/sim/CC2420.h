@@ -91,24 +91,25 @@ typedef nx_struct cc2420_footer_t {
  * FCS when the payload is full. Do not modify the first two bytes of metadata.
  */
 
-typedef nx_struct cc2420_metadata_t {
-  nx_uint8_t rssi;
-  nx_uint8_t lqi;
-  nx_uint8_t tx_power;
-  nx_int8_t crc;
-  nx_int8_t ack;
-  nx_int8_t timesync;
+typedef nx_struct cc2420_metadata {
   nx_uint32_t timestamp;
   nx_uint16_t rxInterval;
+  nx_uint8_t  rssi;
+  nx_uint8_t  lqi;
+  nx_uint8_t  tx_power;
+  nx_int8_t   crc;
+  nx_int8_t   ack;
+  nx_int8_t   timesync;
 
 #ifdef PACKET_LINK
   nx_uint16_t maxRetries;
   nx_uint16_t retryDelay;
 #endif
+
 } cc2420_metadata_t;
 
 
-typedef nx_struct cc2420_packet_t {
+typedef nx_struct cc2420_packet {
   cc2420_header_t packet;
   nx_uint8_t data[];
 } cc2420_packet_t;

@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2016 Eric B. Decker
  * Copyright (c) 2013 Eric B. Decker
  * Copyright (c) 2009 Stanford University.
  * Copyright (c) 2005 The Regents of the University  of California.
@@ -59,9 +60,24 @@ typedef union message_footer {
   cc2520packet_footer_t cc2520;
 } message_footer_t;
 
-typedef union message_metadata {
-  cc2520packet_metadata_t cc2520;
-	serial_metadata_t serial;
+typedef struct message_metadata {
+  union {
+    cc2520_metadata_t cc2520_meta;
+    serial_metadata_t serial_meta;
+  };
+
+#ifdef LOW_POWER_LISTENING
+  lpl_metadata_t lpl_meta;
+#endif
+
+  timestamp_metadata_t ts_meta;
+
+#ifdef PACKET_LINK
+  link_metadata_t link_meta;
+#endif
+
+  flags_metadata_t flags_meta;
+
 } message_metadata_t;
 
 #endif

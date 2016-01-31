@@ -47,9 +47,10 @@ typedef union message_footer
 {
 } message_footer_t;
 
-typedef union message_metadata
-{
-	serial_metadata_t serial;
+typedef struct message_metadata {
+  union {
+    serial_metadata_t serial_meta;
+  }
 } message_metadata_t;
 
 #endif

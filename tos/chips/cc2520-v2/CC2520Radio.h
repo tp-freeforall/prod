@@ -1,4 +1,5 @@
- /*
+/*
+ * Copyright (c) 2016, Eric B. Decker
  * Copyright (c) 2010, Vanderbilt University
  * All rights reserved.
  *
@@ -35,6 +36,7 @@
  * Author: Janos Sallai
  * Author: Thomas Schmid (adapted to CC2520)
  * Author: JeongGil Ko (Security Header Added)
+ * Author: Eric B. Decker <cire831@gmail.com>, rewrite
  */
 
 #ifndef __CC2520RADIO_H__
@@ -91,18 +93,6 @@ typedef nx_struct cc2520packet_footer {
   // the time stamp is not recorded here, time stamped messages cannot have max length
   // which means what?
 } cc2520packet_footer_t;
-
-typedef struct cc2520packet_metadata {
-#ifdef LOW_POWER_LISTENING
-  lpl_metadata_t lpl;
-#endif
-#ifdef PACKET_LINK
-  link_metadata_t link;
-#endif
-  timestamp_metadata_t timestamp;
-  flags_metadata_t flags;
-  cc2520_metadata_t cc2520;
-} cc2520packet_metadata_t;
 
 enum cc2520_security_enums {
   NO_SEC = 0,

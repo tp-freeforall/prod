@@ -51,17 +51,4 @@ typedef nx_struct cc2420xpacket_footer_t
 	// the time stamp is not recorded here, time stamped messaged cannot have max length
 } cc2420xpacket_footer_t;
 
-typedef struct cc2420xpacket_metadata_t
-{
-#ifdef LOW_POWER_LISTENING
-	lpl_metadata_t lpl;
-#endif
-#ifdef PACKET_LINK
-	link_metadata_t link;
-#endif
-	timestamp_metadata_t timestamp;
-	flags_metadata_t flags;
-	cc2420x_metadata_t cc2420x;
-} __attribute__((packed)) cc2420xpacket_metadata_t;
-
 #endif//__CC2420XRADIO_H__

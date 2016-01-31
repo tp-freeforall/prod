@@ -84,19 +84,6 @@ typedef nx_struct cc2520packet_footer_t
   // the time stamp is not recorded here, time stamped messaged cannot have max length
 } cc2520packet_footer_t;
 
-typedef struct cc2520packet_metadata_t
-{
-#ifdef LOW_POWER_LISTENING
-  lpl_metadata_t lpl;
-#endif
-#ifdef PACKET_LINK
-  link_metadata_t link;
-#endif
-  timestamp_metadata_t timestamp;
-  flags_metadata_t flags;
-  cc2520_metadata_t cc2520;
-} __attribute__((packed)) cc2520packet_metadata_t;
-
 enum cc2520_security_enums{
   NO_SEC = 0,
   CBC_MAC_4 = 1,

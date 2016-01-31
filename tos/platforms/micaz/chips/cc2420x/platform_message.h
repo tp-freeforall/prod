@@ -32,12 +32,30 @@ typedef union message_header {
 	serial_header_t serial;
 } message_header_t;
 
+
 typedef union message_footer {
 	cc2420xpacket_footer_t cc2420x;
 } message_footer_t;
 
-typedef union message_metadata {
-	cc2420xpacket_metadata_t cc2420x;
+typedef struct message_metadata {
+  union {
+    cc2420x_metadata_t cc2420x_meta;
+    serial_metadata_t  serial_meta;
+  }
+
+#ifdef LOW_POWER_LISTENING
+  lpl_metadata_t       lpl_meta;
+#endif
+
+  timestamp_metadata_t ts_meta;
+
+ /** Packet Link Metadata */
+#ifdef PACKET_LINK
+  link_metadata_t      link_meta;
+#endif
+
+  flags_metadata_t     flags_meta;
+
 } message_metadata_t;
 
 #endif

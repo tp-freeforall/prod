@@ -45,15 +45,11 @@ typedef nx_struct cc2520_header_t
 } cc2520_header_t;
 
 
-typedef struct cc2520_metadata_t
-{
-	uint8_t lqi;
-	union
-	{
-		uint8_t power;
-	  uint8_t ack;
-		uint8_t rssi;
-	}__attribute__((packed));
+typedef struct cc2520_metadata_t {
+  uint8_t lqi;
+  uint8_t power;
+  uint8_t ack;
+  uint8_t rssi;
 } __attribute__((packed)) cc2520_metadata_t;
 
 enum cc2520_reg_access_enums {

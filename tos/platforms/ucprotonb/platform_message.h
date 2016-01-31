@@ -26,6 +26,7 @@
 #include <RFA1Radio.h>
 #include <RF212Radio.h>
 #include <Serial.h>
+
 typedef union message_header {
   rfa1packet_header_t rfa1;
   rf212packet_header_t rf212;
@@ -37,9 +38,24 @@ typedef union message_footer {
   rf212packet_header_t rf212;
 } message_footer_t;
 
-typedef union message_metadata {
-  rfa1packet_metadata_t rfa1;
-  rf212packet_metadata_t rf212;
+typedef struct message_metadata {
+  union {
+    rfa1_metadata_t    rfa1_meta;
+    rf212_metadata_t   rf212_meta;
+    serial_metadata_t  serial_meta;
+  };
+#ifdef LOW_POWER_LISTENING
+  lpl_metadata_t       lpl_meta;
+#endif
+
+  timestamp_metadata_t ts_meta;
+
+#ifdef PACKET_LINK
+  link_metadata_t      link_meta;
+#endif
+
+  flags_metadata_t     flags_meta;
+
 } message_metadata_t;
 
 #endif

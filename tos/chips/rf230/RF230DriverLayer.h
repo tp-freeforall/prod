@@ -40,14 +40,10 @@ typedef nx_struct rf230_header_t
 	nxle_uint8_t length;
 } rf230_header_t;
 
-typedef struct rf230_metadata_t
-{
-	uint8_t lqi;
-	union
-	{
-		uint8_t power;
-		uint8_t rssi;
-	}__attribute__((packed));
+typedef struct rf230_metadata_t {
+  uint8_t lqi;
+  uint8_t power;
+  uint8_t rssi;
 } __attribute__((packed)) rf230_metadata_t;
 
 enum rf230_registers_enum

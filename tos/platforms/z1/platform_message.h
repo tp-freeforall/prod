@@ -58,13 +58,23 @@ typedef union message_header {
   serial_header_t serial;
 } message_header_t;
 
-typedef union TOSRadioFooter {
+typedef union message_footer {
   cc2420_footer_t cc2420;
 } message_footer_t;
 
-typedef union TOSRadioMetadata {
-  cc2420_metadata_t cc2420;
-  serial_metadata_t serial;
+/**
+ * CC2420 Packet metadata. Contains extra information about the message
+ * that will not be transmitted.
+ *
+ * Note that the first two bytes automatically take in the values of the
+ * FCS when the payload is full. Do not modify the first two bytes of metadata.
+ */
+typedef struct message_metadata {
+  uint8_t pad[2];
+  union {
+    cc2420_metadata_t cc2420_meta;
+    serial_metadata_t serial_meta;
+  };
 } message_metadata_t;
 
 #endif

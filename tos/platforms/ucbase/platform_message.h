@@ -35,8 +35,21 @@ typedef union message_footer {
 	rfa1packet_footer_t rfa1;
 } message_footer_t;
 
-typedef union message_metadata {
-	rfa1packet_metadata_t rfa1;
+typedef struct message_metadata {
+  union {
+    rfa1_metadata_t    rfa1_meta;
+    serial_metadata_t  serial_meta;
+  };
+#ifdef LOW_POWER_LISTENING
+  lpl_metadata_t       lpl_meta;
+#endif
+#ifdef PACKET_LINK
+  link_metadata_t      link_meta;
+#endif
+  timestamp_metadata_t ts_meta;
+
+  flags_metadata_t     flags_meta;
+
 } message_metadata_t;
 
 #endif

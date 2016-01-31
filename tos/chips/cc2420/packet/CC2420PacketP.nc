@@ -150,7 +150,7 @@ implementation {
   }
 
   async command cc2420_metadata_t *CC2420PacketBody.getMetadata( message_t* msg ) {
-    return (cc2420_metadata_t*)msg->metadata;
+    return &(((message_metadata_t *)&(msg->metadata))->cc2420_meta);
   }
 
   async command bool LinkPacketMetadata.highChannelQuality(message_t* msg) {

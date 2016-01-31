@@ -62,8 +62,10 @@ typedef union TOSRadioFooter {
   cc2420_footer_t cc2420;
 } message_footer_t;
 
-typedef union TOSRadioMetadata {
-  cc2420_metadata_t cc2420;
+typedef struct message_metadata {
+  union {
+    cc2420_metadata_t cc2420_meta;
+  };
 } message_metadata_t;
 
 #endif

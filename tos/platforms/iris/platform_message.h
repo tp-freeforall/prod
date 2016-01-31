@@ -46,8 +46,25 @@ typedef union message_footer {
 	rf230packet_footer_t rf230;
 } message_footer_t;
 
-typedef union message_metadata {
-	rf230packet_metadata_t rf230;
+typedef struct message_metadata {
+  union {
+    rf230_metadata_t  rf230_meta;
+    serial_metadata_t serial_meta;
+  };
+
+#ifdef LOW_POWER_LISTENING
+  lpl_metadata_t       lpl_meta;
+#endif
+
+  timestamp_metadata_t ts_meta;
+
+ /** Packet Link Metadata */
+#ifdef PACKET_LINK
+  link_metadata_t      link_meta;
+#endif
+
+  flags_metadata_t     flags_meta;
+
 } message_metadata_t;
 
 #endif

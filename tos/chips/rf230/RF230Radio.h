@@ -64,17 +64,4 @@ typedef nx_struct rf230packet_footer_t
 	// the time stamp is not recorded here, time stamped messaged cannot have max length
 } rf230packet_footer_t;
 
-typedef struct rf230packet_metadata_t
-{
-#ifdef LOW_POWER_LISTENING
-	lpl_metadata_t lpl;
-#endif
-#ifdef PACKET_LINK
-	link_metadata_t link;
-#endif
-	timestamp_metadata_t timestamp;
-	flags_metadata_t flags;
-	rf230_metadata_t rf230;
-} __attribute__((packed)) rf230packet_metadata_t;
-
 #endif//__RF230RADIO_H__

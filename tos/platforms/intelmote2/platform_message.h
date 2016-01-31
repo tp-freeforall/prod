@@ -63,9 +63,11 @@ typedef union message_footer {
   cc2420_footer_t cc2420;
 } message_footer_t;
 
-typedef union message_metadata {
-  cc2420_metadata_t cc2420;
-  serial_metadata_t serial;
+typedef struct message_metadata {
+  union {
+    cc2420_metadata_t cc2420_meta;
+    serial_metadata_t serial_meta;
+  };
 } message_metadata_t;
 
 #endif

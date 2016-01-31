@@ -84,7 +84,7 @@ typedef uint8_t cc2420_status_t;
 /**
  * CC2420 Security Header
  */
-typedef nx_struct security_header_t {
+typedef nx_struct security_header {
   nx_uint8_t secLevel:3;
   nx_uint8_t keyMode:2;
   nx_uint8_t reserved:3;
@@ -92,7 +92,7 @@ typedef nx_struct security_header_t {
   nx_uint8_t keyID[1]; // One byte for now
 } security_header_t;
 
-typedef nx_struct cc2420_header_t {
+typedef nx_struct cc2420_header {
   nxle_uint8_t length;
   nxle_uint16_t fcf;
   nxle_uint8_t dsn;
@@ -115,35 +115,30 @@ typedef nx_struct cc2420_header_t {
 /**
  * CC2420 Packet Footer
  */
-typedef nx_struct cc2420_footer_t {
+typedef nx_struct cc2420_footer {
 } cc2420_footer_t;
 
-/**
- * CC2420 Packet metadata. Contains extra information about the message
- * that will not be transmitted.
- *
- * Note that the first two bytes automatically take in the values of the
- * FCS when the payload is full. Do not modify the first two bytes of metadata.
- */
-typedef nx_struct cc2420_metadata_t {
-  nx_uint8_t rssi;
-  nx_uint8_t lqi;
-  nx_uint8_t tx_power;
-  nx_bool crc;
-  nx_bool ack;
-  nx_bool timesync;
+
+typedef nx_struct cc2420_metadata {
   nx_uint32_t timestamp;
   nx_uint16_t rxInterval;
+  nx_uint8_t  rssi;
+  nx_uint8_t  lqi;
+  nx_uint8_t  tx_power;
+  nx_bool     crc;
+  nx_bool     ack;
+  nx_bool     timesync;
 
   /** Packet Link Metadata */
 #ifdef PACKET_LINK
   nx_uint16_t maxRetries;
   nx_uint16_t retryDelay;
 #endif
+
 } cc2420_metadata_t;
 
 
-typedef nx_struct cc2420_packet_t {
+typedef nx_struct cc2420_packet {
   cc2420_header_t packet;
   nx_uint8_t data[];
 } cc2420_packet_t;

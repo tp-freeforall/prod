@@ -65,19 +65,6 @@ typedef nx_struct rfa1packet_footer_t
 	// the time stamp is not recorded here, time stamped messaged cannot have max length
 } rfa1packet_footer_t;
 
-typedef struct rfa1packet_metadata_t
-{
-#ifdef LOW_POWER_LISTENING
-	lpl_metadata_t lpl;
-#endif
-#ifdef PACKET_LINK
-	link_metadata_t link;
-#endif
-	timestamp_metadata_t timestamp;
-	flags_metadata_t flags;
-	rfa1_metadata_t rfa1;
-} rfa1packet_metadata_t;
-
 enum//masks for easyer handling
 {
 	RFA1_TX_PWR_MASK=0x0F,
