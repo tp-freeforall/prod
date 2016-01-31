@@ -59,12 +59,6 @@ interface RadioPacket
 	async command uint8_t maxPayloadLength();
 
 	/**
-	 * Returns the length of the metadata section. The metadata section
-	 * is at the very end of the message_t structure and grows downwards.
-	 */
-	async command uint8_t metadataLength(message_t* msg);
-
-	/**
 	 * Clears all metadata and sets all default values in the headers.
 	 */
 	async command void clear(message_t* msg);

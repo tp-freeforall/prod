@@ -301,11 +301,6 @@ implementation
 		return call SubPacket.maxPayloadLength() - sizeof(ieee154_simple_header_t);
 	}
 
-	async command uint8_t RadioPacket.metadataLength(message_t* msg)
-	{
-		return call SubPacket.metadataLength(msg);
-	}
-
 	async command void RadioPacket.clear(message_t* msg)
 	{
 		call Ieee154PacketLayer.createDataFrame(msg);

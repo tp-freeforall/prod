@@ -47,12 +47,6 @@ interface RFA1DriverConfig
 	async command uint8_t maxPayloadLength();
 
 	/**
-	 * Returns the length of a dummy metadata section to align the
-	 * metadata section properly.
-	 */
-	async command uint8_t metadataLength(message_t* msg);
-
-	/**
 	 * Returns TRUE if before sending this message we should make sure that
 	 * the channel is clear via a very basic (and quick) RSSI check.
 	 */

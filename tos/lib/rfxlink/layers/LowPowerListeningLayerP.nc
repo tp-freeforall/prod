@@ -372,9 +372,8 @@ implementation
 
 /*----------------- LowPowerListening -----------------*/
 
-	lpl_metadata_t* getMeta(message_t* msg)
-	{
-		return ((void*)msg) + sizeof(message_t) - call RadioPacket.metadataLength(msg);
+	lpl_metadata_t* getMeta(message_t* msg) {
+          return &(((message_metadata_t *)&(msg->metadata))->lpl_meta);
 	}
 
 	command void LowPowerListening.setLocalWakeupInterval(uint16_t interval)
@@ -433,11 +432,6 @@ implementation
 	async command uint8_t RadioPacket.maxPayloadLength()
 	{
 		return call SubPacket.maxPayloadLength();
-	}
-
-	async command uint8_t RadioPacket.metadataLength(message_t* msg)
-	{
-		return call SubPacket.metadataLength(msg) + sizeof(lpl_metadata_t);
 	}
 
 	async command void RadioPacket.clear(message_t* msg)

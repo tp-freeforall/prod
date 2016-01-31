@@ -108,11 +108,6 @@ implementation
 		return call SubPacket.maxPayloadLength();
 	}
 
-	async command uint8_t Ieee154Packet.metadataLength(message_t* msg)
-	{
-		return call SubPacket.metadataLength(msg);
-	}
-
 	async command void Ieee154Packet.clear(message_t* msg)
 	{
 		call SubPacket.clear(msg);
@@ -169,11 +164,6 @@ implementation
 	async command uint8_t TinyosPacket.maxPayloadLength()
 	{
 		return call SubPacket.maxPayloadLength() - PAYLOAD_OFFSET;
-	}
-
-	async command uint8_t TinyosPacket.metadataLength(message_t* msg)
-	{
-		return call SubPacket.metadataLength(msg);
 	}
 
 	async command void TinyosPacket.clear(message_t* msg)

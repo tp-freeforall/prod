@@ -65,11 +65,6 @@ implementation
 		return sizeof(message_header_t) + TOSH_DATA_LENGTH;
 	}
 
-	async command uint8_t RadioDriverConfig.metadataLength(message_t* msg)
-	{
-		return 0;
-	}
-
 #if !defined(PLATFORM_UCMINI) && !defined(PLATFORM_UCPROTONB) && !defined(PLATFORM_UCBASE)
 	async command uint8_t RadioDriverConfig.headerPreloadLength()
 	{

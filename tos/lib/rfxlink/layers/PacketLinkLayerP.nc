@@ -36,6 +36,7 @@
 
 #include <PacketLinkLayer.h>
 #include <RadioAssert.h>
+#include <platform_message.h>
 
 generic module PacketLinkLayerP()
 {
@@ -180,9 +181,8 @@ implementation
 
 // ------- PacketLink
 
-	link_metadata_t* getMeta(message_t* msg)
-	{
-		return ((void*)msg) + sizeof(message_t) - call RadioPacket.metadataLength(msg);
+	link_metadata_t* getMeta(message_t* msg) {
+          return &(((message_metadata_t *)&(msg->metadata))->link_meta);
 	}
 
 	command void PacketLink.setRetries(message_t *msg, uint16_t maxRetries)
@@ -230,11 +230,6 @@ implementation
 	async command uint8_t RadioPacket.maxPayloadLength()
 	{
 		return call SubPacket.maxPayloadLength();
-	}
-
-	async command uint8_t RadioPacket.metadataLength(message_t* msg)
-	{
-		return call SubPacket.metadataLength(msg) + sizeof(link_metadata_t);
 	}
 
 	async command void RadioPacket.clear(message_t* msg)

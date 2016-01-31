@@ -81,11 +81,6 @@ implementation
 		return sizeof(rfa1packet_header_t) + TOSH_DATA_LENGTH;
 	}
 
-	async command uint8_t RFA1DriverConfig.metadataLength(message_t* msg)
-	{
-		return 0;
-	}
-
 	async command bool RFA1DriverConfig.requiresRssiCca(message_t* msg)
 	{
 		return call Ieee154PacketLayer.isDataFrame(msg);

@@ -122,11 +122,6 @@ implementation
 		return sizeof(rf212packet_header_t) + TOSH_DATA_LENGTH;
 	}
 
-	async command uint8_t RF212DriverConfig.metadataLength(message_t* msg)
-	{
-		return 0;
-	}
-
 	async command uint8_t RF212DriverConfig.headerPreloadLength()
 	{
 		// we need the fcf, dsn, destpan and dest

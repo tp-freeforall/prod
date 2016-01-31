@@ -84,11 +84,6 @@ implementation
 		return sizeof(cc2520packet_header_t) + TOSH_DATA_LENGTH;
 	}
 
-	async command uint8_t CC2520DriverConfig.metadataLength(message_t* msg)
-	{
-		return 0;
-	}
-
 	async command uint8_t CC2520DriverConfig.headerPreloadLength()
 	{
 		// we need the fcf, dsn, destpan, and dest

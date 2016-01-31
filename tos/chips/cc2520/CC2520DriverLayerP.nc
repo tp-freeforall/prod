@@ -140,8 +140,8 @@ implementation {
     return ((void *) msg)  + call RadioPacket.headerLength(msg);
   }
 
-  cc2520_metadata_t *getMeta(message_t *msg) {
-    return ((void *) msg) + sizeof(message_t) - call RadioPacket.metadataLength(msg);
+  cc2520_metadata_t *getMeta(message_t *msg)  {
+    return &(((message_metadata_t *)&(msg->metadata))->cc2520_meta);
   }
 
   /*----------------- STATE -----------------*/
@@ -1808,7 +1808,7 @@ implementation {
 
   async command void RadioPacket.setPayloadLength(message_t *msg, uint8_t length) {
     RADIO_ASSERT( 1 <= length && length <= 125 );
-    RADIO_ASSERT( call RadioPacket.headerLength(msg) + length + call RadioPacket.metadataLength(msg) <= sizeof(message_t) );
+    RADIO_ASSERT( call RadioPacket.headerLength(msg) + length + sizeof(message_metadata_t) <= sizeof(message_t) );
 
     // we add the length of the CRC, which is automatically generated
     getHeader(msg)->length = length + 2;
@@ -1819,11 +1819,6 @@ implementation {
     RADIO_ASSERT( call Config.maxPayloadLength() - sizeof(cc2520_header_t) <= 125 );
 
     return call Config.maxPayloadLength() - sizeof(cc2520_header_t);
-  }
-
-
-  async command uint8_t RadioPacket.metadataLength(message_t *msg) {
-    return call Config.metadataLength(msg) + sizeof(cc2520_metadata_t);
   }
 
 

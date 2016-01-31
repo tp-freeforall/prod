@@ -51,9 +51,8 @@ generic module MetadataFlagsLayerC()
 
 implementation
 {
-	flags_metadata_t* getMeta(message_t* msg)
-	{
-		return ((void*)msg) + sizeof(message_t) - call RadioPacket.metadataLength(msg);
+	flags_metadata_t* getMeta(message_t* msg) {
+          return &(((message_metadata_t *)&(msg->metadata))->flags_meta);
 	}
 
 /*----------------- RadioPacket -----------------*/
@@ -105,11 +104,6 @@ implementation
 	async command uint8_t RadioPacket.maxPayloadLength()
 	{
 		return call SubPacket.maxPayloadLength();
-	}
-
-	async command uint8_t RadioPacket.metadataLength(message_t* msg)
-	{
-		return call SubPacket.metadataLength(msg) + sizeof(flags_metadata_t);
 	}
 
 	async command void RadioPacket.clear(message_t* msg)
