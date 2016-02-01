@@ -32,6 +32,7 @@
  * Author: Miklos Maroti
  */
 
+#include <AM.h>
 #include <Neighborhood.h>
 
 module NeighborhoodP
