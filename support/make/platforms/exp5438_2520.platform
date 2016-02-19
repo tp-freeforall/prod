@@ -28,8 +28,6 @@ PFLAGS += -I%T/chips/msp430/pmm
 PFLAGS += -I%T/chips/msp430/adc12
 
 PFLAGS += -I%T/chips/tmp102
-PFLAGS += -I%T/chips/lis3dh
-
 PFLAGS += -I%T/chips/cc2520-v2
 
 PFLAGS += -I%T/lib/timer
