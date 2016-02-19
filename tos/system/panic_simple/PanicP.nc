@@ -38,6 +38,7 @@ module PanicP {
 }
 
 implementation {
+  /* if a double panic, high order bit is set */
   norace bool m_in_panic;               /* initialized to 0 */
 
   void debug_break(uint16_t arg)  __attribute__ ((noinline)) {
@@ -77,7 +78,9 @@ implementation {
        */
       m_in_panic = TRUE;
       signal Panic.hook();
-    }
+    } else
+      m_in_panic |= 0x80;               /* flag a double */
+    nop();
     debug_break(2);
   }
 
