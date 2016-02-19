@@ -6,6 +6,10 @@ For the purpose of this tutorial, let's build for the z1 platform.  The
 z1 uses a msp430f2617 processor which belongs to the x2 family.  This will
 be needed when deciding which cpu specific gdb support file to use.
 
+Note: If you are using an x1 cpu, ie. an msp430f1611 you would copy the
+gdb_x1 file to the app directory as .gdb_x1.  Similarily, if you are using
+the msp430f5438a, a x5 cpu, you would copy gdb_x5.
+
 First one must build the application with debugging information.  This can
 be done using either "make debug z1" or "make debugopt z1".  The later is
 preferred because it optimizes as well as including debugging information.
@@ -53,9 +57,15 @@ now that the build directory exists, we can finish preping the gdb files.
     cd build/z1
     ln -s ../../gdbinit
 
+WARNING: If you forget to do the symbolic link above msp430-gdb won't
+connect to the gdb server and you will just get a (gdb) prompt.  Leaving
+you scratching your head.  Always check for the symbolic link to the
+.gdbinit file at the base level of the application.  ie. ../../.gdbinit.
+
+
 Fire up the gdb server.   Probably from another terminal window.
 
-    mspdebug uif -qjd /dev/ttyUSB0 "opt gdb_loop true" gdb
+    mspdebug uif -qjd /dev/ttyUSB0 gdb
 
 And connect to the beasty using gdb.   From the apps/<blah> directory:
 
