@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011, 2014 Eric B. Decker
+ * Copyright (c) 2011, 2014, 2016 Eric B. Decker
  * Copyright (c) 2009 DEXMA SENSORS SL
  * Copyright (c) 2000-2003 The Regents of the University of California.  
  * All rights reserved.
@@ -45,6 +45,12 @@
  * With the mspgcc (gcc 3.2.3) toolchain the following was used to
  * generate this file.   With mspgcc4 (gcc 4.4.5), uniarch, and TI_HEADERS
  * this is no longer true.
+ *
+ * The union mechanism really doesn't work.  There are way too many
+ * inconsistencies between the different processors in the msp430 collection.
+ * One possible solution is to split the processor dependencies into their
+ * own directories, for example the msp430f5438a has its own msp430regtypes.h
+ * and the correct directory gets searched after the processor is selected.
  *
  * Rather, this file is maintained by hand and is essentially the union of
  * the cpu definitions that are currently being used and supported by the
@@ -276,19 +282,6 @@
 #define TYPE_PORT_REN uint8_t
 #define TYPE_PORT_DS uint8_t
 
-/*
- * Port 0?  very odd.  TI starts with P1 so where did P0 come from?
- */
-#ifdef notdef
-#define TYPE_P0IN  uint8_t
-#define TYPE_P0OUT uint8_t
-#define TYPE_P0DIR uint8_t
-#define TYPE_P0IFG uint8_t
-#define TYPE_P0IES uint8_t
-#define TYPE_P0IE  uint8_t
-#define TYPE_P0SEL uint8_t
-#endif
-
 #define TYPE_P1IN  uint8_t
 #define TYPE_P1OUT uint8_t
 #define TYPE_P1DIR uint8_t
@@ -372,33 +365,156 @@
 #define TYPE_P11DS  uint8_t
 #define TYPE_P11SEL uint8_t
 
-#define TYPE_PJIN   uint8_t
-#define TYPE_PJOUT  uint8_t
-#define TYPE_PJDIR  uint8_t
-#define TYPE_PJREN  uint8_t
-#define TYPE_PJDS   uint8_t
-
-/* no PJSEL */
-
-#ifdef notdef
-/*
- * the z1 defined the following:
- */
-#define TYPE_PAIN uint8_t
-#define TYPE_PBIN uint8_t
-
-/*
- * but the 2618 defines PAIN as a sfrw at 38
- * and there is no PBIN.
- */
+#define TYPE_PADIR_H uint8_t
+#define TYPE_PADIR_L uint8_t
+#define TYPE_PADIR uint16_t
+#define TYPE_PADS_H uint8_t
+#define TYPE_PADS_L uint8_t
+#define TYPE_PADS uint16_t
+#define TYPE_PAIE_H uint8_t
+#define TYPE_PAIE_L uint8_t
+#define TYPE_PAIES_H uint8_t
+#define TYPE_PAIES_L uint8_t
+#define TYPE_PAIES uint16_t
+#define TYPE_PAIE uint16_t
+#define TYPE_PAIFG_H uint8_t
+#define TYPE_PAIFG_L uint8_t
+#define TYPE_PAIFG uint16_t
+#define TYPE_PAIN_H uint8_t
+#define TYPE_PAIN_L uint8_t
 #define TYPE_PAIN uint16_t
-paout
-padir
-pasel
-paren
+#define TYPE_PAOUT_H uint8_t
+#define TYPE_PAOUT_L uint8_t
+#define TYPE_PAOUT uint16_t
+#define TYPE_PAREN_H uint8_t
+#define TYPE_PAREN_L uint8_t
+#define TYPE_PAREN uint16_t
+#define TYPE_PASEL_H uint8_t
+#define TYPE_PASEL_L uint8_t
+#define TYPE_PASEL uint16_t
 
-#endif
+#define TYPE_PBDIR_H uint8_t
+#define TYPE_PBDIR_L uint8_t
+#define TYPE_PBDIR uint16_t
+#define TYPE_PBDS_H uint8_t
+#define TYPE_PBDS_L uint8_t
+#define TYPE_PBDS uint16_t
+#define TYPE_PBIE_H uint8_t
+#define TYPE_PBIE_L uint8_t
+#define TYPE_PBIES_H uint8_t
+#define TYPE_PBIES_L uint8_t
+#define TYPE_PBIES uint16_t
+#define TYPE_PBIE uint16_t
+#define TYPE_PBIFG_H uint8_t
+#define TYPE_PBIFG_L uint8_t
+#define TYPE_PBIFG uint16_t
+#define TYPE_PBIN_H uint8_t
+#define TYPE_PBIN_L uint8_t
+#define TYPE_PBIN uint16_t
+#define TYPE_PBOUT_H uint8_t
+#define TYPE_PBOUT_L uint8_t
+#define TYPE_PBOUT uint16_t
+#define TYPE_PBREN_H uint8_t
+#define TYPE_PBREN_L uint8_t
+#define TYPE_PBREN uint16_t
+#define TYPE_PBSEL_H uint8_t
+#define TYPE_PBSEL_L uint8_t
+#define TYPE_PBSEL uint16_t
 
+#define TYPE_PCDIR_H uint8_t
+#define TYPE_PCDIR_L uint8_t
+#define TYPE_PCDIR uint16_t
+#define TYPE_PCDS_H uint8_t
+#define TYPE_PCDS_L uint8_t
+#define TYPE_PCDS uint16_t
+#define TYPE_PCIN_H uint8_t
+#define TYPE_PCIN_L uint8_t
+#define TYPE_PCIN uint16_t
+#define TYPE_PCOUT_H uint8_t
+#define TYPE_PCOUT_L uint8_t
+#define TYPE_PCOUT uint16_t
+#define TYPE_PCREN_H uint8_t
+#define TYPE_PCREN_L uint8_t
+#define TYPE_PCREN uint16_t
+#define TYPE_PCSEL_H uint8_t
+#define TYPE_PCSEL_L uint8_t
+#define TYPE_PCSEL uint16_t
+
+#define TYPE_PDDIR_H uint8_t
+#define TYPE_PDDIR_L uint8_t
+#define TYPE_PDDIR uint16_t
+#define TYPE_PDDS_H uint8_t
+#define TYPE_PDDS_L uint8_t
+#define TYPE_PDDS uint16_t
+#define TYPE_PDIN_H uint8_t
+#define TYPE_PDIN_L uint8_t
+#define TYPE_PDIN uint16_t
+#define TYPE_PDOUT_H uint8_t
+#define TYPE_PDOUT_L uint8_t
+#define TYPE_PDOUT uint16_t
+#define TYPE_PDREN_H uint8_t
+#define TYPE_PDREN_L uint8_t
+#define TYPE_PDREN uint16_t
+#define TYPE_PDSEL_H uint8_t
+#define TYPE_PDSEL_L uint8_t
+#define TYPE_PDSEL uint16_t
+
+#define TYPE_PEDIR_H uint8_t
+#define TYPE_PEDIR_L uint8_t
+#define TYPE_PEDIR uint16_t
+#define TYPE_PEDS_H uint8_t
+#define TYPE_PEDS_L uint8_t
+#define TYPE_PEDS uint16_t
+#define TYPE_PEIN_H uint8_t
+#define TYPE_PEIN_L uint8_t
+#define TYPE_PEIN uint16_t
+#define TYPE_PEOUT_H uint8_t
+#define TYPE_PEOUT_L uint8_t
+#define TYPE_PEOUT uint16_t
+#define TYPE_PEREN_H uint8_t
+#define TYPE_PEREN_L uint8_t
+#define TYPE_PEREN uint16_t
+#define TYPE_PESEL_H uint8_t
+#define TYPE_PESEL_L uint8_t
+#define TYPE_PESEL uint16_t
+
+#define TYPE_PFDIR_H uint8_t
+#define TYPE_PFDIR_L uint8_t
+#define TYPE_PFDIR uint16_t
+#define TYPE_PFDS_H uint8_t
+#define TYPE_PFDS_L uint8_t
+#define TYPE_PFDS uint16_t
+#define TYPE_PFIN_H uint8_t
+#define TYPE_PFIN_L uint8_t
+#define TYPE_PFIN uint16_t
+#define TYPE_PFOUT_H uint8_t
+#define TYPE_PFOUT_L uint8_t
+#define TYPE_PFOUT uint16_t
+#define TYPE_PFREN_H uint8_t
+#define TYPE_PFREN_L uint8_t
+#define TYPE_PFREN uint16_t
+#define TYPE_PFSEL_H uint8_t
+#define TYPE_PFSEL_L uint8_t
+#define TYPE_PFSEL uint16_t
+
+#define TYPE_PJDIR_H uint8_t
+#define TYPE_PJDIR_L uint8_t
+#define TYPE_PJDIR uint16_t
+#define TYPE_PJDS_H uint8_t
+#define TYPE_PJDS_L uint8_t
+#define TYPE_PJDS uint16_t
+#define TYPE_PJIN_H uint8_t
+#define TYPE_PJIN_L uint8_t
+#define TYPE_PJIN uint16_t
+#define TYPE_PJOUT_H uint8_t
+#define TYPE_PJOUT_L uint8_t
+#define TYPE_PJOUT uint16_t
+#define TYPE_PJREN_H uint8_t
+#define TYPE_PJREN_L uint8_t
+#define TYPE_PJREN uint16_t
+#define TYPE_PJSEL_H uint8_t
+#define TYPE_PJSEL_L uint8_t
+#define TYPE_PJSEL uint16_t
 
 #define TYPE_MPY uint16_t
 #define TYPE_MPYS uint16_t
@@ -406,42 +522,6 @@ paren
 
 #define TYPE_RESHI uint16_t
 #define TYPE_RESLO uint16_t
-
-/*
- * what are these RET things?
- */
-#define TYPE_RET0 uint16_t
-#define TYPE_RET1 uint16_t
-#define TYPE_RET10 uint16_t
-#define TYPE_RET11 uint16_t
-#define TYPE_RET12 uint16_t
-#define TYPE_RET13 uint16_t
-#define TYPE_RET14 uint16_t
-#define TYPE_RET15 uint16_t
-#define TYPE_RET16 uint16_t
-#define TYPE_RET17 uint16_t
-#define TYPE_RET18 uint16_t
-#define TYPE_RET19 uint16_t
-#define TYPE_RET2 uint16_t
-#define TYPE_RET20 uint16_t
-#define TYPE_RET21 uint16_t
-#define TYPE_RET22 uint16_t
-#define TYPE_RET23 uint16_t
-#define TYPE_RET24 uint16_t
-#define TYPE_RET25 uint16_t
-#define TYPE_RET26 uint16_t
-#define TYPE_RET27 uint16_t
-#define TYPE_RET28 uint16_t
-#define TYPE_RET29 uint16_t
-#define TYPE_RET3 uint16_t
-#define TYPE_RET30 uint16_t
-#define TYPE_RET31 uint16_t
-#define TYPE_RET4 uint16_t
-#define TYPE_RET5 uint16_t
-#define TYPE_RET6 uint16_t
-#define TYPE_RET7 uint16_t
-#define TYPE_RET8 uint16_t
-#define TYPE_RET9 uint16_t
 
 #define TYPE_RTCCTL uint8_t
 #define TYPE_RTCDAY uint8_t
@@ -621,48 +701,279 @@ paren
 #define TYPE_UC0IFG uint8_t
 #define TYPE_UC1IE uint8_t
 #define TYPE_UC1IFG uint8_t
+
 #define TYPE_UCA0ABCTL uint8_t
 #define TYPE_UCA0BR0 uint8_t
 #define TYPE_UCA0BR1 uint8_t
+#define TYPE_UCA0BRW_H uint8_t
+#define TYPE_UCA0BRW_L uint8_t
+#define TYPE_UCA0BRW uint16_t
 #define TYPE_UCA0CTL0 uint8_t
 #define TYPE_UCA0CTL1 uint8_t
+#define TYPE_UCA0CTLW0_H uint8_t
+#define TYPE_UCA0CTLW0_L uint8_t
+#define TYPE_UCA0CTLW0 uint16_t
+#define TYPE_UCA0CTLW1_H uint8_t
+#define TYPE_UCA0CTLW1_L uint8_t
+#define TYPE_UCA0CTLW1 uint16_t
+#define TYPE_UCA0ICTL_H uint8_t
+#define TYPE_UCA0ICTL_L uint8_t
+#define TYPE_UCA0ICTL uint16_t
+#define TYPE_UCA0IE uint8_t
+#define TYPE_UCA0IFG uint8_t
+#define TYPE_UCA0IRCTL_H uint8_t
+#define TYPE_UCA0IRCTL_L uint8_t
+#define TYPE_UCA0IRCTL uint16_t
 #define TYPE_UCA0IRRCTL uint8_t
 #define TYPE_UCA0IRTCTL uint8_t
+#define TYPE_UCA0IV uint16_t
 #define TYPE_UCA0MCTL uint8_t
-#define TYPE_UCA0RXBUF uint8_t
+#define TYPE_UCA0MCTLW_H uint8_t
+#define TYPE_UCA0MCTLW_L uint8_t
+#define TYPE_UCA0MCTLW uint16_t
 #define TYPE_UCA0STAT uint8_t
+#define TYPE_UCA0STATW uint8_t
+#define TYPE_UCA0RXBUF uint8_t
 #define TYPE_UCA0TXBUF uint8_t
+
 #define TYPE_UCA1ABCTL uint8_t
 #define TYPE_UCA1BR0 uint8_t
 #define TYPE_UCA1BR1 uint8_t
+#define TYPE_UCA1BRW_H uint8_t
+#define TYPE_UCA1BRW_L uint8_t
+#define TYPE_UCA1BRW uint16_t
 #define TYPE_UCA1CTL0 uint8_t
 #define TYPE_UCA1CTL1 uint8_t
+#define TYPE_UCA1CTLW0_H uint8_t
+#define TYPE_UCA1CTLW0_L uint8_t
+#define TYPE_UCA1CTLW0 uint16_t
+#define TYPE_UCA1CTLW1_H uint8_t
+#define TYPE_UCA1CTLW1_L uint8_t
+#define TYPE_UCA1CTLW1 uint16_t
+#define TYPE_UCA1ICTL_H uint8_t
+#define TYPE_UCA1ICTL_L uint8_t
+#define TYPE_UCA1ICTL uint16_t
+#define TYPE_UCA1IE uint8_t
+#define TYPE_UCA1IFG uint8_t
+#define TYPE_UCA1IRCTL_H uint8_t
+#define TYPE_UCA1IRCTL_L uint8_t
+#define TYPE_UCA1IRCTL uint16_t
 #define TYPE_UCA1IRRCTL uint8_t
 #define TYPE_UCA1IRTCTL uint8_t
+#define TYPE_UCA1IV uint16_t
 #define TYPE_UCA1MCTL uint8_t
-#define TYPE_UCA1RXBUF uint8_t
+#define TYPE_UCA1MCTLW_H uint8_t
+#define TYPE_UCA1MCTLW_L uint8_t
+#define TYPE_UCA1MCTLW uint16_t
 #define TYPE_UCA1STAT uint8_t
+#define TYPE_UCA1STATW uint8_t
+#define TYPE_UCA1RXBUF uint8_t
 #define TYPE_UCA1TXBUF uint8_t
+
+#define TYPE_UCA2ABCTL uint8_t
+#define TYPE_UCA2BRW_H uint8_t
+#define TYPE_UCA2BRW_L uint8_t
+#define TYPE_UCA2BRW uint16_t
+#define TYPE_UCA2CTLW0_H uint8_t
+#define TYPE_UCA2CTLW0_L uint8_t
+#define TYPE_UCA2CTLW0 uint16_t
+#define TYPE_UCA2CTLW1_H uint8_t
+#define TYPE_UCA2CTLW1_L uint8_t
+#define TYPE_UCA2CTLW1 uint16_t
+#define TYPE_UCA2ICTL_H uint8_t
+#define TYPE_UCA2ICTL_L uint8_t
+#define TYPE_UCA2ICTL uint16_t
+#define TYPE_UCA2IE uint8_t
+#define TYPE_UCA2IFG uint8_t
+#define TYPE_UCA2IRCTL_H uint8_t
+#define TYPE_UCA2IRCTL_L uint8_t
+#define TYPE_UCA2IRCTL uint16_t
+#define TYPE_UCA2IV uint16_t
+#define TYPE_UCA2MCTL uint8_t
+#define TYPE_UCA2MCTLW_H uint8_t
+#define TYPE_UCA2MCTLW_L uint8_t
+#define TYPE_UCA2MCTLW uint16_t
+#define TYPE_UCA2STAT uint8_t
+#define TYPE_UCA2STATW uint8_t
+#define TYPE_UCA2RXBUF uint8_t
+#define TYPE_UCA2TXBUF uint8_t
+
+#define TYPE_UCA3ABCTL uint8_t
+#define TYPE_UCA3BRW_H uint8_t
+#define TYPE_UCA3BRW_L uint8_t
+#define TYPE_UCA3BRW uint16_t
+#define TYPE_UCA3CTLW0_H uint8_t
+#define TYPE_UCA3CTLW0_L uint8_t
+#define TYPE_UCA3CTLW0 uint16_t
+#define TYPE_UCA3ICTL_H uint8_t
+#define TYPE_UCA3ICTL_L uint8_t
+#define TYPE_UCA3ICTL uint16_t
+#define TYPE_UCA3IE uint8_t
+#define TYPE_UCA3IFG uint8_t
+#define TYPE_UCA3IRCTL_H uint8_t
+#define TYPE_UCA3IRCTL_L uint8_t
+#define TYPE_UCA3IRCTL uint16_t
+#define TYPE_UCA3IV uint16_t
+#define TYPE_UCA3MCTL uint8_t
+#define TYPE_UCA3STAT uint8_t
+#define TYPE_UCA3RXBUF uint8_t
+#define TYPE_UCA3TXBUF uint8_t
+
+#define TYPE_UCB0ADDMASK_H uint8_t
+#define TYPE_UCB0ADDMASK_L uint8_t
+#define TYPE_UCB0ADDMASK uint16_t
+#define TYPE_UCB0ADDRX_H uint8_t
+#define TYPE_UCB0ADDRX_L uint8_t
+#define TYPE_UCB0ADDRX uint16_t
 #define TYPE_UCB0BR0 uint8_t
 #define TYPE_UCB0BR1 uint8_t
+#define TYPE_UCB0BRW_H uint8_t
+#define TYPE_UCB0BRW_L uint8_t
+#define TYPE_UCB0BRW uint16_t
 #define TYPE_UCB0CTL0 uint8_t
 #define TYPE_UCB0CTL1 uint8_t
+#define TYPE_UCB0CTLW0_H uint8_t
+#define TYPE_UCB0CTLW0_L uint8_t
+#define TYPE_UCB0CTLW0 uint16_t
+#define TYPE_UCB0CTLW1_H uint8_t
+#define TYPE_UCB0CTLW1_L uint8_t
+#define TYPE_UCB0CTLW1 uint16_t
 #define TYPE_UCB0I2CIE uint8_t
+#define TYPE_UCB0I2COA0_H uint8_t
+#define TYPE_UCB0I2COA0_L uint8_t
+#define TYPE_UCB0I2COA0 uint16_t
+#define TYPE_UCB0I2COA1_H uint8_t
+#define TYPE_UCB0I2COA1_L uint8_t
+#define TYPE_UCB0I2COA1 uint16_t
+#define TYPE_UCB0I2COA2_H uint8_t
+#define TYPE_UCB0I2COA2_L uint8_t
+#define TYPE_UCB0I2COA2 uint16_t
+#define TYPE_UCB0I2COA3_H uint8_t
+#define TYPE_UCB0I2COA3_L uint8_t
+#define TYPE_UCB0I2COA3 uint16_t
+#define TYPE_UCB0I2COA_H uint8_t
+#define TYPE_UCB0I2COA_L uint8_t
 #define TYPE_UCB0I2COA uint16_t
+#define TYPE_UCB0I2CSA_H uint8_t
+#define TYPE_UCB0I2CSA_L uint8_t
 #define TYPE_UCB0I2CSA uint16_t
-#define TYPE_UCB0RXBUF uint8_t
+#define TYPE_UCB0ICTL_H uint8_t
+#define TYPE_UCB0ICTL_L uint8_t
+#define TYPE_UCB0ICTL uint16_t
+#define TYPE_UCB0IE uint8_t
+#define TYPE_UCB0IFG uint8_t
+#define TYPE_UCB0IV uint16_t
 #define TYPE_UCB0STAT uint8_t
+#define TYPE_UCB0STATW_H uint8_t
+#define TYPE_UCB0STATW_L uint8_t
+#define TYPE_UCB0STATW uint16_t
+#define TYPE_UCB0TBCNT_H uint8_t
+#define TYPE_UCB0TBCNT_L uint8_t
+#define TYPE_UCB0TBCNT uint16_t
+#define TYPE_UCB0RXBUF uint8_t
 #define TYPE_UCB0TXBUF uint8_t
+
 #define TYPE_UCB1BR0 uint8_t
 #define TYPE_UCB1BR1 uint8_t
+#define TYPE_UCB1BRW_H uint8_t
+#define TYPE_UCB1BRW_L uint8_t
+#define TYPE_UCB1BRW uint16_t
 #define TYPE_UCB1CTL0 uint8_t
 #define TYPE_UCB1CTL1 uint8_t
+#define TYPE_UCB1CTLW0_H uint8_t
+#define TYPE_UCB1CTLW0_L uint8_t
+#define TYPE_UCB1CTLW0 uint16_t
 #define TYPE_UCB1I2CIE uint8_t
+#define TYPE_UCB1I2COA_H uint8_t
+#define TYPE_UCB1I2COA_L uint8_t
 #define TYPE_UCB1I2COA uint16_t
+#define TYPE_UCB1I2CSA_H uint8_t
+#define TYPE_UCB1I2CSA_L uint8_t
 #define TYPE_UCB1I2CSA uint16_t
-#define TYPE_UCB1RXBUF uint8_t
+#define TYPE_UCB1ICTL_H uint8_t
+#define TYPE_UCB1ICTL_L uint8_t
+#define TYPE_UCB1ICTL uint16_t
+#define TYPE_UCB1IE uint8_t
+#define TYPE_UCB1IFG uint8_t
+#define TYPE_UCB1IV uint16_t
 #define TYPE_UCB1STAT uint8_t
+#define TYPE_UCB1RXBUF uint8_t
 #define TYPE_UCB1TXBUF uint8_t
+
+#define TYPE_UCB2BRW_H uint8_t
+#define TYPE_UCB2BRW_L uint8_t
+#define TYPE_UCB2BRW uint16_t
+#define TYPE_UCB2CTLW0_H uint8_t
+#define TYPE_UCB2CTLW0_L uint8_t
+#define TYPE_UCB2CTLW0 uint16_t
+#define TYPE_UCB2I2COA_H uint8_t
+#define TYPE_UCB2I2COA_L uint8_t
+#define TYPE_UCB2I2COA uint16_t
+#define TYPE_UCB2I2CSA_H uint8_t
+#define TYPE_UCB2I2CSA_L uint8_t
+#define TYPE_UCB2I2CSA uint16_t
+#define TYPE_UCB2ICTL_H uint8_t
+#define TYPE_UCB2ICTL_L uint8_t
+#define TYPE_UCB2ICTL uint16_t
+#define TYPE_UCB2IE uint8_t
+#define TYPE_UCB2IFG uint8_t
+#define TYPE_UCB2IV uint16_t
+#define TYPE_UCB2STAT uint8_t
+#define TYPE_UCB2RXBUF uint8_t
+#define TYPE_UCB2TXBUF uint8_t
+
+#define TYPE_UCB3BRW_H uint8_t
+#define TYPE_UCB3BRW_L uint8_t
+#define TYPE_UCB3BRW uint16_t
+#define TYPE_UCB3CTLW0_H uint8_t
+#define TYPE_UCB3CTLW0_L uint8_t
+#define TYPE_UCB3CTLW0 uint16_t
+#define TYPE_UCB3I2COA_H uint8_t
+#define TYPE_UCB3I2COA_L uint8_t
+#define TYPE_UCB3I2COA uint16_t
+#define TYPE_UCB3I2CSA_H uint8_t
+#define TYPE_UCB3I2CSA_L uint8_t
+#define TYPE_UCB3I2CSA uint16_t
+#define TYPE_UCB3ICTL_H uint8_t
+#define TYPE_UCB3ICTL_L uint8_t
+#define TYPE_UCB3ICTL uint16_t
+#define TYPE_UCB2IE uint8_t
+#define TYPE_UCB2IFG uint8_t
+#define TYPE_UCB3IV uint16_t
+#define TYPE_UCB3STAT uint8_t
+#define TYPE_UCB3RXBUF uint8_t
+#define TYPE_UCB3TXBUF uint8_t
+
+#define TYPE_UCSCTL0_H uint8_t
+#define TYPE_UCSCTL0_L uint8_t
+#define TYPE_UCSCTL0 uint16_t
+#define TYPE_UCSCTL1_H uint8_t
+#define TYPE_UCSCTL1_L uint8_t
+#define TYPE_UCSCTL1 uint16_t
+#define TYPE_UCSCTL2_H uint8_t
+#define TYPE_UCSCTL2_L uint8_t
+#define TYPE_UCSCTL2 uint16_t
+#define TYPE_UCSCTL3_H uint8_t
+#define TYPE_UCSCTL3_L uint8_t
+#define TYPE_UCSCTL3 uint16_t
+#define TYPE_UCSCTL4_H uint8_t
+#define TYPE_UCSCTL4_L uint8_t
+#define TYPE_UCSCTL4 uint16_t
+#define TYPE_UCSCTL5_H uint8_t
+#define TYPE_UCSCTL5_L uint8_t
+#define TYPE_UCSCTL5 uint16_t
+#define TYPE_UCSCTL6_H uint8_t
+#define TYPE_UCSCTL6_L uint8_t
+#define TYPE_UCSCTL6 uint16_t
+#define TYPE_UCSCTL7_H uint8_t
+#define TYPE_UCSCTL7_L uint8_t
+#define TYPE_UCSCTL7 uint16_t
+#define TYPE_UCSCTL8_H uint8_t
+#define TYPE_UCSCTL8_L uint8_t
+#define TYPE_UCSCTL8 uint16_t
+#define TYPE_UCSCTL9_H uint8_t
+#define TYPE_UCSCTL9_L uint8_t
+#define TYPE_UCSCTL9 uint16_t
 
 #define TYPE_UCTL uint8_t
 #define TYPE_UCTL0 uint8_t
