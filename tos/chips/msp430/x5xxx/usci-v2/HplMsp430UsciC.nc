@@ -92,7 +92,4 @@ implementation {
   ResourceDefaultOwner = ArbiterC;
   ArbiterInfo = ArbiterC;
   HplUsciP.ArbiterInfo -> ArbiterC;
-
-  components LedsC;
-  HplUsciP.Leds -> LedsC;
 }

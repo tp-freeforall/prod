@@ -98,7 +98,6 @@ generic module HplMsp430UsciP(
   uses {
     interface HplMsp430UsciInterrupts as RawInterrupts;
     interface ArbiterInfo;
-    interface Leds;
   }
 }
 implementation {
