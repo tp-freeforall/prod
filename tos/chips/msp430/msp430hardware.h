@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2013 Eric B. Decker
+ * Copyright (c) 2011-2013, 2016 Eric B. Decker
  * Copyright (c) 2010 People Power Co.
  * Copyright (c) 2000-2003, 2010 The Regents of the University of California.
  * All rights reserved.
@@ -40,6 +40,9 @@
  * @author Eric B. Decker <cire831@gmail.com>
  */
 
+#ifndef __H_MSP430HARDWARE_H__
+#define __H_MSP430HARDWARE_H__
+
 /*
  * Control Defines:
  *
@@ -58,18 +61,17 @@
 #define INLINE_ATTRIBUTE __attribute__((always_inline))
 #endif
 
-#ifndef _H_msp430hardware_h
-#define _H_msp430hardware_h
-
 /*
  * __TOS_MSP430_CORE__ defines the release version of the msp430 core code.
  * It can be used when transitioning between major changes in the msp430
  * API.
  *
- * Ver 1, subver 0
+ * Ver 1, subver 0: original version
+ * Ver 1, subver 0: includes more fixes for Port<Alpha> breakage.  16 bit combined
+ *    vs. 8 bit ports.
  */
-#define __TOS_MSP430_CORE__ 0100
-#define __TOS_MSP430_CORE_0100__ 0100
+#define __TOS_MSP430_CORE__ 0101
+#define __TOS_MSP430_CORE_0101__ 0101
 
 #if defined(__MSPGCC__)
 /* mspgcc */
@@ -176,22 +178,22 @@
 
 #if defined(__MSP430_HAS_PORTA__) || defined(__MSP430_HAS_PORTA_R__)
 #if (! defined(P1IN_)) && (defined(__MSP430_HAS_PORT1__) || defined(__MSP430_HAS_PORT1_R__))
-#define P1IN_  (uint16_t)(PAIN_)
-#define P1OUT_ (uint16_t)(PAOUT_)
-#define P1DIR_ (uint16_t)(PADIR_)
-#define P1SEL_ (uint16_t)(PASEL_)
+#define P1IN_  PAIN_
+#define P1OUT_ PAOUT_
+#define P1DIR_ PADIR_
+#define P1SEL_ PASEL_
 #if defined(__MSP430_HAS_PORT1_R__)
-#define P1REN_ (uint16_t)(PAREN_)
+#define P1REN_ PAREN_
 #endif /* __MSP430_HAS_PORT1_R__ */
 #endif /* __MSP430_HAS_PORT1__ */
 
 #if (! defined(P2IN_)) && (defined(__MSP430_HAS_PORT2__) || defined(__MSP430_HAS_PORT2_R__))
-#define P2IN_  (uint16_t)(PAIN_+1)
-#define P2OUT_ (uint16_t)(PAOUT_+1)
-#define P2DIR_ (uint16_t)(PADIR_+1)
-#define P2SEL_ (uint16_t)(PASEL_+1)
+#define P2IN_  PAIN_+1
+#define P2OUT_ PAOUT_+1
+#define P2DIR_ PADIR_+1
+#define P2SEL_ PASEL_+1
 #if defined(__MSP430_HAS_PORT2_R__)
-#define P2REN_ (uint16_t)(PAREN_+1)
+#define P2REN_ PAREN_+1
 #endif /* __MSP430_HAS_PORT2_R__ */
 #endif /* __MSP430_HAS_PORT2__ */
 #endif /* __MSP430_HAS_PORTA__ */
@@ -199,22 +201,24 @@
 
 #if defined(__MSP430_HAS_PORTB__) || defined(__MSP430_HAS_PORTB_R__)
 #if (! defined(P3IN_)) && (defined(__MSP430_HAS_PORT3__) || defined(__MSP430_HAS_PORT3_R__))
-#define P3IN_  (uint16_t)(PBIN_)
-#define P3OUT_ (uint16_t)(PBOUT_)
-#define P3DIR_ (uint16_t)(PBDIR_)
-#define P3SEL_ (uint16_t)(PBSEL_)
+#define P3IN_  PBIN_
+#define P3OUT_ PBOUT_
+#define P3DIR_ PBDIR_
+#define P3SEL_ PBSEL_
+#undef P3SEL
+#define P3SEL PBSEL_L
 #if defined(__MSP430_HAS_PORT3_R__)
-#define P3REN_ (uint16_t)(PBREN_)
+#define P3REN_ PBREN_
 #endif /* __MSP430_HAS_PORT3_R__ */
 #endif /* __MSP430_HAS_PORT3__ */
 
 #if (! defined(P4IN_)) && (defined(__MSP430_HAS_PORT4__) || defined(__MSP430_HAS_PORT4_R__))
-#define P4IN_  (uint16_t)(PBIN_+1)
-#define P4OUT_ (uint16_t)(PBOUT_+1)
-#define P4DIR_ (uint16_t)(PBDIR_+1)
-#define P4SEL_ (uint16_t)(PBSEL_+1)
+#define P4IN_  PBIN_+1
+#define P4OUT_ PBOUT_+1
+#define P4DIR_ PBDIR_+1
+#define P4SEL_ PBSEL_+1
 #if defined(__MSP430_HAS_PORT4_R__)
-#define P4REN_ (uint16_t)(PBREN_+1)
+#define P4REN_ PBREN_+1
 #endif /* __MSP430_HAS_PORT4_R__ */
 #endif /* __MSP430_HAS_PORT4__ */
 #endif /* __MSP430_HAS_PORTB__ */
@@ -222,22 +226,24 @@
 
 #if defined(__MSP430_HAS_PORTC__) || defined(__MSP430_HAS_PORTC_R__)
 #if (! defined(P5IN_)) && (defined(__MSP430_HAS_PORT5__) || defined(__MSP430_HAS_PORT5_R__))
-#define P5IN_  (uint16_t)(PCIN_)
-#define P5OUT_ (uint16_t)(PCOUT_)
-#define P5DIR_ (uint16_t)(PCDIR_)
-#define P5SEL_ (uint16_t)(PCSEL_)
+#define P5IN_  PCIN_
+#define P5OUT_ PCOUT_
+#define P5DIR_ PCDIR_
+#define P5SEL_ PCSEL_
+#undef  P5SEL
+#define P5SEL PCSEL_L
 #if defined(__MSP430_HAS_PORT5_R__)
 #define P5REN_ (uint16_t)(PCREN_)
 #endif /* __MSP430_HAS_PORT5_R__ */
 #endif /* __MSP430_HAS_PORT5__ */
 
 #if (! defined(P6IN_)) && (defined(__MSP430_HAS_PORT6__) || defined(__MSP430_HAS_PORT6_R__))
-#define P6IN_  (uint16_t)(PCIN_+1)
-#define P6OUT_ (uint16_t)(PCOUT_+1)
-#define P6DIR_ (uint16_t)(PCDIR_+1)
-#define P6SEL_ (uint16_t)(PCSEL_+1)
+#define P6IN_  PCIN_+1
+#define P6OUT_ PCOUT_+1
+#define P6DIR_ PCDIR_+1
+#define P6SEL_ PCSEL_+1
 #if defined(__MSP430_HAS_PORT6_R__)
-#define P6REN_ (uint16_t)(PCREN_+1)
+#define P6REN_ PCREN_+1
 #endif /* __MSP430_HAS_PORT6_R__ */
 #endif /* __MSP430_HAS_PORT6__ */
 #endif /* __MSP430_HAS_PORTC__ */
@@ -245,22 +251,24 @@
 
 #if defined(__MSP430_HAS_PORTD__) || defined(__MSP430_HAS_PORTD_R__)
 #if (! defined(P7IN_)) && (defined(__MSP430_HAS_PORT7__) || defined(__MSP430_HAS_PORT7_R__))
-#define P7IN_  (uint16_t)(PDIN_)
-#define P7OUT_ (uint16_t)(PDOUT_)
-#define P7DIR_ (uint16_t)(PDDIR_)
-#define P7SEL_ (uint16_t)(PDSEL_)
+#define P7IN_  PDIN_
+#define P7OUT_ PDOUT_
+#define P7DIR_ PDDIR_
+#define P7SEL_ PDSEL_
 #if defined(__MSP430_HAS_PORT7_R__)
-#define P7REN_ (uint16_t)(PDREN_)
+#define P7REN_ PDREN_
 #endif /* __MSP430_HAS_PORT7_R__ */
 #endif /* __MSP430_HAS_PORT7__ */
 
 #if (! defined(P8IN_)) && (defined(__MSP430_HAS_PORT8__) || defined(__MSP430_HAS_PORT8_R__))
-#define P8IN_  (uint16_t)(PDIN_+1)
-#define P8OUT_ (uint16_t)(PDOUT_+1)
-#define P8DIR_ (uint16_t)(PDDIR_+1)
-#define P8SEL_ (uint16_t)(PDSEL_+1)
+#define P8IN_  PDIN_+1
+#define P8OUT_ PDOUT_+1
+#define P8DIR_ PDDIR_+1
+#define P8SEL_ PDSEL_+1
+#undef P8DIR
+#define P8DIR PDDIR_H
 #if defined(__MSP430_HAS_PORT8_R__)
-#define P8REN_ (uint16_t)(PDREN_+1)
+#define P8REN_ PDREN_+1
 #endif /* __MSP430_HAS_PORT8_R__ */
 #endif /* __MSP430_HAS_PORT8__ */
 #endif /* __MSP430_HAS_PORTD__ */
@@ -268,22 +276,22 @@
 
 #if defined(__MSP430_HAS_PORTE__) || defined(__MSP430_HAS_PORTE_R__)
 #if (! defined(P9IN_)) && (defined(__MSP430_HAS_PORT9__) || defined(__MSP430_HAS_PORT9_R__))
-#define P9IN_  (uint16_t)(PEIN_)
-#define P9OUT_ (uint16_t)(PEOUT_)
-#define P9DIR_ (uint16_t)(PEDIR_)
-#define P9SEL_ (uint16_t)(PESEL_)
+#define P9IN_  PEIN_
+#define P9OUT_ PEOUT_
+#define P9DIR_ PEDIR_
+#define P9SEL_ PESEL_
 #if defined(__MSP430_HAS_PORT9_R__)
-#define P9REN_ (uint16_t)(PEREN_)
+#define P9REN_ PEREN_
 #endif /* __MSP430_HAS_PORT9_R__ */
 #endif /* __MSP430_HAS_PORT9__ */
 
 #if (! defined(P10IN_)) && (defined(__MSP430_HAS_PORT10__) || defined(__MSP430_HAS_PORT10_R__))
-#define P10IN_  (uint16_t)(PEIN_+1)
-#define P10OUT_ (uint16_t)(PEOUT_+1)
-#define P10DIR_ (uint16_t)(PEDIR_+1)
-#define P10SEL_ (uint16_t)(PESEL_+1)
+#define P10IN_  PEIN_+1
+#define P10OUT_ PEOUT_+1
+#define P10DIR_ PEDIR_+1
+#define P10SEL_ PESEL_+1
 #if defined(__MSP430_HAS_PORT10_R__)
-#define P10REN_ (uint16_t)(PEREN_+1)
+#define P10REN_ PEREN_+1
 #endif /* __MSP430_HAS_PORT10_R__ */
 #endif /* __MSP430_HAS_PORT10__ */
 #endif /* __MSP430_HAS_PORTE__ */
@@ -291,25 +299,73 @@
 
 #if defined(__MSP430_HAS_PORTF__) || defined(__MSP430_HAS_PORTF_R__)
 #if (! defined(P11IN_)) && (defined(__MSP430_HAS_PORT11__) || defined(__MSP430_HAS_PORT11_R__))
-#define P11IN_  (uint16_t)(PFIN_)
-#define P11OUT_ (uint16_t)(PFOUT_)
-#define P11DIR_ (uint16_t)(PFDIR_)
-#define P11SEL_ (uint16_t)(PFSEL_)
+#define P11IN_  PFIN_
+#define P11OUT_ PFOUT_
+#define P11DIR_ PFDIR_
+#define P11SEL_ PFSEL_
 #if defined(__MSP430_HAS_PORT11_R__)
-#define P11REN_ (uint16_t)(PFREN_)
+#define P11REN_ PFREN_
 #endif /* __MSP430_HAS_PORT11_R__ */
 #endif /* __MSP430_HAS_PORT11__ */
 
 #if (! defined(P12IN_)) && (defined(__MSP430_HAS_PORT12__) || defined(__MSP430_HAS_PORT12_R__))
-#define P12IN_  (uint16_t)(PFIN_+1)
-#define P12OUT_ (uint16_t)(PFOUT_+1)
-#define P12DIR_ (uint16_t)(PFDIR_+1)
-#define P12SEL_ (uint16_t)(PFSEL_+1)
+#define P12IN_  PFIN_+1
+#define P12OUT_ PFOUT_+1
+#define P12DIR_ PFDIR_+1
+#define P12SEL_ PFSEL_+1
 #if defined(__MSP430_HAS_PORT12_R__)
-#define P12REN_ (uint16_t)(PFREN_+1)
+#define P12REN_ PFREN_+1
 #endif /* __MSP430_HAS_PORT12_R__ */
 #endif /* __MSP430_HAS_PORT12__ */
 #endif /* __MSP430_HAS_PORTF__ */
+
+#if (!defined(UCA0IFG_)) && (defined(__MSP430_HAS_USCI_A0__))
+#ifdef UCA0IFG
+#define UCA0IFG_ UCA0ICTL_+1
+#endif
+#endif
+
+#if (!defined(UCA1IFG_)) && (defined(__MSP430_HAS_USCI_A1__))
+#ifdef UCA1IFG
+#define UCA1IFG_ UCA1ICTL_+1
+#endif
+#endif
+
+#if (!defined(UCA2IFG_)) && (defined(__MSP430_HAS_USCI_A2__))
+#ifdef UCA2IFG
+#define UCA2IFG_ UCA2ICTL_+1
+#endif
+#endif
+
+#if (!defined(UCA3IFG_)) && (defined(__MSP430_HAS_USCI_A3__))
+#ifdef UCA3IFG
+#define UCA3IFG_ UCA3ICTL_+1
+#endif
+#endif
+
+#if (!defined(UCB0IFG_)) && (defined(__MSP430_HAS_USCI_B0__))
+#ifdef UCB0IFG
+#define UCB0IFG_ UCB0ICTL_+1
+#endif
+#endif
+
+#if (!defined(UCB1IFG_)) && (defined(__MSP430_HAS_USCI_B1__))
+#ifdef UCB1IFG
+#define UCB1IFG_ UCB1ICTL_+1
+#endif
+#endif
+
+#if (!defined(UCB2IFG_)) && (defined(__MSP430_HAS_USCI_B2__))
+#ifdef UCB2IFG
+#define UCB2IFG_ UCB2ICTL_+1
+#endif
+#endif
+
+#if (!defined(UCB3IFG_)) && (defined(__MSP430_HAS_USCI_B3__))
+#ifdef UCB3IFG
+#define UCB3IFG_ UCB3ICTL_+1
+#endif
+#endif
 
 #endif /* __MSP430_TI_HEADERS__ */
 
@@ -647,4 +703,4 @@ enum {
 #define CONSEQ1 ADC12CONSEQ1
 #endif
 
-#endif		// _H_msp430hardware_h
+#endif		// __H_MSP430HARDWARE_H__
