@@ -150,7 +150,7 @@ implementation {
      * but kicking reset turns off the interrupt enables.
      */
     call Usci.enterResetMode_();
-    call URXD.makeOutput();
+    call URXD.makeInput();
     call URXD.selectIOFunc();
     call UTXD.makeOutput();
     call UTXD.selectIOFunc();
