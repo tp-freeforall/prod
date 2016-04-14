@@ -43,6 +43,9 @@
 #ifndef __H_MSP430HARDWARE_H__
 #define __H_MSP430HARDWARE_H__
 
+/* remain compatible with the old spelling */
+#define _H_msp430hardware_h
+
 /*
  * Control Defines:
  *
