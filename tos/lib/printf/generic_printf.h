@@ -26,13 +26,12 @@
 #include <string.h>
 
 #define printf _printf
+#define float_support
+
 extern int lowlevel_putc(int c); 
 
 int left_val,right_val;
 
-#define condition *format!='f'&&*format!='d'&&*format!='c'&&*format!='s'&&*format!='l'&&*format!='u'&&*format!='\0'&&*format!=' '&&*format!='i'&&*format!='x'&&*format!='X'&&*format!='o'&&*format!='%'&&*format!='p'
-
-#define float_support
 
 long temp_arr[]={100000,10,100,1000,10000,100000,1000000,10000000,100000000,1000000000};
 
@@ -281,8 +280,13 @@ int _printf(const char *format, ...)
 	 format++;
 	 _putchar(' ');
        }
-       while(condition)
-
+       while(*format!='f'  && *format!='d' &&
+             *format!='c'  && *format!='s' &&
+             *format!='l'  && *format!='u'  &&
+             *format!='\0' && *format!=' ' &&
+             *format!='i'  && *format!='x'  &&
+             *format!='X'  && *format!='o'  &&
+             *format!='%'  && *format!='p')
        {
 	 temp_str[format_cntr++]=*format++;
        }
