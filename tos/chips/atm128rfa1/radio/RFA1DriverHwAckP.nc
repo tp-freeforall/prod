@@ -335,7 +335,7 @@ implementation
 #endif
       temp = call ActiveMessageAddress.amAddress();
       SHORT_ADDR_0 = temp;
-      SHORT_ADDR_1 = temp<<8;
+      SHORT_ADDR_1 = temp>>8;
       
       TRX_STATE = CMD_RX_AACK_ON;
       state = STATE_TRX_OFF_2_RX_ON;
@@ -352,16 +352,17 @@ implementation
 
       state = STATE_TRX_OFF;
       call ExtAmpControl.stop();
-    }
-
-    if( cmd == CMD_TURNOFF && state == STATE_TRX_OFF )
-    {
+      
       #ifdef RFA1_ENABLE_PA
       CLR_BIT(TRX_CTRL_1, PA_EXT_EN);
       #endif
       #ifdef RFA1_ENABLE_EXT_ANT_SW
       ANT_DIV=3; //default value
       #endif
+    }
+
+    if( cmd == CMD_TURNOFF && state == STATE_TRX_OFF )
+    {
       
       SET_BIT(TRXPR,SLPTR);
       state = STATE_SLEEP;
@@ -423,8 +424,8 @@ implementation
     //these are cached registers they must be written twice to update the cache (except in TRX_OFF, but that's very unlikely)
     SHORT_ADDR_0 = temp;
     SHORT_ADDR_0 = temp;
-    SHORT_ADDR_1 = temp<<8;
-    SHORT_ADDR_1 = temp<<8;
+    SHORT_ADDR_1 = temp>>8;
+    SHORT_ADDR_1 = temp>>8;
     
     call Tasklet.resume();
   }
