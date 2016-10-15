@@ -34,11 +34,6 @@ configuration CC2420XRadioC
 		interface Receive[am_id_t id];
 		interface Receive as Snoop[am_id_t id];
 		interface SendNotifier[am_id_t id];
-
-		// for TOSThreads
-		interface Receive as ReceiveDefault[am_id_t id];
-		interface Receive as SnoopDefault[am_id_t id];
-
 		interface AMPacket;
 		interface Packet as PacketForActiveMessage;
 #endif
@@ -79,10 +74,15 @@ implementation
 {
 	#define UQ_METADATA_FLAGS	"UQ_CC2420X_METADATA_FLAGS"
 	#define UQ_RADIO_ALARM		"UQ_CC2420X_RADIO_ALARM"
+	#define UQ_NEIGHBORHOOD_FLAG "UQ_CC2420X_NEIGHBORHOOD_FLAG"
 
 // -------- TaskleC
 
 	components new TaskletC();
+
+// -------- NeighborhoodC
+
+	components new NeighborhoodC(CC2420X_NEIGHBORHOOD_SIZE);
 
 // -------- RadioP
 
@@ -118,9 +118,6 @@ implementation
 	SendNotifier = ActiveMessageLayerC;
 	AMPacket = ActiveMessageLayerC;
 	PacketForActiveMessage = ActiveMessageLayerC;
-
-	ReceiveDefault = ActiveMessageLayerC.ReceiveDefault;
-	SnoopDefault = ActiveMessageLayerC.SnoopDefault;
 #endif
 
 // -------- Automatic RadioSend Resource
@@ -172,9 +169,11 @@ implementation
 
 // -------- UniqueLayer Send part (wired twice)
 
-	components new UniqueLayerC();
+	components new UniqueLayerC(CC2420X_NEIGHBORHOOD_SIZE);
 	UniqueLayerC.Config -> RadioP;
 	UniqueLayerC.SubSend -> PacketLinkLayerC;
+	UniqueLayerC.Neighborhood -> NeighborhoodC;
+	UniqueLayerC.NeighborhoodFlag -> NeighborhoodC.NeighborhoodFlag[unique(UQ_NEIGHBORHOOD_FLAG)];
 
 // -------- Packet Link
 

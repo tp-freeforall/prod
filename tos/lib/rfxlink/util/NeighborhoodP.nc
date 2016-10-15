@@ -33,9 +33,8 @@
  */
 
 #include <AM.h>
-#include <Neighborhood.h>
 
-module NeighborhoodP
+generic module NeighborhoodP(uint8_t size)
 {
 	provides
 	{
@@ -47,9 +46,9 @@ module NeighborhoodP
 
 implementation
 {
-	tasklet_norace am_addr_t nodes[NEIGHBORHOOD_SIZE];
-	tasklet_norace uint8_t ages[NEIGHBORHOOD_SIZE];
-	tasklet_norace uint8_t flags[NEIGHBORHOOD_SIZE];
+	tasklet_norace am_addr_t nodes[size];
+	tasklet_norace uint8_t ages[size];
+	tasklet_norace uint8_t flags[size];
 	tasklet_norace uint8_t time;
 	tasklet_norace uint8_t last;
 
@@ -57,7 +56,7 @@ implementation
 	{
 		uint8_t i;
 
-		for(i = 0; i < NEIGHBORHOOD_SIZE; ++i)
+		for(i = 0; i < size; ++i)
 			nodes[i] = AM_BROADCAST_ADDR;
 	
 		return SUCCESS;
@@ -80,7 +79,7 @@ implementation
 		if( nodes[last] == node )
 			return last;
 
-		for(i = 0; i < NEIGHBORHOOD_SIZE; ++i)
+		for(i = 0; i < size; ++i)
 		{
 			if( nodes[i] == node )
 			{
@@ -110,7 +109,7 @@ implementation
 			uint8_t oldest = 0;
 			maxAge = 0;
 
-			for(i = 0; i < NEIGHBORHOOD_SIZE; ++i)
+			for(i = 0; i < size; ++i)
 			{
 				uint8_t age;
 
@@ -133,7 +132,7 @@ implementation
 				}
 			}
 
-			if( i == NEIGHBORHOOD_SIZE )
+			if( i == size )
 			{
 				signal Neighborhood.evicted(oldest);
 
@@ -146,7 +145,7 @@ implementation
 
 		if( (time & 0x7F) == 0x7F && maxAge >= 0x7F )
 		{
-			for(i = 0; i < NEIGHBORHOOD_SIZE; ++i)
+			for(i = 0; i < size; ++i)
 			{
 				if( (ages[i] | 0x7F) != time )
 					ages[i] = time & 0x80;
@@ -177,7 +176,7 @@ implementation
 
 		bit = ~(1 << bit);
 
-		for(i = 0; i < NEIGHBORHOOD_SIZE; ++i)
+		for(i = 0; i < size; ++i)
 			flags[i] &= bit;
 	}
 }
