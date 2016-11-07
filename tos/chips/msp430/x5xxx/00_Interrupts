@@ -1,0 +1,119 @@
+
+The x5 processors have provisions for 64 interrupt vector entries.  The
+vectors start at 0xff80, are 16 bits (2 bytes).  Interrupt handlers must
+reside in the low 64K of the memory space.
+
+Vector values are defined in the appropriate include file
+(ie. /usr/msp430/include/msp430f5438a.h).
+
+For example, the Port1 (gpio interrupts on Port1) vector is defined as:
+
+#define PORT1_VECTOR (0x005E)
+
+which is the offset of the PORT1_VECTOR from 0xFF80.  (Don't ask me why they did
+it this way, seems weird).
+
+A vector is accessed using TOSH_SIGNAL thusly:
+
+  TOSH_SIGNAL(PORT1_VECTOR) {
+      ...
+      ...
+  }
+
+TOSH_SIGNAL expands into:
+
+  void sig_PORT1_VECTOR(void) __attribute((wakeup))
+        __attribute((interrupt(0x005E)));
+
+which defines the procedure sig_PORT1_VECTOR(void) containing the handler
+and will insert the appropriate address into the vector table.  It causes the
+CPU to wake up from sleep and it is an interrupt handler so the routine will
+automatically return using an RETI instruction.
+
+0 lowest, 63 highest priority.
+
+
+Vector table for msp430f5438a (msp430f5438a.h)
+
+0   00  FF80
+...             reserved
+40
+
+41  52  FFD2    RTC
+42  54  FFD4    PORT2           P2IFG.{0..7], P2IV
+43  56  FFD6    USCI_B3         UCB3{RX,TX}IFG UCB3IV
+44  58  FFD8    USCI_A3         UCA3{RX,TX}IFG UCA3IV
+45  5A  FFDA    USCI_B1         UCB1{RX,TX}IFG UCB1IV
+46  5C  FFDC    USCI_A1         UCA1{RX,TX}IFG UCA1IV
+47  5E  FFDE    PORT1           P1IFG.{0..7], P1IV
+48  60  FFE0    TIMER1_A1       TA1CCR{1..2}.CCIFG{1..2} TA1IFG (TA1IV)
+49  62  FFE2    TIMER1_A0       TA1CCR0.CCIFG0
+50  64  FFE4    DMA             DMA{0..2}IFG (DMAIV)
+51  66  FFE6    USCI_B2         UCB2{RX,TX}IFG UCB2IV
+52  68  FFE8    USCI_A2         UCA2{RX,TX}IFG UCA2IV
+53  6A  FFEA    TIMER0_A1       TA0CCR{1..4}.CCIFG{1..4} TA0IFG (TA0IV)
+54  6C  FFEC    TIMER0_A0       TA0CCR0.CCIFG0
+55  6E  FFEE    ADC12           ADC12IFG{0..15}IFG (ADC12IV)
+56  70  FFF0    USCI_B0         UCB0{RX,TX}IFG UCB0IV
+57  72  FFF2    USCI_A0         UCA0{RX,TX}IFG UCA0IV
+58  74  FFF4    WDT             WDTIFG (interval timer)
+59  76  FFF6    TIMER0_B1       TB0CCR{1..6}.CCIFG{1..6} TB0IFG (TB1IV)
+60  78  FFF8    TIMER0_B0       TB0CCR0.CCIFG0
+61  7A  FFFA    UNMI            UserNMI, NMIIFG, OFIFG, ACCVIFG (SYSUNIV)
+62  7C  FFFC    SYSNMI          SysNMI,PMM, Vacant Memory, Mailbox
+63  7E  FFFE    RESET           POR, ExReset, WDTO, KEYV
+
+
+Port Interrupt wiring:
+
+The complication with Port wiring is we define individual bits and basic
+manipulation is done essentially inline.  A Port (only Port 1 and 2)
+interrupt vector handles any interrupt from any of its 8 bits.  The vector
+is for the entire port and needs to wire outward individually.
+
+Other drivers are singleton.  That is a given vector feeds one driver and
+is wired to one place.  The handler can be part of the code that handles
+the interrupt.
+
+This means the Port driver only handles the interrupt part of a Port
+function.  Other parts of manipulating Port bits happens inline.
+
+
+HIL Components:
+
+Platform code makes use of Msp430InterruptC to wire in any Port that needs
+to provide a bit interrupt.  It is only used by Platform code.
+
+
+Msp430InterruptC        per bit
+    provides GpioInterrupt
+    uses     HplMsp430Interrupt
+
+
+Low level components:
+
+HplMsp430InterruptNMI{C,P} User NMI (UNMI), Osc Fault (OF), and
+    Flash Access Violation (ACCV).
+
+    provides HplMsp430Interrupt
+
+
+HplMsp430Interrup{C,P}  Port interrupts
+    provides HplMsp430Interrupt
+
+
+
+Port Interrupt processing:
+
+Each interruptable Port on the x5 cpus provides an interrupt vector
+register (PnIV) that presents the highest priority interrupt (from the
+Port) at any given moment in time.  Bit 0 is highest priority and bit 7
+lowest.
+
+Note, only enabled bits in the Port are eligible for inclusion in the PnIV
+calculation.  If a corresponding bit in PnIE is 0, the bit is not included
+and will not cause an interrupt.
+
+Any access (read or write) to the PnIV register will cause the highest presenting
+interrupt to be cleared.  Reading PnIV to determine which bit is causing the
+interrupt will clear this highest priority interrupt.
