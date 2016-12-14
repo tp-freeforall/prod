@@ -55,7 +55,7 @@ generic module Msp430UsciI2CP(uint8_t TXIE_MASK, uint8_t RXIE_MASK, uint8_t TXIF
   uses interface HplMsp430UsciB as UsciB;
   uses interface Msp430UsciConfigure[ uint8_t client ];
   uses interface ArbiterInfo;
-  uses interface LocalTime<TMilli> as LocalTime_bms;
+  uses interface LocalTime<TMilli> as LocalTime_mis;
 }
 
 implementation {

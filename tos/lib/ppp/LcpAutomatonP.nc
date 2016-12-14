@@ -175,7 +175,7 @@ generic module LcpAutomatonP (uint16_t Protocol,
 
   /** Options for the automaton.  The default values are taken from
    * section 4.6 of RFC1661. */
-  LcpAutomatonOptions_t options_ = { restartTimer_bms: 3 * 1024, // 3 sec
+  LcpAutomatonOptions_t options_ = { restartTimer_mis: 3 * 1024, // 3 sec
                                      maxTerminate: 2,            // 2
                                      maxConfigure: 10,           // 10
                                      maxFailure: 5 };            // 5
@@ -224,7 +224,7 @@ generic module LcpAutomatonP (uint16_t Protocol,
   
   void restartTimer_ ()
   {
-    call RestartTimer.start(options_.restartTimer_bms);
+    call RestartTimer.start(options_.restartTimer_mis);
   }
 
   task void restartTimerFired_task ()

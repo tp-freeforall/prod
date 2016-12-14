@@ -22,7 +22,7 @@ module TestP @safe()
 {
   uses {
     interface Boot;
-    interface LocalTime<TMilli> as LocalTime_bms;
+    interface LocalTime<TMilli> as LocalTime_mis;
     interface UartByte;
   }
 }
@@ -39,19 +39,19 @@ implementation
     printf("# Starting UartByte receive test.\r\n");
     while (1) {
       uint8_t wait_bt = wait_times_bt[wti];
-      uint32_t start_bms;
-      uint32_t end_bms;
+      uint32_t start_mis;
+      uint32_t end_mis;
       uint8_t byte = '@';
       error_t rc;
       
       if (verbose) {
         printf("Waiting %d byte times for input\r\n", wait_bt);
       }
-      start_bms = call LocalTime_bms.get();
+      start_mis = call LocalTime_mis.get();
       rc = call UartByte.receive(&byte, wait_bt);
-      end_bms = call LocalTime_bms.get();
+      end_mis = call LocalTime_mis.get();
       if (verbose || (SUCCESS == rc)) {
-        printf("After %lu bms, result %d, byte value %d ('%c')\r\n", (end_bms - start_bms), rc, byte, byte);
+        printf("After %lu mis, result %d, byte value %d ('%c')\r\n", (end_mis - start_mis), rc, byte, byte);
       }
       if (++wti >= num_wait_times_bt) {
         wti = 0;

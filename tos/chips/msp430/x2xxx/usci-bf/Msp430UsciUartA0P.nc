@@ -33,6 +33,6 @@ configuration Msp430UsciUartA0P {
   UTXD = UartC.UTXD;
 
   components LocalTimeMilliC;
-  UartC.LocalTime_bms -> LocalTimeMilliC;
+  UartC.LocalTime_mis -> LocalTimeMilliC;
 
 }

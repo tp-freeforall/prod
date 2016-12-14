@@ -6,7 +6,7 @@ configuration TestAppC {
   TestP.Boot -> MainC;
 
   components LocalTimeMilliC;
-  TestP.LocalTime_bms -> LocalTimeMilliC;
+  TestP.LocalTime_mis -> LocalTimeMilliC;
 
   components PlatformSerialC;
   TestP.UartByte -> PlatformSerialC;

@@ -93,7 +93,7 @@ generic module Msp430UsciUartP () @safe() {
 
     interface Msp430UsciConfigure[ uint8_t client ];
     interface ArbiterInfo;
-    interface LocalTime<TMilli> as LocalTime_bms;
+    interface LocalTime<TMilli> as LocalTime_mis;
   }
 }
 implementation {
@@ -405,7 +405,7 @@ implementation {
 
   async command error_t UartByte.receive[uint8_t client]( uint8_t* byte, uint8_t timeout_bt ) {
     error_t rv;
-    uint32_t startTime_bms, timeout_bms;
+    uint32_t startTime_mis, timeout_mis;
 
     if ((rv = checkIsOwner(client)))	/* non-zero, error bail out */
       return FALSE;
@@ -416,11 +416,11 @@ implementation {
     if (m_rx_buf)
       return EBUSY;
 
-    startTime_bms = call LocalTime_bms.get();
-    timeout_bms = ByteTimeScaleFactor * ((ByteTimesPerMillisecond + timeout_bt - 1) / ByteTimesPerMillisecond);
+    startTime_mis = call LocalTime_mis.get();
+    timeout_mis = ByteTimeScaleFactor * ((ByteTimesPerMillisecond + timeout_bt - 1) / ByteTimesPerMillisecond);
 
     while (! call Usci.isRxIntrPending()) {
-      if((call LocalTime_bms.get() - startTime_bms) > timeout_bms)
+      if((call LocalTime_mis.get() - startTime_mis) > timeout_mis)
         return FAIL;
     }
 

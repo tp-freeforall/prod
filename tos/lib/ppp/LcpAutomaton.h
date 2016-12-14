@@ -74,7 +74,7 @@ typedef enum LcpAutomatonEvent_e {
  * automaton source to determine whether these are actually used.  See
  * section 4.6 of RFC1661 for details. */
 typedef struct LcpAutomatonOptions_t {
-  uint32_t restartTimer_bms;
+  uint32_t restartTimer_mis;
   uint16_t maxTerminate;
   uint16_t maxConfigure;
   uint16_t maxFailure;

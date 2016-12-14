@@ -31,5 +31,5 @@ implementation {
   UTXD = UartC.UTXD;
 
   components LocalTimeMilliC;
-  UartC.LocalTime_bms -> LocalTimeMilliC;
+  UartC.LocalTime_mis -> LocalTimeMilliC;
 }

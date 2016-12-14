@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Eric B. Decker
+ * Copyright (c) 2013, 2016 Eric B. Decker
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -91,7 +91,7 @@ generic module Msp430UsciUartP () @safe() {
 
     interface Msp430UsciConfigure[ uint8_t client ];
     interface ArbiterInfo;
-    interface LocalTime<TMilli> as LocalTime_bms;
+    interface LocalTime<TMilli> as LocalTime_mis;
   }
 }
 implementation {
@@ -362,8 +362,8 @@ implementation {
   };
 
   async command error_t UartByte.receive[uint8_t client]( uint8_t* byte, uint8_t timeout_bt ) {
-    uint32_t startTime_bms;
-    uint32_t timeout_bms = ByteTimeScaleFactor * ((ByteTimesPerMillisecond + timeout_bt - 1) / ByteTimesPerMillisecond);
+    uint32_t startTime_mis;
+    uint32_t timeout_mis = ByteTimeScaleFactor * ((ByteTimesPerMillisecond + timeout_bt - 1) / ByteTimesPerMillisecond);
 
     error_t rv = checkIsOwner(client);
     if (SUCCESS != rv) {
@@ -376,9 +376,9 @@ implementation {
       return EBUSY;
     }
 
-    startTime_bms = call LocalTime_bms.get();
+    startTime_mis = call LocalTime_mis.get();
     while (! (UCRXIFG & (call Usci.getIfg()))) {
-      if((call LocalTime_bms.get() - startTime_bms) > timeout_bms) {
+      if((call LocalTime_mis.get() - startTime_mis) > timeout_mis) {
         return FAIL;
       }
     }

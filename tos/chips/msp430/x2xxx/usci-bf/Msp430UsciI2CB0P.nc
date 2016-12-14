@@ -34,5 +34,5 @@ configuration Msp430UsciI2CB0P {
   USDA = I2CC.SDA;
 
   components LocalTimeMilliC;
-  I2CC.LocalTime_bms -> LocalTimeMilliC;
+  I2CC.LocalTime_mis -> LocalTimeMilliC;
 }
