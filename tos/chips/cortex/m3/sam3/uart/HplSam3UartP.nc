@@ -47,7 +47,7 @@ module HplSam3UartP
 		interface HplSam3UartStatus;
 	}
         uses {
-		interface FunctionWrapper as UartInterruptWrapper;
+                interface McuSleep;
 #ifdef THREADS
 		interface PlatformInterrupt;
 #endif
@@ -138,7 +138,7 @@ implementation
 
 	__attribute__((interrupt)) void UartIrqHandler() @C() @spontaneous()
 	{
-		call UartInterruptWrapper.preamble();
+		call McuSleep.irq_preamble();
 		if ((call HplSam3UartInterrupts.isEnabledRxrdyIrq() == TRUE) &&
 				(call HplSam3UartStatus.isReceiverReady() == TRUE)) {
 			uint8_t data = call HplSam3UartStatus.getReceivedChar();
@@ -148,7 +148,7 @@ implementation
 				(call HplSam3UartStatus.isTransmitterReady() == TRUE)) {
 			signal HplSam3UartInterrupts.transmitterReady();
 		}
-		call UartInterruptWrapper.postamble();
+		call McuSleep.irq_postamble();
 #ifdef THREADS
 		call PlatformInterrupt.postAmble();
 #endif
