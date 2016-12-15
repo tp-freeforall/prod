@@ -54,6 +54,8 @@ All work is done on a local repository.
    git push ffa master:tinyos-main/current  (should be a fast-forward)
 
 3) Determine appropriate upstream-next, typically will be ffa/tinyos-main/current.
+   This typically is the merge point.  But you may go from a well defined release tag
+   (see below).
 
 4) Create upstream-next branch from merge point.
 
