@@ -1,4 +1,4 @@
-/*                                                                      
+/*
  * Copyright (c) 2011 Eric B. Decker
  * All rights reserved.
  *

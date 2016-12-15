@@ -69,7 +69,7 @@ interface UartByte {
   async command error_t receive( uint8_t* byte, uint8_t timeout );
 
   /**
-   * sendAvail: is space available for another TX byte.
+   * receiveAvail: incoming has another byte available.
    *
    * @return TRUE	the RX subsystem has another byte to receive.  ie.
    *			UartByte.receive() would not block if called.

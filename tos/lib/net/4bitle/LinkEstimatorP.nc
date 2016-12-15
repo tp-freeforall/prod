@@ -343,7 +343,7 @@ implementation {
 	  ne->flags |= MATURE_ENTRY;
 	  dbg("LI", "MinPkt: %d, totalPkt: %d\n", BLQ_PKT_WINDOW, totalPkt);
 	  newEst = (250UL * ne->rcvcnt) / totalPkt;
-	  dbg("LI,LITest", "  %hu: %hhu -> %hhu", ne->ll_addr, ne->inquality, (ALPHA * ne->inquality + (10-ALPHA) * newEst)/10);
+	  dbg("LI,LITest", "  %hu: %hhu -> %hhu\n", ne->ll_addr, ne->inquality, (ALPHA * ne->inquality + (10-ALPHA) * newEst)/10);
 	  ne->inquality = (ALPHA * ne->inquality + (10-ALPHA) * newEst)/10;
 	  ne->rcvcnt = 0;
 	  ne->failcnt = 0;
@@ -495,7 +495,7 @@ implementation {
     return SUCCESS;
   }
 
-  // pin a neighbor so that it does not get evicted
+  // unpin a neighbor so that it could get evicted
   command error_t LinkEstimator.unpinNeighbor(am_addr_t neighbor) {
     uint8_t nidx = findIdx(neighbor);
     if (nidx == INVALID_RVAL) {

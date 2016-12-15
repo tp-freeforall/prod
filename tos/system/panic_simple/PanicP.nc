@@ -12,11 +12,7 @@
 
 #include "panic.h"
 
-uint16_t save_sr;
-bool save_sr_free;
-norace uint8_t _p, _w;
-norace uint16_t _a0, _a1, _a2, _a3, _arg;
-
+#ifdef notdef
 #ifdef PANIC_DINT
 #define MAYBE_SAVE_SR_AND_DINT	do {	\
     if (save_sr_free) {			\
@@ -28,6 +24,7 @@ norace uint16_t _a0, _a1, _a2, _a3, _arg;
 #else
 #define MAYBE_SAVE_SR_AND_DINT	do {} while (0)
 #endif
+#endif
 
 
 module PanicP {
@@ -38,12 +35,17 @@ module PanicP {
 }
 
 implementation {
+  uint16_t save_sr;
+  bool save_sr_free;
+  norace uint8_t _p, _w;
+  norace uint16_t _a0, _a1, _a2, _a3, _arg;
+
   /* if a double panic, high order bit is set */
   norace bool m_in_panic;               /* initialized to 0 */
 
   void debug_break(uint16_t arg)  __attribute__ ((noinline)) {
     _arg = arg;
-    nop();
+    __BKPT();
   }
 
 
@@ -56,7 +58,7 @@ implementation {
     _a0 = arg0; _a1 = arg1;
     _a2 = arg2; _a3 = arg3;
 
-    MAYBE_SAVE_SR_AND_DINT;
+//    MAYBE_SAVE_SR_AND_DINT;
     debug_break(0);
   }
 
@@ -80,7 +82,6 @@ implementation {
       signal Panic.hook();
     } else
       m_in_panic |= 0x80;               /* flag a double */
-    nop();
     debug_break(2);
   }
 

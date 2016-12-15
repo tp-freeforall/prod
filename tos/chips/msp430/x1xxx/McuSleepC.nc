@@ -134,6 +134,9 @@ MSP430REG_NORACE2(I2CDCTLnr,I2CDCTL);
     __nesc_disable_interrupt();
   }
 
+  async command void McuSleep.irq_preamble()  { }
+  async command void McuSleep.irq_postamble() { }
+
   async command void McuPowerState.update() {
     atomic dirty = 1;
   }

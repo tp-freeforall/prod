@@ -1,5 +1,5 @@
-// $Id: TinyError.h,v 1.12 2010-06-29 22:07:56 scipio Exp $
 /*
+ * Copyright (c) 2016 Eric B. Decker
  * Copyright (c) 2000-2005 The Regents of the University  of California.  
  * All rights reserved.
  *
@@ -34,7 +34,7 @@
 /**
  * @author Phil Levis
  * @author David Gay
- * Revision:  $Revision: 1.12 $
+ * @author Eric B. Decker <cire831@gmail.com>
  *
  * Defines global error codes for error_t in TinyOS.
  */
