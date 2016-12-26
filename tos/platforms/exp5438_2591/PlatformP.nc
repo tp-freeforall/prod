@@ -128,8 +128,10 @@ implementation {
   }
 
 
-  async command uint16_t Platform.usecsRaw()   { return USEC_REG; }
-  async command uint16_t Platform.jiffiesRaw() { return JIFFIES_REG; }
+  async command uint32_t Platform.usecsRaw()       { return USEC_REG; }
+  async command uint32_t Platform.usecsRawSize()   { return 16; }
+  async command uint32_t Platform.jiffiesRaw()     { return JIFFIES_REG; }
+  async command uint32_t Platform.jiffiesRawSize() { return 16; }
 
   /***************** Defaults ***************/
   default command error_t PeripheralInit.init() {

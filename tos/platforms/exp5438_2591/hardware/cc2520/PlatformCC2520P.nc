@@ -391,8 +391,8 @@ implementation {
 
 
 #ifndef REQUIRE_PLATFORM
-  default async command uint16_t Platform.usecsRaw()    { return 0; }
-  default async command uint16_t Platform.jiffiesRaw()  { return 0; }
+  default async command uint32_t Platform.usecsRaw()    { return 0; }
+  default async command uint32_t Platform.jiffiesRaw()  { return 0; }
 #endif
 
 #ifndef REQUIRE_PANIC
