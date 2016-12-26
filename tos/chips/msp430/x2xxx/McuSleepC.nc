@@ -134,10 +134,14 @@ implementation {
     }
     temp = msp430PowerBits[powerState] | SR_GIE;
     __asm__ __volatile__( "bis  %0, r2" : : "m" (temp) );
+    call McuSleep.irq_preamble();
     // All of memory may change at this point...
     asm volatile ("" : : : "memory");
     __nesc_disable_interrupt();
   }
+
+  async command void McuSleep.irq_preamble()  { }
+  async command void McuSleep.irq_postamble() { }
 
   async command void McuPowerState.update() {
     atomic dirty = 1;
