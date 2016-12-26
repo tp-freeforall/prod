@@ -19,9 +19,9 @@
 #
 
 TARGET = exp5438_2520
-PLATFORMDIR = $(TINYOS_ROOT_DIR)/tos/platforms/$(TARGET)
+PLATFORM_DIR = $(TINYOS_ROOT_DIR)/tos/platforms/$(TARGET)
 
-BUILD_NUM_FILE = $(PLATFORMDIR)/_Build
+BUILD_NUM_FILE = $(PLATFORM_DIR)/_Build
 BUILD_NUM := $(shell if [ -f $(BUILD_NUM_FILE) ]; then echo $$(($$(cat $(BUILD_NUM_FILE)) + 1)); else echo 0; fi)
 
 PFLAGS += -D_BUILD=$(BUILD_NUM)
