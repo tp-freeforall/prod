@@ -3561,10 +3561,12 @@ implementation {
   /*
    * We always require Platform.usecsRaw to be working.
    *
-   *  default async command uint32_t Platform.usecsRaw()   { return 0; }
+   * default async command uint32_t Platform.usecsRaw()       { return 0; }
+   * default async command uint32_t Platform.usecsRawSize()   { return 0; }
    */
 
-  default async command uint32_t Platform.jiffiesRaw() { return 0; }
+  default async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  default async command uint32_t Platform.jiffiesRawSize() { return 0; }
 #endif
 
 #ifndef REQUIRE_PANIC
