@@ -55,21 +55,21 @@ noinit uint16_t stack_size;
 
 
 extern uint16_t _etext, _end;
-static void PanicP__Panic__panic(uint8_t pcode, uint8_t where, uint16_t arg0,
-                                 uint16_t arg1, uint16_t arg2, uint16_t arg3);
+static void PanicP__Panic__panic(uint8_t pcode, uint8_t where, parg_t arg0,
+                                 parg_t arg1, parg_t arg2, parg_t arg3);
 
 void check_weeds(void * chk) {
   register void *sp asm("r1");
     uint16_t *p = &_end;
 
   if (chk > (void *) &_etext) {
-    PanicP__Panic__panic(PANIC_KERN, 0xff, (uint16_t) sp, (uint16_t) chk, (uint16_t) &_etext, 0);
+    PanicP__Panic__panic(PANIC_KERN, 0xff, (parg_t) sp, (parg_t) chk, (parg_t) &_etext, 0);
   }
   if (chk < (void *) 0x5c00) {
-    PanicP__Panic__panic(PANIC_KERN, 0xef, (uint16_t) sp, (uint16_t) chk, (uint16_t) 0x5c00, 0);
+    PanicP__Panic__panic(PANIC_KERN, 0xef, (parg_t) sp, (parg_t) chk, (parg_t) 0x5c00, 0);
   }
   if (*p != STACK_GUARD) {
-    PanicP__Panic__panic(PANIC_KERN, 0xfd, (uint16_t) sp, *p, 0, 0);
+    PanicP__Panic__panic(PANIC_KERN, 0xfd, (parg_t) sp, *p, 0, 0);
   }
 }
 

@@ -1884,7 +1884,7 @@ implementation {
        * oops.   should be null.   Otherwise means we are trying to
        * have > 1 in flight.
        */
-      __PANIC_RADIO(5, (uint16_t) txMsg, 0, 0, 0);
+      __PANIC_RADIO(5, (parg_t) txMsg, 0, 0, 0);
       txMsg = NULL;
     }
       
@@ -2209,7 +2209,7 @@ implementation {
     }
 
     if (!rxMsg) {                       /* never should be null */
-      __PANIC_RADIO(33, (uint16_t) rxMsg, 0, 0, 0);
+      __PANIC_RADIO(33, (parg_t) rxMsg, 0, 0, 0);
       /* just plain ugly.   bail.   no null pointer dereferences */
       __nesc_disable_interrupt();
       return TRUE;                      /* force recovery */
@@ -2683,7 +2683,7 @@ implementation {
     if (dvr_cmd == CMD_TRANSMIT)
       dvr_cmd = CMD_NONE;                     /* must happen before signal */
     else
-      __PANIC_RADIO(37, dvr_cmd, tx_user_state, (uint16_t) txMsg, 0);
+      __PANIC_RADIO(37, dvr_cmd, tx_user_state, (parg_t) txMsg, 0);
 
     if (tx_user_state == TXUS_PENDING) {
       txMsg = NULL;
@@ -2696,7 +2696,7 @@ implementation {
        * strange, why isn't a transmit waiting?
        * we will eventually, ignore silently.
        */
-      __PANIC_RADIO(38, tx_user_state, (uint16_t) txMsg, 0, 0);
+      __PANIC_RADIO(38, tx_user_state, (parg_t) txMsg, 0, 0);
       txMsg = NULL;
       tx_user_state = TXUS_IDLE;
       if (dvr_cmd == CMD_TRANSMIT)
@@ -3568,9 +3568,9 @@ implementation {
 #endif
 
 #ifndef REQUIRE_PANIC
-  default async command void Panic.panic(uint8_t pcode, uint8_t where, uint16_t arg0,
-					 uint16_t arg1, uint16_t arg2, uint16_t arg3) { }
-  default async command void  Panic.warn(uint8_t pcode, uint8_t where, uint16_t arg0,
-					 uint16_t arg1, uint16_t arg2, uint16_t arg3) { }
+  default async command void Panic.panic(uint8_t pcode, uint8_t where,
+        parg_t arg0, parg_t arg1, parg_t arg2, parg_t arg3) { }
+  default async command void  Panic.warn(uint8_t pcode, uint8_t where,
+        parg_t arg0, parg_t arg1, parg_t arg2, parg_t arg3) { }
 #endif
 }
