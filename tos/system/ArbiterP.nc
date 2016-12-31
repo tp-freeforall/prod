@@ -148,7 +148,7 @@ implementation {
   enum {NO_RES = 0xFF};
   enum {arbiter_id = unique("arbiter_id")};
 
-  uint8_t state;			/* init'd to 0, RES_DEF_OWNED */
+  arb_state_t state;			/* init'd to 0, RES_DEF_OWNED */
   norace uint8_t resId = default_owner_id;
   norace uint8_t reqResId = NO_RES;
   
