@@ -80,7 +80,7 @@ implementation {
     if (chan >= 8) return;
     if (DMA_Control->ENASET & (1 << chan)) {
       /* panic */
-      bkpt();                   /* inliue of panic  */
+      bkpt();                   /* inlue of panic  */
     }
 
     dst_inc = (control & UDMA_CHCTL_DSTINC_M);
@@ -107,6 +107,19 @@ implementation {
     }
     cb->src_end = (uint32_t) src + mod;
     DMA_Control->ENASET = 1 << chan;
+  }
+
+  /*
+   * dma_set_priority: set priority of this channel
+   *
+   * pri: 0  set normal priority
+   *      >0 set high priority
+   */
+  async command void Dma.dma_set_priority[uint8_t chan](uint32_t pri) {
+    if (pri)
+      DMA_Control->PRIOSET = 1 << chan;
+    else
+      DMA_Control->PRIOCLR = 1 << chan;
   }
 
   async command bool Dma.dma_complete[uint8_t chan]() {
