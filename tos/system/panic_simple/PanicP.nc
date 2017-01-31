@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013, 2016 Eric B. Decker
+ * Copyright (c) 2012-2013, 2016-2017 Eric B. Decker
  * All rights reserved.
  *
  * This module provides a simple Panic interface.   It currently
@@ -8,10 +8,19 @@
  *
  * it could be easily be extended to something a little more useful
  * like blinking a specific led to indicate a Panic failure.
+ *
+ * PANIC_WIGGLE: enables code to wiggle the EXC (exception) signal
+ * line with information about what panic occurred.
  */
 
 #include "panic.h"
 
+#ifdef   PANIC_WIGGLE
+#ifndef  WIGGLE_EXC
+#warning WIGGLE_EXC not defined, using default nothingness
+#define  WIGGLE_EXC do{} while (0)
+#define  WIGGLE_DELAY 1
+#endif
 #endif
 
 #ifdef notdef
@@ -34,6 +43,7 @@ module PanicP {
     interface Panic;
     interface Init;
   }
+  uses interface Platform;
 }
 
 implementation {
@@ -45,10 +55,35 @@ implementation {
   /* if a double panic, high order bit is set */
   norace bool m_in_panic;               /* initialized to 0 */
 
+#ifdef PANIC_WIGGLE
+  void debug_break(parg_t arg)  __attribute__ ((noinline)) {
+    uint32_t t0;
+    uint32_t i;
+
+    _arg = arg;
+    WIGGLE_EXC; WIGGLE_EXC; WIGGLE_EXC; WIGGLE_EXC;     /* 4 */
+    t0 = call Platform.usecsRaw();
+    while ((call Platform.usecsRaw() - t0) < WIGGLE_DELAY) ;
+
+    for (i = 0; i < _p; i++)
+      WIGGLE_EXC;
+    t0 = call Platform.usecsRaw();
+    while ((call Platform.usecsRaw() - t0) < WIGGLE_DELAY) ;
+
+    for (i = 0; i < _w; i++)
+      WIGGLE_EXC;
+    t0 = call Platform.usecsRaw();
+    while ((call Platform.usecsRaw() - t0) < WIGGLE_DELAY) ;
+    WIGGLE_EXC; WIGGLE_EXC; WIGGLE_EXC; WIGGLE_EXC;     /* 4 */
+
+    ROM_DEBUG_BREAK(1);
+  }
+#else
   void debug_break(parg_t arg)  __attribute__ ((noinline)) {
     _arg = arg;
     ROM_DEBUG_BREAK(1);
   }
+#endif
 
 
   async command void Panic.warn(uint8_t pcode, uint8_t where,

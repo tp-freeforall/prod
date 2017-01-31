@@ -10,7 +10,8 @@ configuration PanicC {
 }
 
 implementation {
-  components PanicP, MainC;
+  components PanicP, MainC, PlatformC;
   Panic = PanicP;
+  PanicP.Platform -> PlatformC;
   MainC.SoftwareInit -> PanicP;
 }
