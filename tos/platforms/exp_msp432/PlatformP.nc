@@ -41,10 +41,6 @@
 #include "hardware.h"
 #include "cpu_stack.h"
 
-#ifndef noinit
-#define noinit	__attribute__ ((section(".noinit"))) 
-#endif
-
 noinit uint32_t stack_size;
 
 module PlatformP {

@@ -53,6 +53,10 @@
 #error "Failed to match a default include file"
 #endif
 
+#ifndef noinit
+#define noinit	__attribute__ ((section(".noinit")))
+#endif
+
 /*
  * when time permits, modify the hard fault handler to handle
  * bkpt faults, possibly with a reporting mechanism.
