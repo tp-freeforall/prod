@@ -98,7 +98,7 @@ implementation {
     // call McuSleep.irq_postamble();
   }
 
-  default async event void Int.fired[uint8_t portpin]() {__bkpt(1);}
+  default async event void Int.fired[uint8_t portpin]() {ROM_DEBUG_BREAK(1);}
 
 
   async command void Int.enable[uint8_t portpin]() {

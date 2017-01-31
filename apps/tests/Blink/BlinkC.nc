@@ -64,7 +64,7 @@ implementation {
     n = call LocalTime.get();
     nop();
     if (n < local_time) {
-      bkpt();
+      ROM_DEBUG_BREAK(0);
       while (1) { nop(); }
     }
     local_time = n;

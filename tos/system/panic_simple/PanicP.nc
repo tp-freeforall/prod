@@ -12,9 +12,6 @@
 
 #include "panic.h"
 
-#ifndef bkpt
-#warning bkpt not defined, using default nothingness
-#define bkpt() do {} while (0)
 #endif
 
 #ifdef notdef
@@ -50,7 +47,7 @@ implementation {
 
   void debug_break(parg_t arg)  __attribute__ ((noinline)) {
     _arg = arg;
-    bkpt();
+    ROM_DEBUG_BREAK(1);
   }
 
 

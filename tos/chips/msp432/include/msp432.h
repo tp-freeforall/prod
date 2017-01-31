@@ -53,4 +53,13 @@
 #error "Failed to match a default include file"
 #endif
 
+/*
+ * when time permits, modify the hard fault handler to handle
+ * bkpt faults, possibly with a reporting mechanism.
+ */
+#define ROM_DEBUG_BREAK(x) do {                           \
+    if ((CoreDebug->DHCSR)&CoreDebug_DHCSR_C_DEBUGEN_Msk) \
+      __BKPT(x);                                          \
+  } while (0)
+
 #endif /* __MSP432_H__ */
