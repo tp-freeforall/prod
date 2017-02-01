@@ -18,8 +18,8 @@
 typedef struct {
   uint32_t stamp;
   trace_where_t where;
-  uint16_t arg0;
-  uint16_t arg1;
+  uint32_t arg0;
+  uint32_t arg1;
 } trace_t;
 
 #endif	// __TRACE_H__

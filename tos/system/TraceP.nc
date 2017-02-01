@@ -44,7 +44,7 @@ module TraceP {
 }
 
 implementation {
-  async command void Trace.trace(trace_where_t where, uint16_t arg0, uint16_t arg1) {
+  async command void Trace.trace(trace_where_t where, uint32_t arg0, uint32_t arg1) {
     atomic {
       if (trace_nxt >= TRACE_SIZE) {
 	call Panic.warn(PANIC_KERN, 1, trace_nxt, 0, 0, 0);
