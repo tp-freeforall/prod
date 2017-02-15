@@ -1,6 +1,7 @@
 /******************************************************************************
 *
 * Copyright (C) 2012 - 2016 Texas Instruments Incorporated - http://www.ti.com/
+* Copyright (C) 2017, Eric B. Decker
 *
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
@@ -999,6 +1000,7 @@ typedef struct {
 
 typedef struct {
   union {
+    __IO uint8_t  PMAP_REG[8];
     __IO uint16_t PMAP_REGISTER[4];
     struct {
       __IO uint8_t PMAP_REGISTER0;
