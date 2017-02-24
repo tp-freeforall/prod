@@ -1,6 +1,5 @@
 /**
- * Copyright (c) 2013 Eric B. Decker
- * Copyright (c) 2008-2010 Eric B. Decker
+ * Copyright (c) 2008-2010, 2013, 2017 Eric B. Decker
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -35,6 +34,14 @@
  */
 
 #include "serial_demux.h"
+
+#ifndef PANIC_COMM
+enum {
+  __pcode_comm = unique(UQ_PANIC_SUBSYS)
+};
+
+#define PANIC_COMM __pcode_comm
+#endif
 
 module SerialDemuxP {
   provides {

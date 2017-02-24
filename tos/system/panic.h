@@ -34,9 +34,12 @@
  */
 
 enum {
-  PANIC_KERN = 0x70,
-  PANIC_DVR  = 0x71,
+  __pcode_kern = 0x70,
+  __pcode_dvr  = 0x71,
 };
+
+#define PANIC_KERN __pcode_kern
+#define PANIC_DVR  __pcode_dvr
 
 /* the argument type for panics */
 typedef unsigned int parg_t;

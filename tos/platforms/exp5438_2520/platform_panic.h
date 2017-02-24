@@ -17,10 +17,17 @@
 
 #ifdef notdef
 enum {
-  PANIC_ADC = PANIC_HC_START,		/* 0x10, see panic.h */
-  PANIC_MISC,
-  PANIC_COMM,
+  __pcode_timing = PANIC_HC_START,		/* 0x10, see panic.h */
+  __pcode_adc,
+  __pcode_misc,
+  __pcode_comm,
 };
+
+#define PANIC_TIMING __pcode_timing
+#define PANIC_ADC    __pcode_adc
+#define PANIC_MISC   __pcode_misc
+#define PANIC_COMM   __pcode_comm
+
 #endif
 
 #endif /* __PLATFORM_PANIC_H__ */

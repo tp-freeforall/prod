@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Eric B. Decker
+ * Copyright (c) 2016-2017 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,12 +76,11 @@
 #include <panic.h>
 
 #ifndef PANIC_TIMING
-
 enum {
-  __panic_timing = unique(UQ_PANIC_SUBSYS)
+  __pcode_timing = unique(UQ_PANIC_SUBSYS)
 };
 
-#define PANIC_TIMING __panic_timing
+#define PANIC_TIMING __pcode_timing
 #endif
 
 generic module Msp432TimerP(uint32_t timer_ptr, uint32_t irqn, bool isAsync) {

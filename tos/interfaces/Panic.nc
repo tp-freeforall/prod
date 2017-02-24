@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2013, Eric B. Decker
+ * Copyright (c) 2012-2013, 2017 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,12 +76,11 @@
  * checks for various h/w conditions that can hang the system:
  *
  * #ifndef PANIC_I2C
- *
  * enum {
- *   __panic_i2c = unique(UQ_PANIC_SUBSYS)
+ *   __pcode_i2c = unique(UQ_PANIC_SUBSYS)
  * };
  *
- * #define PANIC_I2C __panic_i2c
+ * #define PANIC_I2C __pcode_i2c
  * #endif
  *
  * "where" is a simple integer (uint8_t) that denotes where in the subsystem

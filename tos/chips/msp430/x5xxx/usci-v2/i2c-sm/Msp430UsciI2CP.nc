@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014 Eric B. Decker
+ * Copyright (c) 2012-2014, 2017 Eric B. Decker
  * All rights reserved.
  *
  * Single Master driver.
@@ -91,12 +91,11 @@
 #include <I2C.h>
 
 #ifndef PANIC_I2C
-
 enum {
-  __panic_i2c = unique(UQ_PANIC_SUBSYS)
+  __pcode_i2c = unique(UQ_PANIC_SUBSYS)
 };
 
-#define PANIC_I2C __panic_i2c
+#define PANIC_I2C __pcode_i2c
 #endif
 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2016 Eric B. Decker
+ * Copyright (c) 2013, 2016-2017 Eric B. Decker
  * Copyright (c) 2009-2010 People Power Co.
  * All rights reserved.
  *
@@ -79,12 +79,11 @@
  */
 
 #ifndef PANIC_USCI
-
 enum {
-  __panic_usci = unique(UQ_PANIC_SUBSYS)
+  __pcode_usci = unique(UQ_PANIC_SUBSYS)
 };
 
-#define PANIC_USCI __panic_usci
+#define PANIC_USCI __pcode_usci
 #endif
 
 generic module Msp432UsciUartP () @safe() {

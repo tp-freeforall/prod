@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Eric B. Decker
+ * Copyright (c) 2013, 2017 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,12 +37,11 @@
  */
 
 #ifndef PANIC_RADIO
-
 enum {
-  __panic_radio = unique(UQ_PANIC_SUBSYS)
+  __pcode_radio = unique(UQ_PANIC_SUBSYS)
 };
 
-#define PANIC_RADIO __panic_radio
+#define PANIC_RADIO __pcode_radio
 #endif
 
 #include <CC2520DriverLayer.h>
