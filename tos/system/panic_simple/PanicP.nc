@@ -121,7 +121,7 @@ implementation {
       signal Panic.hook();
     } else
       m_in_panic |= 0x80;               /* flag a double */
-    debug_break(2);
+    ROM_DEBUG_BREAK(1);
   }
 
 
