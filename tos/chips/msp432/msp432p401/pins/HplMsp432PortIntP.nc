@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Eric B. Decker
+ * Copyright (c) 2016-2017 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,8 @@
  * where portpin is (port)*16+bit.  This lets us minimize how much
  * code is generated to map all the ports and bits.  For example, Port2.3 is
  * 0x23 which is pretty easy to understand.
+ *
+ * Updated 20170316 to reflect TI msp432p401r Errata SLAZ610H
  */
 
 #include <hardware.h>
@@ -132,15 +134,29 @@ implementation {
   async command void Int.edgeRising[uint8_t portpin]() {
     PORTINT_ENTRY(portpin);
     if (!_p) return;
-    if (_t) BITBAND_PERI(ODD->IES,  portbit)  = 0;
-    else    BITBAND_PERI(EVEN->IES, portbit)  = 0;
+    if (_t) {
+      BITBAND_PERI(ODD->IES,   portbit)  = 0;
+      __NOP();                    /* Errata PORT32 */
+      BITBAND_PERI(ODD->IFG,   portbit)  = 0;
+    } else {
+      BITBAND_PERI(EVEN->IES,  portbit)  = 0;
+      __NOP();                    /* Errata PORT32 */
+      BITBAND_PERI(EVEN->IFG,  portbit)  = 0;
+    }
   }
 
   async command void Int.edgeFalling[uint8_t portpin]() {
     PORTINT_ENTRY(portpin);
     if (!_p) return;
-    if (_t) BITBAND_PERI(ODD->IES,  portbit)  = 1;
-    else    BITBAND_PERI(EVEN->IES, portbit)  = 1;
+    if (_t) {
+      BITBAND_PERI(ODD->IES,  portbit)  = 1;
+      __NOP();                    /* Errata PORT32 */
+      BITBAND_PERI(ODD->IFG,  portbit)  = 0;
+    } else {
+      BITBAND_PERI(EVEN->IES, portbit)  = 1;
+      __NOP();                    /* Errata PORT32 */
+      BITBAND_PERI(EVEN->IFG, portbit)  = 0;
+    }
   }
 
 
