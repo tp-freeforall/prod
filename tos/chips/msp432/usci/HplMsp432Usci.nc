@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Eric B. Decker
+ * Copyright (c) 2016-2017 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -174,6 +174,8 @@ interface HplMsp432Usci {
    * and get a head start when a new char is coming in.
    */
   async command bool isBusy();
+  async command bool isTxComplete();
+  async command void clrTxComplete();
 
 
   /**

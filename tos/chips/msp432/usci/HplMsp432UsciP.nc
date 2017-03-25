@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Eric B. Decker
+ * Copyright (c) 2016-2017 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -243,6 +243,15 @@ implementation {
     else    return (APTR(up)->STATW & EUSCI_A_STATW_BUSY);
   }
 
+
+  async command bool	 Usci.isTxComplete() {
+    if (!_t) return (APTR(up)->IFG & EUSCI_A_IFG_TXCPTIFG);
+  }
+
+
+  async command void	 Usci.clrTxComplete() {
+    if (!_t) BITBAND_PERI(APTR(up)->IFG, EUSCI_A_IFG_TXCPTIFG_OFS) = 0;
+  }
 
   async command uint16_t Usci.getIv() {
     if (_t) return BPTR(up)->IV;
