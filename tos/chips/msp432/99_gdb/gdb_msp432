@@ -67,6 +67,7 @@ set $p7 =(DIO_PORT_Odd_Interruptable_Type  *)  $p7b
 set $p8 =(DIO_PORT_Even_Interruptable_Type  *) $p7b
 set $p9 =(DIO_PORT_Odd_Interruptable_Type  *)  $p9b
 set $p10=(DIO_PORT_Even_Interruptable_Type  *) $p9b
+set $pj =(DIO_PORT_Odd_Interruptable_Type  *)  $pjb
 
 # PMAP
 set $pmap=(PMAP_COMMON_Type*)($periph +0x00005000)
