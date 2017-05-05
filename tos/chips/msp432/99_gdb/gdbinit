@@ -83,6 +83,14 @@ printf "Alarm[0]:  t0: %04x      dt: %04x    Counter[0]: upper: %04x\n\n", \
 __p_timers VirtualizeTimerC__0__NUM_TIMERS  &VirtualizeTimerC__0__m_timers[0]
 end
 
+define gg
+set wait=0
+c
+end
+document gg
+go, set wait to 0 and continue
+end
+
 #b RealMainP.nc:86
 #b RealMainP.nc:92
 #b SchedulerBasicP.nc:159
