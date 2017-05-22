@@ -84,11 +84,11 @@ __p_timers VirtualizeTimerC__0__NUM_TIMERS  &VirtualizeTimerC__0__m_timers[0]
 end
 
 define gg
-set wait=0
+set gg_wait=0
 c
 end
 document gg
-go, set wait to 0 and continue
+go, set gg_wait to 0 and continue
 end
 
 #b RealMainP.nc:86
