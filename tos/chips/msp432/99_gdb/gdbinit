@@ -98,4 +98,11 @@ end
 #b VirtualizeTimerC.nc:92
 #dis
 
+b PanicP.nc:79
+comm
+printf "\nPanic: %d(d), w: %d(d), a: %04x %04x %04x %04x\n", \
+        PanicP___p,  PanicP___w, \
+        PanicP___a0, PanicP___a1, PanicP___a2, PanicP___a3
+end
+
 b main
