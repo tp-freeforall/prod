@@ -258,7 +258,7 @@ printf "    syshandler\n"
 end
 
 define __p_hfsr_cfsr
-# (h/c)fsr: dbg forced vect ooo div unaligned nocp invpc invstate undef 
+# (h/c)fsr: dbg forced vect ooo div unaligned nocp invpc invstate undef
 # bfar:  V: xxxxxxxx    lsp stk unstk imprecise precise ibus
 # mmar:  V: xxxxxxxx    mlsp mstk munstk dacc iacc
 printf "(h/c)fsr: "
