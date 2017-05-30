@@ -153,6 +153,12 @@ end
 printf " %d  ", $basepri
 end
 
+
+# ARM Cortex-4M Control register
+# bit 2 floating point active
+# bit 1 stack - 0 msp, 1 psp
+# bit 0 thread privileged, 0 priviledged, 1 unpriviledged
+
 define __p_control
 printf "control: "
 if ($control & 4)

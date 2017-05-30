@@ -11,10 +11,11 @@ set remotetimeout 999999
 
 set mem inaccessible-by-default off
 
-# 2331 is Jlink
 # 55000 is TI's gdb-agent-console, gag
-target extended-remote :2331
 #target extended-remote :55000
+
+# 2331 is Jlink
+target extended-remote :2331
 
 add-symbol-file symbols_hw 0
 source ../../.gdb_msp432
@@ -100,7 +101,7 @@ end
 
 b PanicP.nc:79
 comm
-printf "\nPanic: %d(d), w: %d(d), a: %04x %04x %04x %04x\n", \
+printf "\n\n*** Panic: %d(d), w: %d(d), a: %04x %04x %04x %04x\n", \
         PanicP___p,  PanicP___w, \
         PanicP___a0, PanicP___a1, PanicP___a2, PanicP___a3
 end
