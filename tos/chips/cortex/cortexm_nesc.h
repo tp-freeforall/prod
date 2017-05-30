@@ -164,7 +164,7 @@ inline __nesc_atomic_t __nesc_atomic_start() @spontaneous() __attribute__((alway
                );
   return oldState;
 }
- 
+
 inline void __nesc_atomic_end(__nesc_atomic_t oldState) @spontaneous() __attribute__((always_inline)) {
   asm volatile("" : : : "memory"); // memory barrier
   asm volatile("msr primask, %[old]\n"

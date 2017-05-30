@@ -1,7 +1,7 @@
 // $Id: RealMainP.nc,v 1.9 2010-06-29 22:07:56 scipio Exp $
 
 /*
- * Copyright (c) 2000-2003 The Regents of the University  of California.  
+ * Copyright (c) 2000-2003 The Regents of the University  of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,9 @@
  * Copyright (c) 2002-2003 Intel Corporation
  * All rights reserved.
  *
- * This file is distributed under the terms in the attached INTEL-LICENSE     
+ * This file is distributed under the terms in the attached INTEL-LICENSE
  * file. If you do not find these files, copies can be found by writing to
- * Intel Research Berkeley, 2150 Shattuck Avenue, Suite 1300, Berkeley, CA, 
+ * Intel Research Berkeley, 2150 Shattuck Avenue, Suite 1300, Berkeley, CA,
  * 94704.  Attention:  Intel License Inquiry.
  */
 /*
@@ -69,21 +69,21 @@ implementation {
 	   initialize the requisite software components and start
 	   execution.*/
 	platform_bootstrap();
-	
-	call Scheduler.init(); 
-    
+
+	call Scheduler.init();
+
 	/* Initialize the platform. Then spin on the Scheduler, passing
 	 * FALSE so it will not put the system to sleep if there are no
 	 * more tasks; if no tasks remain, continue on to software
 	 * initialization */
-	call PlatformInit.init();    
+	call PlatformInit.init();
 	while (call Scheduler.runNextTask());
 
 	/* Initialize software components.Then spin on the Scheduler,
 	 * passing FALSE so it will not put the system to sleep if there
 	 * are no more tasks; if no tasks remain, the system has booted
 	 * successfully.*/
-	call SoftwareInit.init(); 
+	call SoftwareInit.init();
 	while (call Scheduler.runNextTask());
       }
 
@@ -92,7 +92,7 @@ implementation {
 
     signal Boot.booted();
 
-    /* Spin in the Scheduler */       
+    /* Spin in the Scheduler */
     call Scheduler.taskLoop();
 
     /* We should never reach this point, but some versions of
@@ -105,4 +105,3 @@ implementation {
   default command error_t SoftwareInit.init() { return SUCCESS; }
   default event void Boot.booted() { }
 }
-
