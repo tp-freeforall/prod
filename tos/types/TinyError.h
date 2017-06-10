@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2016 Eric B. Decker
- * Copyright (c) 2000-2005 The Regents of the University  of California.  
+ * Copyright (c) 2016-2017 Eric B. Decker
+ * Copyright (c) 2000-2005 The Regents of the University  of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,8 @@ typedef enum {
   ENOMEM         = 10,           // Memory required not available
   ENOACK         = 11,           // A packet was not acknowledged
   ETIMEOUT	 = 12,		 // operation timed out
-  ELAST          = 12            // Last enum value
+  ESUBSYSDIS     = 13,           // subsystem is disabled (vs. off)
+  ELAST          = 13            // Last enum value
 } error_t NESC_COMBINE("ecombine");
 
 /*
