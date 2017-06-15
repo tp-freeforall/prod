@@ -654,10 +654,11 @@ nack_abort:
                                          EUSCI_B_CTLW0_TXSTP);      // Write, Start, Stop
 
     if ((rtn = wait_deassert_ctlw0(EUSCI_B_CTLW0_TXSTP)))
-      return rtn;
+      return 0;                                 // no slave
 
-    rtn = call Usci.isNackIntrPending();		// 1 says NACK'd
-    return (!rtn);					// we want the opposite sense
+    if (call Usci.isNackIntrPending())          // 1 says NACK'd
+      return 0;                                 // no slave
+    return 1;                                   // slave ho
   }
 
 
