@@ -154,6 +154,11 @@ implementation {
   async command uint32_t Platform.jiffiesRaw()     { return JIFFIES_REG; }
   async command uint32_t Platform.jiffiesRawSize() { return 16; }
 
+  async command bool     Platform.set_unaligned_traps(bool set_on) {
+    return FALSE;
+  }
+
+
   /***************** Defaults ***************/
   default command error_t PeripheralInit.init() {
     return SUCCESS;

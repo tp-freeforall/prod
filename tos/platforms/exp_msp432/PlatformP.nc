@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Eric B. Decker
+ * Copyright (c) 2016-2017 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,6 +73,23 @@ implementation {
   async command uint32_t Platform.usecsRawSize()   { return 32; }
   async command uint32_t Platform.jiffiesRaw()     { return (TIMER_A0->R); }
   async command uint32_t Platform.jiffiesRawSize() { return 16; }
+
+
+  async command bool     Platform.set_unaligned_traps(bool set_on) {
+    bool unaligned_on;
+
+    atomic {
+      unaligned_on = FALSE;
+      if (SCB->CCR & SCB_CCR_UNALIGN_TRP_Msk)
+        unaligned_on = TRUE;
+      if (set_on)
+        SCB->CCR |= SCB_CCR_UNALIGN_TRP_Msk;
+      else
+        SCB->CCR &= ~(SCB_CCR_UNALIGN_TRP_Msk);
+      __ISB();
+    }
+    return unaligned_on;
+  }
 
 
   /***************** Defaults ***************/

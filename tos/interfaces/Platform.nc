@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2016 Eric B. Decker
+ * Copyright (c) 2012, 2016, 2017 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,6 +45,7 @@
  *     terminating condition in the timing loop.
  *   o a low level jiffy ticker that is tied to an underlying long term
  *     ticker.  Typically this is a 32KiHz crystal based low power ticker.
+ *   o a mechanism to turn on and off unaligned traps.
  */
 
 interface Platform {
@@ -75,4 +76,28 @@ interface Platform {
    */
   async command uint32_t jiffiesRaw();
   async command uint32_t jiffiesRawSize();
+
+
+  /*
+   * depending on what cpu a platform is using, it may or may not
+   * implement unaligned traps.  ie unaligned data references.
+   *
+   * For example, an ARM Cortex-M4F implements unaligned traps
+   * and this is useful to make sure the memory is being used efficiently.
+   *
+   * But under certain circumstances one may want to turn these off.
+   */
+
+  /*
+   * set_unaligned_traps: set state of unaligned traps
+   *
+   * input:   bool      TRUE  set unaligned_traps on
+   *                    FALSE turn unaligned_traps off
+   *
+   * returns: bool      previous state of unaligned traps.
+   *                    TRUE  unaligned traps were on
+   *                    FALSE unaligned traps were off
+   */
+
+  async command bool set_unaligned_traps(bool on_off);
 }
