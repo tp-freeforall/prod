@@ -1,7 +1,7 @@
 // $Id: MainC.nc,v 1.7 2010-06-29 22:07:56 scipio Exp $
 
-/*                                                                      
- * Copyright (c) 2000-2003 The Regents of the University  of California.  
+/*
+ * Copyright (c) 2000-2003 The Regents of the University  of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,9 @@
  * Copyright (c) 2002-2003 Intel Corporation
  * All rights reserved.
  *
- * This file is distributed under the terms in the attached INTEL-LICENSE     
+ * This file is distributed under the terms in the attached INTEL-LICENSE
  * file. If you do not find these files, copies can be found by writing to
- * Intel Research Berkeley, 2150 Shattuck Avenue, Suite 1300, Berkeley, CA, 
+ * Intel Research Berkeley, 2150 Shattuck Avenue, Suite 1300, Berkeley, CA,
  * 94704.  Attention:  Intel License Inquiry.
  *
  * Date last modified:  $Id: MainC.nc,v 1.7 2010-06-29 22:07:56 scipio Exp $
@@ -71,4 +71,3 @@ implementation {
   SoftwareInit = RealMainP.SoftwareInit;
   Boot = RealMainP;
 }
-

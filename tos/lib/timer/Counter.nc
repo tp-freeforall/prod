@@ -1,6 +1,6 @@
 //$Id: Counter.nc,v 1.5 2010-06-29 22:07:50 scipio Exp $
 
-/* Copyright (c) 2000-2003 The Regents of the University of California.  
+/* Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,14 +56,14 @@
 
 interface Counter<precision_tag, size_type>
 {
-  /** 
+  /**
    * Return counter value. Counters start at boot - some time sources may
    * stop counting while the processor is in low-power mode.
    * @return Current counter value.
    */
   async command size_type get();
 
-  /** 
+  /**
    * Return TRUE if an overflow event will occur after the outermost atomic
    * block is exits.  FALSE otherwise.
    * @return Counter pending overflow status.
@@ -78,7 +78,6 @@ interface Counter<precision_tag, size_type>
   /**
    * Signals that the current time has overflowed.  That is, the current
    * time has wrapped around from its maximum value to zero.
-   */ 
+   */
   async event void overflow();
 }
-

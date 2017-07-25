@@ -27,14 +27,12 @@
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
- 
+
 /**
  * Please refer to TEP 108 for more information about this interface and its
  * intended use.<br><br>
  *
  * @author Kevin Klues (klues@tkn.tu-berlin.edu)
- * @version $ $
- * @date $Date: 2007-02-04 20:06:42 $ 
  */
 
 interface ResourceDefaultOwner {
@@ -58,7 +56,7 @@ interface ResourceDefaultOwner {
   /**
    *  Check if the user of this interface is the current
    *  owner of the Resource
-   * 
+   *
    *  @return TRUE  It is the owner <br>
    *          FALSE It is not the owner
    */

@@ -83,7 +83,7 @@
  *
  * @author Doug Carlson   <carlson@cs.jhu.edu>
  * @author Marcus Chang   <marcus.chang@gmail.com>
- * @author Peter A. Bigot <pab@peoplepowerco.com> 
+ * @author Peter A. Bigot <pab@peoplepowerco.com>
  * @author Derek Baker    <derek@red-slate.com>
  */
 
@@ -457,7 +457,7 @@ implementation {
       return EINVAL;
     }
     call Usci.setIe(UCNACKIE | UCTXIE);
-    return SUCCESS;    
+    return SUCCESS;
   }
 
 

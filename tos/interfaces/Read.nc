@@ -39,7 +39,7 @@
  *
  * <p>
  * See TEP114 - SIDs: Source and Sink Independent Drivers for details.
- * 
+ *
  * @param val_t the type of the object that will be returned
  *
  * @author Gilman Tolle <gtolle@archrock.com>
@@ -49,7 +49,7 @@
 interface Read<val_t> {
   /**
    * Initiates a read of the value.
-   * 
+   *
    * @return SUCCESS if a readDone() event will eventually come back.
    */
   command error_t read();

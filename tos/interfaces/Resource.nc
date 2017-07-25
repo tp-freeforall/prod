@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 /*
  * Copyright (c) 2004, Technische Universitat Berlin
  * All rights reserved.
@@ -59,7 +59,7 @@
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
- 
+
 /**
  * Please refer to TEP 108 for more information about this interface and its
  * intended use.<br><br>
@@ -100,21 +100,21 @@ interface Resource {
    * You are now in control of the resource.
    */
   event void granted();
-   
+
   /**
-  * Release a shared resource you previously acquired.  
+  * Release a shared resource you previously acquired.
   *
   * @return SUCCESS The resource has been released <br>
   *         FAIL You tried to release but you are not the
-  *              owner of the resource 
+  *              owner of the resource
   *
-  * @note This command should never be called between putting in a request 	  
+  * @note This command should never be called between putting in a request
   *       and waiting for a granted event.  Doing so will result in a
   *       potential race condition.  There are ways to guarantee that no
   *       race will occur, but they are clumsy and overly complicated.
   *       Since it doesn't logically make since to be calling
-  *       <code>release</code> before receiving a <code>granted</code> event, 
-  *       we have opted to keep thing simple and warn you about the potential 
+  *       <code>release</code> before receiving a <code>granted</code> event,
+  *       we have opted to keep thing simple and warn you about the potential
   *       race.
   */
   async command error_t release();

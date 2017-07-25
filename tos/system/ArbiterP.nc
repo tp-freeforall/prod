@@ -27,12 +27,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
- 
+
 /**
  * Please refer to TEP 108 for more information about this component and its
  * intended use.<br><br>
  *
- * This component provides the Resource, ResourceRequested, ArbiterInfo, 
+ * This component provides the Resource, ResourceRequested, ArbiterInfo,
  * and ResourceDefaultOwner interfaces and uses the ResourceConfigure interface as
  * described in TEP 108.  It provides arbitration to a shared resource.
  *
@@ -44,9 +44,9 @@
  * interface gains access to the resource, and holds onto it until
  * another user makes a request.
  *
- * @param <b>default_owner_id</b> -- The id of the default owner of this 
+ * @param <b>default_owner_id</b> -- The id of the default owner of this
  *        resource
- * 
+ *
  * @author Kevin Klues (klues@tkn.tu-berlin.de)
  * @author Philip Levis
  * @author Eric B. Decker (cire831@gmail.com)
@@ -151,9 +151,9 @@ implementation {
   arb_state_t state;			/* init'd to 0, RES_DEF_OWNED */
   norace uint8_t resId = default_owner_id;
   norace uint8_t reqResId = NO_RES;
-  
+
   task void grantedTask();
-  
+
   async command error_t Resource.request[uint8_t id]() {
     error_t rval;
 
@@ -232,7 +232,7 @@ implementation {
     atomic state = RES_DEF_OWNED;
     return FAIL;
   }
-  
+
   async command error_t Resource.release[uint8_t id]() {
 #ifdef TRACE_RESOURCE
     call Trace.trace((arbiter_id << 8) | T_REL, id, resId);
@@ -285,12 +285,12 @@ implementation {
     }
     return FAIL;
   }
-    
+
   /**
     Check if the Resource is currently in use
 
     DefaultOwner maybe busy using the resourse.  Need extra level of check.
-  */    
+  */
   async command bool ArbiterInfo.inUse() {
     atomic {
       if (state == RES_DEF_OWNED)
@@ -321,7 +321,7 @@ implementation {
 
    /**
    * Is this client the owner of the resource.
-   */      
+   */
   async command bool Resource.isOwner[uint8_t id]() {
     atomic return (resId == id && state == RES_BUSY);
   }

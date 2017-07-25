@@ -36,9 +36,9 @@
  * @version $Revision: 1.7 $
  * @date $Date: 2010-06-29 22:07:56 $
  */
- 
+
 #include "Resource.h"
- 
+
 generic module FcfsResourceQueueC(uint8_t size) @safe() {
   provides {
     interface Init;
@@ -55,14 +55,14 @@ implementation {
   command error_t Init.init() {
     memset(resQ, NO_ENTRY, sizeof(resQ));
     return SUCCESS;
-  }  
-  
+  }
+
   async command bool FcfsQueue.isEmpty() {
     atomic return (qHead == NO_ENTRY);
   }
-  	
+
   async command bool FcfsQueue.isEnqueued(resource_client_id_t id) {
-  	atomic return resQ[id] != NO_ENTRY || qTail == id; 
+  	atomic return resQ[id] != NO_ENTRY || qTail == id;
   }
 
   async command resource_client_id_t FcfsQueue.dequeue() {
@@ -78,7 +78,7 @@ implementation {
       return NO_ENTRY;
     }
   }
-  
+
   async command error_t FcfsQueue.enqueue(resource_client_id_t id) {
     atomic {
       if(!(call FcfsQueue.isEnqueued(id))) {

@@ -36,7 +36,7 @@
 *
 * For legacy components the definitions that are compatible with MSP430 code,
 * are included with msp432p401m_classic.h
-* 
+*
 * With CMSIS definitions, the register defines have been reformatted:
 *     ModuleName[ModuleInstance]->RegisterName
 *

@@ -925,8 +925,8 @@ nack_abort:
       return rtn;
     call Usci.setI2Csa(sa);
 
-    /* 
-     * We want to write the regAddr, send the SA and then write regAddr 
+    /*
+     * We want to write the regAddr, send the SA and then write regAddr
      * TR (write) | STT (start)
      */
     call Usci.orCtlw0(EUSCI_B_CTLW0_TR | EUSCI_B_CTLW0_TXSTT);

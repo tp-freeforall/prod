@@ -126,7 +126,7 @@ implementation {
   /**
     Returns the current user of the Resource.
     May return the default owner id.
-  */      
+  */
   async command uint8_t ArbiterInfo.userId() {
     return resId;
   }

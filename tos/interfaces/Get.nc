@@ -39,7 +39,7 @@
  *
  * <p>
  * See TEP114 - SIDs: Source and Sink Independent Drivers for details.
- * 
+ *
  * @param val_t the type of the object that will be returned
  *
  * @author Gilman Tolle <gtolle@archrock.com>

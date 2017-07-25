@@ -9,7 +9,7 @@ interface I2CSlave {
   //returns FALSE: The signalled code is not ready to read from the
   //  RXBUF yet. If false is returned, the signalled code MUST call
   //  slaveReceive to read the byte from the buffer. Until this
-  //  occurs, the bus will be stalled. 
+  //  occurs, the bus will be stalled.
   async event bool slaveReceiveRequested();
 
   //retrieve the byte from the RXBUF. Should be called only once
