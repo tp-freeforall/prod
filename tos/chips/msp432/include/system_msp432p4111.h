@@ -1,7 +1,7 @@
 /**************************************************************************//**
-* @file     system_msp432p401m.h
+* @file     system_msp432p4111.h
 * @brief    CMSIS Cortex-M4F Device Peripheral Access Layer Header File for
-*           MSP432P401M
+*           MSP432P4111
 * @version  3.100
 * @date     04/18/17
 *
@@ -42,8 +42,8 @@
 //
 //*****************************************************************************
 
-#ifndef SYSTEM_MSP432P401M_H
-#define SYSTEM_MSP432P401M_H
+#ifndef SYSTEM_MSP432P4111_H
+#define SYSTEM_MSP432P4111_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -88,4 +88,4 @@ extern void SystemCoreClockUpdate (void);
 }
 #endif
 
-#endif /* SYSTEM_MSP432P401M_H */
+#endif /* SYSTEM_MSP432P4111_H */

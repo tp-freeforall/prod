@@ -32,7 +32,7 @@
 *
 * MSP432 Family Generic Include File
 *
-* File creation date: 2016-05-09
+* File creation date: 04/18/17
 *
 ******************************************************************************/
 
@@ -46,6 +46,10 @@
 #include "msp432p401r.h"
 #elif defined (__MSP432P401M__)
 #include "msp432p401m.h"
+#elif defined (__MSP432P4111__)
+#include "msp432p4111.h"
+#elif defined (__MSP432P4XX__)
+#include "msp432p4xx.h"
 /******************************************************************************
 * Failed to match a default include file                                      *
 ******************************************************************************/

@@ -1,7 +1,6 @@
 /******************************************************************************
 *
 * Copyright (C) 2012 - 2017 Texas Instruments Incorporated - http://www.ti.com/
-* Copyright (C) 2017, Eric B. Decker
 *
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
@@ -31,12 +30,12 @@
 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
-* MSP432P401R Register Definitions
+* MSP432P4111 Register Definitions
 *
 * This file includes CMSIS compliant component and register definitions
 *
 * For legacy components the definitions that are compatible with MSP430 code,
-* are included with msp432p401r_classic.h
+* are included with msp432p4111_classic.h
 *
 * With CMSIS definitions, the register defines have been reformatted:
 *     ModuleName[ModuleInstance]->RegisterName
@@ -50,8 +49,8 @@
 *
 ******************************************************************************/
 
-#ifndef __MSP432P401R_H__
-#define __MSP432P401R_H__
+#ifndef __MSP432P4111_H__
+#define __MSP432P4111_H__
 
 /* Use standard integer types with explicit width */
 #include <stdint.h>
@@ -65,22 +64,11 @@
 /* Remap MSP432 intrinsics to ARM equivalents */
 #include "msp_compatibility.h"
 
-/******************************************************************************
-* include MSP430 legacy definitions to make porting of code from MSP430       *
-* code base easier                                                            *
-* With fully CMSIS compliant code, NO_MSP_CLASSIC_DEFINES may be defined in   *
-* your project to omit including the classic defines                          *
-******************************************************************************/
-#ifndef NO_MSP_CLASSIC_DEFINES
-#include "msp432p401r_classic.h"
-#endif
-
-
 #ifndef __CMSIS_CONFIG__
 #define __CMSIS_CONFIG__
 
-/** @addtogroup MSP432P401R_Definitions MSP432P401R Definitions
-  This file defines all structures and symbols for MSP432P401R:
+/** @addtogroup MSP432P4111_Definitions MSP432P4111 Definitions
+  This file defines all structures and symbols for MSP432P4111:
     - components and registers
     - peripheral base address
     - peripheral ID
@@ -91,7 +79,7 @@
 /******************************************************************************
 *                Processor and Core Peripherals                               *
 ******************************************************************************/
-/** @addtogroup MSP432P401R_CMSIS Device CMSIS Definitions
+/** @addtogroup MSP432P4111_CMSIS Device CMSIS Definitions
   Configuration of the Cortex-M4 Processor and Core Peripherals
   @{
 */
@@ -112,48 +100,48 @@ typedef enum IRQn
   PendSV_IRQn                 = -2,     /* 14 Pend SV Interrupt */
   SysTick_IRQn                = -1,     /* 15 System Tick Interrupt */
   /*  Peripheral Exceptions Numbers */
-  PSS_IRQn                    =  0,     /* 16 PSS Interrupt */
-  CS_IRQn                     =  1,     /* 17 CS Interrupt */
-  PCM_IRQn                    =  2,     /* 18 PCM Interrupt */
-  WDT_A_IRQn                  =  3,     /* 19 WDT_A Interrupt */
-  FPU_IRQn                    =  4,     /* 20 FPU Interrupt */
-  FLCTL_IRQn                  =  5,     /* 21 Flash Controller Interrupt */
-  COMP_E0_IRQn                =  6,     /* 22 COMP_E0 Interrupt */
-  COMP_E1_IRQn                =  7,     /* 23 COMP_E1 Interrupt */
-  TA0_0_IRQn                  =  8,     /* 24 TA0_0 Interrupt */
-  TA0_N_IRQn                  =  9,     /* 25 TA0_N Interrupt */
-  TA1_0_IRQn                  = 10,     /* 26 TA1_0 Interrupt */
-  TA1_N_IRQn                  = 11,     /* 27 TA1_N Interrupt */
-  TA2_0_IRQn                  = 12,     /* 28 TA2_0 Interrupt */
-  TA2_N_IRQn                  = 13,     /* 29 TA2_N Interrupt */
-  TA3_0_IRQn                  = 14,     /* 30 TA3_0 Interrupt */
-  TA3_N_IRQn                  = 15,     /* 31 TA3_N Interrupt */
-  EUSCIA0_IRQn                = 16,     /* 32 EUSCIA0 Interrupt */
-  EUSCIA1_IRQn                = 17,     /* 33 EUSCIA1 Interrupt */
-  EUSCIA2_IRQn                = 18,     /* 34 EUSCIA2 Interrupt */
-  EUSCIA3_IRQn                = 19,     /* 35 EUSCIA3 Interrupt */
-  EUSCIB0_IRQn                = 20,     /* 36 EUSCIB0 Interrupt */
-  EUSCIB1_IRQn                = 21,     /* 37 EUSCIB1 Interrupt */
-  EUSCIB2_IRQn                = 22,     /* 38 EUSCIB2 Interrupt */
-  EUSCIB3_IRQn                = 23,     /* 39 EUSCIB3 Interrupt */
-  ADC14_IRQn                  = 24,     /* 40 ADC14 Interrupt */
-  T32_INT1_IRQn               = 25,     /* 41 T32_INT1 Interrupt */
-  T32_INT2_IRQn               = 26,     /* 42 T32_INT2 Interrupt */
-  T32_INTC_IRQn               = 27,     /* 43 T32_INTC Interrupt */
-  AES256_IRQn                 = 28,     /* 44 AES256 Interrupt */
-  RTC_C_IRQn                  = 29,     /* 45 RTC_C Interrupt */
-  DMA_ERR_IRQn                = 30,     /* 46 DMA_ERR Interrupt */
-  DMA_INT3_IRQn               = 31,     /* 47 DMA_INT3 Interrupt */
-  DMA_INT2_IRQn               = 32,     /* 48 DMA_INT2 Interrupt */
-  DMA_INT1_IRQn               = 33,     /* 49 DMA_INT1 Interrupt */
-  DMA_INT0_IRQn               = 34,     /* 50 DMA_INT0 Interrupt */
-  PORT1_IRQn                  = 35,     /* 51 Port1 Interrupt */
-  PORT2_IRQn                  = 36,     /* 52 Port2 Interrupt */
-  PORT3_IRQn                  = 37,     /* 53 Port3 Interrupt */
-  PORT4_IRQn                  = 38,     /* 54 Port4 Interrupt */
-  PORT5_IRQn                  = 39,     /* 55 Port5 Interrupt */
-  PORT6_IRQn                  = 40      /* 56 Port6 Interrupt */
-
+  PSS_IRQn                    = 0,     /* 16 PSS Interrupt             */
+  CS_IRQn                     = 1,     /* 17 CS Interrupt              */
+  PCM_IRQn                    = 2,     /* 18 PCM Interrupt             */
+  WDT_A_IRQn                  = 3,     /* 19 WDT_A Interrupt           */
+  FPU_IRQn                    = 4,     /* 20 FPU Interrupt             */
+  FLCTL_A_IRQn                = 5,     /* 21 Flash Controller Interrupt*/
+  COMP_E0_IRQn                = 6,     /* 22 COMP_E0 Interrupt         */
+  COMP_E1_IRQn                = 7,     /* 23 COMP_E1 Interrupt         */
+  TA0_0_IRQn                  = 8,     /* 24 TA0_0 Interrupt           */
+  TA0_N_IRQn                  = 9,     /* 25 TA0_N Interrupt           */
+  TA1_0_IRQn                  = 10,     /* 26 TA1_0 Interrupt           */
+  TA1_N_IRQn                  = 11,     /* 27 TA1_N Interrupt           */
+  TA2_0_IRQn                  = 12,     /* 28 TA2_0 Interrupt           */
+  TA2_N_IRQn                  = 13,     /* 29 TA2_N Interrupt           */
+  TA3_0_IRQn                  = 14,     /* 30 TA3_0 Interrupt           */
+  TA3_N_IRQn                  = 15,     /* 31 TA3_N Interrupt           */
+  EUSCIA0_IRQn                = 16,     /* 32 EUSCIA0 Interrupt         */
+  EUSCIA1_IRQn                = 17,     /* 33 EUSCIA1 Interrupt         */
+  EUSCIA2_IRQn                = 18,     /* 34 EUSCIA2 Interrupt         */
+  EUSCIA3_IRQn                = 19,     /* 35 EUSCIA3 Interrupt         */
+  EUSCIB0_IRQn                = 20,     /* 36 EUSCIB0 Interrupt         */
+  EUSCIB1_IRQn                = 21,     /* 37 EUSCIB1 Interrupt         */
+  EUSCIB2_IRQn                = 22,     /* 38 EUSCIB2 Interrupt         */
+  EUSCIB3_IRQn                = 23,     /* 39 EUSCIB3 Interrupt         */
+  ADC14_IRQn                  = 24,     /* 40 ADC14 Interrupt           */
+  T32_INT1_IRQn               = 25,     /* 41 T32_INT1 Interrupt        */
+  T32_INT2_IRQn               = 26,     /* 42 T32_INT2 Interrupt        */
+  T32_INTC_IRQn               = 27,     /* 43 T32_INTC Interrupt        */
+  AES256_IRQn                 = 28,     /* 44 AES256 Interrupt          */
+  RTC_C_IRQn                  = 29,     /* 45 RTC_C Interrupt           */
+  DMA_ERR_IRQn                = 30,     /* 46 DMA_ERR Interrupt         */
+  DMA_INT3_IRQn               = 31,     /* 47 DMA_INT3 Interrupt        */
+  DMA_INT2_IRQn               = 32,     /* 48 DMA_INT2 Interrupt        */
+  DMA_INT1_IRQn               = 33,     /* 49 DMA_INT1 Interrupt        */
+  DMA_INT0_IRQn               = 34,     /* 50 DMA_INT0 Interrupt        */
+  PORT1_IRQn                  = 35,     /* 51 Port1 Interrupt           */
+  PORT2_IRQn                  = 36,     /* 52 Port2 Interrupt           */
+  PORT3_IRQn                  = 37,     /* 53 Port3 Interrupt           */
+  PORT4_IRQn                  = 38,     /* 54 Port4 Interrupt           */
+  PORT5_IRQn                  = 39,     /* 55 Port5 Interrupt           */
+  PORT6_IRQn                  = 40,     /* 56 Port6 Interrupt           */
+  LCD_F_IRQn                  = 41      /* 57 LCD_F Interrupt           */
 } IRQn_Type;
 
 /******************************************************************************
@@ -186,15 +174,16 @@ typedef enum IRQn
 #define __MCU_HAS_EUSCI_B1__                                                     /*!< Module EUSCI_B1 is available */
 #define __MCU_HAS_EUSCI_B2__                                                     /*!< Module EUSCI_B2 is available */
 #define __MCU_HAS_EUSCI_B3__                                                     /*!< Module EUSCI_B3 is available */
-#define __MCU_HAS_FLCTL__                                                        /*!< Module FLCTL is available */
+#define __MCU_HAS_FLCTL_A__                                                      /*!< Module FLCTL_A is available */
 #define __MCU_HAS_FL_BOOTOVER_MAILBOX__                                          /*!< Module FL_BOOTOVER_MAILBOX is available */
+#define __MCU_HAS_LCD_F__                                                        /*!< Module LCD_F is available */
 #define __MCU_HAS_PCM__                                                          /*!< Module PCM is available */
 #define __MCU_HAS_PMAP__                                                         /*!< Module PMAP is available */
 #define __MCU_HAS_PSS__                                                          /*!< Module PSS is available */
 #define __MCU_HAS_REF_A__                                                        /*!< Module REF_A is available */
 #define __MCU_HAS_RSTCTL__                                                       /*!< Module RSTCTL is available */
 #define __MCU_HAS_RTC_C__                                                        /*!< Module RTC_C is available */
-#define __MCU_HAS_SYSCTL__                                                       /*!< Module SYSCTL is available */
+#define __MCU_HAS_SYSCTL_A__                                                     /*!< Module SYSCTL_A is available */
 #define __MCU_HAS_TIMER32__                                                      /*!< Module TIMER32 is available */
 #define __MCU_HAS_TIMER_A0__                                                     /*!< Module TIMER_A0 is available */
 #define __MCU_HAS_TIMER_A1__                                                     /*!< Module TIMER_A1 is available */
@@ -224,18 +213,21 @@ typedef enum IRQn
 #define __MSP432_HAS_PORT10_R__
 
 
-/*@}*/ /* end of group MSP432P401R_CMSIS */
+/*@}*/ /* end of group MSP432P4111_CMSIS */
 
 /* Include CMSIS Cortex-M4 Core Peripheral Access Layer Header File */
 #ifdef __TI_ARM__
 /* disable the TI ULP advisor check for the core header file definitions */
 #pragma diag_push
 #pragma CHECK_ULP("none")
-#include "cmsis/core_cm4.h"
+#include "core_cm4.h"
 #pragma diag_pop
 #else
-#include "cmsis/core_cm4.h"
+#include "core_cm4.h"
 #endif
+
+/* System Header */
+#include "system_msp432p4111.h"
 
 /******************************************************************************
 * Definition of standard bits                                                 *
@@ -261,7 +253,7 @@ typedef enum IRQn
 /******************************************************************************
 * Device and peripheral memory map                                            *
 ******************************************************************************/
-/** @addtogroup MSP432P401R_MemoryMap MSP432P401R Memory Mapping
+/** @addtogroup MSP432P4111_MemoryMap MSP432P4111 Memory Mapping
   @{
 */
 
@@ -296,8 +288,9 @@ typedef enum IRQn
 #define EUSCI_B2_SPI_BASE                     (PERIPH_BASE +0x00002800)          /*!< Base address of module EUSCI_B2 registers */
 #define EUSCI_B3_BASE                         (PERIPH_BASE +0x00002C00)          /*!< Base address of module EUSCI_B3 registers */
 #define EUSCI_B3_SPI_BASE                     (PERIPH_BASE +0x00002C00)          /*!< Base address of module EUSCI_B3 registers */
-#define FLCTL_BASE                            (PERIPH_BASE +0x00011000)          /*!< Base address of module FLCTL registers */
+#define FLCTL_A_BASE                          (PERIPH_BASE +0x00011000)          /*!< Base address of module FLCTL_A registers */
 #define FL_BOOTOVER_MAILBOX_BASE                 ((uint32_t)0x00200000)          /*!< Base address of module FL_BOOTOVER_MAILBOX registers */
+#define LCD_F_BASE                            (PERIPH_BASE +0x00012400)          /*!< Base address of module LCD_F registers */
 #define PCM_BASE                              (PERIPH_BASE +0x00010000)          /*!< Base address of module PCM registers */
 #define PMAP_BASE                             (PERIPH_BASE +0x00005000)          /*!< Base address of module PMAP registers */
 #define PSS_BASE                              (PERIPH_BASE +0x00010800)          /*!< Base address of module PSS registers */
@@ -305,7 +298,7 @@ typedef enum IRQn
 #define RSTCTL_BASE                           (PERIPH_BASE2+0x00042000)          /*!< Base address of module RSTCTL registers */
 #define RTC_C_BASE                            (PERIPH_BASE +0x00004400)          /*!< Base address of module RTC_C registers */
 #define RTC_C_BCD_BASE                        (PERIPH_BASE +0x00004400)          /*!< Base address of module RTC_C registers */
-#define SYSCTL_BASE                           (PERIPH_BASE2+0x00043000)          /*!< Base address of module SYSCTL registers */
+#define SYSCTL_A_BASE                         (PERIPH_BASE2+0x00043000)          /*!< Base address of module SYSCTL_A registers */
 #define TIMER32_BASE                          (PERIPH_BASE +0x0000C000)          /*!< Base address of module TIMER32 registers */
 #define TIMER_A0_BASE                         (PERIPH_BASE +0x00000000)          /*!< Base address of module TIMER_A0 registers */
 #define TIMER_A1_BASE                         (PERIPH_BASE +0x00000400)          /*!< Base address of module TIMER_A1 registers */
@@ -315,7 +308,7 @@ typedef enum IRQn
 #define WDT_A_BASE                            (PERIPH_BASE +0x00004800)          /*!< Base address of module WDT_A registers */
 
 
-/*@}*/ /* end of group MSP432P401R_MemoryMap */
+/*@}*/ /* end of group MSP432P4111_MemoryMap */
 
 /******************************************************************************
 * Definitions for bit band access                                             *
@@ -325,15 +318,14 @@ typedef enum IRQn
 
 /* SRAM allows 32 bit bit band access */
 #define BITBAND_SRAM(x, b)  (*((__IO uint32_t *) (BITBAND_SRAM_BASE +  (((uint32_t)(uint32_t *)&(x)) - SRAM_BASE  )*32 + (b)*4)))
-
 /* peripherals with 8 bit or 16 bit register access allow only 8 bit or 16 bit bit band access, so cast to 8 bit always */
 #define BITBAND_PERI(x, b)  (*((__IO  uint8_t *) (BITBAND_PERI_BASE +  (((uint32_t)(uint32_t *)&(x)) - PERIPH_BASE)*32 + (b)*4)))
 
 /******************************************************************************
 * Peripheral register definitions                                             *
 ******************************************************************************/
-/** @addtogroup MSP432P401R_Peripherals MSP432P401R Peripherals
-  MSP432P401R Device Specific Peripheral registers structures
+/** @addtogroup MSP432P4111_Peripherals MSP432P4111 Peripherals
+  MSP432P4111 Device Specific Peripheral registers structures
   @{
 */
 
@@ -345,7 +337,7 @@ typedef enum IRQn
 /******************************************************************************
 * ADC14 Registers
 ******************************************************************************/
-/** @addtogroup ADC14 MSP432P401R (ADC14)
+/** @addtogroup ADC14 MSP432P4111 (ADC14)
   @{
 */
 typedef struct {
@@ -373,7 +365,7 @@ typedef struct {
 /******************************************************************************
 * AES256 Registers
 ******************************************************************************/
-/** @addtogroup AES256 MSP432P401R (AES256)
+/** @addtogroup AES256 MSP432P4111 (AES256)
   @{
 */
 typedef struct {
@@ -393,7 +385,7 @@ typedef struct {
 /******************************************************************************
 * CAPTIO Registers
 ******************************************************************************/
-/** @addtogroup CAPTIO MSP432P401R (CAPTIO)
+/** @addtogroup CAPTIO MSP432P4111 (CAPTIO)
   @{
 */
 typedef struct {
@@ -407,7 +399,7 @@ typedef struct {
 /******************************************************************************
 * COMP_E Registers
 ******************************************************************************/
-/** @addtogroup COMP_E MSP432P401R (COMP_E)
+/** @addtogroup COMP_E MSP432P4111 (COMP_E)
   @{
 */
 typedef struct {
@@ -426,7 +418,7 @@ typedef struct {
 /******************************************************************************
 * CRC32 Registers
 ******************************************************************************/
-/** @addtogroup CRC32 MSP432P401R (CRC32)
+/** @addtogroup CRC32 MSP432P4111 (CRC32)
   @{
 */
 typedef struct {
@@ -453,7 +445,7 @@ typedef struct {
 /******************************************************************************
 * CS Registers
 ******************************************************************************/
-/** @addtogroup CS MSP432P401R (CS)
+/** @addtogroup CS MSP432P4111 (CS)
   @{
 */
 typedef struct {
@@ -484,7 +476,7 @@ typedef struct {
 /******************************************************************************
 * DIO Registers
 ******************************************************************************/
-/** @addtogroup DIO MSP432P401R (DIO)
+/** @addtogroup DIO MSP432P4111 (DIO)
   @{
 */
 typedef struct {
@@ -683,13 +675,13 @@ typedef struct {
   __I uint16_t IV;                                                                /*!< Port Interrupt Vector Value */
 } DIO_PORT_Even_Interruptable_Type;
 
-/*@}*/ /* end of group MSP432P401R_DIO */
+/*@}*/ /* end of group MSP432P4111_DIO */
 
 
 /******************************************************************************
 * DMA Registers
 ******************************************************************************/
-/** @addtogroup DMA MSP432P401R (DMA)
+/** @addtogroup DMA MSP432P4111 (DMA)
   @{
 */
 typedef struct {
@@ -733,7 +725,7 @@ typedef struct {
 /******************************************************************************
 * EUSCI_A Registers
 ******************************************************************************/
-/** @addtogroup EUSCI_A MSP432P401R (EUSCI_A)
+/** @addtogroup EUSCI_A MSP432P4111 (EUSCI_A)
   @{
 */
 typedef struct {
@@ -755,7 +747,7 @@ typedef struct {
 
 /*@}*/ /* end of group EUSCI_A */
 
-/** @addtogroup EUSCI_A_SPI MSP432P401R (EUSCI_A_SPI)
+/** @addtogroup EUSCI_A_SPI MSP432P4111 (EUSCI_A_SPI)
   @{
 */
 typedef struct {
@@ -778,7 +770,7 @@ typedef struct {
 /******************************************************************************
 * EUSCI_B Registers
 ******************************************************************************/
-/** @addtogroup EUSCI_B MSP432P401R (EUSCI_B)
+/** @addtogroup EUSCI_B MSP432P4111 (EUSCI_B)
   @{
 */
 typedef struct {
@@ -806,7 +798,7 @@ typedef struct {
 
 /*@}*/ /* end of group EUSCI_B */
 
-/** @addtogroup EUSCI_B_SPI MSP432P401R (EUSCI_B_SPI)
+/** @addtogroup EUSCI_B_SPI MSP432P4111 (EUSCI_B_SPI)
   @{
 */
 typedef struct {
@@ -827,9 +819,9 @@ typedef struct {
 
 
 /******************************************************************************
-* FLCTL Registers
+* FLCTL_A Registers
 ******************************************************************************/
-/** @addtogroup FLCTL MSP432P401R (FLCTL)
+/** @addtogroup FLCTL_A MSP432P4111 (FLCTL_A)
   @{
 */
 typedef struct {
@@ -892,15 +884,33 @@ typedef struct {
   __I  uint32_t ERASE_TIMCTL;                                                    /*!< Erase Timing Control Register */
   __I  uint32_t MASSERASE_TIMCTL;                                                /*!< Mass Erase Timing Control Register */
   __I  uint32_t BURSTPRG_TIMCTL;                                                 /*!< Burst Program Timing Control Register */
-} FLCTL_Type;
+       uint32_t RESERVED9[55];
+  __IO uint32_t BANK0_MAIN_WEPROT0;                                              /*!< Main Memory Bank0 Write/Erase Protection Register 0 */
+  __IO uint32_t BANK0_MAIN_WEPROT1;                                              /*!< Main Memory Bank0 Write/Erase Protection Register 1 */
+  __IO uint32_t BANK0_MAIN_WEPROT2;                                              /*!< Main Memory Bank0 Write/Erase Protection Register 2 */
+  __IO uint32_t BANK0_MAIN_WEPROT3;                                              /*!< Main Memory Bank0 Write/Erase Protection Register 3 */
+  __IO uint32_t BANK0_MAIN_WEPROT4;                                              /*!< Main Memory Bank0 Write/Erase Protection Register 4 */
+  __IO uint32_t BANK0_MAIN_WEPROT5;                                              /*!< Main Memory Bank0 Write/Erase Protection Register 5 */
+  __IO uint32_t BANK0_MAIN_WEPROT6;                                              /*!< Main Memory Bank0 Write/Erase Protection Register 6 */
+  __IO uint32_t BANK0_MAIN_WEPROT7;                                              /*!< Main Memory Bank0 Write/Erase Protection Register 7 */
+       uint32_t RESERVED10[8];
+  __IO uint32_t BANK1_MAIN_WEPROT0;                                              /*!< Main Memory Bank1 Write/Erase Protection Register 0 */
+  __IO uint32_t BANK1_MAIN_WEPROT1;                                              /*!< Main Memory Bank1 Write/Erase Protection Register 1 */
+  __IO uint32_t BANK1_MAIN_WEPROT2;                                              /*!< Main Memory Bank1 Write/Erase Protection Register 2 */
+  __IO uint32_t BANK1_MAIN_WEPROT3;                                              /*!< Main Memory Bank1 Write/Erase Protection Register 3 */
+  __IO uint32_t BANK1_MAIN_WEPROT4;                                              /*!< Main Memory Bank1 Write/Erase Protection Register 4 */
+  __IO uint32_t BANK1_MAIN_WEPROT5;                                              /*!< Main Memory Bank1 Write/Erase Protection Register 5 */
+  __IO uint32_t BANK1_MAIN_WEPROT6;                                              /*!< Main Memory Bank1 Write/Erase Protection Register 6 */
+  __IO uint32_t BANK1_MAIN_WEPROT7;                                              /*!< Main Memory Bank1 Write/Erase Protection Register 7 */
+} FLCTL_A_Type;
 
-/*@}*/ /* end of group FLCTL */
+/*@}*/ /* end of group FLCTL_A */
 
 
 /******************************************************************************
 * FL_BOOTOVER_MAILBOX Registers
 ******************************************************************************/
-/** @addtogroup SEC_ZONE_PARAMS MSP432P401R (FL_BOOTOVER_MAILBOX)
+/** @addtogroup SEC_ZONE_PARAMS MSP432P4111 (FL_BOOTOVER_MAILBOX)
   @{
 */
 typedef struct {
@@ -918,7 +928,7 @@ typedef struct {
 
 /*@}*/ /* end of group SEC_ZONE_PARAMS */
 
-/** @addtogroup SEC_ZONE_UPDATE MSP432P401R (FL_BOOTOVER_MAILBOX)
+/** @addtogroup SEC_ZONE_UPDATE MSP432P4111 (FL_BOOTOVER_MAILBOX)
   @{
 */
 typedef struct {
@@ -930,7 +940,7 @@ typedef struct {
 
 /*@}*/ /* end of group SEC_ZONE_UPDATE */
 
-/** @addtogroup FL_BOOTOVER_MAILBOX MSP432P401R (FL_BOOTOVER_MAILBOX)
+/** @addtogroup FL_BOOTOVER_MAILBOX MSP432P4111 (FL_BOOTOVER_MAILBOX)
   @{
 */
 typedef struct {
@@ -954,7 +964,7 @@ typedef struct {
   __IO uint32_t JTAG_SWD_LOCK_DST_ADDR;                                          /*!< Destination address where the final data needs to be stored into the device. */
   __IO uint32_t ENC_UPDATE_ACK;                                                  /*!< Acknowledgment for JTAG and SWD Lock Encrypted Update Command */
        uint32_t RESERVED3;
-  SEC_ZONE_UPDATE_Type SEC_ZONE_UPDATE[4];                                       /*!< IP Protection Secure Zone Update */
+  SEC_ZONE_UPDATE_Type SEC_ZONE_UPDATE[4];
        uint32_t RESERVED4;
   __IO uint32_t FACTORY_RESET_ENABLE;                                            /*!< Enable/Disable Factory Reset */
   __IO uint32_t FACTORY_RESET_PWDEN;                                             /*!< Factory reset password enable */
@@ -971,9 +981,39 @@ typedef struct {
 
 
 /******************************************************************************
+* LCD_F Registers
+******************************************************************************/
+/** @addtogroup LCD_F MSP432P4111 (LCD_F)
+  @{
+*/
+typedef struct {
+  __IO uint32_t CTL;                                                             /*!< LCD_F control */
+  __IO uint32_t BMCTL;                                                           /*!< LCD_F blinking and memory control */
+  __IO uint32_t VCTL;                                                            /*!< LCD_F voltage control */
+  __IO uint32_t PCTL0;                                                           /*!< LCD_F port control 0 */
+  __IO uint32_t PCTL1;                                                           /*!< LCD_F port control 1 */
+  __IO uint32_t CSSEL0;                                                          /*!< LCD_F COM/SEG select register 0 */
+  __IO uint32_t CSSEL1;                                                          /*!< LCD_F COM/SEG select register 1 */
+  __IO uint32_t ANMCTL;                                                          /*!< LCD_F Animation Control Register */
+       uint32_t RESERVED0[60];
+  __IO uint32_t IE;                                                              /*!< LCD_F interrupt enable register */
+  __I  uint32_t IFG;                                                             /*!< LCD_F interrupt flag register */
+  __O  uint32_t SETIFG;                                                          /*!< LCD_F set interrupt flag register */
+  __O  uint32_t CLRIFG;                                                          /*!< LCD_F clear interrupt flag register */
+  __IO uint8_t M[48];                                                            /*!< LCD memory registers */
+       uint8_t  RESERVED1[16];
+  __IO uint8_t BM[48];                                                           /*!< LCD Blinking memory registers */
+       uint8_t  RESERVED2[16];
+  __IO uint8_t ANM[8];                                                          /*!< LCD Animation memory registers */
+} LCD_F_Type;
+
+/*@}*/ /* end of group LCD_F */
+
+
+/******************************************************************************
 * PCM Registers
 ******************************************************************************/
-/** @addtogroup PCM MSP432P401R (PCM)
+/** @addtogroup PCM MSP432P4111 (PCM)
   @{
 */
 typedef struct {
@@ -990,27 +1030,26 @@ typedef struct {
 /******************************************************************************
 * PMAP Registers
 ******************************************************************************/
-/** @addtogroup PMAP MSP432P401R (PMAP)
+/** @addtogroup PMAP MSP432P4111 (PMAP)
   @{
 */
 typedef struct {
-  __IO uint16_t KEYID;
-  __IO uint16_t CTL;
+  __IO uint16_t KEYID;                                                           /*!< Port Mapping Key Register */
+  __IO uint16_t CTL;                                                             /*!< Port Mapping Control Register */
 } PMAP_COMMON_Type;
 
 typedef struct {
   union {
-    __IO uint8_t  PMAP_REG[8];
-    __IO uint16_t PMAP_REGISTER[4];
+    __IO uint16_t PMAP_REGISTER[4];                                              /*!< Port Mapping Registers */
     struct {
-      __IO uint8_t PMAP_REGISTER0;
-      __IO uint8_t PMAP_REGISTER1;
-      __IO uint8_t PMAP_REGISTER2;
-      __IO uint8_t PMAP_REGISTER3;
-      __IO uint8_t PMAP_REGISTER4;
-      __IO uint8_t PMAP_REGISTER5;
-      __IO uint8_t PMAP_REGISTER6;
-      __IO uint8_t PMAP_REGISTER7;
+      __IO uint8_t PMAP_REGISTER0;                                               /*!< Port Mapping Register Bit 0 */
+      __IO uint8_t PMAP_REGISTER1;                                               /*!< Port Mapping Register Bit 1 */
+      __IO uint8_t PMAP_REGISTER2;                                               /*!< Port Mapping Register Bit 2 */
+      __IO uint8_t PMAP_REGISTER3;                                               /*!< Port Mapping Register Bit 3 */
+      __IO uint8_t PMAP_REGISTER4;                                               /*!< Port Mapping Register Bit 4 */
+      __IO uint8_t PMAP_REGISTER5;                                               /*!< Port Mapping Register Bit 5 */
+      __IO uint8_t PMAP_REGISTER6;                                               /*!< Port Mapping Register Bit 6 */
+      __IO uint8_t PMAP_REGISTER7;                                               /*!< Port Mapping Register Bit 7 */
     };
   };
 } PMAP_REGISTER_Type;
@@ -1021,7 +1060,7 @@ typedef struct {
 /******************************************************************************
 * PSS Registers
 ******************************************************************************/
-/** @addtogroup PSS MSP432P401R (PSS)
+/** @addtogroup PSS MSP432P4111 (PSS)
   @{
 */
 typedef struct {
@@ -1039,7 +1078,7 @@ typedef struct {
 /******************************************************************************
 * REF_A Registers
 ******************************************************************************/
-/** @addtogroup REF_A MSP432P401R (REF_A)
+/** @addtogroup REF_A MSP432P4111 (REF_A)
   @{
 */
 typedef struct {
@@ -1052,7 +1091,7 @@ typedef struct {
 /******************************************************************************
 * RSTCTL Registers
 ******************************************************************************/
-/** @addtogroup RSTCTL MSP432P401R (RSTCTL)
+/** @addtogroup RSTCTL MSP432P4111 (RSTCTL)
   @{
 */
 typedef struct {
@@ -1082,7 +1121,7 @@ typedef struct {
 /******************************************************************************
 * RTC_C Registers
 ******************************************************************************/
-/** @addtogroup RTC_C MSP432P401R (RTC_C)
+/** @addtogroup RTC_C MSP432P4111 (RTC_C)
   @{
 */
 typedef struct {
@@ -1106,7 +1145,7 @@ typedef struct {
 
 /*@}*/ /* end of group RTC_C */
 
-/** @addtogroup RTC_C_BCD MSP432P401R (RTC_C_BCD)
+/** @addtogroup RTC_C_BCD MSP432P4111 (RTC_C_BCD)
   @{
 */
 typedef struct {
@@ -1123,9 +1162,9 @@ typedef struct {
 
 
 /******************************************************************************
-* SYSCTL Registers
+* SYSCTL_A Registers
 ******************************************************************************/
-/** @addtogroup SYSCTL MSP432P401R (SYSCTL)
+/** @addtogroup SYSCTL_A MSP432P4111 (SYSCTL_A)
   @{
 */
 typedef struct {
@@ -1134,15 +1173,28 @@ typedef struct {
   __IO uint32_t WDTRESET_CTL;                                                    /*!< Watchdog Reset Control Register */
   __IO uint32_t PERIHALT_CTL;                                                    /*!< Peripheral Halt Control Register */
   __I  uint32_t SRAM_SIZE;                                                       /*!< SRAM Size Register */
-  __IO uint32_t SRAM_BANKEN;                                                     /*!< SRAM Bank Enable Register */
-  __IO uint32_t SRAM_BANKRET;                                                    /*!< SRAM Bank Retention Control Register */
+  __I  uint32_t SRAM_NUMBANKS;                                                   /*!< SRAM Number of Banks Register */
+  __I  uint32_t SRAM_NUMBLOCKS;                                                  /*!< SRAM Number of Blocks Register */
        uint32_t RESERVED0;
-  __I  uint32_t FLASH_SIZE;                                                      /*!< Flash Size Register */
-       uint32_t RESERVED1[3];
+  __I  uint32_t MAINFLASH_SIZE;                                                  /*!< Flash Main Memory Size Register */
+  __I  uint32_t INFOFLASH_SIZE;                                                  /*!< Flash Information Memory Size Register */
+       uint32_t RESERVED1[2];
   __IO uint32_t DIO_GLTFLT_CTL;                                                  /*!< Digital I/O Glitch Filter Control Register */
        uint32_t RESERVED2[3];
   __IO uint32_t SECDATA_UNLOCK;                                                  /*!< IP Protected Secure Zone Data Access Unlock Register */
-} SYSCTL_Type;
+       uint32_t RESERVED3[3];
+  __IO uint32_t SRAM_BANKEN_CTL0;                                                /*!< SRAM Bank Enable Control Register 0 */
+  __IO uint32_t SRAM_BANKEN_CTL1;                                                /*!< SRAM Bank Enable Control Register 1 */
+  __IO uint32_t SRAM_BANKEN_CTL2;                                                /*!< SRAM Bank Enable Control Register 2 */
+  __IO uint32_t SRAM_BANKEN_CTL3;                                                /*!< SRAM Bank Enable Control Register 3 */
+       uint32_t RESERVED4[4];
+  __IO uint32_t SRAM_BLKRET_CTL0;                                                /*!< SRAM Block Retention Control Register 0 */
+  __IO uint32_t SRAM_BLKRET_CTL1;                                                /*!< SRAM Block Retention Control Register 1 */
+  __IO uint32_t SRAM_BLKRET_CTL2;                                                /*!< SRAM Block Retention Control Register 2 */
+  __IO uint32_t SRAM_BLKRET_CTL3;                                                /*!< SRAM Block Retention Control Register 3 */
+       uint32_t RESERVED5[4];
+  __I  uint32_t SRAM_STAT;                                                       /*!< SRAM Status Register */
+} SYSCTL_A_Type;
 
 typedef struct {
   __IO uint32_t MASTER_UNLOCK;                                                   /*!< Master Unlock Register */
@@ -1150,23 +1202,23 @@ typedef struct {
   __IO uint32_t BOOTOVER_ACK;                                                    /*!< Boot Override Acknowledge Register */
   __IO uint32_t RESET_REQ;                                                       /*!< Reset Request Register */
   __IO uint32_t RESET_STATOVER;                                                  /*!< Reset Status and Override Register */
-       uint32_t RESERVED7[2];
+       uint32_t RESERVED10[2];
   __I  uint32_t SYSTEM_STAT;                                                     /*!< System Status Register */
-} SYSCTL_Boot_Type;
+} SYSCTL_A_Boot_Type;
 
-/*@}*/ /* end of group SYSCTL */
+/*@}*/ /* end of group SYSCTL_A */
 
 
 /******************************************************************************
 * Timer32 Registers
 ******************************************************************************/
-/** @addtogroup Timer32 MSP432P401R (Timer32)
+/** @addtogroup Timer32 MSP432P4111 (Timer32)
   @{
 */
 typedef struct {
   __IO uint32_t LOAD;                                                            /*!< Timer Load Register */
   __I  uint32_t VALUE;                                                           /*!< Timer Current Value Register */
-  __IO uint32_t CONTROL;                                                         /*!< Timer Control Register */
+  __IO uint32_t CONTROL;                                                         /*!< Timer Timer Control Register */
   __O  uint32_t INTCLR;                                                          /*!< Timer Interrupt Clear Register */
   __I  uint32_t RIS;                                                             /*!< Timer Raw Interrupt Status Register */
   __I  uint32_t MIS;                                                             /*!< Timer Interrupt Status Register */
@@ -1179,7 +1231,7 @@ typedef struct {
 /******************************************************************************
 * Timer_A Registers
 ******************************************************************************/
-/** @addtogroup Timer_A MSP432P401R (Timer_A)
+/** @addtogroup Timer_A MSP432P4111 (Timer_A)
   @{
 */
 typedef struct {
@@ -1200,7 +1252,7 @@ typedef struct {
 /******************************************************************************
 * TLV Registers
 ******************************************************************************/
-/** @addtogroup TLV MSP432P401R (TLV)
+/** @addtogroup TLV MSP432P4111 (TLV)
   @{
 */
 typedef struct {
@@ -1295,7 +1347,7 @@ typedef struct {
 /******************************************************************************
 * WDT_A Registers
 ******************************************************************************/
-/** @addtogroup WDT_A MSP432P401R (WDT_A)
+/** @addtogroup WDT_A MSP432P4111 (WDT_A)
   @{
 */
 typedef struct {
@@ -1310,12 +1362,12 @@ typedef struct {
 #pragma no_anon_unions
 #endif
 
-/*@}*/ /* end of group MSP432P401R_Peripherals */
+/*@}*/ /* end of group MSP432P4111_Peripherals */
 
 /******************************************************************************
 * Peripheral declaration                                                      *
 ******************************************************************************/
-/** @addtogroup MSP432P401R_PeripheralDecl MSP432P401R Peripheral Declaration
+/** @addtogroup MSP432P4111_PeripheralDecl MSP432P4111 Peripheral Declaration
   @{
 */
 
@@ -1361,8 +1413,9 @@ typedef struct {
 #define EUSCI_B2_SPI                     ((EUSCI_B_SPI_Type *) EUSCI_B2_SPI_BASE)
 #define EUSCI_B3                         ((EUSCI_B_Type *) EUSCI_B3_BASE)
 #define EUSCI_B3_SPI                     ((EUSCI_B_SPI_Type *) EUSCI_B3_SPI_BASE)
-#define FLCTL                            ((FLCTL_Type *) FLCTL_BASE)
+#define FLCTL_A                          ((FLCTL_A_Type *) FLCTL_A_BASE)
 #define FL_BOOTOVER_MAILBOX              ((FL_BOOTOVER_MAILBOX_Type *) FL_BOOTOVER_MAILBOX_BASE)
+#define LCD_F                            ((LCD_F_Type *) LCD_F_BASE)
 #define PCM                              ((PCM_Type *) PCM_BASE)
 #define PMAP                             ((PMAP_COMMON_Type*) PMAP_BASE)
 #define P1MAP                            ((PMAP_REGISTER_Type*) (PMAP_BASE + 0x0008))
@@ -1377,8 +1430,8 @@ typedef struct {
 #define RSTCTL                           ((RSTCTL_Type *) RSTCTL_BASE)
 #define RTC_C                            ((RTC_C_Type *) RTC_C_BASE)
 #define RTC_C_BCD                        ((RTC_C_BCD_Type *) RTC_C_BCD_BASE)
-#define SYSCTL                           ((SYSCTL_Type *) SYSCTL_BASE)
-#define SYSCTL_Boot                      ((SYSCTL_Boot_Type *) (SYSCTL_BASE + 0x1000))
+#define SYSCTL_A                         ((SYSCTL_A_Type *) SYSCTL_A_BASE)
+#define SYSCTL_A_Boot                    ((SYSCTL_A_Boot_Type *) (SYSCTL_A_BASE + 0x1000))
 #define TIMER32_1                        ((Timer32_Type *) TIMER32_BASE)
 #define TIMER32_2                        ((Timer32_Type *) (TIMER32_BASE + 0x00020))
 #define TIMER_A0                         ((Timer_A_Type *) TIMER_A0_BASE)
@@ -1389,9 +1442,9 @@ typedef struct {
 #define WDT_A                            ((WDT_A_Type *) WDT_A_BASE)
 
 
-/*@}*/ /* end of group MSP432P401R_PeripheralDecl */
+/*@}*/ /* end of group MSP432P4111_PeripheralDecl */
 
-/*@}*/ /* end of group MSP432P401R_Definitions */
+/*@}*/ /* end of group MSP432P4111_Definitions */
 
 #endif /* __CMSIS_CONFIG__ */
 
@@ -2386,43 +2439,6 @@ typedef struct {
 /* COMP_E_CTL2[REF0] Bits */
 #define COMP_E_CTL2_REF0_OFS                     ( 0)                            /*!< CEREF0 Bit Offset */
 #define COMP_E_CTL2_REF0_MASK                    ((uint16_t)0x001F)              /*!< CEREF0 Bit Mask */
-#define COMP_E_CTL2_REF00                        ((uint16_t)0x0001)              /*!< REF0 Bit 0 */
-#define COMP_E_CTL2_REF01                        ((uint16_t)0x0002)              /*!< REF0 Bit 1 */
-#define COMP_E_CTL2_REF02                        ((uint16_t)0x0004)              /*!< REF0 Bit 2 */
-#define COMP_E_CTL2_REF03                        ((uint16_t)0x0008)              /*!< REF0 Bit 3 */
-#define COMP_E_CTL2_REF04                        ((uint16_t)0x0010)              /*!< REF0 Bit 4 */
-#define COMP_E_CTL2_REF0_0                       ((uint16_t)0x0000)              /*!< Reference resistor tap for setting 0. */
-#define COMP_E_CTL2_REF0_1                       ((uint16_t)0x0001)              /*!< Reference resistor tap for setting 1. */
-#define COMP_E_CTL2_REF0_2                       ((uint16_t)0x0002)              /*!< Reference resistor tap for setting 2. */
-#define COMP_E_CTL2_REF0_3                       ((uint16_t)0x0003)              /*!< Reference resistor tap for setting 3. */
-#define COMP_E_CTL2_REF0_4                       ((uint16_t)0x0004)              /*!< Reference resistor tap for setting 4. */
-#define COMP_E_CTL2_REF0_5                       ((uint16_t)0x0005)              /*!< Reference resistor tap for setting 5. */
-#define COMP_E_CTL2_REF0_6                       ((uint16_t)0x0006)              /*!< Reference resistor tap for setting 6. */
-#define COMP_E_CTL2_REF0_7                       ((uint16_t)0x0007)              /*!< Reference resistor tap for setting 7. */
-#define COMP_E_CTL2_REF0_8                       ((uint16_t)0x0008)              /*!< Reference resistor tap for setting 8. */
-#define COMP_E_CTL2_REF0_9                       ((uint16_t)0x0009)              /*!< Reference resistor tap for setting 9. */
-#define COMP_E_CTL2_REF0_10                      ((uint16_t)0x000A)              /*!< Reference resistor tap for setting 10. */
-#define COMP_E_CTL2_REF0_11                      ((uint16_t)0x000B)              /*!< Reference resistor tap for setting 11. */
-#define COMP_E_CTL2_REF0_12                      ((uint16_t)0x000C)              /*!< Reference resistor tap for setting 12. */
-#define COMP_E_CTL2_REF0_13                      ((uint16_t)0x000D)              /*!< Reference resistor tap for setting 13. */
-#define COMP_E_CTL2_REF0_14                      ((uint16_t)0x000E)              /*!< Reference resistor tap for setting 14. */
-#define COMP_E_CTL2_REF0_15                      ((uint16_t)0x000F)              /*!< Reference resistor tap for setting 15. */
-#define COMP_E_CTL2_REF0_16                      ((uint16_t)0x0010)              /*!< Reference resistor tap for setting 16. */
-#define COMP_E_CTL2_REF0_17                      ((uint16_t)0x0011)              /*!< Reference resistor tap for setting 17. */
-#define COMP_E_CTL2_REF0_18                      ((uint16_t)0x0012)              /*!< Reference resistor tap for setting 18. */
-#define COMP_E_CTL2_REF0_19                      ((uint16_t)0x0013)              /*!< Reference resistor tap for setting 19. */
-#define COMP_E_CTL2_REF0_20                      ((uint16_t)0x0014)              /*!< Reference resistor tap for setting 20. */
-#define COMP_E_CTL2_REF0_21                      ((uint16_t)0x0015)              /*!< Reference resistor tap for setting 21. */
-#define COMP_E_CTL2_REF0_22                      ((uint16_t)0x0016)              /*!< Reference resistor tap for setting 22. */
-#define COMP_E_CTL2_REF0_23                      ((uint16_t)0x0017)              /*!< Reference resistor tap for setting 23. */
-#define COMP_E_CTL2_REF0_24                      ((uint16_t)0x0018)              /*!< Reference resistor tap for setting 24. */
-#define COMP_E_CTL2_REF0_25                      ((uint16_t)0x0019)              /*!< Reference resistor tap for setting 25. */
-#define COMP_E_CTL2_REF0_26                      ((uint16_t)0x001A)              /*!< Reference resistor tap for setting 26. */
-#define COMP_E_CTL2_REF0_27                      ((uint16_t)0x001B)              /*!< Reference resistor tap for setting 27. */
-#define COMP_E_CTL2_REF0_28                      ((uint16_t)0x001C)              /*!< Reference resistor tap for setting 28. */
-#define COMP_E_CTL2_REF0_29                      ((uint16_t)0x001D)              /*!< Reference resistor tap for setting 29. */
-#define COMP_E_CTL2_REF0_30                      ((uint16_t)0x001E)              /*!< Reference resistor tap for setting 30. */
-#define COMP_E_CTL2_REF0_31                      ((uint16_t)0x001F)              /*!< Reference resistor tap for setting 31. */
 /* COMP_E_CTL2[RSEL] Bits */
 #define COMP_E_CTL2_RSEL_OFS                     ( 5)                            /*!< CERSEL Bit Offset */
 #define COMP_E_CTL2_RSEL                         ((uint16_t)0x0020)              /*!< Reference select */
@@ -2438,43 +2454,6 @@ typedef struct {
 /* COMP_E_CTL2[REF1] Bits */
 #define COMP_E_CTL2_REF1_OFS                     ( 8)                            /*!< CEREF1 Bit Offset */
 #define COMP_E_CTL2_REF1_MASK                    ((uint16_t)0x1F00)              /*!< CEREF1 Bit Mask */
-#define COMP_E_CTL2_REF10                        ((uint16_t)0x0100)              /*!< REF1 Bit 0 */
-#define COMP_E_CTL2_REF11                        ((uint16_t)0x0200)              /*!< REF1 Bit 1 */
-#define COMP_E_CTL2_REF12                        ((uint16_t)0x0400)              /*!< REF1 Bit 2 */
-#define COMP_E_CTL2_REF13                        ((uint16_t)0x0800)              /*!< REF1 Bit 3 */
-#define COMP_E_CTL2_REF14                        ((uint16_t)0x1000)              /*!< REF1 Bit 4 */
-#define COMP_E_CTL2_REF1_0                       ((uint16_t)0x0000)              /*!< Reference resistor tap for setting 0. */
-#define COMP_E_CTL2_REF1_1                       ((uint16_t)0x0100)              /*!< Reference resistor tap for setting 1. */
-#define COMP_E_CTL2_REF1_2                       ((uint16_t)0x0200)              /*!< Reference resistor tap for setting 2. */
-#define COMP_E_CTL2_REF1_3                       ((uint16_t)0x0300)              /*!< Reference resistor tap for setting 3. */
-#define COMP_E_CTL2_REF1_4                       ((uint16_t)0x0400)              /*!< Reference resistor tap for setting 4. */
-#define COMP_E_CTL2_REF1_5                       ((uint16_t)0x0500)              /*!< Reference resistor tap for setting 5. */
-#define COMP_E_CTL2_REF1_6                       ((uint16_t)0x0600)              /*!< Reference resistor tap for setting 6. */
-#define COMP_E_CTL2_REF1_7                       ((uint16_t)0x0700)              /*!< Reference resistor tap for setting 7. */
-#define COMP_E_CTL2_REF1_8                       ((uint16_t)0x0800)              /*!< Reference resistor tap for setting 8. */
-#define COMP_E_CTL2_REF1_9                       ((uint16_t)0x0900)              /*!< Reference resistor tap for setting 9. */
-#define COMP_E_CTL2_REF1_10                      ((uint16_t)0x0A00)              /*!< Reference resistor tap for setting 10. */
-#define COMP_E_CTL2_REF1_11                      ((uint16_t)0x0B00)              /*!< Reference resistor tap for setting 11. */
-#define COMP_E_CTL2_REF1_12                      ((uint16_t)0x0C00)              /*!< Reference resistor tap for setting 12. */
-#define COMP_E_CTL2_REF1_13                      ((uint16_t)0x0D00)              /*!< Reference resistor tap for setting 13. */
-#define COMP_E_CTL2_REF1_14                      ((uint16_t)0x0E00)              /*!< Reference resistor tap for setting 14. */
-#define COMP_E_CTL2_REF1_15                      ((uint16_t)0x0F00)              /*!< Reference resistor tap for setting 15. */
-#define COMP_E_CTL2_REF1_16                      ((uint16_t)0x1000)              /*!< Reference resistor tap for setting 16. */
-#define COMP_E_CTL2_REF1_17                      ((uint16_t)0x1100)              /*!< Reference resistor tap for setting 17. */
-#define COMP_E_CTL2_REF1_18                      ((uint16_t)0x1200)              /*!< Reference resistor tap for setting 18. */
-#define COMP_E_CTL2_REF1_19                      ((uint16_t)0x1300)              /*!< Reference resistor tap for setting 19. */
-#define COMP_E_CTL2_REF1_20                      ((uint16_t)0x1400)              /*!< Reference resistor tap for setting 20. */
-#define COMP_E_CTL2_REF1_21                      ((uint16_t)0x1500)              /*!< Reference resistor tap for setting 21. */
-#define COMP_E_CTL2_REF1_22                      ((uint16_t)0x1600)              /*!< Reference resistor tap for setting 22. */
-#define COMP_E_CTL2_REF1_23                      ((uint16_t)0x1700)              /*!< Reference resistor tap for setting 23. */
-#define COMP_E_CTL2_REF1_24                      ((uint16_t)0x1800)              /*!< Reference resistor tap for setting 24. */
-#define COMP_E_CTL2_REF1_25                      ((uint16_t)0x1900)              /*!< Reference resistor tap for setting 25. */
-#define COMP_E_CTL2_REF1_26                      ((uint16_t)0x1A00)              /*!< Reference resistor tap for setting 26. */
-#define COMP_E_CTL2_REF1_27                      ((uint16_t)0x1B00)              /*!< Reference resistor tap for setting 27. */
-#define COMP_E_CTL2_REF1_28                      ((uint16_t)0x1C00)              /*!< Reference resistor tap for setting 28. */
-#define COMP_E_CTL2_REF1_29                      ((uint16_t)0x1D00)              /*!< Reference resistor tap for setting 29. */
-#define COMP_E_CTL2_REF1_30                      ((uint16_t)0x1E00)              /*!< Reference resistor tap for setting 30. */
-#define COMP_E_CTL2_REF1_31                      ((uint16_t)0x1F00)              /*!< Reference resistor tap for setting 31. */
 /* COMP_E_CTL2[REFL] Bits */
 #define COMP_E_CTL2_REFL_OFS                     (13)                            /*!< CEREFL Bit Offset */
 #define COMP_E_CTL2_REFL_MASK                    ((uint16_t)0x6000)              /*!< CEREFL Bit Mask */
@@ -2969,7 +2948,6 @@ typedef struct {
 /* CS_DCOERCAL1[DCO_FCAL_RSEL5] Bits */
 #define CS_DCOERCAL1_DCO_FCAL_RSEL5_OFS          ( 0)                            /*!< DCO_FCAL_RSEL5 Bit Offset */
 #define CS_DCOERCAL1_DCO_FCAL_RSEL5_MASK         ((uint32_t)0x000003FF)          /*!< DCO_FCAL_RSEL5 Bit Mask */
-
 /* Pre-defined bitfield values */
 #define CS_KEY_VAL                               ((uint32_t)0x0000695A)          /*!< CS control key value */
 
@@ -3385,7 +3363,6 @@ typedef struct {
 /* DMA_ERRCLR[ERRCLR] Bits */
 #define DMA_ERRCLR_ERRCLR_OFS                    ( 0)                            /*!< ERRCLR Bit Offset */
 #define DMA_ERRCLR_ERRCLR                        ((uint32_t)0x00000001)
-
 /* DMA channel definitions and memory structure alignment */
 #define __MCU_NUM_DMA_CHANNELS__                8
 #define DMA_CHANNEL_CONTROL_STRUCT_SIZE         0x10
@@ -3706,7 +3683,6 @@ typedef struct {
 /* EUSCI_A_IFG[TXCPTIFG] Bits */
 #define EUSCI_A_IFG_TXCPTIFG_OFS                 ( 3)                            /*!< UCTXCPTIFG Bit Offset */
 #define EUSCI_A_IFG_TXCPTIFG                     ((uint16_t)0x0008)              /*!< Transmit ready interrupt enable */
-
 /* legacy definitions for backward compatibility to version 2100 */
 #define EUSCI_A__RXIE_OFS                        EUSCI_A_IE_RXIE_OFS             /*!< UCRXIE Bit Offset */
 #define EUSCI_A__RXIE                            EUSCI_A_IE_RXIE                 /*!< Receive interrupt enable */
@@ -3805,7 +3781,7 @@ typedef struct {
 #define EUSCI_B_CTLW1_ASTP_1                     ((uint16_t)0x0004)              /*!< UCBCNTIFG is set with the byte counter reaches the threshold defined in  */
                                                                                  /* UCBxTBCNT */
 #define EUSCI_B_CTLW1_ASTP_2                     ((uint16_t)0x0008)              /*!< A STOP condition is generated automatically after the byte counter value  */
-                                                                                 /* reached UCBxTBCNT. UCBCNTIFG is set with the byte counter reaching the  */
+                                                                                 /* reached UCBxTBCNT. UCBCNTIFG is set with the byte counter reaching the */
                                                                                  /* threshold */
 /* EUSCI_B_CTLW1[SWACK] Bits */
 #define EUSCI_B_CTLW1_SWACK_OFS                  ( 4)                            /*!< UCSWACK Bit Offset */
@@ -3837,13 +3813,6 @@ typedef struct {
 /* EUSCI_B_STATW[BCNT] Bits */
 #define EUSCI_B_STATW_BCNT_OFS                   ( 8)                            /*!< UCBCNT Bit Offset */
 #define EUSCI_B_STATW_BCNT_MASK                  ((uint16_t)0xFF00)              /*!< UCBCNT Bit Mask */
-
-/* 3100 removed EUSCI_B_STATW[BUSY].  put it back */
-
-/* EUSCI_B_STATW[BUSY] Bits */
-#define EUSCI_B_STATW_BUSY_OFS                   ( 0)                            /*!< UCBUSY Bit Offset */
-#define EUSCI_B_STATW_BUSY                       ((uint16_t)0x0001)              /*!< eUSCI_B busy */
-
 /* EUSCI_B_STATW[OE] Bits */
 #define EUSCI_B_STATW_OE_OFS                     ( 5)                            /*!< UCOE Bit Offset */
 #define EUSCI_B_STATW_OE                         ((uint16_t)0x0020)              /*!< Overrun error flag */
@@ -4010,7 +3979,6 @@ typedef struct {
 /* EUSCI_B_IFG[TXIFG] Bits */
 #define EUSCI_B_IFG_TXIFG_OFS                    ( 1)                            /*!< UCTXIFG Bit Offset */
 #define EUSCI_B_IFG_TXIFG                        ((uint16_t)0x0002)              /*!< Transmit interrupt flag */
-
 /* legacy definitions for backward compatibility to version 2100 */
 #define EUSCI_B__RXIE_OFS                        EUSCI_B_IE_RXIE_OFS             /*!< UCRXIE Bit Offset */
 #define EUSCI_B__RXIE                            EUSCI_B_IE_RXIE                 /*!< Receive interrupt enable */
@@ -4019,695 +3987,2243 @@ typedef struct {
 
 
 /******************************************************************************
-* FLCTL Bits
+* FLCTL_A Bits
 ******************************************************************************/
-/* FLCTL_POWER_STAT[PSTAT] Bits */
-#define FLCTL_POWER_STAT_PSTAT_OFS               ( 0)                            /*!< PSTAT Bit Offset */
-#define FLCTL_POWER_STAT_PSTAT_MASK              ((uint32_t)0x00000007)          /*!< PSTAT Bit Mask */
-#define FLCTL_POWER_STAT_PSTAT0                  ((uint32_t)0x00000001)          /*!< PSTAT Bit 0 */
-#define FLCTL_POWER_STAT_PSTAT1                  ((uint32_t)0x00000002)          /*!< PSTAT Bit 1 */
-#define FLCTL_POWER_STAT_PSTAT2                  ((uint32_t)0x00000004)          /*!< PSTAT Bit 2 */
-#define FLCTL_POWER_STAT_PSTAT_0                 ((uint32_t)0x00000000)          /*!< Flash IP in power-down mode */
-#define FLCTL_POWER_STAT_PSTAT_1                 ((uint32_t)0x00000001)          /*!< Flash IP Vdd domain power-up in progress */
-#define FLCTL_POWER_STAT_PSTAT_2                 ((uint32_t)0x00000002)          /*!< PSS LDO_GOOD, IREF_OK and VREF_OK check in progress */
-#define FLCTL_POWER_STAT_PSTAT_3                 ((uint32_t)0x00000003)          /*!< Flash IP SAFE_LV check in progress */
-#define FLCTL_POWER_STAT_PSTAT_4                 ((uint32_t)0x00000004)          /*!< Flash IP Active */
-#define FLCTL_POWER_STAT_PSTAT_5                 ((uint32_t)0x00000005)          /*!< Flash IP Active in Low-Frequency Active and Low-Frequency LPM0 modes. */
-#define FLCTL_POWER_STAT_PSTAT_6                 ((uint32_t)0x00000006)          /*!< Flash IP in Standby mode */
-#define FLCTL_POWER_STAT_PSTAT_7                 ((uint32_t)0x00000007)          /*!< Flash IP in Current mirror boost state */
-/* FLCTL_POWER_STAT[LDOSTAT] Bits */
-#define FLCTL_POWER_STAT_LDOSTAT_OFS             ( 3)                            /*!< LDOSTAT Bit Offset */
-#define FLCTL_POWER_STAT_LDOSTAT                 ((uint32_t)0x00000008)          /*!< PSS FLDO GOOD status */
-/* FLCTL_POWER_STAT[VREFSTAT] Bits */
-#define FLCTL_POWER_STAT_VREFSTAT_OFS            ( 4)                            /*!< VREFSTAT Bit Offset */
-#define FLCTL_POWER_STAT_VREFSTAT                ((uint32_t)0x00000010)          /*!< PSS VREF stable status */
-/* FLCTL_POWER_STAT[IREFSTAT] Bits */
-#define FLCTL_POWER_STAT_IREFSTAT_OFS            ( 5)                            /*!< IREFSTAT Bit Offset */
-#define FLCTL_POWER_STAT_IREFSTAT                ((uint32_t)0x00000020)          /*!< PSS IREF stable status */
-/* FLCTL_POWER_STAT[TRIMSTAT] Bits */
-#define FLCTL_POWER_STAT_TRIMSTAT_OFS            ( 6)                            /*!< TRIMSTAT Bit Offset */
-#define FLCTL_POWER_STAT_TRIMSTAT                ((uint32_t)0x00000040)          /*!< PSS trim done status */
-/* FLCTL_POWER_STAT[RD_2T] Bits */
-#define FLCTL_POWER_STAT_RD_2T_OFS               ( 7)                            /*!< RD_2T Bit Offset */
-#define FLCTL_POWER_STAT_RD_2T                   ((uint32_t)0x00000080)          /*!< Indicates if Flash is being accessed in 2T mode */
-/* FLCTL_BANK0_RDCTL[RD_MODE] Bits */
-#define FLCTL_BANK0_RDCTL_RD_MODE_OFS            ( 0)                            /*!< RD_MODE Bit Offset */
-#define FLCTL_BANK0_RDCTL_RD_MODE_MASK           ((uint32_t)0x0000000F)          /*!< RD_MODE Bit Mask */
-#define FLCTL_BANK0_RDCTL_RD_MODE0               ((uint32_t)0x00000001)          /*!< RD_MODE Bit 0 */
-#define FLCTL_BANK0_RDCTL_RD_MODE1               ((uint32_t)0x00000002)          /*!< RD_MODE Bit 1 */
-#define FLCTL_BANK0_RDCTL_RD_MODE2               ((uint32_t)0x00000004)          /*!< RD_MODE Bit 2 */
-#define FLCTL_BANK0_RDCTL_RD_MODE3               ((uint32_t)0x00000008)          /*!< RD_MODE Bit 3 */
-#define FLCTL_BANK0_RDCTL_RD_MODE_0              ((uint32_t)0x00000000)          /*!< Normal read mode */
-#define FLCTL_BANK0_RDCTL_RD_MODE_1              ((uint32_t)0x00000001)          /*!< Read Margin 0 */
-#define FLCTL_BANK0_RDCTL_RD_MODE_2              ((uint32_t)0x00000002)          /*!< Read Margin 1 */
-#define FLCTL_BANK0_RDCTL_RD_MODE_3              ((uint32_t)0x00000003)          /*!< Program Verify */
-#define FLCTL_BANK0_RDCTL_RD_MODE_4              ((uint32_t)0x00000004)          /*!< Erase Verify */
-#define FLCTL_BANK0_RDCTL_RD_MODE_5              ((uint32_t)0x00000005)          /*!< Leakage Verify */
-#define FLCTL_BANK0_RDCTL_RD_MODE_9              ((uint32_t)0x00000009)          /*!< Read Margin 0B */
-#define FLCTL_BANK0_RDCTL_RD_MODE_10             ((uint32_t)0x0000000A)          /*!< Read Margin 1B */
-/* FLCTL_BANK0_RDCTL[BUFI] Bits */
-#define FLCTL_BANK0_RDCTL_BUFI_OFS               ( 4)                            /*!< BUFI Bit Offset */
-#define FLCTL_BANK0_RDCTL_BUFI                   ((uint32_t)0x00000010)          /*!< Enables read buffering feature for instruction fetches to this Bank */
-/* FLCTL_BANK0_RDCTL[BUFD] Bits */
-#define FLCTL_BANK0_RDCTL_BUFD_OFS               ( 5)                            /*!< BUFD Bit Offset */
-#define FLCTL_BANK0_RDCTL_BUFD                   ((uint32_t)0x00000020)          /*!< Enables read buffering feature for data reads to this Bank */
-/* FLCTL_BANK0_RDCTL[WAIT] Bits */
-#define FLCTL_BANK0_RDCTL_WAIT_OFS               (12)                            /*!< WAIT Bit Offset */
-#define FLCTL_BANK0_RDCTL_WAIT_MASK              ((uint32_t)0x0000F000)          /*!< WAIT Bit Mask */
-#define FLCTL_BANK0_RDCTL_WAIT0                  ((uint32_t)0x00001000)          /*!< WAIT Bit 0 */
-#define FLCTL_BANK0_RDCTL_WAIT1                  ((uint32_t)0x00002000)          /*!< WAIT Bit 1 */
-#define FLCTL_BANK0_RDCTL_WAIT2                  ((uint32_t)0x00004000)          /*!< WAIT Bit 2 */
-#define FLCTL_BANK0_RDCTL_WAIT3                  ((uint32_t)0x00008000)          /*!< WAIT Bit 3 */
-#define FLCTL_BANK0_RDCTL_WAIT_0                 ((uint32_t)0x00000000)          /*!< 0 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_1                 ((uint32_t)0x00001000)          /*!< 1 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_2                 ((uint32_t)0x00002000)          /*!< 2 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_3                 ((uint32_t)0x00003000)          /*!< 3 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_4                 ((uint32_t)0x00004000)          /*!< 4 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_5                 ((uint32_t)0x00005000)          /*!< 5 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_6                 ((uint32_t)0x00006000)          /*!< 6 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_7                 ((uint32_t)0x00007000)          /*!< 7 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_8                 ((uint32_t)0x00008000)          /*!< 8 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_9                 ((uint32_t)0x00009000)          /*!< 9 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_10                ((uint32_t)0x0000A000)          /*!< 10 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_11                ((uint32_t)0x0000B000)          /*!< 11 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_12                ((uint32_t)0x0000C000)          /*!< 12 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_13                ((uint32_t)0x0000D000)          /*!< 13 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_14                ((uint32_t)0x0000E000)          /*!< 14 wait states */
-#define FLCTL_BANK0_RDCTL_WAIT_15                ((uint32_t)0x0000F000)          /*!< 15 wait states */
-/* FLCTL_BANK0_RDCTL[RD_MODE_STATUS] Bits */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS_OFS     (16)                            /*!< RD_MODE_STATUS Bit Offset */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS_MASK    ((uint32_t)0x000F0000)          /*!< RD_MODE_STATUS Bit Mask */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS0        ((uint32_t)0x00010000)          /*!< RD_MODE_STATUS Bit 0 */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS1        ((uint32_t)0x00020000)          /*!< RD_MODE_STATUS Bit 1 */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS2        ((uint32_t)0x00040000)          /*!< RD_MODE_STATUS Bit 2 */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS3        ((uint32_t)0x00080000)          /*!< RD_MODE_STATUS Bit 3 */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS_0       ((uint32_t)0x00000000)          /*!< Normal read mode */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS_1       ((uint32_t)0x00010000)          /*!< Read Margin 0 */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS_2       ((uint32_t)0x00020000)          /*!< Read Margin 1 */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS_3       ((uint32_t)0x00030000)          /*!< Program Verify */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS_4       ((uint32_t)0x00040000)          /*!< Erase Verify */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS_5       ((uint32_t)0x00050000)          /*!< Leakage Verify */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS_9       ((uint32_t)0x00090000)          /*!< Read Margin 0B */
-#define FLCTL_BANK0_RDCTL_RD_MODE_STATUS_10      ((uint32_t)0x000A0000)          /*!< Read Margin 1B */
-/* FLCTL_BANK1_RDCTL[RD_MODE] Bits */
-#define FLCTL_BANK1_RDCTL_RD_MODE_OFS            ( 0)                            /*!< RD_MODE Bit Offset */
-#define FLCTL_BANK1_RDCTL_RD_MODE_MASK           ((uint32_t)0x0000000F)          /*!< RD_MODE Bit Mask */
-#define FLCTL_BANK1_RDCTL_RD_MODE0               ((uint32_t)0x00000001)          /*!< RD_MODE Bit 0 */
-#define FLCTL_BANK1_RDCTL_RD_MODE1               ((uint32_t)0x00000002)          /*!< RD_MODE Bit 1 */
-#define FLCTL_BANK1_RDCTL_RD_MODE2               ((uint32_t)0x00000004)          /*!< RD_MODE Bit 2 */
-#define FLCTL_BANK1_RDCTL_RD_MODE3               ((uint32_t)0x00000008)          /*!< RD_MODE Bit 3 */
-#define FLCTL_BANK1_RDCTL_RD_MODE_0              ((uint32_t)0x00000000)          /*!< Normal read mode */
-#define FLCTL_BANK1_RDCTL_RD_MODE_1              ((uint32_t)0x00000001)          /*!< Read Margin 0 */
-#define FLCTL_BANK1_RDCTL_RD_MODE_2              ((uint32_t)0x00000002)          /*!< Read Margin 1 */
-#define FLCTL_BANK1_RDCTL_RD_MODE_3              ((uint32_t)0x00000003)          /*!< Program Verify */
-#define FLCTL_BANK1_RDCTL_RD_MODE_4              ((uint32_t)0x00000004)          /*!< Erase Verify */
-#define FLCTL_BANK1_RDCTL_RD_MODE_5              ((uint32_t)0x00000005)          /*!< Leakage Verify */
-#define FLCTL_BANK1_RDCTL_RD_MODE_9              ((uint32_t)0x00000009)          /*!< Read Margin 0B */
-#define FLCTL_BANK1_RDCTL_RD_MODE_10             ((uint32_t)0x0000000A)          /*!< Read Margin 1B */
-/* FLCTL_BANK1_RDCTL[BUFI] Bits */
-#define FLCTL_BANK1_RDCTL_BUFI_OFS               ( 4)                            /*!< BUFI Bit Offset */
-#define FLCTL_BANK1_RDCTL_BUFI                   ((uint32_t)0x00000010)          /*!< Enables read buffering feature for instruction fetches to this Bank */
-/* FLCTL_BANK1_RDCTL[BUFD] Bits */
-#define FLCTL_BANK1_RDCTL_BUFD_OFS               ( 5)                            /*!< BUFD Bit Offset */
-#define FLCTL_BANK1_RDCTL_BUFD                   ((uint32_t)0x00000020)          /*!< Enables read buffering feature for data reads to this Bank */
-/* FLCTL_BANK1_RDCTL[RD_MODE_STATUS] Bits */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS_OFS     (16)                            /*!< RD_MODE_STATUS Bit Offset */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS_MASK    ((uint32_t)0x000F0000)          /*!< RD_MODE_STATUS Bit Mask */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS0        ((uint32_t)0x00010000)          /*!< RD_MODE_STATUS Bit 0 */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS1        ((uint32_t)0x00020000)          /*!< RD_MODE_STATUS Bit 1 */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS2        ((uint32_t)0x00040000)          /*!< RD_MODE_STATUS Bit 2 */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS3        ((uint32_t)0x00080000)          /*!< RD_MODE_STATUS Bit 3 */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS_0       ((uint32_t)0x00000000)          /*!< Normal read mode */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS_1       ((uint32_t)0x00010000)          /*!< Read Margin 0 */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS_2       ((uint32_t)0x00020000)          /*!< Read Margin 1 */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS_3       ((uint32_t)0x00030000)          /*!< Program Verify */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS_4       ((uint32_t)0x00040000)          /*!< Erase Verify */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS_5       ((uint32_t)0x00050000)          /*!< Leakage Verify */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS_9       ((uint32_t)0x00090000)          /*!< Read Margin 0B */
-#define FLCTL_BANK1_RDCTL_RD_MODE_STATUS_10      ((uint32_t)0x000A0000)          /*!< Read Margin 1B */
-/* FLCTL_BANK1_RDCTL[WAIT] Bits */
-#define FLCTL_BANK1_RDCTL_WAIT_OFS               (12)                            /*!< WAIT Bit Offset */
-#define FLCTL_BANK1_RDCTL_WAIT_MASK              ((uint32_t)0x0000F000)          /*!< WAIT Bit Mask */
-#define FLCTL_BANK1_RDCTL_WAIT0                  ((uint32_t)0x00001000)          /*!< WAIT Bit 0 */
-#define FLCTL_BANK1_RDCTL_WAIT1                  ((uint32_t)0x00002000)          /*!< WAIT Bit 1 */
-#define FLCTL_BANK1_RDCTL_WAIT2                  ((uint32_t)0x00004000)          /*!< WAIT Bit 2 */
-#define FLCTL_BANK1_RDCTL_WAIT3                  ((uint32_t)0x00008000)          /*!< WAIT Bit 3 */
-#define FLCTL_BANK1_RDCTL_WAIT_0                 ((uint32_t)0x00000000)          /*!< 0 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_1                 ((uint32_t)0x00001000)          /*!< 1 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_2                 ((uint32_t)0x00002000)          /*!< 2 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_3                 ((uint32_t)0x00003000)          /*!< 3 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_4                 ((uint32_t)0x00004000)          /*!< 4 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_5                 ((uint32_t)0x00005000)          /*!< 5 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_6                 ((uint32_t)0x00006000)          /*!< 6 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_7                 ((uint32_t)0x00007000)          /*!< 7 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_8                 ((uint32_t)0x00008000)          /*!< 8 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_9                 ((uint32_t)0x00009000)          /*!< 9 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_10                ((uint32_t)0x0000A000)          /*!< 10 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_11                ((uint32_t)0x0000B000)          /*!< 11 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_12                ((uint32_t)0x0000C000)          /*!< 12 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_13                ((uint32_t)0x0000D000)          /*!< 13 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_14                ((uint32_t)0x0000E000)          /*!< 14 wait states */
-#define FLCTL_BANK1_RDCTL_WAIT_15                ((uint32_t)0x0000F000)          /*!< 15 wait states */
-/* FLCTL_RDBRST_CTLSTAT[START] Bits */
-#define FLCTL_RDBRST_CTLSTAT_START_OFS           ( 0)                            /*!< START Bit Offset */
-#define FLCTL_RDBRST_CTLSTAT_START               ((uint32_t)0x00000001)          /*!< Start of burst/compare operation */
-/* FLCTL_RDBRST_CTLSTAT[MEM_TYPE] Bits */
-#define FLCTL_RDBRST_CTLSTAT_MEM_TYPE_OFS        ( 1)                            /*!< MEM_TYPE Bit Offset */
-#define FLCTL_RDBRST_CTLSTAT_MEM_TYPE_MASK       ((uint32_t)0x00000006)          /*!< MEM_TYPE Bit Mask */
-#define FLCTL_RDBRST_CTLSTAT_MEM_TYPE0           ((uint32_t)0x00000002)          /*!< MEM_TYPE Bit 0 */
-#define FLCTL_RDBRST_CTLSTAT_MEM_TYPE1           ((uint32_t)0x00000004)          /*!< MEM_TYPE Bit 1 */
-#define FLCTL_RDBRST_CTLSTAT_MEM_TYPE_0          ((uint32_t)0x00000000)          /*!< Main Memory */
-#define FLCTL_RDBRST_CTLSTAT_MEM_TYPE_1          ((uint32_t)0x00000002)          /*!< Information Memory */
-#define FLCTL_RDBRST_CTLSTAT_MEM_TYPE_2          ((uint32_t)0x00000004)          /*!< Reserved */
-#define FLCTL_RDBRST_CTLSTAT_MEM_TYPE_3          ((uint32_t)0x00000006)          /*!< Engineering Memory */
-/* FLCTL_RDBRST_CTLSTAT[STOP_FAIL] Bits */
-#define FLCTL_RDBRST_CTLSTAT_STOP_FAIL_OFS       ( 3)                            /*!< STOP_FAIL Bit Offset */
-#define FLCTL_RDBRST_CTLSTAT_STOP_FAIL           ((uint32_t)0x00000008)          /*!< Terminate burst/compare operation */
-/* FLCTL_RDBRST_CTLSTAT[DATA_CMP] Bits */
-#define FLCTL_RDBRST_CTLSTAT_DATA_CMP_OFS        ( 4)                            /*!< DATA_CMP Bit Offset */
-#define FLCTL_RDBRST_CTLSTAT_DATA_CMP            ((uint32_t)0x00000010)          /*!< Data pattern used for comparison against memory read data */
-/* FLCTL_RDBRST_CTLSTAT[TEST_EN] Bits */
-#define FLCTL_RDBRST_CTLSTAT_TEST_EN_OFS         ( 6)                            /*!< TEST_EN Bit Offset */
-#define FLCTL_RDBRST_CTLSTAT_TEST_EN             ((uint32_t)0x00000040)          /*!< Enable comparison against test data compare registers */
-/* FLCTL_RDBRST_CTLSTAT[BRST_STAT] Bits */
-#define FLCTL_RDBRST_CTLSTAT_BRST_STAT_OFS       (16)                            /*!< BRST_STAT Bit Offset */
-#define FLCTL_RDBRST_CTLSTAT_BRST_STAT_MASK      ((uint32_t)0x00030000)          /*!< BRST_STAT Bit Mask */
-#define FLCTL_RDBRST_CTLSTAT_BRST_STAT0          ((uint32_t)0x00010000)          /*!< BRST_STAT Bit 0 */
-#define FLCTL_RDBRST_CTLSTAT_BRST_STAT1          ((uint32_t)0x00020000)          /*!< BRST_STAT Bit 1 */
-#define FLCTL_RDBRST_CTLSTAT_BRST_STAT_0         ((uint32_t)0x00000000)          /*!< Idle */
-#define FLCTL_RDBRST_CTLSTAT_BRST_STAT_1         ((uint32_t)0x00010000)          /*!< Burst/Compare START bit written, but operation pending */
-#define FLCTL_RDBRST_CTLSTAT_BRST_STAT_2         ((uint32_t)0x00020000)          /*!< Burst/Compare in progress */
-#define FLCTL_RDBRST_CTLSTAT_BRST_STAT_3         ((uint32_t)0x00030000)          /*!< Burst complete (status of completed burst remains in this state unless  */
+/* FLCTL_A_POWER_STAT[PSTAT] Bits */
+#define FLCTL_A_POWER_STAT_PSTAT_OFS             ( 0)                            /*!< PSTAT Bit Offset */
+#define FLCTL_A_POWER_STAT_PSTAT_MASK            ((uint32_t)0x00000007)          /*!< PSTAT Bit Mask */
+#define FLCTL_A_POWER_STAT_PSTAT0                ((uint32_t)0x00000001)          /*!< PSTAT Bit 0 */
+#define FLCTL_A_POWER_STAT_PSTAT1                ((uint32_t)0x00000002)          /*!< PSTAT Bit 1 */
+#define FLCTL_A_POWER_STAT_PSTAT2                ((uint32_t)0x00000004)          /*!< PSTAT Bit 2 */
+#define FLCTL_A_POWER_STAT_PSTAT_0               ((uint32_t)0x00000000)          /*!< Flash IP in power-down mode */
+#define FLCTL_A_POWER_STAT_PSTAT_1               ((uint32_t)0x00000001)          /*!< Flash IP Vdd domain power-up in progress */
+#define FLCTL_A_POWER_STAT_PSTAT_2               ((uint32_t)0x00000002)          /*!< PSS LDO_GOOD, IREF_OK and VREF_OK check in progress */
+#define FLCTL_A_POWER_STAT_PSTAT_3               ((uint32_t)0x00000003)          /*!< Flash IP SAFE_LV check in progress */
+#define FLCTL_A_POWER_STAT_PSTAT_4               ((uint32_t)0x00000004)          /*!< Flash IP Active */
+#define FLCTL_A_POWER_STAT_PSTAT_5               ((uint32_t)0x00000005)          /*!< Flash IP Active in Low-Frequency Active and Low-Frequency LPM0 modes. */
+#define FLCTL_A_POWER_STAT_PSTAT_6               ((uint32_t)0x00000006)          /*!< Flash IP in Standby mode */
+#define FLCTL_A_POWER_STAT_PSTAT_7               ((uint32_t)0x00000007)          /*!< Flash IP in Current mirror boost state */
+/* FLCTL_A_POWER_STAT[LDOSTAT] Bits */
+#define FLCTL_A_POWER_STAT_LDOSTAT_OFS           ( 3)                            /*!< LDOSTAT Bit Offset */
+#define FLCTL_A_POWER_STAT_LDOSTAT               ((uint32_t)0x00000008)          /*!< PSS FLDO GOOD status */
+/* FLCTL_A_POWER_STAT[VREFSTAT] Bits */
+#define FLCTL_A_POWER_STAT_VREFSTAT_OFS          ( 4)                            /*!< VREFSTAT Bit Offset */
+#define FLCTL_A_POWER_STAT_VREFSTAT              ((uint32_t)0x00000010)          /*!< PSS VREF stable status */
+/* FLCTL_A_POWER_STAT[IREFSTAT] Bits */
+#define FLCTL_A_POWER_STAT_IREFSTAT_OFS          ( 5)                            /*!< IREFSTAT Bit Offset */
+#define FLCTL_A_POWER_STAT_IREFSTAT              ((uint32_t)0x00000020)          /*!< PSS IREF stable status */
+/* FLCTL_A_POWER_STAT[TRIMSTAT] Bits */
+#define FLCTL_A_POWER_STAT_TRIMSTAT_OFS          ( 6)                            /*!< TRIMSTAT Bit Offset */
+#define FLCTL_A_POWER_STAT_TRIMSTAT              ((uint32_t)0x00000040)          /*!< PSS trim done status */
+/* FLCTL_A_POWER_STAT[RD_2T] Bits */
+#define FLCTL_A_POWER_STAT_RD_2T_OFS             ( 7)                            /*!< RD_2T Bit Offset */
+#define FLCTL_A_POWER_STAT_RD_2T                 ((uint32_t)0x00000080)          /*!< Indicates if Flash is being accessed in 2T mode */
+/* FLCTL_A_BANK0_RDCTL[RD_MODE] Bits */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_OFS          ( 0)                            /*!< RD_MODE Bit Offset */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_MASK         ((uint32_t)0x0000000F)          /*!< RD_MODE Bit Mask */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE0             ((uint32_t)0x00000001)          /*!< RD_MODE Bit 0 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE1             ((uint32_t)0x00000002)          /*!< RD_MODE Bit 1 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE2             ((uint32_t)0x00000004)          /*!< RD_MODE Bit 2 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE3             ((uint32_t)0x00000008)          /*!< RD_MODE Bit 3 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_0            ((uint32_t)0x00000000)          /*!< Normal read mode */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_1            ((uint32_t)0x00000001)          /*!< Read Margin 0 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_2            ((uint32_t)0x00000002)          /*!< Read Margin 1 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_3            ((uint32_t)0x00000003)          /*!< Program Verify */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_4            ((uint32_t)0x00000004)          /*!< Erase Verify */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_5            ((uint32_t)0x00000005)          /*!< Leakage Verify */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_9            ((uint32_t)0x00000009)          /*!< Read Margin 0B */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_10           ((uint32_t)0x0000000A)          /*!< Read Margin 1B */
+/* FLCTL_A_BANK0_RDCTL[BUFI] Bits */
+#define FLCTL_A_BANK0_RDCTL_BUFI_OFS             ( 4)                            /*!< BUFI Bit Offset */
+#define FLCTL_A_BANK0_RDCTL_BUFI                 ((uint32_t)0x00000010)          /*!< Enables read buffering feature for instruction fetches to this Bank */
+/* FLCTL_A_BANK0_RDCTL[BUFD] Bits */
+#define FLCTL_A_BANK0_RDCTL_BUFD_OFS             ( 5)                            /*!< BUFD Bit Offset */
+#define FLCTL_A_BANK0_RDCTL_BUFD                 ((uint32_t)0x00000020)          /*!< Enables read buffering feature for data reads to this Bank */
+/* FLCTL_A_BANK0_RDCTL[WAIT] Bits */
+#define FLCTL_A_BANK0_RDCTL_WAIT_OFS             (12)                            /*!< WAIT Bit Offset */
+#define FLCTL_A_BANK0_RDCTL_WAIT_MASK            ((uint32_t)0x0000F000)          /*!< WAIT Bit Mask */
+#define FLCTL_A_BANK0_RDCTL_WAIT0                ((uint32_t)0x00001000)          /*!< WAIT Bit 0 */
+#define FLCTL_A_BANK0_RDCTL_WAIT1                ((uint32_t)0x00002000)          /*!< WAIT Bit 1 */
+#define FLCTL_A_BANK0_RDCTL_WAIT2                ((uint32_t)0x00004000)          /*!< WAIT Bit 2 */
+#define FLCTL_A_BANK0_RDCTL_WAIT3                ((uint32_t)0x00008000)          /*!< WAIT Bit 3 */
+#define FLCTL_A_BANK0_RDCTL_WAIT_0               ((uint32_t)0x00000000)          /*!< 0 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_1               ((uint32_t)0x00001000)          /*!< 1 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_2               ((uint32_t)0x00002000)          /*!< 2 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_3               ((uint32_t)0x00003000)          /*!< 3 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_4               ((uint32_t)0x00004000)          /*!< 4 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_5               ((uint32_t)0x00005000)          /*!< 5 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_6               ((uint32_t)0x00006000)          /*!< 6 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_7               ((uint32_t)0x00007000)          /*!< 7 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_8               ((uint32_t)0x00008000)          /*!< 8 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_9               ((uint32_t)0x00009000)          /*!< 9 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_10              ((uint32_t)0x0000A000)          /*!< 10 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_11              ((uint32_t)0x0000B000)          /*!< 11 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_12              ((uint32_t)0x0000C000)          /*!< 12 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_13              ((uint32_t)0x0000D000)          /*!< 13 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_14              ((uint32_t)0x0000E000)          /*!< 14 wait states */
+#define FLCTL_A_BANK0_RDCTL_WAIT_15              ((uint32_t)0x0000F000)          /*!< 15 wait states */
+/* FLCTL_A_BANK0_RDCTL[RD_MODE_STATUS] Bits */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS_OFS   (16)                            /*!< RD_MODE_STATUS Bit Offset */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS_MASK  ((uint32_t)0x000F0000)          /*!< RD_MODE_STATUS Bit Mask */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS0      ((uint32_t)0x00010000)          /*!< RD_MODE_STATUS Bit 0 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS1      ((uint32_t)0x00020000)          /*!< RD_MODE_STATUS Bit 1 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS2      ((uint32_t)0x00040000)          /*!< RD_MODE_STATUS Bit 2 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS3      ((uint32_t)0x00080000)          /*!< RD_MODE_STATUS Bit 3 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS_0     ((uint32_t)0x00000000)          /*!< Normal read mode */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS_1     ((uint32_t)0x00010000)          /*!< Read Margin 0 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS_2     ((uint32_t)0x00020000)          /*!< Read Margin 1 */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS_3     ((uint32_t)0x00030000)          /*!< Program Verify */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS_4     ((uint32_t)0x00040000)          /*!< Erase Verify */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS_5     ((uint32_t)0x00050000)          /*!< Leakage Verify */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS_9     ((uint32_t)0x00090000)          /*!< Read Margin 0B */
+#define FLCTL_A_BANK0_RDCTL_RD_MODE_STATUS_10    ((uint32_t)0x000A0000)          /*!< Read Margin 1B */
+/* FLCTL_A_BANK1_RDCTL[RD_MODE] Bits */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_OFS          ( 0)                            /*!< RD_MODE Bit Offset */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_MASK         ((uint32_t)0x0000000F)          /*!< RD_MODE Bit Mask */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE0             ((uint32_t)0x00000001)          /*!< RD_MODE Bit 0 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE1             ((uint32_t)0x00000002)          /*!< RD_MODE Bit 1 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE2             ((uint32_t)0x00000004)          /*!< RD_MODE Bit 2 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE3             ((uint32_t)0x00000008)          /*!< RD_MODE Bit 3 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_0            ((uint32_t)0x00000000)          /*!< Normal read mode */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_1            ((uint32_t)0x00000001)          /*!< Read Margin 0 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_2            ((uint32_t)0x00000002)          /*!< Read Margin 1 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_3            ((uint32_t)0x00000003)          /*!< Program Verify */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_4            ((uint32_t)0x00000004)          /*!< Erase Verify */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_5            ((uint32_t)0x00000005)          /*!< Leakage Verify */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_9            ((uint32_t)0x00000009)          /*!< Read Margin 0B */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_10           ((uint32_t)0x0000000A)          /*!< Read Margin 1B */
+/* FLCTL_A_BANK1_RDCTL[BUFI] Bits */
+#define FLCTL_A_BANK1_RDCTL_BUFI_OFS             ( 4)                            /*!< BUFI Bit Offset */
+#define FLCTL_A_BANK1_RDCTL_BUFI                 ((uint32_t)0x00000010)          /*!< Enables read buffering feature for instruction fetches to this Bank */
+/* FLCTL_A_BANK1_RDCTL[BUFD] Bits */
+#define FLCTL_A_BANK1_RDCTL_BUFD_OFS             ( 5)                            /*!< BUFD Bit Offset */
+#define FLCTL_A_BANK1_RDCTL_BUFD                 ((uint32_t)0x00000020)          /*!< Enables read buffering feature for data reads to this Bank */
+/* FLCTL_A_BANK1_RDCTL[RD_MODE_STATUS] Bits */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS_OFS   (16)                            /*!< RD_MODE_STATUS Bit Offset */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS_MASK  ((uint32_t)0x000F0000)          /*!< RD_MODE_STATUS Bit Mask */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS0      ((uint32_t)0x00010000)          /*!< RD_MODE_STATUS Bit 0 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS1      ((uint32_t)0x00020000)          /*!< RD_MODE_STATUS Bit 1 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS2      ((uint32_t)0x00040000)          /*!< RD_MODE_STATUS Bit 2 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS3      ((uint32_t)0x00080000)          /*!< RD_MODE_STATUS Bit 3 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS_0     ((uint32_t)0x00000000)          /*!< Normal read mode */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS_1     ((uint32_t)0x00010000)          /*!< Read Margin 0 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS_2     ((uint32_t)0x00020000)          /*!< Read Margin 1 */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS_3     ((uint32_t)0x00030000)          /*!< Program Verify */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS_4     ((uint32_t)0x00040000)          /*!< Erase Verify */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS_5     ((uint32_t)0x00050000)          /*!< Leakage Verify */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS_9     ((uint32_t)0x00090000)          /*!< Read Margin 0B */
+#define FLCTL_A_BANK1_RDCTL_RD_MODE_STATUS_10    ((uint32_t)0x000A0000)          /*!< Read Margin 1B */
+/* FLCTL_A_BANK1_RDCTL[WAIT] Bits */
+#define FLCTL_A_BANK1_RDCTL_WAIT_OFS             (12)                            /*!< WAIT Bit Offset */
+#define FLCTL_A_BANK1_RDCTL_WAIT_MASK            ((uint32_t)0x0000F000)          /*!< WAIT Bit Mask */
+#define FLCTL_A_BANK1_RDCTL_WAIT0                ((uint32_t)0x00001000)          /*!< WAIT Bit 0 */
+#define FLCTL_A_BANK1_RDCTL_WAIT1                ((uint32_t)0x00002000)          /*!< WAIT Bit 1 */
+#define FLCTL_A_BANK1_RDCTL_WAIT2                ((uint32_t)0x00004000)          /*!< WAIT Bit 2 */
+#define FLCTL_A_BANK1_RDCTL_WAIT3                ((uint32_t)0x00008000)          /*!< WAIT Bit 3 */
+#define FLCTL_A_BANK1_RDCTL_WAIT_0               ((uint32_t)0x00000000)          /*!< 0 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_1               ((uint32_t)0x00001000)          /*!< 1 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_2               ((uint32_t)0x00002000)          /*!< 2 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_3               ((uint32_t)0x00003000)          /*!< 3 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_4               ((uint32_t)0x00004000)          /*!< 4 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_5               ((uint32_t)0x00005000)          /*!< 5 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_6               ((uint32_t)0x00006000)          /*!< 6 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_7               ((uint32_t)0x00007000)          /*!< 7 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_8               ((uint32_t)0x00008000)          /*!< 8 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_9               ((uint32_t)0x00009000)          /*!< 9 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_10              ((uint32_t)0x0000A000)          /*!< 10 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_11              ((uint32_t)0x0000B000)          /*!< 11 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_12              ((uint32_t)0x0000C000)          /*!< 12 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_13              ((uint32_t)0x0000D000)          /*!< 13 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_14              ((uint32_t)0x0000E000)          /*!< 14 wait states */
+#define FLCTL_A_BANK1_RDCTL_WAIT_15              ((uint32_t)0x0000F000)          /*!< 15 wait states */
+/* FLCTL_A_RDBRST_CTLSTAT[START] Bits */
+#define FLCTL_A_RDBRST_CTLSTAT_START_OFS         ( 0)                            /*!< START Bit Offset */
+#define FLCTL_A_RDBRST_CTLSTAT_START             ((uint32_t)0x00000001)          /*!< Start of burst/compare operation */
+/* FLCTL_A_RDBRST_CTLSTAT[MEM_TYPE] Bits */
+#define FLCTL_A_RDBRST_CTLSTAT_MEM_TYPE_OFS      ( 1)                            /*!< MEM_TYPE Bit Offset */
+#define FLCTL_A_RDBRST_CTLSTAT_MEM_TYPE_MASK     ((uint32_t)0x00000006)          /*!< MEM_TYPE Bit Mask */
+#define FLCTL_A_RDBRST_CTLSTAT_MEM_TYPE0         ((uint32_t)0x00000002)          /*!< MEM_TYPE Bit 0 */
+#define FLCTL_A_RDBRST_CTLSTAT_MEM_TYPE1         ((uint32_t)0x00000004)          /*!< MEM_TYPE Bit 1 */
+#define FLCTL_A_RDBRST_CTLSTAT_MEM_TYPE_0        ((uint32_t)0x00000000)          /*!< Main Memory */
+#define FLCTL_A_RDBRST_CTLSTAT_MEM_TYPE_1        ((uint32_t)0x00000002)          /*!< Information Memory */
+#define FLCTL_A_RDBRST_CTLSTAT_MEM_TYPE_2        ((uint32_t)0x00000004)          /*!< Reserved */
+#define FLCTL_A_RDBRST_CTLSTAT_MEM_TYPE_3        ((uint32_t)0x00000006)          /*!< Engineering Memory */
+/* FLCTL_A_RDBRST_CTLSTAT[STOP_FAIL] Bits */
+#define FLCTL_A_RDBRST_CTLSTAT_STOP_FAIL_OFS     ( 3)                            /*!< STOP_FAIL Bit Offset */
+#define FLCTL_A_RDBRST_CTLSTAT_STOP_FAIL         ((uint32_t)0x00000008)          /*!< Terminate burst/compare operation */
+/* FLCTL_A_RDBRST_CTLSTAT[DATA_CMP] Bits */
+#define FLCTL_A_RDBRST_CTLSTAT_DATA_CMP_OFS      ( 4)                            /*!< DATA_CMP Bit Offset */
+#define FLCTL_A_RDBRST_CTLSTAT_DATA_CMP          ((uint32_t)0x00000010)          /*!< Data pattern used for comparison against memory read data */
+/* FLCTL_A_RDBRST_CTLSTAT[TEST_EN] Bits */
+#define FLCTL_A_RDBRST_CTLSTAT_TEST_EN_OFS       ( 6)                            /*!< TEST_EN Bit Offset */
+#define FLCTL_A_RDBRST_CTLSTAT_TEST_EN           ((uint32_t)0x00000040)          /*!< Enable comparison against test data compare registers */
+/* FLCTL_A_RDBRST_CTLSTAT[BRST_STAT] Bits */
+#define FLCTL_A_RDBRST_CTLSTAT_BRST_STAT_OFS     (16)                            /*!< BRST_STAT Bit Offset */
+#define FLCTL_A_RDBRST_CTLSTAT_BRST_STAT_MASK    ((uint32_t)0x00030000)          /*!< BRST_STAT Bit Mask */
+#define FLCTL_A_RDBRST_CTLSTAT_BRST_STAT0        ((uint32_t)0x00010000)          /*!< BRST_STAT Bit 0 */
+#define FLCTL_A_RDBRST_CTLSTAT_BRST_STAT1        ((uint32_t)0x00020000)          /*!< BRST_STAT Bit 1 */
+#define FLCTL_A_RDBRST_CTLSTAT_BRST_STAT_0       ((uint32_t)0x00000000)          /*!< Idle */
+#define FLCTL_A_RDBRST_CTLSTAT_BRST_STAT_1       ((uint32_t)0x00010000)          /*!< Burst/Compare START bit written, but operation pending */
+#define FLCTL_A_RDBRST_CTLSTAT_BRST_STAT_2       ((uint32_t)0x00020000)          /*!< Burst/Compare in progress */
+#define FLCTL_A_RDBRST_CTLSTAT_BRST_STAT_3       ((uint32_t)0x00030000)          /*!< Burst complete (status of completed burst remains in this state unless  */
                                                                                  /* explicitly cleared by SW) */
-/* FLCTL_RDBRST_CTLSTAT[CMP_ERR] Bits */
-#define FLCTL_RDBRST_CTLSTAT_CMP_ERR_OFS         (18)                            /*!< CMP_ERR Bit Offset */
-#define FLCTL_RDBRST_CTLSTAT_CMP_ERR             ((uint32_t)0x00040000)          /*!< Burst/Compare Operation encountered atleast one data */
-/* FLCTL_RDBRST_CTLSTAT[ADDR_ERR] Bits */
-#define FLCTL_RDBRST_CTLSTAT_ADDR_ERR_OFS        (19)                            /*!< ADDR_ERR Bit Offset */
-#define FLCTL_RDBRST_CTLSTAT_ADDR_ERR            ((uint32_t)0x00080000)          /*!< Burst/Compare Operation was terminated due to access to */
-/* FLCTL_RDBRST_CTLSTAT[CLR_STAT] Bits */
-#define FLCTL_RDBRST_CTLSTAT_CLR_STAT_OFS        (23)                            /*!< CLR_STAT Bit Offset */
-#define FLCTL_RDBRST_CTLSTAT_CLR_STAT            ((uint32_t)0x00800000)          /*!< Clear status bits 19-16 of this register */
-/* FLCTL_RDBRST_STARTADDR[START_ADDRESS] Bits */
-#define FLCTL_RDBRST_STARTADDR_START_ADDRESS_OFS ( 0)                            /*!< START_ADDRESS Bit Offset */
-#define FLCTL_RDBRST_STARTADDR_START_ADDRESS_MASK ((uint32_t)0x001FFFFF)          /*!< START_ADDRESS Bit Mask */
-/* FLCTL_RDBRST_LEN[BURST_LENGTH] Bits */
-#define FLCTL_RDBRST_LEN_BURST_LENGTH_OFS        ( 0)                            /*!< BURST_LENGTH Bit Offset */
-#define FLCTL_RDBRST_LEN_BURST_LENGTH_MASK       ((uint32_t)0x001FFFFF)          /*!< BURST_LENGTH Bit Mask */
-/* FLCTL_RDBRST_FAILADDR[FAIL_ADDRESS] Bits */
-#define FLCTL_RDBRST_FAILADDR_FAIL_ADDRESS_OFS   ( 0)                            /*!< FAIL_ADDRESS Bit Offset */
-#define FLCTL_RDBRST_FAILADDR_FAIL_ADDRESS_MASK  ((uint32_t)0x001FFFFF)          /*!< FAIL_ADDRESS Bit Mask */
-/* FLCTL_RDBRST_FAILCNT[FAIL_COUNT] Bits */
-#define FLCTL_RDBRST_FAILCNT_FAIL_COUNT_OFS      ( 0)                            /*!< FAIL_COUNT Bit Offset */
-#define FLCTL_RDBRST_FAILCNT_FAIL_COUNT_MASK     ((uint32_t)0x0001FFFF)          /*!< FAIL_COUNT Bit Mask */
-/* FLCTL_PRG_CTLSTAT[ENABLE] Bits */
-#define FLCTL_PRG_CTLSTAT_ENABLE_OFS             ( 0)                            /*!< ENABLE Bit Offset */
-#define FLCTL_PRG_CTLSTAT_ENABLE                 ((uint32_t)0x00000001)          /*!< Master control for all word program operations */
-/* FLCTL_PRG_CTLSTAT[MODE] Bits */
-#define FLCTL_PRG_CTLSTAT_MODE_OFS               ( 1)                            /*!< MODE Bit Offset */
-#define FLCTL_PRG_CTLSTAT_MODE                   ((uint32_t)0x00000002)          /*!< Write mode */
-/* FLCTL_PRG_CTLSTAT[VER_PRE] Bits */
-#define FLCTL_PRG_CTLSTAT_VER_PRE_OFS            ( 2)                            /*!< VER_PRE Bit Offset */
-#define FLCTL_PRG_CTLSTAT_VER_PRE                ((uint32_t)0x00000004)          /*!< Controls automatic pre program verify operations */
-/* FLCTL_PRG_CTLSTAT[VER_PST] Bits */
-#define FLCTL_PRG_CTLSTAT_VER_PST_OFS            ( 3)                            /*!< VER_PST Bit Offset */
-#define FLCTL_PRG_CTLSTAT_VER_PST                ((uint32_t)0x00000008)          /*!< Controls automatic post program verify operations */
-/* FLCTL_PRG_CTLSTAT[STATUS] Bits */
-#define FLCTL_PRG_CTLSTAT_STATUS_OFS             (16)                            /*!< STATUS Bit Offset */
-#define FLCTL_PRG_CTLSTAT_STATUS_MASK            ((uint32_t)0x00030000)          /*!< STATUS Bit Mask */
-#define FLCTL_PRG_CTLSTAT_STATUS0                ((uint32_t)0x00010000)          /*!< STATUS Bit 0 */
-#define FLCTL_PRG_CTLSTAT_STATUS1                ((uint32_t)0x00020000)          /*!< STATUS Bit 1 */
-#define FLCTL_PRG_CTLSTAT_STATUS_0               ((uint32_t)0x00000000)          /*!< Idle (no program operation currently active) */
-#define FLCTL_PRG_CTLSTAT_STATUS_1               ((uint32_t)0x00010000)          /*!< Single word program operation triggered, but pending */
-#define FLCTL_PRG_CTLSTAT_STATUS_2               ((uint32_t)0x00020000)          /*!< Single word program in progress */
-#define FLCTL_PRG_CTLSTAT_STATUS_3               ((uint32_t)0x00030000)          /*!< Reserved (Idle) */
-/* FLCTL_PRG_CTLSTAT[BNK_ACT] Bits */
-#define FLCTL_PRG_CTLSTAT_BNK_ACT_OFS            (18)                            /*!< BNK_ACT Bit Offset */
-#define FLCTL_PRG_CTLSTAT_BNK_ACT                ((uint32_t)0x00040000)          /*!< Bank active */
-/* FLCTL_PRGBRST_CTLSTAT[START] Bits */
-#define FLCTL_PRGBRST_CTLSTAT_START_OFS          ( 0)                            /*!< START Bit Offset */
-#define FLCTL_PRGBRST_CTLSTAT_START              ((uint32_t)0x00000001)          /*!< Trigger start of burst program operation */
-/* FLCTL_PRGBRST_CTLSTAT[TYPE] Bits */
-#define FLCTL_PRGBRST_CTLSTAT_TYPE_OFS           ( 1)                            /*!< TYPE Bit Offset */
-#define FLCTL_PRGBRST_CTLSTAT_TYPE_MASK          ((uint32_t)0x00000006)          /*!< TYPE Bit Mask */
-#define FLCTL_PRGBRST_CTLSTAT_TYPE0              ((uint32_t)0x00000002)          /*!< TYPE Bit 0 */
-#define FLCTL_PRGBRST_CTLSTAT_TYPE1              ((uint32_t)0x00000004)          /*!< TYPE Bit 1 */
-#define FLCTL_PRGBRST_CTLSTAT_TYPE_0             ((uint32_t)0x00000000)          /*!< Main Memory */
-#define FLCTL_PRGBRST_CTLSTAT_TYPE_1             ((uint32_t)0x00000002)          /*!< Information Memory */
-#define FLCTL_PRGBRST_CTLSTAT_TYPE_2             ((uint32_t)0x00000004)          /*!< Reserved */
-#define FLCTL_PRGBRST_CTLSTAT_TYPE_3             ((uint32_t)0x00000006)          /*!< Engineering Memory */
-/* FLCTL_PRGBRST_CTLSTAT[LEN] Bits */
-#define FLCTL_PRGBRST_CTLSTAT_LEN_OFS            ( 3)                            /*!< LEN Bit Offset */
-#define FLCTL_PRGBRST_CTLSTAT_LEN_MASK           ((uint32_t)0x00000038)          /*!< LEN Bit Mask */
-#define FLCTL_PRGBRST_CTLSTAT_LEN0               ((uint32_t)0x00000008)          /*!< LEN Bit 0 */
-#define FLCTL_PRGBRST_CTLSTAT_LEN1               ((uint32_t)0x00000010)          /*!< LEN Bit 1 */
-#define FLCTL_PRGBRST_CTLSTAT_LEN2               ((uint32_t)0x00000020)          /*!< LEN Bit 2 */
-#define FLCTL_PRGBRST_CTLSTAT_LEN_0              ((uint32_t)0x00000000)          /*!< No burst operation */
-#define FLCTL_PRGBRST_CTLSTAT_LEN_1              ((uint32_t)0x00000008)          /*!< 1 word burst of 128 bits, starting with address in the  */
+/* FLCTL_A_RDBRST_CTLSTAT[CMP_ERR] Bits */
+#define FLCTL_A_RDBRST_CTLSTAT_CMP_ERR_OFS       (18)                            /*!< CMP_ERR Bit Offset */
+#define FLCTL_A_RDBRST_CTLSTAT_CMP_ERR           ((uint32_t)0x00040000)          /*!< Burst/Compare Operation encountered atleast one data */
+/* FLCTL_A_RDBRST_CTLSTAT[ADDR_ERR] Bits */
+#define FLCTL_A_RDBRST_CTLSTAT_ADDR_ERR_OFS      (19)                            /*!< ADDR_ERR Bit Offset */
+#define FLCTL_A_RDBRST_CTLSTAT_ADDR_ERR          ((uint32_t)0x00080000)          /*!< Burst/Compare Operation was terminated due to access to */
+/* FLCTL_A_RDBRST_CTLSTAT[CLR_STAT] Bits */
+#define FLCTL_A_RDBRST_CTLSTAT_CLR_STAT_OFS      (23)                            /*!< CLR_STAT Bit Offset */
+#define FLCTL_A_RDBRST_CTLSTAT_CLR_STAT          ((uint32_t)0x00800000)          /*!< Clear status bits 19-16 of this register */
+/* FLCTL_A_RDBRST_STARTADDR[START_ADDRESS] Bits */
+#define FLCTL_A_RDBRST_STARTADDR_START_ADDRESS_OFS ( 0)                            /*!< START_ADDRESS Bit Offset */
+#define FLCTL_A_RDBRST_STARTADDR_START_ADDRESS_MASK ((uint32_t)0x001FFFFF)          /*!< START_ADDRESS Bit Mask */
+/* FLCTL_A_RDBRST_LEN[BURST_LENGTH] Bits */
+#define FLCTL_A_RDBRST_LEN_BURST_LENGTH_OFS      ( 0)                            /*!< BURST_LENGTH Bit Offset */
+#define FLCTL_A_RDBRST_LEN_BURST_LENGTH_MASK     ((uint32_t)0x001FFFFF)          /*!< BURST_LENGTH Bit Mask */
+/* FLCTL_A_RDBRST_FAILADDR[FAIL_ADDRESS] Bits */
+#define FLCTL_A_RDBRST_FAILADDR_FAIL_ADDRESS_OFS ( 0)                            /*!< FAIL_ADDRESS Bit Offset */
+#define FLCTL_A_RDBRST_FAILADDR_FAIL_ADDRESS_MASK ((uint32_t)0x001FFFFF)          /*!< FAIL_ADDRESS Bit Mask */
+/* FLCTL_A_RDBRST_FAILCNT[FAIL_COUNT] Bits */
+#define FLCTL_A_RDBRST_FAILCNT_FAIL_COUNT_OFS    ( 0)                            /*!< FAIL_COUNT Bit Offset */
+#define FLCTL_A_RDBRST_FAILCNT_FAIL_COUNT_MASK   ((uint32_t)0x0001FFFF)          /*!< FAIL_COUNT Bit Mask */
+/* FLCTL_A_PRG_CTLSTAT[ENABLE] Bits */
+#define FLCTL_A_PRG_CTLSTAT_ENABLE_OFS           ( 0)                            /*!< ENABLE Bit Offset */
+#define FLCTL_A_PRG_CTLSTAT_ENABLE               ((uint32_t)0x00000001)          /*!< Master control for all word program operations */
+/* FLCTL_A_PRG_CTLSTAT[MODE] Bits */
+#define FLCTL_A_PRG_CTLSTAT_MODE_OFS             ( 1)                            /*!< MODE Bit Offset */
+#define FLCTL_A_PRG_CTLSTAT_MODE                 ((uint32_t)0x00000002)          /*!< Write mode */
+/* FLCTL_A_PRG_CTLSTAT[VER_PRE] Bits */
+#define FLCTL_A_PRG_CTLSTAT_VER_PRE_OFS          ( 2)                            /*!< VER_PRE Bit Offset */
+#define FLCTL_A_PRG_CTLSTAT_VER_PRE              ((uint32_t)0x00000004)          /*!< Controls automatic pre program verify operations */
+/* FLCTL_A_PRG_CTLSTAT[VER_PST] Bits */
+#define FLCTL_A_PRG_CTLSTAT_VER_PST_OFS          ( 3)                            /*!< VER_PST Bit Offset */
+#define FLCTL_A_PRG_CTLSTAT_VER_PST              ((uint32_t)0x00000008)          /*!< Controls automatic post program verify operations */
+/* FLCTL_A_PRG_CTLSTAT[STATUS] Bits */
+#define FLCTL_A_PRG_CTLSTAT_STATUS_OFS           (16)                            /*!< STATUS Bit Offset */
+#define FLCTL_A_PRG_CTLSTAT_STATUS_MASK          ((uint32_t)0x00030000)          /*!< STATUS Bit Mask */
+#define FLCTL_A_PRG_CTLSTAT_STATUS0              ((uint32_t)0x00010000)          /*!< STATUS Bit 0 */
+#define FLCTL_A_PRG_CTLSTAT_STATUS1              ((uint32_t)0x00020000)          /*!< STATUS Bit 1 */
+#define FLCTL_A_PRG_CTLSTAT_STATUS_0             ((uint32_t)0x00000000)          /*!< Idle (no program operation currently active) */
+#define FLCTL_A_PRG_CTLSTAT_STATUS_1             ((uint32_t)0x00010000)          /*!< Single word program operation triggered, but pending */
+#define FLCTL_A_PRG_CTLSTAT_STATUS_2             ((uint32_t)0x00020000)          /*!< Single word program in progress */
+#define FLCTL_A_PRG_CTLSTAT_STATUS_3             ((uint32_t)0x00030000)          /*!< Reserved (Idle) */
+/* FLCTL_A_PRG_CTLSTAT[BNK_ACT] Bits */
+#define FLCTL_A_PRG_CTLSTAT_BNK_ACT_OFS          (18)                            /*!< BNK_ACT Bit Offset */
+#define FLCTL_A_PRG_CTLSTAT_BNK_ACT              ((uint32_t)0x00040000)          /*!< Bank active */
+/* FLCTL_A_PRGBRST_CTLSTAT[START] Bits */
+#define FLCTL_A_PRGBRST_CTLSTAT_START_OFS        ( 0)                            /*!< START Bit Offset */
+#define FLCTL_A_PRGBRST_CTLSTAT_START            ((uint32_t)0x00000001)          /*!< Trigger start of burst program operation */
+/* FLCTL_A_PRGBRST_CTLSTAT[TYPE] Bits */
+#define FLCTL_A_PRGBRST_CTLSTAT_TYPE_OFS         ( 1)                            /*!< TYPE Bit Offset */
+#define FLCTL_A_PRGBRST_CTLSTAT_TYPE_MASK        ((uint32_t)0x00000006)          /*!< TYPE Bit Mask */
+#define FLCTL_A_PRGBRST_CTLSTAT_TYPE0            ((uint32_t)0x00000002)          /*!< TYPE Bit 0 */
+#define FLCTL_A_PRGBRST_CTLSTAT_TYPE1            ((uint32_t)0x00000004)          /*!< TYPE Bit 1 */
+#define FLCTL_A_PRGBRST_CTLSTAT_TYPE_0           ((uint32_t)0x00000000)          /*!< Main Memory */
+#define FLCTL_A_PRGBRST_CTLSTAT_TYPE_1           ((uint32_t)0x00000002)          /*!< Information Memory */
+#define FLCTL_A_PRGBRST_CTLSTAT_TYPE_2           ((uint32_t)0x00000004)          /*!< Reserved */
+#define FLCTL_A_PRGBRST_CTLSTAT_TYPE_3           ((uint32_t)0x00000006)          /*!< Engineering Memory */
+/* FLCTL_A_PRGBRST_CTLSTAT[LEN] Bits */
+#define FLCTL_A_PRGBRST_CTLSTAT_LEN_OFS          ( 3)                            /*!< LEN Bit Offset */
+#define FLCTL_A_PRGBRST_CTLSTAT_LEN_MASK         ((uint32_t)0x00000038)          /*!< LEN Bit Mask */
+#define FLCTL_A_PRGBRST_CTLSTAT_LEN0             ((uint32_t)0x00000008)          /*!< LEN Bit 0 */
+#define FLCTL_A_PRGBRST_CTLSTAT_LEN1             ((uint32_t)0x00000010)          /*!< LEN Bit 1 */
+#define FLCTL_A_PRGBRST_CTLSTAT_LEN2             ((uint32_t)0x00000020)          /*!< LEN Bit 2 */
+#define FLCTL_A_PRGBRST_CTLSTAT_LEN_0            ((uint32_t)0x00000000)          /*!< No burst operation */
+#define FLCTL_A_PRGBRST_CTLSTAT_LEN_1            ((uint32_t)0x00000008)          /*!< 1 word burst of 128 bits, starting with address in the  */
                                                                                  /* FLCTL_PRGBRST_STARTADDR Register */
-#define FLCTL_PRGBRST_CTLSTAT_LEN_2              ((uint32_t)0x00000010)          /*!< 2*128 bits burst write, starting with address in the FLCTL_PRGBRST_STARTADDR  */
+#define FLCTL_A_PRGBRST_CTLSTAT_LEN_2            ((uint32_t)0x00000010)          /*!< 2*128 bits burst write, starting with address in the FLCTL_PRGBRST_STARTADDR  */
                                                                                  /* Register */
-#define FLCTL_PRGBRST_CTLSTAT_LEN_3              ((uint32_t)0x00000018)          /*!< 3*128 bits burst write, starting with address in the FLCTL_PRGBRST_STARTADDR  */
+#define FLCTL_A_PRGBRST_CTLSTAT_LEN_3            ((uint32_t)0x00000018)          /*!< 3*128 bits burst write, starting with address in the FLCTL_PRGBRST_STARTADDR  */
                                                                                  /* Register */
-#define FLCTL_PRGBRST_CTLSTAT_LEN_4              ((uint32_t)0x00000020)          /*!< 4*128 bits burst write, starting with address in the FLCTL_PRGBRST_STARTADDR  */
+#define FLCTL_A_PRGBRST_CTLSTAT_LEN_4            ((uint32_t)0x00000020)          /*!< 4*128 bits burst write, starting with address in the FLCTL_PRGBRST_STARTADDR  */
                                                                                  /* Register */
-/* FLCTL_PRGBRST_CTLSTAT[AUTO_PRE] Bits */
-#define FLCTL_PRGBRST_CTLSTAT_AUTO_PRE_OFS       ( 6)                            /*!< AUTO_PRE Bit Offset */
-#define FLCTL_PRGBRST_CTLSTAT_AUTO_PRE           ((uint32_t)0x00000040)          /*!< Auto-Verify operation before the Burst Program */
-/* FLCTL_PRGBRST_CTLSTAT[AUTO_PST] Bits */
-#define FLCTL_PRGBRST_CTLSTAT_AUTO_PST_OFS       ( 7)                            /*!< AUTO_PST Bit Offset */
-#define FLCTL_PRGBRST_CTLSTAT_AUTO_PST           ((uint32_t)0x00000080)          /*!< Auto-Verify operation after the Burst Program */
-/* FLCTL_PRGBRST_CTLSTAT[BURST_STATUS] Bits */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS_OFS   (16)                            /*!< BURST_STATUS Bit Offset */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS_MASK  ((uint32_t)0x00070000)          /*!< BURST_STATUS Bit Mask */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS0      ((uint32_t)0x00010000)          /*!< BURST_STATUS Bit 0 */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS1      ((uint32_t)0x00020000)          /*!< BURST_STATUS Bit 1 */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS2      ((uint32_t)0x00040000)          /*!< BURST_STATUS Bit 2 */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS_0     ((uint32_t)0x00000000)          /*!< Idle (Burst not active) */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS_1     ((uint32_t)0x00010000)          /*!< Burst program started but pending */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS_2     ((uint32_t)0x00020000)          /*!< Burst active, with 1st 128 bit word being written into Flash */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS_3     ((uint32_t)0x00030000)          /*!< Burst active, with 2nd 128 bit word being written into Flash */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS_4     ((uint32_t)0x00040000)          /*!< Burst active, with 3rd 128 bit word being written into Flash */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS_5     ((uint32_t)0x00050000)          /*!< Burst active, with 4th 128 bit word being written into Flash */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS_6     ((uint32_t)0x00060000)          /*!< Reserved (Idle) */
-#define FLCTL_PRGBRST_CTLSTAT_BURST_STATUS_7     ((uint32_t)0x00070000)          /*!< Burst Complete (status of completed burst remains in this state unless  */
+/* FLCTL_A_PRGBRST_CTLSTAT[AUTO_PRE] Bits */
+#define FLCTL_A_PRGBRST_CTLSTAT_AUTO_PRE_OFS     ( 6)                            /*!< AUTO_PRE Bit Offset */
+#define FLCTL_A_PRGBRST_CTLSTAT_AUTO_PRE         ((uint32_t)0x00000040)          /*!< Auto-Verify operation before the Burst Program */
+/* FLCTL_A_PRGBRST_CTLSTAT[AUTO_PST] Bits */
+#define FLCTL_A_PRGBRST_CTLSTAT_AUTO_PST_OFS     ( 7)                            /*!< AUTO_PST Bit Offset */
+#define FLCTL_A_PRGBRST_CTLSTAT_AUTO_PST         ((uint32_t)0x00000080)          /*!< Auto-Verify operation after the Burst Program */
+/* FLCTL_A_PRGBRST_CTLSTAT[BURST_STATUS] Bits */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS_OFS (16)                            /*!< BURST_STATUS Bit Offset */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS_MASK ((uint32_t)0x00070000)          /*!< BURST_STATUS Bit Mask */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS0    ((uint32_t)0x00010000)          /*!< BURST_STATUS Bit 0 */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS1    ((uint32_t)0x00020000)          /*!< BURST_STATUS Bit 1 */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS2    ((uint32_t)0x00040000)          /*!< BURST_STATUS Bit 2 */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS_0   ((uint32_t)0x00000000)          /*!< Idle (Burst not active) */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS_1   ((uint32_t)0x00010000)          /*!< Burst program started but pending */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS_2   ((uint32_t)0x00020000)          /*!< Burst active, with 1st 128 bit word being written into Flash */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS_3   ((uint32_t)0x00030000)          /*!< Burst active, with 2nd 128 bit word being written into Flash */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS_4   ((uint32_t)0x00040000)          /*!< Burst active, with 3rd 128 bit word being written into Flash */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS_5   ((uint32_t)0x00050000)          /*!< Burst active, with 4th 128 bit word being written into Flash */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS_6   ((uint32_t)0x00060000)          /*!< Reserved (Idle) */
+#define FLCTL_A_PRGBRST_CTLSTAT_BURST_STATUS_7   ((uint32_t)0x00070000)          /*!< Burst Complete (status of completed burst remains in this state unless  */
                                                                                  /* explicitly cleared by SW) */
-/* FLCTL_PRGBRST_CTLSTAT[PRE_ERR] Bits */
-#define FLCTL_PRGBRST_CTLSTAT_PRE_ERR_OFS        (19)                            /*!< PRE_ERR Bit Offset */
-#define FLCTL_PRGBRST_CTLSTAT_PRE_ERR            ((uint32_t)0x00080000)          /*!< Burst Operation encountered preprogram auto-verify errors */
-/* FLCTL_PRGBRST_CTLSTAT[PST_ERR] Bits */
-#define FLCTL_PRGBRST_CTLSTAT_PST_ERR_OFS        (20)                            /*!< PST_ERR Bit Offset */
-#define FLCTL_PRGBRST_CTLSTAT_PST_ERR            ((uint32_t)0x00100000)          /*!< Burst Operation encountered postprogram auto-verify errors */
-/* FLCTL_PRGBRST_CTLSTAT[ADDR_ERR] Bits */
-#define FLCTL_PRGBRST_CTLSTAT_ADDR_ERR_OFS       (21)                            /*!< ADDR_ERR Bit Offset */
-#define FLCTL_PRGBRST_CTLSTAT_ADDR_ERR           ((uint32_t)0x00200000)          /*!< Burst Operation was terminated due to attempted program of reserved memory */
-/* FLCTL_PRGBRST_CTLSTAT[CLR_STAT] Bits */
-#define FLCTL_PRGBRST_CTLSTAT_CLR_STAT_OFS       (23)                            /*!< CLR_STAT Bit Offset */
-#define FLCTL_PRGBRST_CTLSTAT_CLR_STAT           ((uint32_t)0x00800000)          /*!< Clear status bits 21-16 of this register */
-/* FLCTL_PRGBRST_STARTADDR[START_ADDRESS] Bits */
-#define FLCTL_PRGBRST_STARTADDR_START_ADDRESS_OFS ( 0)                            /*!< START_ADDRESS Bit Offset */
-#define FLCTL_PRGBRST_STARTADDR_START_ADDRESS_MASK ((uint32_t)0x003FFFFF)          /*!< START_ADDRESS Bit Mask */
-/* FLCTL_ERASE_CTLSTAT[START] Bits */
-#define FLCTL_ERASE_CTLSTAT_START_OFS            ( 0)                            /*!< START Bit Offset */
-#define FLCTL_ERASE_CTLSTAT_START                ((uint32_t)0x00000001)          /*!< Start of Erase operation */
-/* FLCTL_ERASE_CTLSTAT[MODE] Bits */
-#define FLCTL_ERASE_CTLSTAT_MODE_OFS             ( 1)                            /*!< MODE Bit Offset */
-#define FLCTL_ERASE_CTLSTAT_MODE                 ((uint32_t)0x00000002)          /*!< Erase mode selected by application */
-/* FLCTL_ERASE_CTLSTAT[TYPE] Bits */
-#define FLCTL_ERASE_CTLSTAT_TYPE_OFS             ( 2)                            /*!< TYPE Bit Offset */
-#define FLCTL_ERASE_CTLSTAT_TYPE_MASK            ((uint32_t)0x0000000C)          /*!< TYPE Bit Mask */
-#define FLCTL_ERASE_CTLSTAT_TYPE0                ((uint32_t)0x00000004)          /*!< TYPE Bit 0 */
-#define FLCTL_ERASE_CTLSTAT_TYPE1                ((uint32_t)0x00000008)          /*!< TYPE Bit 1 */
-#define FLCTL_ERASE_CTLSTAT_TYPE_0               ((uint32_t)0x00000000)          /*!< Main Memory */
-#define FLCTL_ERASE_CTLSTAT_TYPE_1               ((uint32_t)0x00000004)          /*!< Information Memory */
-#define FLCTL_ERASE_CTLSTAT_TYPE_2               ((uint32_t)0x00000008)          /*!< Reserved */
-#define FLCTL_ERASE_CTLSTAT_TYPE_3               ((uint32_t)0x0000000C)          /*!< Engineering Memory */
-/* FLCTL_ERASE_CTLSTAT[STATUS] Bits */
-#define FLCTL_ERASE_CTLSTAT_STATUS_OFS           (16)                            /*!< STATUS Bit Offset */
-#define FLCTL_ERASE_CTLSTAT_STATUS_MASK          ((uint32_t)0x00030000)          /*!< STATUS Bit Mask */
-#define FLCTL_ERASE_CTLSTAT_STATUS0              ((uint32_t)0x00010000)          /*!< STATUS Bit 0 */
-#define FLCTL_ERASE_CTLSTAT_STATUS1              ((uint32_t)0x00020000)          /*!< STATUS Bit 1 */
-#define FLCTL_ERASE_CTLSTAT_STATUS_0             ((uint32_t)0x00000000)          /*!< Idle (no program operation currently active) */
-#define FLCTL_ERASE_CTLSTAT_STATUS_1             ((uint32_t)0x00010000)          /*!< Erase operation triggered to START but pending */
-#define FLCTL_ERASE_CTLSTAT_STATUS_2             ((uint32_t)0x00020000)          /*!< Erase operation in progress */
-#define FLCTL_ERASE_CTLSTAT_STATUS_3             ((uint32_t)0x00030000)          /*!< Erase operation completed (status of completed erase remains in this state  */
+/* FLCTL_A_PRGBRST_CTLSTAT[PRE_ERR] Bits */
+#define FLCTL_A_PRGBRST_CTLSTAT_PRE_ERR_OFS      (19)                            /*!< PRE_ERR Bit Offset */
+#define FLCTL_A_PRGBRST_CTLSTAT_PRE_ERR          ((uint32_t)0x00080000)          /*!< Burst Operation encountered preprogram auto-verify errors */
+/* FLCTL_A_PRGBRST_CTLSTAT[PST_ERR] Bits */
+#define FLCTL_A_PRGBRST_CTLSTAT_PST_ERR_OFS      (20)                            /*!< PST_ERR Bit Offset */
+#define FLCTL_A_PRGBRST_CTLSTAT_PST_ERR          ((uint32_t)0x00100000)          /*!< Burst Operation encountered postprogram auto-verify errors */
+/* FLCTL_A_PRGBRST_CTLSTAT[ADDR_ERR] Bits */
+#define FLCTL_A_PRGBRST_CTLSTAT_ADDR_ERR_OFS     (21)                            /*!< ADDR_ERR Bit Offset */
+#define FLCTL_A_PRGBRST_CTLSTAT_ADDR_ERR         ((uint32_t)0x00200000)          /*!< Burst Operation was terminated due to attempted program of reserved memory */
+/* FLCTL_A_PRGBRST_CTLSTAT[CLR_STAT] Bits */
+#define FLCTL_A_PRGBRST_CTLSTAT_CLR_STAT_OFS     (23)                            /*!< CLR_STAT Bit Offset */
+#define FLCTL_A_PRGBRST_CTLSTAT_CLR_STAT         ((uint32_t)0x00800000)          /*!< Clear status bits 21-16 of this register */
+/* FLCTL_A_PRGBRST_STARTADDR[START_ADDRESS] Bits */
+#define FLCTL_A_PRGBRST_STARTADDR_START_ADDRESS_OFS ( 0)                            /*!< START_ADDRESS Bit Offset */
+#define FLCTL_A_PRGBRST_STARTADDR_START_ADDRESS_MASK ((uint32_t)0x003FFFFF)          /*!< START_ADDRESS Bit Mask */
+/* FLCTL_A_ERASE_CTLSTAT[START] Bits */
+#define FLCTL_A_ERASE_CTLSTAT_START_OFS          ( 0)                            /*!< START Bit Offset */
+#define FLCTL_A_ERASE_CTLSTAT_START              ((uint32_t)0x00000001)          /*!< Start of Erase operation */
+/* FLCTL_A_ERASE_CTLSTAT[MODE] Bits */
+#define FLCTL_A_ERASE_CTLSTAT_MODE_OFS           ( 1)                            /*!< MODE Bit Offset */
+#define FLCTL_A_ERASE_CTLSTAT_MODE               ((uint32_t)0x00000002)          /*!< Erase mode selected by application */
+/* FLCTL_A_ERASE_CTLSTAT[TYPE] Bits */
+#define FLCTL_A_ERASE_CTLSTAT_TYPE_OFS           ( 2)                            /*!< TYPE Bit Offset */
+#define FLCTL_A_ERASE_CTLSTAT_TYPE_MASK          ((uint32_t)0x0000000C)          /*!< TYPE Bit Mask */
+#define FLCTL_A_ERASE_CTLSTAT_TYPE0              ((uint32_t)0x00000004)          /*!< TYPE Bit 0 */
+#define FLCTL_A_ERASE_CTLSTAT_TYPE1              ((uint32_t)0x00000008)          /*!< TYPE Bit 1 */
+#define FLCTL_A_ERASE_CTLSTAT_TYPE_0             ((uint32_t)0x00000000)          /*!< Main Memory */
+#define FLCTL_A_ERASE_CTLSTAT_TYPE_1             ((uint32_t)0x00000004)          /*!< Information Memory */
+#define FLCTL_A_ERASE_CTLSTAT_TYPE_2             ((uint32_t)0x00000008)          /*!< Reserved */
+#define FLCTL_A_ERASE_CTLSTAT_TYPE_3             ((uint32_t)0x0000000C)          /*!< Engineering Memory */
+/* FLCTL_A_ERASE_CTLSTAT[STATUS] Bits */
+#define FLCTL_A_ERASE_CTLSTAT_STATUS_OFS         (16)                            /*!< STATUS Bit Offset */
+#define FLCTL_A_ERASE_CTLSTAT_STATUS_MASK        ((uint32_t)0x00030000)          /*!< STATUS Bit Mask */
+#define FLCTL_A_ERASE_CTLSTAT_STATUS0            ((uint32_t)0x00010000)          /*!< STATUS Bit 0 */
+#define FLCTL_A_ERASE_CTLSTAT_STATUS1            ((uint32_t)0x00020000)          /*!< STATUS Bit 1 */
+#define FLCTL_A_ERASE_CTLSTAT_STATUS_0           ((uint32_t)0x00000000)          /*!< Idle (no program operation currently active) */
+#define FLCTL_A_ERASE_CTLSTAT_STATUS_1           ((uint32_t)0x00010000)          /*!< Erase operation triggered to START but pending */
+#define FLCTL_A_ERASE_CTLSTAT_STATUS_2           ((uint32_t)0x00020000)          /*!< Erase operation in progress */
+#define FLCTL_A_ERASE_CTLSTAT_STATUS_3           ((uint32_t)0x00030000)          /*!< Erase operation completed (status of completed erase remains in this state  */
                                                                                  /* unless explicitly cleared by SW) */
-/* FLCTL_ERASE_CTLSTAT[ADDR_ERR] Bits */
-#define FLCTL_ERASE_CTLSTAT_ADDR_ERR_OFS         (18)                            /*!< ADDR_ERR Bit Offset */
-#define FLCTL_ERASE_CTLSTAT_ADDR_ERR             ((uint32_t)0x00040000)          /*!< Erase Operation was terminated due to attempted erase of reserved memory  */
+/* FLCTL_A_ERASE_CTLSTAT[ADDR_ERR] Bits */
+#define FLCTL_A_ERASE_CTLSTAT_ADDR_ERR_OFS       (18)                            /*!< ADDR_ERR Bit Offset */
+#define FLCTL_A_ERASE_CTLSTAT_ADDR_ERR           ((uint32_t)0x00040000)          /*!< Erase Operation was terminated due to attempted erase of reserved memory  */
                                                                                  /* address */
-/* FLCTL_ERASE_CTLSTAT[CLR_STAT] Bits */
-#define FLCTL_ERASE_CTLSTAT_CLR_STAT_OFS         (19)                            /*!< CLR_STAT Bit Offset */
-#define FLCTL_ERASE_CTLSTAT_CLR_STAT             ((uint32_t)0x00080000)          /*!< Clear status bits 18-16 of this register */
-/* FLCTL_ERASE_SECTADDR[SECT_ADDRESS] Bits */
-#define FLCTL_ERASE_SECTADDR_SECT_ADDRESS_OFS    ( 0)                            /*!< SECT_ADDRESS Bit Offset */
-#define FLCTL_ERASE_SECTADDR_SECT_ADDRESS_MASK   ((uint32_t)0x003FFFFF)          /*!< SECT_ADDRESS Bit Mask */
-/* FLCTL_BANK0_INFO_WEPROT[PROT0] Bits */
-#define FLCTL_BANK0_INFO_WEPROT_PROT0_OFS        ( 0)                            /*!< PROT0 Bit Offset */
-#define FLCTL_BANK0_INFO_WEPROT_PROT0            ((uint32_t)0x00000001)          /*!< Protects Sector 0 from program or erase */
-/* FLCTL_BANK0_INFO_WEPROT[PROT1] Bits */
-#define FLCTL_BANK0_INFO_WEPROT_PROT1_OFS        ( 1)                            /*!< PROT1 Bit Offset */
-#define FLCTL_BANK0_INFO_WEPROT_PROT1            ((uint32_t)0x00000002)          /*!< Protects Sector 1 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT0] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT0_OFS        ( 0)                            /*!< PROT0 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT0            ((uint32_t)0x00000001)          /*!< Protects Sector 0 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT1] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT1_OFS        ( 1)                            /*!< PROT1 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT1            ((uint32_t)0x00000002)          /*!< Protects Sector 1 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT2] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT2_OFS        ( 2)                            /*!< PROT2 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT2            ((uint32_t)0x00000004)          /*!< Protects Sector 2 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT3] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT3_OFS        ( 3)                            /*!< PROT3 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT3            ((uint32_t)0x00000008)          /*!< Protects Sector 3 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT4] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT4_OFS        ( 4)                            /*!< PROT4 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT4            ((uint32_t)0x00000010)          /*!< Protects Sector 4 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT5] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT5_OFS        ( 5)                            /*!< PROT5 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT5            ((uint32_t)0x00000020)          /*!< Protects Sector 5 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT6] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT6_OFS        ( 6)                            /*!< PROT6 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT6            ((uint32_t)0x00000040)          /*!< Protects Sector 6 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT7] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT7_OFS        ( 7)                            /*!< PROT7 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT7            ((uint32_t)0x00000080)          /*!< Protects Sector 7 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT8] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT8_OFS        ( 8)                            /*!< PROT8 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT8            ((uint32_t)0x00000100)          /*!< Protects Sector 8 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT9] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT9_OFS        ( 9)                            /*!< PROT9 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT9            ((uint32_t)0x00000200)          /*!< Protects Sector 9 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT10] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT10_OFS       (10)                            /*!< PROT10 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT10           ((uint32_t)0x00000400)          /*!< Protects Sector 10 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT11] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT11_OFS       (11)                            /*!< PROT11 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT11           ((uint32_t)0x00000800)          /*!< Protects Sector 11 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT12] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT12_OFS       (12)                            /*!< PROT12 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT12           ((uint32_t)0x00001000)          /*!< Protects Sector 12 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT13] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT13_OFS       (13)                            /*!< PROT13 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT13           ((uint32_t)0x00002000)          /*!< Protects Sector 13 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT14] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT14_OFS       (14)                            /*!< PROT14 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT14           ((uint32_t)0x00004000)          /*!< Protects Sector 14 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT15] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT15_OFS       (15)                            /*!< PROT15 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT15           ((uint32_t)0x00008000)          /*!< Protects Sector 15 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT16] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT16_OFS       (16)                            /*!< PROT16 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT16           ((uint32_t)0x00010000)          /*!< Protects Sector 16 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT17] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT17_OFS       (17)                            /*!< PROT17 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT17           ((uint32_t)0x00020000)          /*!< Protects Sector 17 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT18] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT18_OFS       (18)                            /*!< PROT18 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT18           ((uint32_t)0x00040000)          /*!< Protects Sector 18 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT19] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT19_OFS       (19)                            /*!< PROT19 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT19           ((uint32_t)0x00080000)          /*!< Protects Sector 19 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT20] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT20_OFS       (20)                            /*!< PROT20 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT20           ((uint32_t)0x00100000)          /*!< Protects Sector 20 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT21] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT21_OFS       (21)                            /*!< PROT21 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT21           ((uint32_t)0x00200000)          /*!< Protects Sector 21 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT22] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT22_OFS       (22)                            /*!< PROT22 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT22           ((uint32_t)0x00400000)          /*!< Protects Sector 22 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT23] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT23_OFS       (23)                            /*!< PROT23 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT23           ((uint32_t)0x00800000)          /*!< Protects Sector 23 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT24] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT24_OFS       (24)                            /*!< PROT24 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT24           ((uint32_t)0x01000000)          /*!< Protects Sector 24 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT25] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT25_OFS       (25)                            /*!< PROT25 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT25           ((uint32_t)0x02000000)          /*!< Protects Sector 25 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT26] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT26_OFS       (26)                            /*!< PROT26 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT26           ((uint32_t)0x04000000)          /*!< Protects Sector 26 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT27] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT27_OFS       (27)                            /*!< PROT27 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT27           ((uint32_t)0x08000000)          /*!< Protects Sector 27 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT28] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT28_OFS       (28)                            /*!< PROT28 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT28           ((uint32_t)0x10000000)          /*!< Protects Sector 28 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT29] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT29_OFS       (29)                            /*!< PROT29 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT29           ((uint32_t)0x20000000)          /*!< Protects Sector 29 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT30] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT30_OFS       (30)                            /*!< PROT30 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT30           ((uint32_t)0x40000000)          /*!< Protects Sector 30 from program or erase */
-/* FLCTL_BANK0_MAIN_WEPROT[PROT31] Bits */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT31_OFS       (31)                            /*!< PROT31 Bit Offset */
-#define FLCTL_BANK0_MAIN_WEPROT_PROT31           ((uint32_t)0x80000000)          /*!< Protects Sector 31 from program or erase */
-/* FLCTL_BANK1_INFO_WEPROT[PROT0] Bits */
-#define FLCTL_BANK1_INFO_WEPROT_PROT0_OFS        ( 0)                            /*!< PROT0 Bit Offset */
-#define FLCTL_BANK1_INFO_WEPROT_PROT0            ((uint32_t)0x00000001)          /*!< Protects Sector 0 from program or erase operations */
-/* FLCTL_BANK1_INFO_WEPROT[PROT1] Bits */
-#define FLCTL_BANK1_INFO_WEPROT_PROT1_OFS        ( 1)                            /*!< PROT1 Bit Offset */
-#define FLCTL_BANK1_INFO_WEPROT_PROT1            ((uint32_t)0x00000002)          /*!< Protects Sector 1 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT0] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT0_OFS        ( 0)                            /*!< PROT0 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT0            ((uint32_t)0x00000001)          /*!< Protects Sector 0 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT1] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT1_OFS        ( 1)                            /*!< PROT1 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT1            ((uint32_t)0x00000002)          /*!< Protects Sector 1 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT2] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT2_OFS        ( 2)                            /*!< PROT2 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT2            ((uint32_t)0x00000004)          /*!< Protects Sector 2 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT3] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT3_OFS        ( 3)                            /*!< PROT3 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT3            ((uint32_t)0x00000008)          /*!< Protects Sector 3 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT4] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT4_OFS        ( 4)                            /*!< PROT4 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT4            ((uint32_t)0x00000010)          /*!< Protects Sector 4 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT5] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT5_OFS        ( 5)                            /*!< PROT5 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT5            ((uint32_t)0x00000020)          /*!< Protects Sector 5 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT6] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT6_OFS        ( 6)                            /*!< PROT6 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT6            ((uint32_t)0x00000040)          /*!< Protects Sector 6 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT7] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT7_OFS        ( 7)                            /*!< PROT7 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT7            ((uint32_t)0x00000080)          /*!< Protects Sector 7 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT8] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT8_OFS        ( 8)                            /*!< PROT8 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT8            ((uint32_t)0x00000100)          /*!< Protects Sector 8 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT9] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT9_OFS        ( 9)                            /*!< PROT9 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT9            ((uint32_t)0x00000200)          /*!< Protects Sector 9 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT10] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT10_OFS       (10)                            /*!< PROT10 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT10           ((uint32_t)0x00000400)          /*!< Protects Sector 10 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT11] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT11_OFS       (11)                            /*!< PROT11 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT11           ((uint32_t)0x00000800)          /*!< Protects Sector 11 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT12] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT12_OFS       (12)                            /*!< PROT12 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT12           ((uint32_t)0x00001000)          /*!< Protects Sector 12 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT13] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT13_OFS       (13)                            /*!< PROT13 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT13           ((uint32_t)0x00002000)          /*!< Protects Sector 13 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT14] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT14_OFS       (14)                            /*!< PROT14 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT14           ((uint32_t)0x00004000)          /*!< Protects Sector 14 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT15] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT15_OFS       (15)                            /*!< PROT15 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT15           ((uint32_t)0x00008000)          /*!< Protects Sector 15 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT16] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT16_OFS       (16)                            /*!< PROT16 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT16           ((uint32_t)0x00010000)          /*!< Protects Sector 16 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT17] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT17_OFS       (17)                            /*!< PROT17 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT17           ((uint32_t)0x00020000)          /*!< Protects Sector 17 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT18] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT18_OFS       (18)                            /*!< PROT18 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT18           ((uint32_t)0x00040000)          /*!< Protects Sector 18 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT19] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT19_OFS       (19)                            /*!< PROT19 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT19           ((uint32_t)0x00080000)          /*!< Protects Sector 19 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT20] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT20_OFS       (20)                            /*!< PROT20 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT20           ((uint32_t)0x00100000)          /*!< Protects Sector 20 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT21] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT21_OFS       (21)                            /*!< PROT21 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT21           ((uint32_t)0x00200000)          /*!< Protects Sector 21 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT22] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT22_OFS       (22)                            /*!< PROT22 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT22           ((uint32_t)0x00400000)          /*!< Protects Sector 22 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT23] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT23_OFS       (23)                            /*!< PROT23 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT23           ((uint32_t)0x00800000)          /*!< Protects Sector 23 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT24] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT24_OFS       (24)                            /*!< PROT24 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT24           ((uint32_t)0x01000000)          /*!< Protects Sector 24 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT25] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT25_OFS       (25)                            /*!< PROT25 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT25           ((uint32_t)0x02000000)          /*!< Protects Sector 25 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT26] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT26_OFS       (26)                            /*!< PROT26 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT26           ((uint32_t)0x04000000)          /*!< Protects Sector 26 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT27] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT27_OFS       (27)                            /*!< PROT27 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT27           ((uint32_t)0x08000000)          /*!< Protects Sector 27 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT28] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT28_OFS       (28)                            /*!< PROT28 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT28           ((uint32_t)0x10000000)          /*!< Protects Sector 28 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT29] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT29_OFS       (29)                            /*!< PROT29 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT29           ((uint32_t)0x20000000)          /*!< Protects Sector 29 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT30] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT30_OFS       (30)                            /*!< PROT30 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT30           ((uint32_t)0x40000000)          /*!< Protects Sector 30 from program or erase operations */
-/* FLCTL_BANK1_MAIN_WEPROT[PROT31] Bits */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT31_OFS       (31)                            /*!< PROT31 Bit Offset */
-#define FLCTL_BANK1_MAIN_WEPROT_PROT31           ((uint32_t)0x80000000)          /*!< Protects Sector 31 from program or erase operations */
-/* FLCTL_BMRK_CTLSTAT[I_BMRK] Bits */
-#define FLCTL_BMRK_CTLSTAT_I_BMRK_OFS            ( 0)                            /*!< I_BMRK Bit Offset */
-#define FLCTL_BMRK_CTLSTAT_I_BMRK                ((uint32_t)0x00000001)
-/* FLCTL_BMRK_CTLSTAT[D_BMRK] Bits */
-#define FLCTL_BMRK_CTLSTAT_D_BMRK_OFS            ( 1)                            /*!< D_BMRK Bit Offset */
-#define FLCTL_BMRK_CTLSTAT_D_BMRK                ((uint32_t)0x00000002)
-/* FLCTL_BMRK_CTLSTAT[CMP_EN] Bits */
-#define FLCTL_BMRK_CTLSTAT_CMP_EN_OFS            ( 2)                            /*!< CMP_EN Bit Offset */
-#define FLCTL_BMRK_CTLSTAT_CMP_EN                ((uint32_t)0x00000004)
-/* FLCTL_BMRK_CTLSTAT[CMP_SEL] Bits */
-#define FLCTL_BMRK_CTLSTAT_CMP_SEL_OFS           ( 3)                            /*!< CMP_SEL Bit Offset */
-#define FLCTL_BMRK_CTLSTAT_CMP_SEL               ((uint32_t)0x00000008)
-/* FLCTL_IFG[RDBRST] Bits */
-#define FLCTL_IFG_RDBRST_OFS                     ( 0)                            /*!< RDBRST Bit Offset */
-#define FLCTL_IFG_RDBRST                         ((uint32_t)0x00000001)
-/* FLCTL_IFG[AVPRE] Bits */
-#define FLCTL_IFG_AVPRE_OFS                      ( 1)                            /*!< AVPRE Bit Offset */
-#define FLCTL_IFG_AVPRE                          ((uint32_t)0x00000002)
-/* FLCTL_IFG[AVPST] Bits */
-#define FLCTL_IFG_AVPST_OFS                      ( 2)                            /*!< AVPST Bit Offset */
-#define FLCTL_IFG_AVPST                          ((uint32_t)0x00000004)
-/* FLCTL_IFG[PRG] Bits */
-#define FLCTL_IFG_PRG_OFS                        ( 3)                            /*!< PRG Bit Offset */
-#define FLCTL_IFG_PRG                            ((uint32_t)0x00000008)
-/* FLCTL_IFG[PRGB] Bits */
-#define FLCTL_IFG_PRGB_OFS                       ( 4)                            /*!< PRGB Bit Offset */
-#define FLCTL_IFG_PRGB                           ((uint32_t)0x00000010)
-/* FLCTL_IFG[ERASE] Bits */
-#define FLCTL_IFG_ERASE_OFS                      ( 5)                            /*!< ERASE Bit Offset */
-#define FLCTL_IFG_ERASE                          ((uint32_t)0x00000020)
-/* FLCTL_IFG[BMRK] Bits */
-#define FLCTL_IFG_BMRK_OFS                       ( 8)                            /*!< BMRK Bit Offset */
-#define FLCTL_IFG_BMRK                           ((uint32_t)0x00000100)
-/* FLCTL_IFG[PRG_ERR] Bits */
-#define FLCTL_IFG_PRG_ERR_OFS                    ( 9)                            /*!< PRG_ERR Bit Offset */
-#define FLCTL_IFG_PRG_ERR                        ((uint32_t)0x00000200)
-/* FLCTL_IE[RDBRST] Bits */
-#define FLCTL_IE_RDBRST_OFS                      ( 0)                            /*!< RDBRST Bit Offset */
-#define FLCTL_IE_RDBRST                          ((uint32_t)0x00000001)
-/* FLCTL_IE[AVPRE] Bits */
-#define FLCTL_IE_AVPRE_OFS                       ( 1)                            /*!< AVPRE Bit Offset */
-#define FLCTL_IE_AVPRE                           ((uint32_t)0x00000002)
-/* FLCTL_IE[AVPST] Bits */
-#define FLCTL_IE_AVPST_OFS                       ( 2)                            /*!< AVPST Bit Offset */
-#define FLCTL_IE_AVPST                           ((uint32_t)0x00000004)
-/* FLCTL_IE[PRG] Bits */
-#define FLCTL_IE_PRG_OFS                         ( 3)                            /*!< PRG Bit Offset */
-#define FLCTL_IE_PRG                             ((uint32_t)0x00000008)
-/* FLCTL_IE[PRGB] Bits */
-#define FLCTL_IE_PRGB_OFS                        ( 4)                            /*!< PRGB Bit Offset */
-#define FLCTL_IE_PRGB                            ((uint32_t)0x00000010)
-/* FLCTL_IE[ERASE] Bits */
-#define FLCTL_IE_ERASE_OFS                       ( 5)                            /*!< ERASE Bit Offset */
-#define FLCTL_IE_ERASE                           ((uint32_t)0x00000020)
-/* FLCTL_IE[BMRK] Bits */
-#define FLCTL_IE_BMRK_OFS                        ( 8)                            /*!< BMRK Bit Offset */
-#define FLCTL_IE_BMRK                            ((uint32_t)0x00000100)
-/* FLCTL_IE[PRG_ERR] Bits */
-#define FLCTL_IE_PRG_ERR_OFS                     ( 9)                            /*!< PRG_ERR Bit Offset */
-#define FLCTL_IE_PRG_ERR                         ((uint32_t)0x00000200)
-/* FLCTL_CLRIFG[RDBRST] Bits */
-#define FLCTL_CLRIFG_RDBRST_OFS                  ( 0)                            /*!< RDBRST Bit Offset */
-#define FLCTL_CLRIFG_RDBRST                      ((uint32_t)0x00000001)
-/* FLCTL_CLRIFG[AVPRE] Bits */
-#define FLCTL_CLRIFG_AVPRE_OFS                   ( 1)                            /*!< AVPRE Bit Offset */
-#define FLCTL_CLRIFG_AVPRE                       ((uint32_t)0x00000002)
-/* FLCTL_CLRIFG[AVPST] Bits */
-#define FLCTL_CLRIFG_AVPST_OFS                   ( 2)                            /*!< AVPST Bit Offset */
-#define FLCTL_CLRIFG_AVPST                       ((uint32_t)0x00000004)
-/* FLCTL_CLRIFG[PRG] Bits */
-#define FLCTL_CLRIFG_PRG_OFS                     ( 3)                            /*!< PRG Bit Offset */
-#define FLCTL_CLRIFG_PRG                         ((uint32_t)0x00000008)
-/* FLCTL_CLRIFG[PRGB] Bits */
-#define FLCTL_CLRIFG_PRGB_OFS                    ( 4)                            /*!< PRGB Bit Offset */
-#define FLCTL_CLRIFG_PRGB                        ((uint32_t)0x00000010)
-/* FLCTL_CLRIFG[ERASE] Bits */
-#define FLCTL_CLRIFG_ERASE_OFS                   ( 5)                            /*!< ERASE Bit Offset */
-#define FLCTL_CLRIFG_ERASE                       ((uint32_t)0x00000020)
-/* FLCTL_CLRIFG[BMRK] Bits */
-#define FLCTL_CLRIFG_BMRK_OFS                    ( 8)                            /*!< BMRK Bit Offset */
-#define FLCTL_CLRIFG_BMRK                        ((uint32_t)0x00000100)
-/* FLCTL_CLRIFG[PRG_ERR] Bits */
-#define FLCTL_CLRIFG_PRG_ERR_OFS                 ( 9)                            /*!< PRG_ERR Bit Offset */
-#define FLCTL_CLRIFG_PRG_ERR                     ((uint32_t)0x00000200)
-/* FLCTL_SETIFG[RDBRST] Bits */
-#define FLCTL_SETIFG_RDBRST_OFS                  ( 0)                            /*!< RDBRST Bit Offset */
-#define FLCTL_SETIFG_RDBRST                      ((uint32_t)0x00000001)
-/* FLCTL_SETIFG[AVPRE] Bits */
-#define FLCTL_SETIFG_AVPRE_OFS                   ( 1)                            /*!< AVPRE Bit Offset */
-#define FLCTL_SETIFG_AVPRE                       ((uint32_t)0x00000002)
-/* FLCTL_SETIFG[AVPST] Bits */
-#define FLCTL_SETIFG_AVPST_OFS                   ( 2)                            /*!< AVPST Bit Offset */
-#define FLCTL_SETIFG_AVPST                       ((uint32_t)0x00000004)
-/* FLCTL_SETIFG[PRG] Bits */
-#define FLCTL_SETIFG_PRG_OFS                     ( 3)                            /*!< PRG Bit Offset */
-#define FLCTL_SETIFG_PRG                         ((uint32_t)0x00000008)
-/* FLCTL_SETIFG[PRGB] Bits */
-#define FLCTL_SETIFG_PRGB_OFS                    ( 4)                            /*!< PRGB Bit Offset */
-#define FLCTL_SETIFG_PRGB                        ((uint32_t)0x00000010)
-/* FLCTL_SETIFG[ERASE] Bits */
-#define FLCTL_SETIFG_ERASE_OFS                   ( 5)                            /*!< ERASE Bit Offset */
-#define FLCTL_SETIFG_ERASE                       ((uint32_t)0x00000020)
-/* FLCTL_SETIFG[BMRK] Bits */
-#define FLCTL_SETIFG_BMRK_OFS                    ( 8)                            /*!< BMRK Bit Offset */
-#define FLCTL_SETIFG_BMRK                        ((uint32_t)0x00000100)
-/* FLCTL_SETIFG[PRG_ERR] Bits */
-#define FLCTL_SETIFG_PRG_ERR_OFS                 ( 9)                            /*!< PRG_ERR Bit Offset */
-#define FLCTL_SETIFG_PRG_ERR                     ((uint32_t)0x00000200)
-/* FLCTL_READ_TIMCTL[SETUP] Bits */
-#define FLCTL_READ_TIMCTL_SETUP_OFS              ( 0)                            /*!< SETUP Bit Offset */
-#define FLCTL_READ_TIMCTL_SETUP_MASK             ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
-/* FLCTL_READ_TIMCTL[IREF_BOOST1] Bits */
-#define FLCTL_READ_TIMCTL_IREF_BOOST1_OFS        (12)                            /*!< IREF_BOOST1 Bit Offset */
-#define FLCTL_READ_TIMCTL_IREF_BOOST1_MASK       ((uint32_t)0x0000F000)          /*!< IREF_BOOST1 Bit Mask */
-/* FLCTL_READ_TIMCTL[SETUP_LONG] Bits */
-#define FLCTL_READ_TIMCTL_SETUP_LONG_OFS         (16)                            /*!< SETUP_LONG Bit Offset */
-#define FLCTL_READ_TIMCTL_SETUP_LONG_MASK        ((uint32_t)0x00FF0000)          /*!< SETUP_LONG Bit Mask */
-/* FLCTL_READMARGIN_TIMCTL[SETUP] Bits */
-#define FLCTL_READMARGIN_TIMCTL_SETUP_OFS        ( 0)                            /*!< SETUP Bit Offset */
-#define FLCTL_READMARGIN_TIMCTL_SETUP_MASK       ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
-/* FLCTL_PRGVER_TIMCTL[SETUP] Bits */
-#define FLCTL_PRGVER_TIMCTL_SETUP_OFS            ( 0)                            /*!< SETUP Bit Offset */
-#define FLCTL_PRGVER_TIMCTL_SETUP_MASK           ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
-/* FLCTL_PRGVER_TIMCTL[ACTIVE] Bits */
-#define FLCTL_PRGVER_TIMCTL_ACTIVE_OFS           ( 8)                            /*!< ACTIVE Bit Offset */
-#define FLCTL_PRGVER_TIMCTL_ACTIVE_MASK          ((uint32_t)0x00000F00)          /*!< ACTIVE Bit Mask */
-/* FLCTL_PRGVER_TIMCTL[HOLD] Bits */
-#define FLCTL_PRGVER_TIMCTL_HOLD_OFS             (12)                            /*!< HOLD Bit Offset */
-#define FLCTL_PRGVER_TIMCTL_HOLD_MASK            ((uint32_t)0x0000F000)          /*!< HOLD Bit Mask */
-/* FLCTL_ERSVER_TIMCTL[SETUP] Bits */
-#define FLCTL_ERSVER_TIMCTL_SETUP_OFS            ( 0)                            /*!< SETUP Bit Offset */
-#define FLCTL_ERSVER_TIMCTL_SETUP_MASK           ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
-/* FLCTL_LKGVER_TIMCTL[SETUP] Bits */
-#define FLCTL_LKGVER_TIMCTL_SETUP_OFS            ( 0)                            /*!< SETUP Bit Offset */
-#define FLCTL_LKGVER_TIMCTL_SETUP_MASK           ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
-/* FLCTL_PROGRAM_TIMCTL[SETUP] Bits */
-#define FLCTL_PROGRAM_TIMCTL_SETUP_OFS           ( 0)                            /*!< SETUP Bit Offset */
-#define FLCTL_PROGRAM_TIMCTL_SETUP_MASK          ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
-/* FLCTL_PROGRAM_TIMCTL[ACTIVE] Bits */
-#define FLCTL_PROGRAM_TIMCTL_ACTIVE_OFS          ( 8)                            /*!< ACTIVE Bit Offset */
-#define FLCTL_PROGRAM_TIMCTL_ACTIVE_MASK         ((uint32_t)0x0FFFFF00)          /*!< ACTIVE Bit Mask */
-/* FLCTL_PROGRAM_TIMCTL[HOLD] Bits */
-#define FLCTL_PROGRAM_TIMCTL_HOLD_OFS            (28)                            /*!< HOLD Bit Offset */
-#define FLCTL_PROGRAM_TIMCTL_HOLD_MASK           ((uint32_t)0xF0000000)          /*!< HOLD Bit Mask */
-/* FLCTL_ERASE_TIMCTL[SETUP] Bits */
-#define FLCTL_ERASE_TIMCTL_SETUP_OFS             ( 0)                            /*!< SETUP Bit Offset */
-#define FLCTL_ERASE_TIMCTL_SETUP_MASK            ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
-/* FLCTL_ERASE_TIMCTL[ACTIVE] Bits */
-#define FLCTL_ERASE_TIMCTL_ACTIVE_OFS            ( 8)                            /*!< ACTIVE Bit Offset */
-#define FLCTL_ERASE_TIMCTL_ACTIVE_MASK           ((uint32_t)0x0FFFFF00)          /*!< ACTIVE Bit Mask */
-/* FLCTL_ERASE_TIMCTL[HOLD] Bits */
-#define FLCTL_ERASE_TIMCTL_HOLD_OFS              (28)                            /*!< HOLD Bit Offset */
-#define FLCTL_ERASE_TIMCTL_HOLD_MASK             ((uint32_t)0xF0000000)          /*!< HOLD Bit Mask */
-/* FLCTL_MASSERASE_TIMCTL[BOOST_ACTIVE] Bits */
-#define FLCTL_MASSERASE_TIMCTL_BOOST_ACTIVE_OFS  ( 0)                            /*!< BOOST_ACTIVE Bit Offset */
-#define FLCTL_MASSERASE_TIMCTL_BOOST_ACTIVE_MASK ((uint32_t)0x000000FF)          /*!< BOOST_ACTIVE Bit Mask */
-/* FLCTL_MASSERASE_TIMCTL[BOOST_HOLD] Bits */
-#define FLCTL_MASSERASE_TIMCTL_BOOST_HOLD_OFS    ( 8)                            /*!< BOOST_HOLD Bit Offset */
-#define FLCTL_MASSERASE_TIMCTL_BOOST_HOLD_MASK   ((uint32_t)0x0000FF00)          /*!< BOOST_HOLD Bit Mask */
-/* FLCTL_BURSTPRG_TIMCTL[ACTIVE] Bits */
-#define FLCTL_BURSTPRG_TIMCTL_ACTIVE_OFS         ( 8)                            /*!< ACTIVE Bit Offset */
-#define FLCTL_BURSTPRG_TIMCTL_ACTIVE_MASK        ((uint32_t)0x0FFFFF00)          /*!< ACTIVE Bit Mask */
+/* FLCTL_A_ERASE_CTLSTAT[CLR_STAT] Bits */
+#define FLCTL_A_ERASE_CTLSTAT_CLR_STAT_OFS       (19)                            /*!< CLR_STAT Bit Offset */
+#define FLCTL_A_ERASE_CTLSTAT_CLR_STAT           ((uint32_t)0x00080000)          /*!< Clear status bits 18-16 of this register */
+/* FLCTL_A_ERASE_SECTADDR[SECT_ADDRESS] Bits */
+#define FLCTL_A_ERASE_SECTADDR_SECT_ADDRESS_OFS  ( 0)                            /*!< SECT_ADDRESS Bit Offset */
+#define FLCTL_A_ERASE_SECTADDR_SECT_ADDRESS_MASK ((uint32_t)0x003FFFFF)          /*!< SECT_ADDRESS Bit Mask */
+/* FLCTL_A_BANK0_INFO_WEPROT[PROT0] Bits */
+#define FLCTL_A_BANK0_INFO_WEPROT_PROT0_OFS      ( 0)                            /*!< PROT0 Bit Offset */
+#define FLCTL_A_BANK0_INFO_WEPROT_PROT0          ((uint32_t)0x00000001)          /*!< Protects Sector 0 from program or erase */
+/* FLCTL_A_BANK0_INFO_WEPROT[PROT1] Bits */
+#define FLCTL_A_BANK0_INFO_WEPROT_PROT1_OFS      ( 1)                            /*!< PROT1 Bit Offset */
+#define FLCTL_A_BANK0_INFO_WEPROT_PROT1          ((uint32_t)0x00000002)          /*!< Protects Sector 1 from program or erase */
+/* FLCTL_A_BANK0_INFO_WEPROT[PROT2] Bits */
+#define FLCTL_A_BANK0_INFO_WEPROT_PROT2_OFS      ( 2)                            /*!< PROT2 Bit Offset */
+#define FLCTL_A_BANK0_INFO_WEPROT_PROT2          ((uint32_t)0x00000004)          /*!< Protects Sector 2 from program or erase */
+/* FLCTL_A_BANK0_INFO_WEPROT[PROT3] Bits */
+#define FLCTL_A_BANK0_INFO_WEPROT_PROT3_OFS      ( 3)                            /*!< PROT3 Bit Offset */
+#define FLCTL_A_BANK0_INFO_WEPROT_PROT3          ((uint32_t)0x00000008)          /*!< Protects Sector 3 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT0] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT0_OFS      ( 0)                            /*!< PROT0 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT0          ((uint32_t)0x00000001)          /*!< Protects Sector 0 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT1] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT1_OFS      ( 1)                            /*!< PROT1 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT1          ((uint32_t)0x00000002)          /*!< Protects Sector 1 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT2] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT2_OFS      ( 2)                            /*!< PROT2 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT2          ((uint32_t)0x00000004)          /*!< Protects Sector 2 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT3] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT3_OFS      ( 3)                            /*!< PROT3 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT3          ((uint32_t)0x00000008)          /*!< Protects Sector 3 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT4] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT4_OFS      ( 4)                            /*!< PROT4 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT4          ((uint32_t)0x00000010)          /*!< Protects Sector 4 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT5] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT5_OFS      ( 5)                            /*!< PROT5 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT5          ((uint32_t)0x00000020)          /*!< Protects Sector 5 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT6] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT6_OFS      ( 6)                            /*!< PROT6 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT6          ((uint32_t)0x00000040)          /*!< Protects Sector 6 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT7] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT7_OFS      ( 7)                            /*!< PROT7 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT7          ((uint32_t)0x00000080)          /*!< Protects Sector 7 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT8] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT8_OFS      ( 8)                            /*!< PROT8 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT8          ((uint32_t)0x00000100)          /*!< Protects Sector 8 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT9] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT9_OFS      ( 9)                            /*!< PROT9 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT9          ((uint32_t)0x00000200)          /*!< Protects Sector 9 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT10] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT10_OFS     (10)                            /*!< PROT10 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT10         ((uint32_t)0x00000400)          /*!< Protects Sector 10 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT11] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT11_OFS     (11)                            /*!< PROT11 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT11         ((uint32_t)0x00000800)          /*!< Protects Sector 11 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT12] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT12_OFS     (12)                            /*!< PROT12 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT12         ((uint32_t)0x00001000)          /*!< Protects Sector 12 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT13] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT13_OFS     (13)                            /*!< PROT13 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT13         ((uint32_t)0x00002000)          /*!< Protects Sector 13 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT14] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT14_OFS     (14)                            /*!< PROT14 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT14         ((uint32_t)0x00004000)          /*!< Protects Sector 14 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT15] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT15_OFS     (15)                            /*!< PROT15 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT15         ((uint32_t)0x00008000)          /*!< Protects Sector 15 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT16] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT16_OFS     (16)                            /*!< PROT16 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT16         ((uint32_t)0x00010000)          /*!< Protects Sector 16 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT17] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT17_OFS     (17)                            /*!< PROT17 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT17         ((uint32_t)0x00020000)          /*!< Protects Sector 17 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT18] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT18_OFS     (18)                            /*!< PROT18 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT18         ((uint32_t)0x00040000)          /*!< Protects Sector 18 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT19] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT19_OFS     (19)                            /*!< PROT19 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT19         ((uint32_t)0x00080000)          /*!< Protects Sector 19 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT20] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT20_OFS     (20)                            /*!< PROT20 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT20         ((uint32_t)0x00100000)          /*!< Protects Sector 20 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT21] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT21_OFS     (21)                            /*!< PROT21 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT21         ((uint32_t)0x00200000)          /*!< Protects Sector 21 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT22] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT22_OFS     (22)                            /*!< PROT22 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT22         ((uint32_t)0x00400000)          /*!< Protects Sector 22 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT23] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT23_OFS     (23)                            /*!< PROT23 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT23         ((uint32_t)0x00800000)          /*!< Protects Sector 23 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT24] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT24_OFS     (24)                            /*!< PROT24 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT24         ((uint32_t)0x01000000)          /*!< Protects Sector 24 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT25] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT25_OFS     (25)                            /*!< PROT25 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT25         ((uint32_t)0x02000000)          /*!< Protects Sector 25 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT26] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT26_OFS     (26)                            /*!< PROT26 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT26         ((uint32_t)0x04000000)          /*!< Protects Sector 26 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT27] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT27_OFS     (27)                            /*!< PROT27 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT27         ((uint32_t)0x08000000)          /*!< Protects Sector 27 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT28] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT28_OFS     (28)                            /*!< PROT28 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT28         ((uint32_t)0x10000000)          /*!< Protects Sector 28 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT29] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT29_OFS     (29)                            /*!< PROT29 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT29         ((uint32_t)0x20000000)          /*!< Protects Sector 29 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT30] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT30_OFS     (30)                            /*!< PROT30 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT30         ((uint32_t)0x40000000)          /*!< Protects Sector 30 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT[PROT31] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT31_OFS     (31)                            /*!< PROT31 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT_PROT31         ((uint32_t)0x80000000)          /*!< Protects Sector 31 from program or erase */
+/* FLCTL_A_BANK1_INFO_WEPROT[PROT0] Bits */
+#define FLCTL_A_BANK1_INFO_WEPROT_PROT0_OFS      ( 0)                            /*!< PROT0 Bit Offset */
+#define FLCTL_A_BANK1_INFO_WEPROT_PROT0          ((uint32_t)0x00000001)          /*!< Protects Sector 0 from program or erase operations */
+/* FLCTL_A_BANK1_INFO_WEPROT[PROT1] Bits */
+#define FLCTL_A_BANK1_INFO_WEPROT_PROT1_OFS      ( 1)                            /*!< PROT1 Bit Offset */
+#define FLCTL_A_BANK1_INFO_WEPROT_PROT1          ((uint32_t)0x00000002)          /*!< Protects Sector 1 from program or erase operations */
+/* FLCTL_A_BANK1_INFO_WEPROT[PROT2] Bits */
+#define FLCTL_A_BANK1_INFO_WEPROT_PROT2_OFS      ( 2)                            /*!< PROT2 Bit Offset */
+#define FLCTL_A_BANK1_INFO_WEPROT_PROT2          ((uint32_t)0x00000004)          /*!< Protects Sector 2 from program or erase */
+/* FLCTL_A_BANK1_INFO_WEPROT[PROT3] Bits */
+#define FLCTL_A_BANK1_INFO_WEPROT_PROT3_OFS      ( 3)                            /*!< PROT3 Bit Offset */
+#define FLCTL_A_BANK1_INFO_WEPROT_PROT3          ((uint32_t)0x00000008)          /*!< Protects Sector 3 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT0] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT0_OFS      ( 0)                            /*!< PROT0 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT0          ((uint32_t)0x00000001)          /*!< Protects Sector 0 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT1] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT1_OFS      ( 1)                            /*!< PROT1 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT1          ((uint32_t)0x00000002)          /*!< Protects Sector 1 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT2] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT2_OFS      ( 2)                            /*!< PROT2 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT2          ((uint32_t)0x00000004)          /*!< Protects Sector 2 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT3] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT3_OFS      ( 3)                            /*!< PROT3 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT3          ((uint32_t)0x00000008)          /*!< Protects Sector 3 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT4] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT4_OFS      ( 4)                            /*!< PROT4 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT4          ((uint32_t)0x00000010)          /*!< Protects Sector 4 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT5] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT5_OFS      ( 5)                            /*!< PROT5 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT5          ((uint32_t)0x00000020)          /*!< Protects Sector 5 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT6] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT6_OFS      ( 6)                            /*!< PROT6 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT6          ((uint32_t)0x00000040)          /*!< Protects Sector 6 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT7] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT7_OFS      ( 7)                            /*!< PROT7 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT7          ((uint32_t)0x00000080)          /*!< Protects Sector 7 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT8] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT8_OFS      ( 8)                            /*!< PROT8 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT8          ((uint32_t)0x00000100)          /*!< Protects Sector 8 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT9] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT9_OFS      ( 9)                            /*!< PROT9 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT9          ((uint32_t)0x00000200)          /*!< Protects Sector 9 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT10] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT10_OFS     (10)                            /*!< PROT10 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT10         ((uint32_t)0x00000400)          /*!< Protects Sector 10 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT11] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT11_OFS     (11)                            /*!< PROT11 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT11         ((uint32_t)0x00000800)          /*!< Protects Sector 11 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT12] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT12_OFS     (12)                            /*!< PROT12 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT12         ((uint32_t)0x00001000)          /*!< Protects Sector 12 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT13] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT13_OFS     (13)                            /*!< PROT13 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT13         ((uint32_t)0x00002000)          /*!< Protects Sector 13 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT14] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT14_OFS     (14)                            /*!< PROT14 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT14         ((uint32_t)0x00004000)          /*!< Protects Sector 14 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT15] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT15_OFS     (15)                            /*!< PROT15 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT15         ((uint32_t)0x00008000)          /*!< Protects Sector 15 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT16] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT16_OFS     (16)                            /*!< PROT16 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT16         ((uint32_t)0x00010000)          /*!< Protects Sector 16 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT17] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT17_OFS     (17)                            /*!< PROT17 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT17         ((uint32_t)0x00020000)          /*!< Protects Sector 17 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT18] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT18_OFS     (18)                            /*!< PROT18 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT18         ((uint32_t)0x00040000)          /*!< Protects Sector 18 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT19] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT19_OFS     (19)                            /*!< PROT19 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT19         ((uint32_t)0x00080000)          /*!< Protects Sector 19 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT20] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT20_OFS     (20)                            /*!< PROT20 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT20         ((uint32_t)0x00100000)          /*!< Protects Sector 20 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT21] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT21_OFS     (21)                            /*!< PROT21 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT21         ((uint32_t)0x00200000)          /*!< Protects Sector 21 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT22] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT22_OFS     (22)                            /*!< PROT22 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT22         ((uint32_t)0x00400000)          /*!< Protects Sector 22 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT23] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT23_OFS     (23)                            /*!< PROT23 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT23         ((uint32_t)0x00800000)          /*!< Protects Sector 23 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT24] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT24_OFS     (24)                            /*!< PROT24 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT24         ((uint32_t)0x01000000)          /*!< Protects Sector 24 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT25] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT25_OFS     (25)                            /*!< PROT25 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT25         ((uint32_t)0x02000000)          /*!< Protects Sector 25 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT26] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT26_OFS     (26)                            /*!< PROT26 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT26         ((uint32_t)0x04000000)          /*!< Protects Sector 26 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT27] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT27_OFS     (27)                            /*!< PROT27 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT27         ((uint32_t)0x08000000)          /*!< Protects Sector 27 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT28] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT28_OFS     (28)                            /*!< PROT28 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT28         ((uint32_t)0x10000000)          /*!< Protects Sector 28 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT29] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT29_OFS     (29)                            /*!< PROT29 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT29         ((uint32_t)0x20000000)          /*!< Protects Sector 29 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT30] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT30_OFS     (30)                            /*!< PROT30 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT30         ((uint32_t)0x40000000)          /*!< Protects Sector 30 from program or erase operations */
+/* FLCTL_A_BANK1_MAIN_WEPROT[PROT31] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT31_OFS     (31)                            /*!< PROT31 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT_PROT31         ((uint32_t)0x80000000)          /*!< Protects Sector 31 from program or erase operations */
+/* FLCTL_A_BMRK_CTLSTAT[I_BMRK] Bits */
+#define FLCTL_A_BMRK_CTLSTAT_I_BMRK_OFS          ( 0)                            /*!< I_BMRK Bit Offset */
+#define FLCTL_A_BMRK_CTLSTAT_I_BMRK              ((uint32_t)0x00000001)
+/* FLCTL_A_BMRK_CTLSTAT[D_BMRK] Bits */
+#define FLCTL_A_BMRK_CTLSTAT_D_BMRK_OFS          ( 1)                            /*!< D_BMRK Bit Offset */
+#define FLCTL_A_BMRK_CTLSTAT_D_BMRK              ((uint32_t)0x00000002)
+/* FLCTL_A_BMRK_CTLSTAT[CMP_EN] Bits */
+#define FLCTL_A_BMRK_CTLSTAT_CMP_EN_OFS          ( 2)                            /*!< CMP_EN Bit Offset */
+#define FLCTL_A_BMRK_CTLSTAT_CMP_EN              ((uint32_t)0x00000004)
+/* FLCTL_A_BMRK_CTLSTAT[CMP_SEL] Bits */
+#define FLCTL_A_BMRK_CTLSTAT_CMP_SEL_OFS         ( 3)                            /*!< CMP_SEL Bit Offset */
+#define FLCTL_A_BMRK_CTLSTAT_CMP_SEL             ((uint32_t)0x00000008)
+/* FLCTL_A_IFG[RDBRST] Bits */
+#define FLCTL_A_IFG_RDBRST_OFS                   ( 0)                            /*!< RDBRST Bit Offset */
+#define FLCTL_A_IFG_RDBRST                       ((uint32_t)0x00000001)
+/* FLCTL_A_IFG[AVPRE] Bits */
+#define FLCTL_A_IFG_AVPRE_OFS                    ( 1)                            /*!< AVPRE Bit Offset */
+#define FLCTL_A_IFG_AVPRE                        ((uint32_t)0x00000002)
+/* FLCTL_A_IFG[AVPST] Bits */
+#define FLCTL_A_IFG_AVPST_OFS                    ( 2)                            /*!< AVPST Bit Offset */
+#define FLCTL_A_IFG_AVPST                        ((uint32_t)0x00000004)
+/* FLCTL_A_IFG[PRG] Bits */
+#define FLCTL_A_IFG_PRG_OFS                      ( 3)                            /*!< PRG Bit Offset */
+#define FLCTL_A_IFG_PRG                          ((uint32_t)0x00000008)
+/* FLCTL_A_IFG[PRGB] Bits */
+#define FLCTL_A_IFG_PRGB_OFS                     ( 4)                            /*!< PRGB Bit Offset */
+#define FLCTL_A_IFG_PRGB                         ((uint32_t)0x00000010)
+/* FLCTL_A_IFG[ERASE] Bits */
+#define FLCTL_A_IFG_ERASE_OFS                    ( 5)                            /*!< ERASE Bit Offset */
+#define FLCTL_A_IFG_ERASE                        ((uint32_t)0x00000020)
+/* FLCTL_A_IFG[BMRK] Bits */
+#define FLCTL_A_IFG_BMRK_OFS                     ( 8)                            /*!< BMRK Bit Offset */
+#define FLCTL_A_IFG_BMRK                         ((uint32_t)0x00000100)
+/* FLCTL_A_IFG[PRG_ERR] Bits */
+#define FLCTL_A_IFG_PRG_ERR_OFS                  ( 9)                            /*!< PRG_ERR Bit Offset */
+#define FLCTL_A_IFG_PRG_ERR                      ((uint32_t)0x00000200)
+/* FLCTL_A_IE[RDBRST] Bits */
+#define FLCTL_A_IE_RDBRST_OFS                    ( 0)                            /*!< RDBRST Bit Offset */
+#define FLCTL_A_IE_RDBRST                        ((uint32_t)0x00000001)
+/* FLCTL_A_IE[AVPRE] Bits */
+#define FLCTL_A_IE_AVPRE_OFS                     ( 1)                            /*!< AVPRE Bit Offset */
+#define FLCTL_A_IE_AVPRE                         ((uint32_t)0x00000002)
+/* FLCTL_A_IE[AVPST] Bits */
+#define FLCTL_A_IE_AVPST_OFS                     ( 2)                            /*!< AVPST Bit Offset */
+#define FLCTL_A_IE_AVPST                         ((uint32_t)0x00000004)
+/* FLCTL_A_IE[PRG] Bits */
+#define FLCTL_A_IE_PRG_OFS                       ( 3)                            /*!< PRG Bit Offset */
+#define FLCTL_A_IE_PRG                           ((uint32_t)0x00000008)
+/* FLCTL_A_IE[PRGB] Bits */
+#define FLCTL_A_IE_PRGB_OFS                      ( 4)                            /*!< PRGB Bit Offset */
+#define FLCTL_A_IE_PRGB                          ((uint32_t)0x00000010)
+/* FLCTL_A_IE[ERASE] Bits */
+#define FLCTL_A_IE_ERASE_OFS                     ( 5)                            /*!< ERASE Bit Offset */
+#define FLCTL_A_IE_ERASE                         ((uint32_t)0x00000020)
+/* FLCTL_A_IE[BMRK] Bits */
+#define FLCTL_A_IE_BMRK_OFS                      ( 8)                            /*!< BMRK Bit Offset */
+#define FLCTL_A_IE_BMRK                          ((uint32_t)0x00000100)
+/* FLCTL_A_IE[PRG_ERR] Bits */
+#define FLCTL_A_IE_PRG_ERR_OFS                   ( 9)                            /*!< PRG_ERR Bit Offset */
+#define FLCTL_A_IE_PRG_ERR                       ((uint32_t)0x00000200)
+/* FLCTL_A_CLRIFG[RDBRST] Bits */
+#define FLCTL_A_CLRIFG_RDBRST_OFS                ( 0)                            /*!< RDBRST Bit Offset */
+#define FLCTL_A_CLRIFG_RDBRST                    ((uint32_t)0x00000001)
+/* FLCTL_A_CLRIFG[AVPRE] Bits */
+#define FLCTL_A_CLRIFG_AVPRE_OFS                 ( 1)                            /*!< AVPRE Bit Offset */
+#define FLCTL_A_CLRIFG_AVPRE                     ((uint32_t)0x00000002)
+/* FLCTL_A_CLRIFG[AVPST] Bits */
+#define FLCTL_A_CLRIFG_AVPST_OFS                 ( 2)                            /*!< AVPST Bit Offset */
+#define FLCTL_A_CLRIFG_AVPST                     ((uint32_t)0x00000004)
+/* FLCTL_A_CLRIFG[PRG] Bits */
+#define FLCTL_A_CLRIFG_PRG_OFS                   ( 3)                            /*!< PRG Bit Offset */
+#define FLCTL_A_CLRIFG_PRG                       ((uint32_t)0x00000008)
+/* FLCTL_A_CLRIFG[PRGB] Bits */
+#define FLCTL_A_CLRIFG_PRGB_OFS                  ( 4)                            /*!< PRGB Bit Offset */
+#define FLCTL_A_CLRIFG_PRGB                      ((uint32_t)0x00000010)
+/* FLCTL_A_CLRIFG[ERASE] Bits */
+#define FLCTL_A_CLRIFG_ERASE_OFS                 ( 5)                            /*!< ERASE Bit Offset */
+#define FLCTL_A_CLRIFG_ERASE                     ((uint32_t)0x00000020)
+/* FLCTL_A_CLRIFG[BMRK] Bits */
+#define FLCTL_A_CLRIFG_BMRK_OFS                  ( 8)                            /*!< BMRK Bit Offset */
+#define FLCTL_A_CLRIFG_BMRK                      ((uint32_t)0x00000100)
+/* FLCTL_A_CLRIFG[PRG_ERR] Bits */
+#define FLCTL_A_CLRIFG_PRG_ERR_OFS               ( 9)                            /*!< PRG_ERR Bit Offset */
+#define FLCTL_A_CLRIFG_PRG_ERR                   ((uint32_t)0x00000200)
+/* FLCTL_A_SETIFG[RDBRST] Bits */
+#define FLCTL_A_SETIFG_RDBRST_OFS                ( 0)                            /*!< RDBRST Bit Offset */
+#define FLCTL_A_SETIFG_RDBRST                    ((uint32_t)0x00000001)
+/* FLCTL_A_SETIFG[AVPRE] Bits */
+#define FLCTL_A_SETIFG_AVPRE_OFS                 ( 1)                            /*!< AVPRE Bit Offset */
+#define FLCTL_A_SETIFG_AVPRE                     ((uint32_t)0x00000002)
+/* FLCTL_A_SETIFG[AVPST] Bits */
+#define FLCTL_A_SETIFG_AVPST_OFS                 ( 2)                            /*!< AVPST Bit Offset */
+#define FLCTL_A_SETIFG_AVPST                     ((uint32_t)0x00000004)
+/* FLCTL_A_SETIFG[PRG] Bits */
+#define FLCTL_A_SETIFG_PRG_OFS                   ( 3)                            /*!< PRG Bit Offset */
+#define FLCTL_A_SETIFG_PRG                       ((uint32_t)0x00000008)
+/* FLCTL_A_SETIFG[PRGB] Bits */
+#define FLCTL_A_SETIFG_PRGB_OFS                  ( 4)                            /*!< PRGB Bit Offset */
+#define FLCTL_A_SETIFG_PRGB                      ((uint32_t)0x00000010)
+/* FLCTL_A_SETIFG[ERASE] Bits */
+#define FLCTL_A_SETIFG_ERASE_OFS                 ( 5)                            /*!< ERASE Bit Offset */
+#define FLCTL_A_SETIFG_ERASE                     ((uint32_t)0x00000020)
+/* FLCTL_A_SETIFG[BMRK] Bits */
+#define FLCTL_A_SETIFG_BMRK_OFS                  ( 8)                            /*!< BMRK Bit Offset */
+#define FLCTL_A_SETIFG_BMRK                      ((uint32_t)0x00000100)
+/* FLCTL_A_SETIFG[PRG_ERR] Bits */
+#define FLCTL_A_SETIFG_PRG_ERR_OFS               ( 9)                            /*!< PRG_ERR Bit Offset */
+#define FLCTL_A_SETIFG_PRG_ERR                   ((uint32_t)0x00000200)
+/* FLCTL_A_READ_TIMCTL[SETUP] Bits */
+#define FLCTL_A_READ_TIMCTL_SETUP_OFS            ( 0)                            /*!< SETUP Bit Offset */
+#define FLCTL_A_READ_TIMCTL_SETUP_MASK           ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
+/* FLCTL_A_READ_TIMCTL[IREF_BOOST1] Bits */
+#define FLCTL_A_READ_TIMCTL_IREF_BOOST1_OFS      (12)                            /*!< IREF_BOOST1 Bit Offset */
+#define FLCTL_A_READ_TIMCTL_IREF_BOOST1_MASK     ((uint32_t)0x0000F000)          /*!< IREF_BOOST1 Bit Mask */
+/* FLCTL_A_READ_TIMCTL[SETUP_LONG] Bits */
+#define FLCTL_A_READ_TIMCTL_SETUP_LONG_OFS       (16)                            /*!< SETUP_LONG Bit Offset */
+#define FLCTL_A_READ_TIMCTL_SETUP_LONG_MASK      ((uint32_t)0x00FF0000)          /*!< SETUP_LONG Bit Mask */
+/* FLCTL_A_READMARGIN_TIMCTL[SETUP] Bits */
+#define FLCTL_A_READMARGIN_TIMCTL_SETUP_OFS      ( 0)                            /*!< SETUP Bit Offset */
+#define FLCTL_A_READMARGIN_TIMCTL_SETUP_MASK     ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
+/* FLCTL_A_PRGVER_TIMCTL[SETUP] Bits */
+#define FLCTL_A_PRGVER_TIMCTL_SETUP_OFS          ( 0)                            /*!< SETUP Bit Offset */
+#define FLCTL_A_PRGVER_TIMCTL_SETUP_MASK         ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
+/* FLCTL_A_PRGVER_TIMCTL[ACTIVE] Bits */
+#define FLCTL_A_PRGVER_TIMCTL_ACTIVE_OFS         ( 8)                            /*!< ACTIVE Bit Offset */
+#define FLCTL_A_PRGVER_TIMCTL_ACTIVE_MASK        ((uint32_t)0x00000F00)          /*!< ACTIVE Bit Mask */
+/* FLCTL_A_PRGVER_TIMCTL[HOLD] Bits */
+#define FLCTL_A_PRGVER_TIMCTL_HOLD_OFS           (12)                            /*!< HOLD Bit Offset */
+#define FLCTL_A_PRGVER_TIMCTL_HOLD_MASK          ((uint32_t)0x0000F000)          /*!< HOLD Bit Mask */
+/* FLCTL_A_ERSVER_TIMCTL[SETUP] Bits */
+#define FLCTL_A_ERSVER_TIMCTL_SETUP_OFS          ( 0)                            /*!< SETUP Bit Offset */
+#define FLCTL_A_ERSVER_TIMCTL_SETUP_MASK         ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
+/* FLCTL_A_LKGVER_TIMCTL[SETUP] Bits */
+#define FLCTL_A_LKGVER_TIMCTL_SETUP_OFS          ( 0)                            /*!< SETUP Bit Offset */
+#define FLCTL_A_LKGVER_TIMCTL_SETUP_MASK         ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
+/* FLCTL_A_PROGRAM_TIMCTL[SETUP] Bits */
+#define FLCTL_A_PROGRAM_TIMCTL_SETUP_OFS         ( 0)                            /*!< SETUP Bit Offset */
+#define FLCTL_A_PROGRAM_TIMCTL_SETUP_MASK        ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
+/* FLCTL_A_PROGRAM_TIMCTL[ACTIVE] Bits */
+#define FLCTL_A_PROGRAM_TIMCTL_ACTIVE_OFS        ( 8)                            /*!< ACTIVE Bit Offset */
+#define FLCTL_A_PROGRAM_TIMCTL_ACTIVE_MASK       ((uint32_t)0x0FFFFF00)          /*!< ACTIVE Bit Mask */
+/* FLCTL_A_PROGRAM_TIMCTL[HOLD] Bits */
+#define FLCTL_A_PROGRAM_TIMCTL_HOLD_OFS          (28)                            /*!< HOLD Bit Offset */
+#define FLCTL_A_PROGRAM_TIMCTL_HOLD_MASK         ((uint32_t)0xF0000000)          /*!< HOLD Bit Mask */
+/* FLCTL_A_ERASE_TIMCTL[SETUP] Bits */
+#define FLCTL_A_ERASE_TIMCTL_SETUP_OFS           ( 0)                            /*!< SETUP Bit Offset */
+#define FLCTL_A_ERASE_TIMCTL_SETUP_MASK          ((uint32_t)0x000000FF)          /*!< SETUP Bit Mask */
+/* FLCTL_A_ERASE_TIMCTL[ACTIVE] Bits */
+#define FLCTL_A_ERASE_TIMCTL_ACTIVE_OFS          ( 8)                            /*!< ACTIVE Bit Offset */
+#define FLCTL_A_ERASE_TIMCTL_ACTIVE_MASK         ((uint32_t)0x0FFFFF00)          /*!< ACTIVE Bit Mask */
+/* FLCTL_A_ERASE_TIMCTL[HOLD] Bits */
+#define FLCTL_A_ERASE_TIMCTL_HOLD_OFS            (28)                            /*!< HOLD Bit Offset */
+#define FLCTL_A_ERASE_TIMCTL_HOLD_MASK           ((uint32_t)0xF0000000)          /*!< HOLD Bit Mask */
+/* FLCTL_A_MASSERASE_TIMCTL[BOOST_ACTIVE] Bits */
+#define FLCTL_A_MASSERASE_TIMCTL_BOOST_ACTIVE_OFS ( 0)                            /*!< BOOST_ACTIVE Bit Offset */
+#define FLCTL_A_MASSERASE_TIMCTL_BOOST_ACTIVE_MASK ((uint32_t)0x000000FF)          /*!< BOOST_ACTIVE Bit Mask */
+/* FLCTL_A_MASSERASE_TIMCTL[BOOST_HOLD] Bits */
+#define FLCTL_A_MASSERASE_TIMCTL_BOOST_HOLD_OFS  ( 8)                            /*!< BOOST_HOLD Bit Offset */
+#define FLCTL_A_MASSERASE_TIMCTL_BOOST_HOLD_MASK ((uint32_t)0x0000FF00)          /*!< BOOST_HOLD Bit Mask */
+/* FLCTL_A_BURSTPRG_TIMCTL[ACTIVE] Bits */
+#define FLCTL_A_BURSTPRG_TIMCTL_ACTIVE_OFS       ( 8)                            /*!< ACTIVE Bit Offset */
+#define FLCTL_A_BURSTPRG_TIMCTL_ACTIVE_MASK      ((uint32_t)0x0FFFFF00)          /*!< ACTIVE Bit Mask */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT0] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT0_OFS     ( 0)                            /*!< PROT0 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT0         ((uint32_t)0x00000001)          /*!< Protects Sector 0 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT1] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT1_OFS     ( 1)                            /*!< PROT1 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT1         ((uint32_t)0x00000002)          /*!< Protects Sector 1 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT2] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT2_OFS     ( 2)                            /*!< PROT2 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT2         ((uint32_t)0x00000004)          /*!< Protects Sector 2 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT3] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT3_OFS     ( 3)                            /*!< PROT3 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT3         ((uint32_t)0x00000008)          /*!< Protects Sector 3 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT4] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT4_OFS     ( 4)                            /*!< PROT4 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT4         ((uint32_t)0x00000010)          /*!< Protects Sector 4 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT5] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT5_OFS     ( 5)                            /*!< PROT5 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT5         ((uint32_t)0x00000020)          /*!< Protects Sector 5 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT6] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT6_OFS     ( 6)                            /*!< PROT6 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT6         ((uint32_t)0x00000040)          /*!< Protects Sector 6 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT7] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT7_OFS     ( 7)                            /*!< PROT7 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT7         ((uint32_t)0x00000080)          /*!< Protects Sector 7 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT8] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT8_OFS     ( 8)                            /*!< PROT8 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT8         ((uint32_t)0x00000100)          /*!< Protects Sector 8 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT9] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT9_OFS     ( 9)                            /*!< PROT9 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT9         ((uint32_t)0x00000200)          /*!< Protects Sector 9 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT10] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT10_OFS    (10)                            /*!< PROT10 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT10        ((uint32_t)0x00000400)          /*!< Protects Sector 10 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT11] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT11_OFS    (11)                            /*!< PROT11 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT11        ((uint32_t)0x00000800)          /*!< Protects Sector 11 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT12] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT12_OFS    (12)                            /*!< PROT12 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT12        ((uint32_t)0x00001000)          /*!< Protects Sector 12 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT13] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT13_OFS    (13)                            /*!< PROT13 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT13        ((uint32_t)0x00002000)          /*!< Protects Sector 13 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT14] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT14_OFS    (14)                            /*!< PROT14 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT14        ((uint32_t)0x00004000)          /*!< Protects Sector 14 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT15] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT15_OFS    (15)                            /*!< PROT15 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT15        ((uint32_t)0x00008000)          /*!< Protects Sector 15 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT16] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT16_OFS    (16)                            /*!< PROT16 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT16        ((uint32_t)0x00010000)          /*!< Protects Sector 16 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT17] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT17_OFS    (17)                            /*!< PROT17 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT17        ((uint32_t)0x00020000)          /*!< Protects Sector 17 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT18] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT18_OFS    (18)                            /*!< PROT18 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT18        ((uint32_t)0x00040000)          /*!< Protects Sector 18 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT19] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT19_OFS    (19)                            /*!< PROT19 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT19        ((uint32_t)0x00080000)          /*!< Protects Sector 19 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT20] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT20_OFS    (20)                            /*!< PROT20 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT20        ((uint32_t)0x00100000)          /*!< Protects Sector 20 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT21] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT21_OFS    (21)                            /*!< PROT21 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT21        ((uint32_t)0x00200000)          /*!< Protects Sector 21 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT22] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT22_OFS    (22)                            /*!< PROT22 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT22        ((uint32_t)0x00400000)          /*!< Protects Sector 22 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT23] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT23_OFS    (23)                            /*!< PROT23 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT23        ((uint32_t)0x00800000)          /*!< Protects Sector 23 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT24] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT24_OFS    (24)                            /*!< PROT24 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT24        ((uint32_t)0x01000000)          /*!< Protects Sector 24 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT25] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT25_OFS    (25)                            /*!< PROT25 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT25        ((uint32_t)0x02000000)          /*!< Protects Sector 25 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT26] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT26_OFS    (26)                            /*!< PROT26 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT26        ((uint32_t)0x04000000)          /*!< Protects Sector 26 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT27] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT27_OFS    (27)                            /*!< PROT27 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT27        ((uint32_t)0x08000000)          /*!< Protects Sector 27 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT28] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT28_OFS    (28)                            /*!< PROT28 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT28        ((uint32_t)0x10000000)          /*!< Protects Sector 28 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT29] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT29_OFS    (29)                            /*!< PROT29 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT29        ((uint32_t)0x20000000)          /*!< Protects Sector 29 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT30] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT30_OFS    (30)                            /*!< PROT30 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT30        ((uint32_t)0x40000000)          /*!< Protects Sector 30 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT0[PROT31] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT31_OFS    (31)                            /*!< PROT31 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT0_PROT31        ((uint32_t)0x80000000)          /*!< Protects Sector 31 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT32] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT32_OFS    ( 0)                            /*!< PROT32 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT32        ((uint32_t)0x00000001)          /*!< Protects Sector 32 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT33] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT33_OFS    ( 1)                            /*!< PROT33 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT33        ((uint32_t)0x00000002)          /*!< Protects Sector 33 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT34] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT34_OFS    ( 2)                            /*!< PROT34 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT34        ((uint32_t)0x00000004)          /*!< Protects Sector 34 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT35] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT35_OFS    ( 3)                            /*!< PROT35 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT35        ((uint32_t)0x00000008)          /*!< Protects Sector 35 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT36] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT36_OFS    ( 4)                            /*!< PROT36 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT36        ((uint32_t)0x00000010)          /*!< Protects Sector 36 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT37] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT37_OFS    ( 5)                            /*!< PROT37 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT37        ((uint32_t)0x00000020)          /*!< Protects Sector 37 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT38] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT38_OFS    ( 6)                            /*!< PROT38 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT38        ((uint32_t)0x00000040)          /*!< Protects Sector 38 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT39] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT39_OFS    ( 7)                            /*!< PROT39 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT39        ((uint32_t)0x00000080)          /*!< Protects Sector 39 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT40] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT40_OFS    ( 8)                            /*!< PROT40 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT40        ((uint32_t)0x00000100)          /*!< Protects Sector 40 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT41] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT41_OFS    ( 9)                            /*!< PROT41 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT41        ((uint32_t)0x00000200)          /*!< Protects Sector 41 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT42] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT42_OFS    (10)                            /*!< PROT42 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT42        ((uint32_t)0x00000400)          /*!< Protects Sector 42 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT43] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT43_OFS    (11)                            /*!< PROT43 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT43        ((uint32_t)0x00000800)          /*!< Protects Sector 43 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT44] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT44_OFS    (12)                            /*!< PROT44 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT44        ((uint32_t)0x00001000)          /*!< Protects Sector 44 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT45] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT45_OFS    (13)                            /*!< PROT45 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT45        ((uint32_t)0x00002000)          /*!< Protects Sector 45 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT46] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT46_OFS    (14)                            /*!< PROT46 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT46        ((uint32_t)0x00004000)          /*!< Protects Sector 46 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT47] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT47_OFS    (15)                            /*!< PROT47 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT47        ((uint32_t)0x00008000)          /*!< Protects Sector 47 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT48] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT48_OFS    (16)                            /*!< PROT48 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT48        ((uint32_t)0x00010000)          /*!< Protects Sector 48 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT49] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT49_OFS    (17)                            /*!< PROT49 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT49        ((uint32_t)0x00020000)          /*!< Protects Sector 49 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT50] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT50_OFS    (18)                            /*!< PROT50 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT50        ((uint32_t)0x00040000)          /*!< Protects Sector 50 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT51] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT51_OFS    (19)                            /*!< PROT51 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT51        ((uint32_t)0x00080000)          /*!< Protects Sector 51 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT52] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT52_OFS    (20)                            /*!< PROT52 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT52        ((uint32_t)0x00100000)          /*!< Protects Sector 52 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT53] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT53_OFS    (21)                            /*!< PROT53 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT53        ((uint32_t)0x00200000)          /*!< Protects Sector 53 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT54] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT54_OFS    (22)                            /*!< PROT54 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT54        ((uint32_t)0x00400000)          /*!< Protects Sector 54 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT55] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT55_OFS    (23)                            /*!< PROT55 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT55        ((uint32_t)0x00800000)          /*!< Protects Sector 55 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT56] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT56_OFS    (24)                            /*!< PROT56 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT56        ((uint32_t)0x01000000)          /*!< Protects Sector 56 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT57] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT57_OFS    (25)                            /*!< PROT57 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT57        ((uint32_t)0x02000000)          /*!< Protects Sector 57 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT58] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT58_OFS    (26)                            /*!< PROT58 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT58        ((uint32_t)0x04000000)          /*!< Protects Sector 58 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT59] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT59_OFS    (27)                            /*!< PROT59 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT59        ((uint32_t)0x08000000)          /*!< Protects Sector 59 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT60] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT60_OFS    (28)                            /*!< PROT60 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT60        ((uint32_t)0x10000000)          /*!< Protects Sector 60 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT61] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT61_OFS    (29)                            /*!< PROT61 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT61        ((uint32_t)0x20000000)          /*!< Protects Sector 61 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT62] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT62_OFS    (30)                            /*!< PROT62 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT62        ((uint32_t)0x40000000)          /*!< Protects Sector 62 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT1[PROT63] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT63_OFS    (31)                            /*!< PROT63 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT1_PROT63        ((uint32_t)0x80000000)          /*!< Protects Sector 63 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT64] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT64_OFS    ( 0)                            /*!< PROT64 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT64        ((uint32_t)0x00000001)          /*!< Protects Sector 64 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT65] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT65_OFS    ( 1)                            /*!< PROT65 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT65        ((uint32_t)0x00000002)          /*!< Protects Sector 65 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT66] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT66_OFS    ( 2)                            /*!< PROT66 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT66        ((uint32_t)0x00000004)          /*!< Protects Sector 66 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT67] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT67_OFS    ( 3)                            /*!< PROT67 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT67        ((uint32_t)0x00000008)          /*!< Protects Sector 67 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT68] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT68_OFS    ( 4)                            /*!< PROT68 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT68        ((uint32_t)0x00000010)          /*!< Protects Sector 68 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT69] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT69_OFS    ( 5)                            /*!< PROT69 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT69        ((uint32_t)0x00000020)          /*!< Protects Sector 69 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT70] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT70_OFS    ( 6)                            /*!< PROT70 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT70        ((uint32_t)0x00000040)          /*!< Protects Sector 70 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT71] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT71_OFS    ( 7)                            /*!< PROT71 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT71        ((uint32_t)0x00000080)          /*!< Protects Sector 71 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT72] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT72_OFS    ( 8)                            /*!< PROT72 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT72        ((uint32_t)0x00000100)          /*!< Protects Sector 72 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT73] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT73_OFS    ( 9)                            /*!< PROT73 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT73        ((uint32_t)0x00000200)          /*!< Protects Sector 73 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT74] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT74_OFS    (10)                            /*!< PROT74 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT74        ((uint32_t)0x00000400)          /*!< Protects Sector 74 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT75] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT75_OFS    (11)                            /*!< PROT75 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT75        ((uint32_t)0x00000800)          /*!< Protects Sector 75 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT76] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT76_OFS    (12)                            /*!< PROT76 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT76        ((uint32_t)0x00001000)          /*!< Protects Sector 76 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT77] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT77_OFS    (13)                            /*!< PROT77 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT77        ((uint32_t)0x00002000)          /*!< Protects Sector 77 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT78] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT78_OFS    (14)                            /*!< PROT78 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT78        ((uint32_t)0x00004000)          /*!< Protects Sector 78 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT79] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT79_OFS    (15)                            /*!< PROT79 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT79        ((uint32_t)0x00008000)          /*!< Protects Sector 79 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT80] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT80_OFS    (16)                            /*!< PROT80 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT80        ((uint32_t)0x00010000)          /*!< Protects Sector 80 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT81] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT81_OFS    (17)                            /*!< PROT81 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT81        ((uint32_t)0x00020000)          /*!< Protects Sector 81 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT82] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT82_OFS    (18)                            /*!< PROT82 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT82        ((uint32_t)0x00040000)          /*!< Protects Sector 82 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT83] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT83_OFS    (19)                            /*!< PROT83 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT83        ((uint32_t)0x00080000)          /*!< Protects Sector 83 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT84] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT84_OFS    (20)                            /*!< PROT84 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT84        ((uint32_t)0x00100000)          /*!< Protects Sector 84 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT85] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT85_OFS    (21)                            /*!< PROT85 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT85        ((uint32_t)0x00200000)          /*!< Protects Sector 85 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT86] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT86_OFS    (22)                            /*!< PROT86 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT86        ((uint32_t)0x00400000)          /*!< Protects Sector 86 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT87] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT87_OFS    (23)                            /*!< PROT87 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT87        ((uint32_t)0x00800000)          /*!< Protects Sector 87 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT88] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT88_OFS    (24)                            /*!< PROT88 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT88        ((uint32_t)0x01000000)          /*!< Protects Sector 88 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT89] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT89_OFS    (25)                            /*!< PROT89 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT89        ((uint32_t)0x02000000)          /*!< Protects Sector 89 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT90] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT90_OFS    (26)                            /*!< PROT90 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT90        ((uint32_t)0x04000000)          /*!< Protects Sector 90 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT91] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT91_OFS    (27)                            /*!< PROT91 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT91        ((uint32_t)0x08000000)          /*!< Protects Sector 91 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT92] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT92_OFS    (28)                            /*!< PROT92 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT92        ((uint32_t)0x10000000)          /*!< Protects Sector 92 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT93] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT93_OFS    (29)                            /*!< PROT93 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT93        ((uint32_t)0x20000000)          /*!< Protects Sector 93 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT94] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT94_OFS    (30)                            /*!< PROT94 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT94        ((uint32_t)0x40000000)          /*!< Protects Sector 94 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT2[PROT95] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT95_OFS    (31)                            /*!< PROT95 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT2_PROT95        ((uint32_t)0x80000000)          /*!< Protects Sector 95 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT96] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT96_OFS    ( 0)                            /*!< PROT96 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT96        ((uint32_t)0x00000001)          /*!< Protects Sector 96 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT97] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT97_OFS    ( 1)                            /*!< PROT97 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT97        ((uint32_t)0x00000002)          /*!< Protects Sector 97 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT98] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT98_OFS    ( 2)                            /*!< PROT98 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT98        ((uint32_t)0x00000004)          /*!< Protects Sector 98 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT99] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT99_OFS    ( 3)                            /*!< PROT99 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT99        ((uint32_t)0x00000008)          /*!< Protects Sector 99 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT100] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT100_OFS   ( 4)                            /*!< PROT100 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT100       ((uint32_t)0x00000010)          /*!< Protects Sector 100 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT101] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT101_OFS   ( 5)                            /*!< PROT101 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT101       ((uint32_t)0x00000020)          /*!< Protects Sector 101 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT102] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT102_OFS   ( 6)                            /*!< PROT102 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT102       ((uint32_t)0x00000040)          /*!< Protects Sector 102 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT103] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT103_OFS   ( 7)                            /*!< PROT103 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT103       ((uint32_t)0x00000080)          /*!< Protects Sector 103 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT104] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT104_OFS   ( 8)                            /*!< PROT104 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT104       ((uint32_t)0x00000100)          /*!< Protects Sector 104 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT105] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT105_OFS   ( 9)                            /*!< PROT105 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT105       ((uint32_t)0x00000200)          /*!< Protects Sector 105 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT106] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT106_OFS   (10)                            /*!< PROT106 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT106       ((uint32_t)0x00000400)          /*!< Protects Sector 106 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT107] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT107_OFS   (11)                            /*!< PROT107 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT107       ((uint32_t)0x00000800)          /*!< Protects Sector 107 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT108] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT108_OFS   (12)                            /*!< PROT108 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT108       ((uint32_t)0x00001000)          /*!< Protects Sector 108 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT109] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT109_OFS   (13)                            /*!< PROT109 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT109       ((uint32_t)0x00002000)          /*!< Protects Sector 109 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT110] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT110_OFS   (14)                            /*!< PROT110 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT110       ((uint32_t)0x00004000)          /*!< Protects Sector 110 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT111] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT111_OFS   (15)                            /*!< PROT111 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT111       ((uint32_t)0x00008000)          /*!< Protects Sector 111 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT112] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT112_OFS   (16)                            /*!< PROT112 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT112       ((uint32_t)0x00010000)          /*!< Protects Sector 112 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT113] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT113_OFS   (17)                            /*!< PROT113 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT113       ((uint32_t)0x00020000)          /*!< Protects Sector 113 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT114] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT114_OFS   (18)                            /*!< PROT114 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT114       ((uint32_t)0x00040000)          /*!< Protects Sector 114 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT115] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT115_OFS   (19)                            /*!< PROT115 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT115       ((uint32_t)0x00080000)          /*!< Protects Sector 115 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT116] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT116_OFS   (20)                            /*!< PROT116 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT116       ((uint32_t)0x00100000)          /*!< Protects Sector 116 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT117] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT117_OFS   (21)                            /*!< PROT117 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT117       ((uint32_t)0x00200000)          /*!< Protects Sector 117 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT118] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT118_OFS   (22)                            /*!< PROT118 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT118       ((uint32_t)0x00400000)          /*!< Protects Sector 118 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT119] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT119_OFS   (23)                            /*!< PROT119 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT119       ((uint32_t)0x00800000)          /*!< Protects Sector 119 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT120] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT120_OFS   (24)                            /*!< PROT120 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT120       ((uint32_t)0x01000000)          /*!< Protects Sector 120 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT121] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT121_OFS   (25)                            /*!< PROT121 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT121       ((uint32_t)0x02000000)          /*!< Protects Sector 121 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT122] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT122_OFS   (26)                            /*!< PROT122 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT122       ((uint32_t)0x04000000)          /*!< Protects Sector 122 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT123] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT123_OFS   (27)                            /*!< PROT123 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT123       ((uint32_t)0x08000000)          /*!< Protects Sector 123 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT124] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT124_OFS   (28)                            /*!< PROT124 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT124       ((uint32_t)0x10000000)          /*!< Protects Sector 124 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT125] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT125_OFS   (29)                            /*!< PROT125 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT125       ((uint32_t)0x20000000)          /*!< Protects Sector 125 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT126] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT126_OFS   (30)                            /*!< PROT126 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT126       ((uint32_t)0x40000000)          /*!< Protects Sector 126 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT3[PROT127] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT127_OFS   (31)                            /*!< PROT127 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT3_PROT127       ((uint32_t)0x80000000)          /*!< Protects Sector 127 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT128] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT128_OFS   ( 0)                            /*!< PROT128 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT128       ((uint32_t)0x00000001)          /*!< Protects Sector 128 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT129] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT129_OFS   ( 1)                            /*!< PROT129 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT129       ((uint32_t)0x00000002)          /*!< Protects Sector 129 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT130] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT130_OFS   ( 2)                            /*!< PROT130 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT130       ((uint32_t)0x00000004)          /*!< Protects Sector 130 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT131] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT131_OFS   ( 3)                            /*!< PROT131 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT131       ((uint32_t)0x00000008)          /*!< Protects Sector 131 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT132] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT132_OFS   ( 4)                            /*!< PROT132 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT132       ((uint32_t)0x00000010)          /*!< Protects Sector 132 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT133] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT133_OFS   ( 5)                            /*!< PROT133 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT133       ((uint32_t)0x00000020)          /*!< Protects Sector 133 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT134] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT134_OFS   ( 6)                            /*!< PROT134 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT134       ((uint32_t)0x00000040)          /*!< Protects Sector 134 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT135] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT135_OFS   ( 7)                            /*!< PROT135 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT135       ((uint32_t)0x00000080)          /*!< Protects Sector 135 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT136] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT136_OFS   ( 8)                            /*!< PROT136 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT136       ((uint32_t)0x00000100)          /*!< Protects Sector 136 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT137] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT137_OFS   ( 9)                            /*!< PROT137 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT137       ((uint32_t)0x00000200)          /*!< Protects Sector 137 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT138] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT138_OFS   (10)                            /*!< PROT138 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT138       ((uint32_t)0x00000400)          /*!< Protects Sector 138 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT139] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT139_OFS   (11)                            /*!< PROT139 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT139       ((uint32_t)0x00000800)          /*!< Protects Sector 139 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT140] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT140_OFS   (12)                            /*!< PROT140 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT140       ((uint32_t)0x00001000)          /*!< Protects Sector 140 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT141] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT141_OFS   (13)                            /*!< PROT141 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT141       ((uint32_t)0x00002000)          /*!< Protects Sector 141 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT142] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT142_OFS   (14)                            /*!< PROT142 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT142       ((uint32_t)0x00004000)          /*!< Protects Sector 142 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT143] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT143_OFS   (15)                            /*!< PROT143 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT143       ((uint32_t)0x00008000)          /*!< Protects Sector 143 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT144] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT144_OFS   (16)                            /*!< PROT144 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT144       ((uint32_t)0x00010000)          /*!< Protects Sector 144 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT145] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT145_OFS   (17)                            /*!< PROT145 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT145       ((uint32_t)0x00020000)          /*!< Protects Sector 145 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT146] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT146_OFS   (18)                            /*!< PROT146 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT146       ((uint32_t)0x00040000)          /*!< Protects Sector 146 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT147] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT147_OFS   (19)                            /*!< PROT147 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT147       ((uint32_t)0x00080000)          /*!< Protects Sector 147 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT148] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT148_OFS   (20)                            /*!< PROT148 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT148       ((uint32_t)0x00100000)          /*!< Protects Sector 148 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT149] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT149_OFS   (21)                            /*!< PROT149 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT149       ((uint32_t)0x00200000)          /*!< Protects Sector 149 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT150] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT150_OFS   (22)                            /*!< PROT150 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT150       ((uint32_t)0x00400000)          /*!< Protects Sector 150 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT151] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT151_OFS   (23)                            /*!< PROT151 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT151       ((uint32_t)0x00800000)          /*!< Protects Sector 151 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT152] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT152_OFS   (24)                            /*!< PROT152 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT152       ((uint32_t)0x01000000)          /*!< Protects Sector 152 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT153] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT153_OFS   (25)                            /*!< PROT153 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT153       ((uint32_t)0x02000000)          /*!< Protects Sector 153 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT154] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT154_OFS   (26)                            /*!< PROT154 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT154       ((uint32_t)0x04000000)          /*!< Protects Sector 154 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT155] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT155_OFS   (27)                            /*!< PROT155 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT155       ((uint32_t)0x08000000)          /*!< Protects Sector 155 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT156] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT156_OFS   (28)                            /*!< PROT156 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT156       ((uint32_t)0x10000000)          /*!< Protects Sector 156 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT157] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT157_OFS   (29)                            /*!< PROT157 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT157       ((uint32_t)0x20000000)          /*!< Protects Sector 157 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT158] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT158_OFS   (30)                            /*!< PROT158 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT158       ((uint32_t)0x40000000)          /*!< Protects Sector 158 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT4[PROT159] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT159_OFS   (31)                            /*!< PROT159 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT4_PROT159       ((uint32_t)0x80000000)          /*!< Protects Sector 159 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT160] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT160_OFS   ( 0)                            /*!< PROT160 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT160       ((uint32_t)0x00000001)          /*!< Protects Sector 160 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT161] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT161_OFS   ( 1)                            /*!< PROT161 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT161       ((uint32_t)0x00000002)          /*!< Protects Sector 161 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT162] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT162_OFS   ( 2)                            /*!< PROT162 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT162       ((uint32_t)0x00000004)          /*!< Protects Sector 162 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT163] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT163_OFS   ( 3)                            /*!< PROT163 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT163       ((uint32_t)0x00000008)          /*!< Protects Sector 163 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT164] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT164_OFS   ( 4)                            /*!< PROT164 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT164       ((uint32_t)0x00000010)          /*!< Protects Sector 164 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT165] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT165_OFS   ( 5)                            /*!< PROT165 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT165       ((uint32_t)0x00000020)          /*!< Protects Sector 165 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT166] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT166_OFS   ( 6)                            /*!< PROT166 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT166       ((uint32_t)0x00000040)          /*!< Protects Sector 166 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT167] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT167_OFS   ( 7)                            /*!< PROT167 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT167       ((uint32_t)0x00000080)          /*!< Protects Sector 167 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT168] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT168_OFS   ( 8)                            /*!< PROT168 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT168       ((uint32_t)0x00000100)          /*!< Protects Sector 168 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT169] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT169_OFS   ( 9)                            /*!< PROT169 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT169       ((uint32_t)0x00000200)          /*!< Protects Sector 169 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT170] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT170_OFS   (10)                            /*!< PROT170 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT170       ((uint32_t)0x00000400)          /*!< Protects Sector 170 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT171] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT171_OFS   (11)                            /*!< PROT171 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT171       ((uint32_t)0x00000800)          /*!< Protects Sector 171 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT172] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT172_OFS   (12)                            /*!< PROT172 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT172       ((uint32_t)0x00001000)          /*!< Protects Sector 172 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT173] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT173_OFS   (13)                            /*!< PROT173 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT173       ((uint32_t)0x00002000)          /*!< Protects Sector 173 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT174] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT174_OFS   (14)                            /*!< PROT174 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT174       ((uint32_t)0x00004000)          /*!< Protects Sector 174 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT175] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT175_OFS   (15)                            /*!< PROT175 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT175       ((uint32_t)0x00008000)          /*!< Protects Sector 175 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT176] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT176_OFS   (16)                            /*!< PROT176 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT176       ((uint32_t)0x00010000)          /*!< Protects Sector 176 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT177] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT177_OFS   (17)                            /*!< PROT177 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT177       ((uint32_t)0x00020000)          /*!< Protects Sector 177 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT178] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT178_OFS   (18)                            /*!< PROT178 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT178       ((uint32_t)0x00040000)          /*!< Protects Sector 178 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT179] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT179_OFS   (19)                            /*!< PROT179 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT179       ((uint32_t)0x00080000)          /*!< Protects Sector 179 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT180] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT180_OFS   (20)                            /*!< PROT180 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT180       ((uint32_t)0x00100000)          /*!< Protects Sector 180 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT181] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT181_OFS   (21)                            /*!< PROT181 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT181       ((uint32_t)0x00200000)          /*!< Protects Sector 181 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT182] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT182_OFS   (22)                            /*!< PROT182 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT182       ((uint32_t)0x00400000)          /*!< Protects Sector 182 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT183] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT183_OFS   (23)                            /*!< PROT183 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT183       ((uint32_t)0x00800000)          /*!< Protects Sector 183 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT184] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT184_OFS   (24)                            /*!< PROT184 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT184       ((uint32_t)0x01000000)          /*!< Protects Sector 184 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT185] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT185_OFS   (25)                            /*!< PROT185 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT185       ((uint32_t)0x02000000)          /*!< Protects Sector 185 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT186] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT186_OFS   (26)                            /*!< PROT186 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT186       ((uint32_t)0x04000000)          /*!< Protects Sector 186 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT187] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT187_OFS   (27)                            /*!< PROT187 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT187       ((uint32_t)0x08000000)          /*!< Protects Sector 187 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT188] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT188_OFS   (28)                            /*!< PROT188 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT188       ((uint32_t)0x10000000)          /*!< Protects Sector 188 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT189] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT189_OFS   (29)                            /*!< PROT189 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT189       ((uint32_t)0x20000000)          /*!< Protects Sector 189 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT190] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT190_OFS   (30)                            /*!< PROT190 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT190       ((uint32_t)0x40000000)          /*!< Protects Sector 190 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT5[PROT191] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT191_OFS   (31)                            /*!< PROT191 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT5_PROT191       ((uint32_t)0x80000000)          /*!< Protects Sector 191 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT192] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT192_OFS   ( 0)                            /*!< PROT192 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT192       ((uint32_t)0x00000001)          /*!< Protects Sector 192 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT193] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT193_OFS   ( 1)                            /*!< PROT193 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT193       ((uint32_t)0x00000002)          /*!< Protects Sector 193 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT194] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT194_OFS   ( 2)                            /*!< PROT194 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT194       ((uint32_t)0x00000004)          /*!< Protects Sector 194 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT195] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT195_OFS   ( 3)                            /*!< PROT195 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT195       ((uint32_t)0x00000008)          /*!< Protects Sector 195 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT196] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT196_OFS   ( 4)                            /*!< PROT196 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT196       ((uint32_t)0x00000010)          /*!< Protects Sector 196 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT197] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT197_OFS   ( 5)                            /*!< PROT197 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT197       ((uint32_t)0x00000020)          /*!< Protects Sector 197 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT198] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT198_OFS   ( 6)                            /*!< PROT198 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT198       ((uint32_t)0x00000040)          /*!< Protects Sector 198 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT199] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT199_OFS   ( 7)                            /*!< PROT199 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT199       ((uint32_t)0x00000080)          /*!< Protects Sector 199 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT200] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT200_OFS   ( 8)                            /*!< PROT200 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT200       ((uint32_t)0x00000100)          /*!< Protects Sector 200 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT201] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT201_OFS   ( 9)                            /*!< PROT201 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT201       ((uint32_t)0x00000200)          /*!< Protects Sector 201 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT202] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT202_OFS   (10)                            /*!< PROT202 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT202       ((uint32_t)0x00000400)          /*!< Protects Sector 202 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT203] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT203_OFS   (11)                            /*!< PROT203 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT203       ((uint32_t)0x00000800)          /*!< Protects Sector 203 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT204] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT204_OFS   (12)                            /*!< PROT204 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT204       ((uint32_t)0x00001000)          /*!< Protects Sector 204 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT205] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT205_OFS   (13)                            /*!< PROT205 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT205       ((uint32_t)0x00002000)          /*!< Protects Sector 205 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT206] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT206_OFS   (14)                            /*!< PROT206 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT206       ((uint32_t)0x00004000)          /*!< Protects Sector 206 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT207] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT207_OFS   (15)                            /*!< PROT207 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT207       ((uint32_t)0x00008000)          /*!< Protects Sector 207 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT208] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT208_OFS   (16)                            /*!< PROT208 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT208       ((uint32_t)0x00010000)          /*!< Protects Sector 208 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT209] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT209_OFS   (17)                            /*!< PROT209 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT209       ((uint32_t)0x00020000)          /*!< Protects Sector 209 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT210] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT210_OFS   (18)                            /*!< PROT210 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT210       ((uint32_t)0x00040000)          /*!< Protects Sector 210 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT211] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT211_OFS   (19)                            /*!< PROT211 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT211       ((uint32_t)0x00080000)          /*!< Protects Sector 211 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT212] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT212_OFS   (20)                            /*!< PROT212 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT212       ((uint32_t)0x00100000)          /*!< Protects Sector 212 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT213] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT213_OFS   (21)                            /*!< PROT213 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT213       ((uint32_t)0x00200000)          /*!< Protects Sector 213 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT214] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT214_OFS   (22)                            /*!< PROT214 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT214       ((uint32_t)0x00400000)          /*!< Protects Sector 214 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT215] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT215_OFS   (23)                            /*!< PROT215 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT215       ((uint32_t)0x00800000)          /*!< Protects Sector 215 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT216] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT216_OFS   (24)                            /*!< PROT216 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT216       ((uint32_t)0x01000000)          /*!< Protects Sector 216 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT217] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT217_OFS   (25)                            /*!< PROT217 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT217       ((uint32_t)0x02000000)          /*!< Protects Sector 217 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT218] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT218_OFS   (26)                            /*!< PROT218 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT218       ((uint32_t)0x04000000)          /*!< Protects Sector 218 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT219] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT219_OFS   (27)                            /*!< PROT219 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT219       ((uint32_t)0x08000000)          /*!< Protects Sector 219 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT220] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT220_OFS   (28)                            /*!< PROT220 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT220       ((uint32_t)0x10000000)          /*!< Protects Sector 220 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT221] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT221_OFS   (29)                            /*!< PROT221 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT221       ((uint32_t)0x20000000)          /*!< Protects Sector 221 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT222] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT222_OFS   (30)                            /*!< PROT222 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT222       ((uint32_t)0x40000000)          /*!< Protects Sector 222 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT6[PROT223] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT223_OFS   (31)                            /*!< PROT223 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT6_PROT223       ((uint32_t)0x80000000)          /*!< Protects Sector 223 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT224] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT224_OFS   ( 0)                            /*!< PROT224 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT224       ((uint32_t)0x00000001)          /*!< Protects Sector 224 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT225] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT225_OFS   ( 1)                            /*!< PROT225 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT225       ((uint32_t)0x00000002)          /*!< Protects Sector 225 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT226] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT226_OFS   ( 2)                            /*!< PROT226 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT226       ((uint32_t)0x00000004)          /*!< Protects Sector 226 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT227] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT227_OFS   ( 3)                            /*!< PROT227 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT227       ((uint32_t)0x00000008)          /*!< Protects Sector 227 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT228] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT228_OFS   ( 4)                            /*!< PROT228 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT228       ((uint32_t)0x00000010)          /*!< Protects Sector 228 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT229] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT229_OFS   ( 5)                            /*!< PROT229 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT229       ((uint32_t)0x00000020)          /*!< Protects Sector 229 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT230] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT230_OFS   ( 6)                            /*!< PROT230 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT230       ((uint32_t)0x00000040)          /*!< Protects Sector 230 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT231] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT231_OFS   ( 7)                            /*!< PROT231 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT231       ((uint32_t)0x00000080)          /*!< Protects Sector 231 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT232] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT232_OFS   ( 8)                            /*!< PROT232 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT232       ((uint32_t)0x00000100)          /*!< Protects Sector 232 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT233] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT233_OFS   ( 9)                            /*!< PROT233 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT233       ((uint32_t)0x00000200)          /*!< Protects Sector 233 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT234] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT234_OFS   (10)                            /*!< PROT234 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT234       ((uint32_t)0x00000400)          /*!< Protects Sector 234 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT235] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT235_OFS   (11)                            /*!< PROT235 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT235       ((uint32_t)0x00000800)          /*!< Protects Sector 235 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT236] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT236_OFS   (12)                            /*!< PROT236 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT236       ((uint32_t)0x00001000)          /*!< Protects Sector 236 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT237] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT237_OFS   (13)                            /*!< PROT237 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT237       ((uint32_t)0x00002000)          /*!< Protects Sector 237 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT238] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT238_OFS   (14)                            /*!< PROT238 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT238       ((uint32_t)0x00004000)          /*!< Protects Sector 238 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT239] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT239_OFS   (15)                            /*!< PROT239 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT239       ((uint32_t)0x00008000)          /*!< Protects Sector 239 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT240] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT240_OFS   (16)                            /*!< PROT240 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT240       ((uint32_t)0x00010000)          /*!< Protects Sector 240 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT241] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT241_OFS   (17)                            /*!< PROT241 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT241       ((uint32_t)0x00020000)          /*!< Protects Sector 241 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT242] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT242_OFS   (18)                            /*!< PROT242 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT242       ((uint32_t)0x00040000)          /*!< Protects Sector 242 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT243] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT243_OFS   (19)                            /*!< PROT243 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT243       ((uint32_t)0x00080000)          /*!< Protects Sector 243 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT244] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT244_OFS   (20)                            /*!< PROT244 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT244       ((uint32_t)0x00100000)          /*!< Protects Sector 244 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT245] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT245_OFS   (21)                            /*!< PROT245 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT245       ((uint32_t)0x00200000)          /*!< Protects Sector 245 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT246] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT246_OFS   (22)                            /*!< PROT246 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT246       ((uint32_t)0x00400000)          /*!< Protects Sector 246 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT247] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT247_OFS   (23)                            /*!< PROT247 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT247       ((uint32_t)0x00800000)          /*!< Protects Sector 247 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT248] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT248_OFS   (24)                            /*!< PROT248 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT248       ((uint32_t)0x01000000)          /*!< Protects Sector 248 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT249] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT249_OFS   (25)                            /*!< PROT249 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT249       ((uint32_t)0x02000000)          /*!< Protects Sector 249 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT250] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT250_OFS   (26)                            /*!< PROT250 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT250       ((uint32_t)0x04000000)          /*!< Protects Sector 250 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT251] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT251_OFS   (27)                            /*!< PROT251 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT251       ((uint32_t)0x08000000)          /*!< Protects Sector 251 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT252] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT252_OFS   (28)                            /*!< PROT252 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT252       ((uint32_t)0x10000000)          /*!< Protects Sector 252 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT253] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT253_OFS   (29)                            /*!< PROT253 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT253       ((uint32_t)0x20000000)          /*!< Protects Sector 253 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT254] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT254_OFS   (30)                            /*!< PROT254 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT254       ((uint32_t)0x40000000)          /*!< Protects Sector 254 from program or erase */
+/* FLCTL_A_BANK0_MAIN_WEPROT7[PROT255] Bits */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT255_OFS   (31)                            /*!< PROT255 Bit Offset */
+#define FLCTL_A_BANK0_MAIN_WEPROT7_PROT255       ((uint32_t)0x80000000)          /*!< Protects Sector 255 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT0] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT0_OFS     ( 0)                            /*!< PROT0 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT0         ((uint32_t)0x00000001)          /*!< Protects Sector 0 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT1] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT1_OFS     ( 1)                            /*!< PROT1 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT1         ((uint32_t)0x00000002)          /*!< Protects Sector 1 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT2] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT2_OFS     ( 2)                            /*!< PROT2 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT2         ((uint32_t)0x00000004)          /*!< Protects Sector 2 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT3] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT3_OFS     ( 3)                            /*!< PROT3 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT3         ((uint32_t)0x00000008)          /*!< Protects Sector 3 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT4] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT4_OFS     ( 4)                            /*!< PROT4 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT4         ((uint32_t)0x00000010)          /*!< Protects Sector 4 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT5] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT5_OFS     ( 5)                            /*!< PROT5 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT5         ((uint32_t)0x00000020)          /*!< Protects Sector 5 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT6] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT6_OFS     ( 6)                            /*!< PROT6 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT6         ((uint32_t)0x00000040)          /*!< Protects Sector 6 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT7] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT7_OFS     ( 7)                            /*!< PROT7 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT7         ((uint32_t)0x00000080)          /*!< Protects Sector 7 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT8] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT8_OFS     ( 8)                            /*!< PROT8 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT8         ((uint32_t)0x00000100)          /*!< Protects Sector 8 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT9] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT9_OFS     ( 9)                            /*!< PROT9 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT9         ((uint32_t)0x00000200)          /*!< Protects Sector 9 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT10] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT10_OFS    (10)                            /*!< PROT10 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT10        ((uint32_t)0x00000400)          /*!< Protects Sector 10 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT11] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT11_OFS    (11)                            /*!< PROT11 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT11        ((uint32_t)0x00000800)          /*!< Protects Sector 11 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT12] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT12_OFS    (12)                            /*!< PROT12 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT12        ((uint32_t)0x00001000)          /*!< Protects Sector 12 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT13] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT13_OFS    (13)                            /*!< PROT13 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT13        ((uint32_t)0x00002000)          /*!< Protects Sector 13 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT14] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT14_OFS    (14)                            /*!< PROT14 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT14        ((uint32_t)0x00004000)          /*!< Protects Sector 14 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT15] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT15_OFS    (15)                            /*!< PROT15 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT15        ((uint32_t)0x00008000)          /*!< Protects Sector 15 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT16] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT16_OFS    (16)                            /*!< PROT16 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT16        ((uint32_t)0x00010000)          /*!< Protects Sector 16 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT17] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT17_OFS    (17)                            /*!< PROT17 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT17        ((uint32_t)0x00020000)          /*!< Protects Sector 17 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT18] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT18_OFS    (18)                            /*!< PROT18 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT18        ((uint32_t)0x00040000)          /*!< Protects Sector 18 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT19] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT19_OFS    (19)                            /*!< PROT19 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT19        ((uint32_t)0x00080000)          /*!< Protects Sector 19 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT20] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT20_OFS    (20)                            /*!< PROT20 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT20        ((uint32_t)0x00100000)          /*!< Protects Sector 20 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT21] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT21_OFS    (21)                            /*!< PROT21 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT21        ((uint32_t)0x00200000)          /*!< Protects Sector 21 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT22] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT22_OFS    (22)                            /*!< PROT22 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT22        ((uint32_t)0x00400000)          /*!< Protects Sector 22 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT23] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT23_OFS    (23)                            /*!< PROT23 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT23        ((uint32_t)0x00800000)          /*!< Protects Sector 23 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT24] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT24_OFS    (24)                            /*!< PROT24 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT24        ((uint32_t)0x01000000)          /*!< Protects Sector 24 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT25] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT25_OFS    (25)                            /*!< PROT25 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT25        ((uint32_t)0x02000000)          /*!< Protects Sector 25 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT26] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT26_OFS    (26)                            /*!< PROT26 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT26        ((uint32_t)0x04000000)          /*!< Protects Sector 26 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT27] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT27_OFS    (27)                            /*!< PROT27 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT27        ((uint32_t)0x08000000)          /*!< Protects Sector 27 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT28] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT28_OFS    (28)                            /*!< PROT28 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT28        ((uint32_t)0x10000000)          /*!< Protects Sector 28 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT29] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT29_OFS    (29)                            /*!< PROT29 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT29        ((uint32_t)0x20000000)          /*!< Protects Sector 29 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT30] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT30_OFS    (30)                            /*!< PROT30 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT30        ((uint32_t)0x40000000)          /*!< Protects Sector 30 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT0[PROT31] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT31_OFS    (31)                            /*!< PROT31 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT0_PROT31        ((uint32_t)0x80000000)          /*!< Protects Sector 31 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT32] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT32_OFS    ( 0)                            /*!< PROT32 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT32        ((uint32_t)0x00000001)          /*!< Protects Sector 32 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT33] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT33_OFS    ( 1)                            /*!< PROT33 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT33        ((uint32_t)0x00000002)          /*!< Protects Sector 33 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT34] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT34_OFS    ( 2)                            /*!< PROT34 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT34        ((uint32_t)0x00000004)          /*!< Protects Sector 34 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT35] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT35_OFS    ( 3)                            /*!< PROT35 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT35        ((uint32_t)0x00000008)          /*!< Protects Sector 35 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT36] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT36_OFS    ( 4)                            /*!< PROT36 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT36        ((uint32_t)0x00000010)          /*!< Protects Sector 36 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT37] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT37_OFS    ( 5)                            /*!< PROT37 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT37        ((uint32_t)0x00000020)          /*!< Protects Sector 37 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT38] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT38_OFS    ( 6)                            /*!< PROT38 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT38        ((uint32_t)0x00000040)          /*!< Protects Sector 38 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT39] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT39_OFS    ( 7)                            /*!< PROT39 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT39        ((uint32_t)0x00000080)          /*!< Protects Sector 39 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT40] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT40_OFS    ( 8)                            /*!< PROT40 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT40        ((uint32_t)0x00000100)          /*!< Protects Sector 40 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT41] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT41_OFS    ( 9)                            /*!< PROT41 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT41        ((uint32_t)0x00000200)          /*!< Protects Sector 41 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT42] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT42_OFS    (10)                            /*!< PROT42 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT42        ((uint32_t)0x00000400)          /*!< Protects Sector 42 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT43] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT43_OFS    (11)                            /*!< PROT43 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT43        ((uint32_t)0x00000800)          /*!< Protects Sector 43 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT44] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT44_OFS    (12)                            /*!< PROT44 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT44        ((uint32_t)0x00001000)          /*!< Protects Sector 44 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT45] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT45_OFS    (13)                            /*!< PROT45 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT45        ((uint32_t)0x00002000)          /*!< Protects Sector 45 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT46] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT46_OFS    (14)                            /*!< PROT46 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT46        ((uint32_t)0x00004000)          /*!< Protects Sector 46 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT47] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT47_OFS    (15)                            /*!< PROT47 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT47        ((uint32_t)0x00008000)          /*!< Protects Sector 47 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT48] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT48_OFS    (16)                            /*!< PROT48 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT48        ((uint32_t)0x00010000)          /*!< Protects Sector 48 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT49] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT49_OFS    (17)                            /*!< PROT49 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT49        ((uint32_t)0x00020000)          /*!< Protects Sector 49 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT50] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT50_OFS    (18)                            /*!< PROT50 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT50        ((uint32_t)0x00040000)          /*!< Protects Sector 50 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT51] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT51_OFS    (19)                            /*!< PROT51 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT51        ((uint32_t)0x00080000)          /*!< Protects Sector 51 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT52] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT52_OFS    (20)                            /*!< PROT52 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT52        ((uint32_t)0x00100000)          /*!< Protects Sector 52 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT53] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT53_OFS    (21)                            /*!< PROT53 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT53        ((uint32_t)0x00200000)          /*!< Protects Sector 53 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT54] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT54_OFS    (22)                            /*!< PROT54 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT54        ((uint32_t)0x00400000)          /*!< Protects Sector 54 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT55] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT55_OFS    (23)                            /*!< PROT55 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT55        ((uint32_t)0x00800000)          /*!< Protects Sector 55 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT56] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT56_OFS    (24)                            /*!< PROT56 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT56        ((uint32_t)0x01000000)          /*!< Protects Sector 56 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT57] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT57_OFS    (25)                            /*!< PROT57 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT57        ((uint32_t)0x02000000)          /*!< Protects Sector 57 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT58] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT58_OFS    (26)                            /*!< PROT58 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT58        ((uint32_t)0x04000000)          /*!< Protects Sector 58 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT59] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT59_OFS    (27)                            /*!< PROT59 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT59        ((uint32_t)0x08000000)          /*!< Protects Sector 59 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT60] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT60_OFS    (28)                            /*!< PROT60 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT60        ((uint32_t)0x10000000)          /*!< Protects Sector 60 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT61] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT61_OFS    (29)                            /*!< PROT61 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT61        ((uint32_t)0x20000000)          /*!< Protects Sector 61 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT62] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT62_OFS    (30)                            /*!< PROT62 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT62        ((uint32_t)0x40000000)          /*!< Protects Sector 62 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT1[PROT63] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT63_OFS    (31)                            /*!< PROT63 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT1_PROT63        ((uint32_t)0x80000000)          /*!< Protects Sector 63 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT64] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT64_OFS    ( 0)                            /*!< PROT64 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT64        ((uint32_t)0x00000001)          /*!< Protects Sector 64 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT65] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT65_OFS    ( 1)                            /*!< PROT65 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT65        ((uint32_t)0x00000002)          /*!< Protects Sector 65 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT66] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT66_OFS    ( 2)                            /*!< PROT66 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT66        ((uint32_t)0x00000004)          /*!< Protects Sector 66 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT67] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT67_OFS    ( 3)                            /*!< PROT67 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT67        ((uint32_t)0x00000008)          /*!< Protects Sector 67 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT68] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT68_OFS    ( 4)                            /*!< PROT68 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT68        ((uint32_t)0x00000010)          /*!< Protects Sector 68 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT69] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT69_OFS    ( 5)                            /*!< PROT69 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT69        ((uint32_t)0x00000020)          /*!< Protects Sector 69 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT70] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT70_OFS    ( 6)                            /*!< PROT70 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT70        ((uint32_t)0x00000040)          /*!< Protects Sector 70 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT71] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT71_OFS    ( 7)                            /*!< PROT71 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT71        ((uint32_t)0x00000080)          /*!< Protects Sector 71 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT72] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT72_OFS    ( 8)                            /*!< PROT72 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT72        ((uint32_t)0x00000100)          /*!< Protects Sector 72 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT73] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT73_OFS    ( 9)                            /*!< PROT73 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT73        ((uint32_t)0x00000200)          /*!< Protects Sector 73 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT74] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT74_OFS    (10)                            /*!< PROT74 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT74        ((uint32_t)0x00000400)          /*!< Protects Sector 74 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT75] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT75_OFS    (11)                            /*!< PROT75 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT75        ((uint32_t)0x00000800)          /*!< Protects Sector 75 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT76] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT76_OFS    (12)                            /*!< PROT76 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT76        ((uint32_t)0x00001000)          /*!< Protects Sector 76 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT77] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT77_OFS    (13)                            /*!< PROT77 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT77        ((uint32_t)0x00002000)          /*!< Protects Sector 77 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT78] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT78_OFS    (14)                            /*!< PROT78 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT78        ((uint32_t)0x00004000)          /*!< Protects Sector 78 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT79] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT79_OFS    (15)                            /*!< PROT79 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT79        ((uint32_t)0x00008000)          /*!< Protects Sector 79 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT80] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT80_OFS    (16)                            /*!< PROT80 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT80        ((uint32_t)0x00010000)          /*!< Protects Sector 80 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT81] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT81_OFS    (17)                            /*!< PROT81 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT81        ((uint32_t)0x00020000)          /*!< Protects Sector 81 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT82] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT82_OFS    (18)                            /*!< PROT82 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT82        ((uint32_t)0x00040000)          /*!< Protects Sector 82 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT83] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT83_OFS    (19)                            /*!< PROT83 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT83        ((uint32_t)0x00080000)          /*!< Protects Sector 83 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT84] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT84_OFS    (20)                            /*!< PROT84 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT84        ((uint32_t)0x00100000)          /*!< Protects Sector 84 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT85] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT85_OFS    (21)                            /*!< PROT85 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT85        ((uint32_t)0x00200000)          /*!< Protects Sector 85 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT86] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT86_OFS    (22)                            /*!< PROT86 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT86        ((uint32_t)0x00400000)          /*!< Protects Sector 86 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT87] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT87_OFS    (23)                            /*!< PROT87 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT87        ((uint32_t)0x00800000)          /*!< Protects Sector 87 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT88] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT88_OFS    (24)                            /*!< PROT88 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT88        ((uint32_t)0x01000000)          /*!< Protects Sector 88 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT89] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT89_OFS    (25)                            /*!< PROT89 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT89        ((uint32_t)0x02000000)          /*!< Protects Sector 89 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT90] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT90_OFS    (26)                            /*!< PROT90 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT90        ((uint32_t)0x04000000)          /*!< Protects Sector 90 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT91] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT91_OFS    (27)                            /*!< PROT91 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT91        ((uint32_t)0x08000000)          /*!< Protects Sector 91 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT92] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT92_OFS    (28)                            /*!< PROT92 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT92        ((uint32_t)0x10000000)          /*!< Protects Sector 92 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT93] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT93_OFS    (29)                            /*!< PROT93 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT93        ((uint32_t)0x20000000)          /*!< Protects Sector 93 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT94] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT94_OFS    (30)                            /*!< PROT94 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT94        ((uint32_t)0x40000000)          /*!< Protects Sector 94 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT2[PROT95] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT95_OFS    (31)                            /*!< PROT95 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT2_PROT95        ((uint32_t)0x80000000)          /*!< Protects Sector 95 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT96] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT96_OFS    ( 0)                            /*!< PROT96 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT96        ((uint32_t)0x00000001)          /*!< Protects Sector 96 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT97] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT97_OFS    ( 1)                            /*!< PROT97 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT97        ((uint32_t)0x00000002)          /*!< Protects Sector 97 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT98] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT98_OFS    ( 2)                            /*!< PROT98 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT98        ((uint32_t)0x00000004)          /*!< Protects Sector 98 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT99] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT99_OFS    ( 3)                            /*!< PROT99 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT99        ((uint32_t)0x00000008)          /*!< Protects Sector 99 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT100] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT100_OFS   ( 4)                            /*!< PROT100 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT100       ((uint32_t)0x00000010)          /*!< Protects Sector 100 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT101] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT101_OFS   ( 5)                            /*!< PROT101 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT101       ((uint32_t)0x00000020)          /*!< Protects Sector 101 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT102] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT102_OFS   ( 6)                            /*!< PROT102 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT102       ((uint32_t)0x00000040)          /*!< Protects Sector 102 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT103] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT103_OFS   ( 7)                            /*!< PROT103 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT103       ((uint32_t)0x00000080)          /*!< Protects Sector 103 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT104] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT104_OFS   ( 8)                            /*!< PROT104 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT104       ((uint32_t)0x00000100)          /*!< Protects Sector 104 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT105] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT105_OFS   ( 9)                            /*!< PROT105 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT105       ((uint32_t)0x00000200)          /*!< Protects Sector 105 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT106] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT106_OFS   (10)                            /*!< PROT106 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT106       ((uint32_t)0x00000400)          /*!< Protects Sector 106 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT107] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT107_OFS   (11)                            /*!< PROT107 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT107       ((uint32_t)0x00000800)          /*!< Protects Sector 107 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT108] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT108_OFS   (12)                            /*!< PROT108 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT108       ((uint32_t)0x00001000)          /*!< Protects Sector 108 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT109] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT109_OFS   (13)                            /*!< PROT109 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT109       ((uint32_t)0x00002000)          /*!< Protects Sector 109 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT110] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT110_OFS   (14)                            /*!< PROT110 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT110       ((uint32_t)0x00004000)          /*!< Protects Sector 110 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT111] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT111_OFS   (15)                            /*!< PROT111 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT111       ((uint32_t)0x00008000)          /*!< Protects Sector 111 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT112] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT112_OFS   (16)                            /*!< PROT112 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT112       ((uint32_t)0x00010000)          /*!< Protects Sector 112 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT113] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT113_OFS   (17)                            /*!< PROT113 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT113       ((uint32_t)0x00020000)          /*!< Protects Sector 113 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT114] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT114_OFS   (18)                            /*!< PROT114 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT114       ((uint32_t)0x00040000)          /*!< Protects Sector 114 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT115] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT115_OFS   (19)                            /*!< PROT115 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT115       ((uint32_t)0x00080000)          /*!< Protects Sector 115 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT116] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT116_OFS   (20)                            /*!< PROT116 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT116       ((uint32_t)0x00100000)          /*!< Protects Sector 116 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT117] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT117_OFS   (21)                            /*!< PROT117 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT117       ((uint32_t)0x00200000)          /*!< Protects Sector 117 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT118] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT118_OFS   (22)                            /*!< PROT118 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT118       ((uint32_t)0x00400000)          /*!< Protects Sector 118 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT119] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT119_OFS   (23)                            /*!< PROT119 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT119       ((uint32_t)0x00800000)          /*!< Protects Sector 119 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT120] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT120_OFS   (24)                            /*!< PROT120 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT120       ((uint32_t)0x01000000)          /*!< Protects Sector 120 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT121] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT121_OFS   (25)                            /*!< PROT121 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT121       ((uint32_t)0x02000000)          /*!< Protects Sector 121 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT122] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT122_OFS   (26)                            /*!< PROT122 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT122       ((uint32_t)0x04000000)          /*!< Protects Sector 122 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT123] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT123_OFS   (27)                            /*!< PROT123 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT123       ((uint32_t)0x08000000)          /*!< Protects Sector 123 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT124] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT124_OFS   (28)                            /*!< PROT124 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT124       ((uint32_t)0x10000000)          /*!< Protects Sector 124 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT125] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT125_OFS   (29)                            /*!< PROT125 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT125       ((uint32_t)0x20000000)          /*!< Protects Sector 125 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT126] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT126_OFS   (30)                            /*!< PROT126 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT126       ((uint32_t)0x40000000)          /*!< Protects Sector 126 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT3[PROT127] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT127_OFS   (31)                            /*!< PROT127 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT3_PROT127       ((uint32_t)0x80000000)          /*!< Protects Sector 127 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT128] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT128_OFS   ( 0)                            /*!< PROT128 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT128       ((uint32_t)0x00000001)          /*!< Protects Sector 128 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT129] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT129_OFS   ( 1)                            /*!< PROT129 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT129       ((uint32_t)0x00000002)          /*!< Protects Sector 129 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT130] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT130_OFS   ( 2)                            /*!< PROT130 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT130       ((uint32_t)0x00000004)          /*!< Protects Sector 130 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT131] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT131_OFS   ( 3)                            /*!< PROT131 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT131       ((uint32_t)0x00000008)          /*!< Protects Sector 131 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT132] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT132_OFS   ( 4)                            /*!< PROT132 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT132       ((uint32_t)0x00000010)          /*!< Protects Sector 132 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT133] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT133_OFS   ( 5)                            /*!< PROT133 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT133       ((uint32_t)0x00000020)          /*!< Protects Sector 133 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT134] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT134_OFS   ( 6)                            /*!< PROT134 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT134       ((uint32_t)0x00000040)          /*!< Protects Sector 134 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT135] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT135_OFS   ( 7)                            /*!< PROT135 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT135       ((uint32_t)0x00000080)          /*!< Protects Sector 135 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT136] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT136_OFS   ( 8)                            /*!< PROT136 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT136       ((uint32_t)0x00000100)          /*!< Protects Sector 136 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT137] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT137_OFS   ( 9)                            /*!< PROT137 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT137       ((uint32_t)0x00000200)          /*!< Protects Sector 137 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT138] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT138_OFS   (10)                            /*!< PROT138 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT138       ((uint32_t)0x00000400)          /*!< Protects Sector 138 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT139] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT139_OFS   (11)                            /*!< PROT139 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT139       ((uint32_t)0x00000800)          /*!< Protects Sector 139 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT140] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT140_OFS   (12)                            /*!< PROT140 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT140       ((uint32_t)0x00001000)          /*!< Protects Sector 140 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT141] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT141_OFS   (13)                            /*!< PROT141 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT141       ((uint32_t)0x00002000)          /*!< Protects Sector 141 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT142] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT142_OFS   (14)                            /*!< PROT142 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT142       ((uint32_t)0x00004000)          /*!< Protects Sector 142 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT143] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT143_OFS   (15)                            /*!< PROT143 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT143       ((uint32_t)0x00008000)          /*!< Protects Sector 143 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT144] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT144_OFS   (16)                            /*!< PROT144 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT144       ((uint32_t)0x00010000)          /*!< Protects Sector 144 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT145] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT145_OFS   (17)                            /*!< PROT145 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT145       ((uint32_t)0x00020000)          /*!< Protects Sector 145 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT146] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT146_OFS   (18)                            /*!< PROT146 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT146       ((uint32_t)0x00040000)          /*!< Protects Sector 146 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT147] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT147_OFS   (19)                            /*!< PROT147 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT147       ((uint32_t)0x00080000)          /*!< Protects Sector 147 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT148] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT148_OFS   (20)                            /*!< PROT148 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT148       ((uint32_t)0x00100000)          /*!< Protects Sector 148 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT149] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT149_OFS   (21)                            /*!< PROT149 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT149       ((uint32_t)0x00200000)          /*!< Protects Sector 149 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT150] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT150_OFS   (22)                            /*!< PROT150 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT150       ((uint32_t)0x00400000)          /*!< Protects Sector 150 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT151] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT151_OFS   (23)                            /*!< PROT151 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT151       ((uint32_t)0x00800000)          /*!< Protects Sector 151 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT152] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT152_OFS   (24)                            /*!< PROT152 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT152       ((uint32_t)0x01000000)          /*!< Protects Sector 152 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT153] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT153_OFS   (25)                            /*!< PROT153 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT153       ((uint32_t)0x02000000)          /*!< Protects Sector 153 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT154] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT154_OFS   (26)                            /*!< PROT154 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT154       ((uint32_t)0x04000000)          /*!< Protects Sector 154 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT155] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT155_OFS   (27)                            /*!< PROT155 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT155       ((uint32_t)0x08000000)          /*!< Protects Sector 155 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT156] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT156_OFS   (28)                            /*!< PROT156 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT156       ((uint32_t)0x10000000)          /*!< Protects Sector 156 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT157] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT157_OFS   (29)                            /*!< PROT157 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT157       ((uint32_t)0x20000000)          /*!< Protects Sector 157 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT158] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT158_OFS   (30)                            /*!< PROT158 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT158       ((uint32_t)0x40000000)          /*!< Protects Sector 158 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT4[PROT159] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT159_OFS   (31)                            /*!< PROT159 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT4_PROT159       ((uint32_t)0x80000000)          /*!< Protects Sector 159 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT160] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT160_OFS   ( 0)                            /*!< PROT160 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT160       ((uint32_t)0x00000001)          /*!< Protects Sector 160 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT161] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT161_OFS   ( 1)                            /*!< PROT161 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT161       ((uint32_t)0x00000002)          /*!< Protects Sector 161 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT162] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT162_OFS   ( 2)                            /*!< PROT162 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT162       ((uint32_t)0x00000004)          /*!< Protects Sector 162 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT163] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT163_OFS   ( 3)                            /*!< PROT163 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT163       ((uint32_t)0x00000008)          /*!< Protects Sector 163 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT164] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT164_OFS   ( 4)                            /*!< PROT164 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT164       ((uint32_t)0x00000010)          /*!< Protects Sector 164 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT165] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT165_OFS   ( 5)                            /*!< PROT165 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT165       ((uint32_t)0x00000020)          /*!< Protects Sector 165 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT166] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT166_OFS   ( 6)                            /*!< PROT166 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT166       ((uint32_t)0x00000040)          /*!< Protects Sector 166 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT167] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT167_OFS   ( 7)                            /*!< PROT167 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT167       ((uint32_t)0x00000080)          /*!< Protects Sector 167 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT168] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT168_OFS   ( 8)                            /*!< PROT168 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT168       ((uint32_t)0x00000100)          /*!< Protects Sector 168 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT169] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT169_OFS   ( 9)                            /*!< PROT169 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT169       ((uint32_t)0x00000200)          /*!< Protects Sector 169 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT170] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT170_OFS   (10)                            /*!< PROT170 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT170       ((uint32_t)0x00000400)          /*!< Protects Sector 170 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT171] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT171_OFS   (11)                            /*!< PROT171 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT171       ((uint32_t)0x00000800)          /*!< Protects Sector 171 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT172] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT172_OFS   (12)                            /*!< PROT172 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT172       ((uint32_t)0x00001000)          /*!< Protects Sector 172 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT173] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT173_OFS   (13)                            /*!< PROT173 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT173       ((uint32_t)0x00002000)          /*!< Protects Sector 173 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT174] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT174_OFS   (14)                            /*!< PROT174 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT174       ((uint32_t)0x00004000)          /*!< Protects Sector 174 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT175] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT175_OFS   (15)                            /*!< PROT175 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT175       ((uint32_t)0x00008000)          /*!< Protects Sector 175 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT176] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT176_OFS   (16)                            /*!< PROT176 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT176       ((uint32_t)0x00010000)          /*!< Protects Sector 176 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT177] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT177_OFS   (17)                            /*!< PROT177 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT177       ((uint32_t)0x00020000)          /*!< Protects Sector 177 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT178] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT178_OFS   (18)                            /*!< PROT178 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT178       ((uint32_t)0x00040000)          /*!< Protects Sector 178 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT179] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT179_OFS   (19)                            /*!< PROT179 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT179       ((uint32_t)0x00080000)          /*!< Protects Sector 179 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT180] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT180_OFS   (20)                            /*!< PROT180 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT180       ((uint32_t)0x00100000)          /*!< Protects Sector 180 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT181] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT181_OFS   (21)                            /*!< PROT181 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT181       ((uint32_t)0x00200000)          /*!< Protects Sector 181 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT182] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT182_OFS   (22)                            /*!< PROT182 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT182       ((uint32_t)0x00400000)          /*!< Protects Sector 182 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT183] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT183_OFS   (23)                            /*!< PROT183 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT183       ((uint32_t)0x00800000)          /*!< Protects Sector 183 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT184] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT184_OFS   (24)                            /*!< PROT184 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT184       ((uint32_t)0x01000000)          /*!< Protects Sector 184 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT185] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT185_OFS   (25)                            /*!< PROT185 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT185       ((uint32_t)0x02000000)          /*!< Protects Sector 185 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT186] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT186_OFS   (26)                            /*!< PROT186 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT186       ((uint32_t)0x04000000)          /*!< Protects Sector 186 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT187] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT187_OFS   (27)                            /*!< PROT187 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT187       ((uint32_t)0x08000000)          /*!< Protects Sector 187 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT188] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT188_OFS   (28)                            /*!< PROT188 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT188       ((uint32_t)0x10000000)          /*!< Protects Sector 188 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT189] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT189_OFS   (29)                            /*!< PROT189 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT189       ((uint32_t)0x20000000)          /*!< Protects Sector 189 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT190] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT190_OFS   (30)                            /*!< PROT190 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT190       ((uint32_t)0x40000000)          /*!< Protects Sector 190 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT5[PROT191] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT191_OFS   (31)                            /*!< PROT191 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT5_PROT191       ((uint32_t)0x80000000)          /*!< Protects Sector 191 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT192] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT192_OFS   ( 0)                            /*!< PROT192 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT192       ((uint32_t)0x00000001)          /*!< Protects Sector 192 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT193] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT193_OFS   ( 1)                            /*!< PROT193 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT193       ((uint32_t)0x00000002)          /*!< Protects Sector 193 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT194] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT194_OFS   ( 2)                            /*!< PROT194 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT194       ((uint32_t)0x00000004)          /*!< Protects Sector 194 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT195] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT195_OFS   ( 3)                            /*!< PROT195 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT195       ((uint32_t)0x00000008)          /*!< Protects Sector 195 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT196] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT196_OFS   ( 4)                            /*!< PROT196 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT196       ((uint32_t)0x00000010)          /*!< Protects Sector 196 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT197] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT197_OFS   ( 5)                            /*!< PROT197 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT197       ((uint32_t)0x00000020)          /*!< Protects Sector 197 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT198] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT198_OFS   ( 6)                            /*!< PROT198 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT198       ((uint32_t)0x00000040)          /*!< Protects Sector 198 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT199] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT199_OFS   ( 7)                            /*!< PROT199 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT199       ((uint32_t)0x00000080)          /*!< Protects Sector 199 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT200] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT200_OFS   ( 8)                            /*!< PROT200 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT200       ((uint32_t)0x00000100)          /*!< Protects Sector 200 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT201] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT201_OFS   ( 9)                            /*!< PROT201 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT201       ((uint32_t)0x00000200)          /*!< Protects Sector 201 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT202] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT202_OFS   (10)                            /*!< PROT202 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT202       ((uint32_t)0x00000400)          /*!< Protects Sector 202 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT203] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT203_OFS   (11)                            /*!< PROT203 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT203       ((uint32_t)0x00000800)          /*!< Protects Sector 203 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT204] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT204_OFS   (12)                            /*!< PROT204 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT204       ((uint32_t)0x00001000)          /*!< Protects Sector 204 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT205] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT205_OFS   (13)                            /*!< PROT205 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT205       ((uint32_t)0x00002000)          /*!< Protects Sector 205 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT206] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT206_OFS   (14)                            /*!< PROT206 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT206       ((uint32_t)0x00004000)          /*!< Protects Sector 206 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT207] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT207_OFS   (15)                            /*!< PROT207 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT207       ((uint32_t)0x00008000)          /*!< Protects Sector 207 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT208] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT208_OFS   (16)                            /*!< PROT208 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT208       ((uint32_t)0x00010000)          /*!< Protects Sector 208 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT209] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT209_OFS   (17)                            /*!< PROT209 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT209       ((uint32_t)0x00020000)          /*!< Protects Sector 209 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT210] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT210_OFS   (18)                            /*!< PROT210 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT210       ((uint32_t)0x00040000)          /*!< Protects Sector 210 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT211] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT211_OFS   (19)                            /*!< PROT211 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT211       ((uint32_t)0x00080000)          /*!< Protects Sector 211 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT212] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT212_OFS   (20)                            /*!< PROT212 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT212       ((uint32_t)0x00100000)          /*!< Protects Sector 212 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT213] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT213_OFS   (21)                            /*!< PROT213 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT213       ((uint32_t)0x00200000)          /*!< Protects Sector 213 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT214] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT214_OFS   (22)                            /*!< PROT214 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT214       ((uint32_t)0x00400000)          /*!< Protects Sector 214 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT215] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT215_OFS   (23)                            /*!< PROT215 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT215       ((uint32_t)0x00800000)          /*!< Protects Sector 215 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT216] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT216_OFS   (24)                            /*!< PROT216 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT216       ((uint32_t)0x01000000)          /*!< Protects Sector 216 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT217] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT217_OFS   (25)                            /*!< PROT217 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT217       ((uint32_t)0x02000000)          /*!< Protects Sector 217 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT218] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT218_OFS   (26)                            /*!< PROT218 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT218       ((uint32_t)0x04000000)          /*!< Protects Sector 218 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT219] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT219_OFS   (27)                            /*!< PROT219 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT219       ((uint32_t)0x08000000)          /*!< Protects Sector 219 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT220] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT220_OFS   (28)                            /*!< PROT220 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT220       ((uint32_t)0x10000000)          /*!< Protects Sector 220 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT221] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT221_OFS   (29)                            /*!< PROT221 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT221       ((uint32_t)0x20000000)          /*!< Protects Sector 221 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT222] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT222_OFS   (30)                            /*!< PROT222 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT222       ((uint32_t)0x40000000)          /*!< Protects Sector 222 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT6[PROT223] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT223_OFS   (31)                            /*!< PROT223 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT6_PROT223       ((uint32_t)0x80000000)          /*!< Protects Sector 223 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT224] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT224_OFS   ( 0)                            /*!< PROT224 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT224       ((uint32_t)0x00000001)          /*!< Protects Sector 224 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT225] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT225_OFS   ( 1)                            /*!< PROT225 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT225       ((uint32_t)0x00000002)          /*!< Protects Sector 225 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT226] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT226_OFS   ( 2)                            /*!< PROT226 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT226       ((uint32_t)0x00000004)          /*!< Protects Sector 226 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT227] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT227_OFS   ( 3)                            /*!< PROT227 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT227       ((uint32_t)0x00000008)          /*!< Protects Sector 227 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT228] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT228_OFS   ( 4)                            /*!< PROT228 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT228       ((uint32_t)0x00000010)          /*!< Protects Sector 228 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT229] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT229_OFS   ( 5)                            /*!< PROT229 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT229       ((uint32_t)0x00000020)          /*!< Protects Sector 229 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT230] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT230_OFS   ( 6)                            /*!< PROT230 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT230       ((uint32_t)0x00000040)          /*!< Protects Sector 230 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT231] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT231_OFS   ( 7)                            /*!< PROT231 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT231       ((uint32_t)0x00000080)          /*!< Protects Sector 231 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT232] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT232_OFS   ( 8)                            /*!< PROT232 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT232       ((uint32_t)0x00000100)          /*!< Protects Sector 232 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT233] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT233_OFS   ( 9)                            /*!< PROT233 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT233       ((uint32_t)0x00000200)          /*!< Protects Sector 233 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT234] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT234_OFS   (10)                            /*!< PROT234 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT234       ((uint32_t)0x00000400)          /*!< Protects Sector 234 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT235] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT235_OFS   (11)                            /*!< PROT235 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT235       ((uint32_t)0x00000800)          /*!< Protects Sector 235 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT236] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT236_OFS   (12)                            /*!< PROT236 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT236       ((uint32_t)0x00001000)          /*!< Protects Sector 236 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT237] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT237_OFS   (13)                            /*!< PROT237 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT237       ((uint32_t)0x00002000)          /*!< Protects Sector 237 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT238] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT238_OFS   (14)                            /*!< PROT238 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT238       ((uint32_t)0x00004000)          /*!< Protects Sector 238 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT239] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT239_OFS   (15)                            /*!< PROT239 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT239       ((uint32_t)0x00008000)          /*!< Protects Sector 239 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT240] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT240_OFS   (16)                            /*!< PROT240 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT240       ((uint32_t)0x00010000)          /*!< Protects Sector 240 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT241] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT241_OFS   (17)                            /*!< PROT241 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT241       ((uint32_t)0x00020000)          /*!< Protects Sector 241 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT242] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT242_OFS   (18)                            /*!< PROT242 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT242       ((uint32_t)0x00040000)          /*!< Protects Sector 242 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT243] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT243_OFS   (19)                            /*!< PROT243 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT243       ((uint32_t)0x00080000)          /*!< Protects Sector 243 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT244] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT244_OFS   (20)                            /*!< PROT244 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT244       ((uint32_t)0x00100000)          /*!< Protects Sector 244 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT245] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT245_OFS   (21)                            /*!< PROT245 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT245       ((uint32_t)0x00200000)          /*!< Protects Sector 245 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT246] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT246_OFS   (22)                            /*!< PROT246 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT246       ((uint32_t)0x00400000)          /*!< Protects Sector 246 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT247] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT247_OFS   (23)                            /*!< PROT247 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT247       ((uint32_t)0x00800000)          /*!< Protects Sector 247 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT248] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT248_OFS   (24)                            /*!< PROT248 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT248       ((uint32_t)0x01000000)          /*!< Protects Sector 248 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT249] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT249_OFS   (25)                            /*!< PROT249 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT249       ((uint32_t)0x02000000)          /*!< Protects Sector 249 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT250] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT250_OFS   (26)                            /*!< PROT250 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT250       ((uint32_t)0x04000000)          /*!< Protects Sector 250 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT251] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT251_OFS   (27)                            /*!< PROT251 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT251       ((uint32_t)0x08000000)          /*!< Protects Sector 251 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT252] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT252_OFS   (28)                            /*!< PROT252 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT252       ((uint32_t)0x10000000)          /*!< Protects Sector 252 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT253] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT253_OFS   (29)                            /*!< PROT253 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT253       ((uint32_t)0x20000000)          /*!< Protects Sector 253 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT254] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT254_OFS   (30)                            /*!< PROT254 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT254       ((uint32_t)0x40000000)          /*!< Protects Sector 254 from program or erase */
+/* FLCTL_A_BANK1_MAIN_WEPROT7[PROT255] Bits */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT255_OFS   (31)                            /*!< PROT255 Bit Offset */
+#define FLCTL_A_BANK1_MAIN_WEPROT7_PROT255       ((uint32_t)0x80000000)          /*!< Protects Sector 255 from program or erase */
 
 /******************************************************************************
 * FL_BOOTOVER_MAILBOX Bits
@@ -4727,6 +6243,648 @@ typedef struct {
 * ITM Bits
 ******************************************************************************/
 
+
+/******************************************************************************
+* LCD_F Bits
+******************************************************************************/
+/* LCD_F_CTL[ON] Bits */
+#define LCD_F_CTL_ON_OFS                         ( 0)                            /*!< LCDON Bit Offset */
+#define LCD_F_CTL_ON                             ((uint32_t)0x00000001)          /*!< LCD on */
+/* LCD_F_CTL[LP] Bits */
+#define LCD_F_CTL_LP_OFS                         ( 1)                            /*!< LCDLP Bit Offset */
+#define LCD_F_CTL_LP                             ((uint32_t)0x00000002)          /*!< LCD Low-power Waveform */
+/* LCD_F_CTL[SON] Bits */
+#define LCD_F_CTL_SON_OFS                        ( 2)                            /*!< LCDSON Bit Offset */
+#define LCD_F_CTL_SON                            ((uint32_t)0x00000004)          /*!< LCD segments on */
+/* LCD_F_CTL[MX] Bits */
+#define LCD_F_CTL_MX_OFS                         ( 3)                            /*!< LCDMXx Bit Offset */
+#define LCD_F_CTL_MX_MASK                        ((uint32_t)0x00000038)          /*!< LCDMXx Bit Mask */
+#define LCD_F_CTL_MX0                            ((uint32_t)0x00000008)          /*!< MX Bit 0 */
+#define LCD_F_CTL_MX1                            ((uint32_t)0x00000010)          /*!< MX Bit 1 */
+#define LCD_F_CTL_MX2                            ((uint32_t)0x00000020)          /*!< MX Bit 2 */
+#define LCD_F_CTL_MX_0                           ((uint32_t)0x00000000)          /*!< Static */
+#define LCD_F_CTL_MX_1                           ((uint32_t)0x00000008)          /*!< 2-mux */
+#define LCD_F_CTL_MX_2                           ((uint32_t)0x00000010)          /*!< 3-mux */
+#define LCD_F_CTL_MX_3                           ((uint32_t)0x00000018)          /*!< 4-mux */
+#define LCD_F_CTL_MX_4                           ((uint32_t)0x00000020)          /*!< 5-mux */
+#define LCD_F_CTL_MX_5                           ((uint32_t)0x00000028)          /*!< 6-mux */
+#define LCD_F_CTL_MX_6                           ((uint32_t)0x00000030)          /*!< 7-mux */
+#define LCD_F_CTL_MX_7                           ((uint32_t)0x00000038)          /*!< 8-mux */
+/* LCD_F_CTL[PRE] Bits */
+#define LCD_F_CTL_PRE_OFS                        ( 8)                            /*!< LCDPREx Bit Offset */
+#define LCD_F_CTL_PRE_MASK                       ((uint32_t)0x00000700)          /*!< LCDPREx Bit Mask */
+#define LCD_F_CTL_PRE0                           ((uint32_t)0x00000100)          /*!< PRE Bit 0 */
+#define LCD_F_CTL_PRE1                           ((uint32_t)0x00000200)          /*!< PRE Bit 1 */
+#define LCD_F_CTL_PRE2                           ((uint32_t)0x00000400)          /*!< PRE Bit 2 */
+#define LCD_F_CTL_PRE_0                          ((uint32_t)0x00000000)          /*!< Divide by 1 */
+#define LCD_F_CTL_PRE_1                          ((uint32_t)0x00000100)          /*!< Divide by 2 */
+#define LCD_F_CTL_PRE_2                          ((uint32_t)0x00000200)          /*!< Divide by 4 */
+#define LCD_F_CTL_PRE_3                          ((uint32_t)0x00000300)          /*!< Divide by 8 */
+#define LCD_F_CTL_PRE_4                          ((uint32_t)0x00000400)          /*!< Divide by 16 */
+#define LCD_F_CTL_PRE_5                          ((uint32_t)0x00000500)          /*!< Divide by 32 */
+#define LCD_F_CTL_PRE_6                          ((uint32_t)0x00000600)          /*!< Reserved (defaults to divide by 32) */
+#define LCD_F_CTL_PRE_7                          ((uint32_t)0x00000700)          /*!< Reserved (defaults to divide by 32) */
+/* LCD_F_CTL[DIV] Bits */
+#define LCD_F_CTL_DIV_OFS                        (11)                            /*!< LCDDIVx Bit Offset */
+#define LCD_F_CTL_DIV_MASK                       ((uint32_t)0x0000F800)          /*!< LCDDIVx Bit Mask */
+#define LCD_F_CTL_DIV0                           ((uint32_t)0x00000800)          /*!< DIV Bit 0 */
+#define LCD_F_CTL_DIV1                           ((uint32_t)0x00001000)          /*!< DIV Bit 1 */
+#define LCD_F_CTL_DIV2                           ((uint32_t)0x00002000)          /*!< DIV Bit 2 */
+#define LCD_F_CTL_DIV3                           ((uint32_t)0x00004000)          /*!< DIV Bit 3 */
+#define LCD_F_CTL_DIV4                           ((uint32_t)0x00008000)          /*!< DIV Bit 4 */
+#define LCD_F_CTL_DIV_0                          ((uint32_t)0x00000000)          /*!< Divide by 1 */
+#define LCD_F_CTL_DIV_1                          ((uint32_t)0x00000800)          /*!< Divide by 2 */
+#define LCD_F_CTL_DIV_2                          ((uint32_t)0x00001000)          /*!< Divide by 3 */
+#define LCD_F_CTL_DIV_3                          ((uint32_t)0x00001800)          /*!< Divide by 4 */
+#define LCD_F_CTL_DIV_4                          ((uint32_t)0x00002000)          /*!< Divide by 5 */
+#define LCD_F_CTL_DIV_5                          ((uint32_t)0x00002800)          /*!< Divide by 6 */
+#define LCD_F_CTL_DIV_6                          ((uint32_t)0x00003000)          /*!< Divide by 7 */
+#define LCD_F_CTL_DIV_7                          ((uint32_t)0x00003800)          /*!< Divide by 8 */
+#define LCD_F_CTL_DIV_8                          ((uint32_t)0x00004000)          /*!< Divide by 9 */
+#define LCD_F_CTL_DIV_9                          ((uint32_t)0x00004800)          /*!< Divide by 10 */
+#define LCD_F_CTL_DIV_10                         ((uint32_t)0x00005000)          /*!< Divide by 11 */
+#define LCD_F_CTL_DIV_11                         ((uint32_t)0x00005800)          /*!< Divide by 12 */
+#define LCD_F_CTL_DIV_12                         ((uint32_t)0x00006000)          /*!< Divide by 13 */
+#define LCD_F_CTL_DIV_13                         ((uint32_t)0x00006800)          /*!< Divide by 14 */
+#define LCD_F_CTL_DIV_14                         ((uint32_t)0x00007000)          /*!< Divide by 15 */
+#define LCD_F_CTL_DIV_15                         ((uint32_t)0x00007800)          /*!< Divide by 16 */
+#define LCD_F_CTL_DIV_16                         ((uint32_t)0x00008000)          /*!< Divide by 17 */
+#define LCD_F_CTL_DIV_17                         ((uint32_t)0x00008800)          /*!< Divide by 18 */
+#define LCD_F_CTL_DIV_18                         ((uint32_t)0x00009000)          /*!< Divide by 19 */
+#define LCD_F_CTL_DIV_19                         ((uint32_t)0x00009800)          /*!< Divide by 20 */
+#define LCD_F_CTL_DIV_20                         ((uint32_t)0x0000A000)          /*!< Divide by 21 */
+#define LCD_F_CTL_DIV_21                         ((uint32_t)0x0000A800)          /*!< Divide by 22 */
+#define LCD_F_CTL_DIV_22                         ((uint32_t)0x0000B000)          /*!< Divide by 23 */
+#define LCD_F_CTL_DIV_23                         ((uint32_t)0x0000B800)          /*!< Divide by 24 */
+#define LCD_F_CTL_DIV_24                         ((uint32_t)0x0000C000)          /*!< Divide by 25 */
+#define LCD_F_CTL_DIV_25                         ((uint32_t)0x0000C800)          /*!< Divide by 26 */
+#define LCD_F_CTL_DIV_26                         ((uint32_t)0x0000D000)          /*!< Divide by 27 */
+#define LCD_F_CTL_DIV_27                         ((uint32_t)0x0000D800)          /*!< Divide by 28 */
+#define LCD_F_CTL_DIV_28                         ((uint32_t)0x0000E000)          /*!< Divide by 29 */
+#define LCD_F_CTL_DIV_29                         ((uint32_t)0x0000E800)          /*!< Divide by 30 */
+#define LCD_F_CTL_DIV_30                         ((uint32_t)0x0000F000)          /*!< Divide by 31 */
+#define LCD_F_CTL_DIV_31                         ((uint32_t)0x0000F800)          /*!< Divide by 32 */
+/* LCD_F_CTL[SSEL] Bits */
+#define LCD_F_CTL_SSEL_OFS                       (16)                            /*!< LCDSSEL Bit Offset */
+#define LCD_F_CTL_SSEL_MASK                      ((uint32_t)0x00030000)          /*!< LCDSSEL Bit Mask */
+#define LCD_F_CTL_SSEL0                          ((uint32_t)0x00010000)          /*!< SSEL Bit 0 */
+#define LCD_F_CTL_SSEL1                          ((uint32_t)0x00020000)          /*!< SSEL Bit 1 */
+#define LCD_F_CTL_SSEL_0                         ((uint32_t)0x00000000)          /*!< ACLK */
+#define LCD_F_CTL_SSEL_1                         ((uint32_t)0x00010000)          /*!< VLOCLK */
+#define LCD_F_CTL_SSEL_2                         ((uint32_t)0x00020000)          /*!< REFOCLK */
+#define LCD_F_CTL_SSEL_3                         ((uint32_t)0x00030000)          /*!< LFXTCLK */
+/* LCD_F_BMCTL[BLKMOD] Bits */
+#define LCD_F_BMCTL_BLKMOD_OFS                   ( 0)                            /*!< LCDBLKMODx Bit Offset */
+#define LCD_F_BMCTL_BLKMOD_MASK                  ((uint32_t)0x00000003)          /*!< LCDBLKMODx Bit Mask */
+#define LCD_F_BMCTL_BLKMOD0                      ((uint32_t)0x00000001)          /*!< BLKMOD Bit 0 */
+#define LCD_F_BMCTL_BLKMOD1                      ((uint32_t)0x00000002)          /*!< BLKMOD Bit 1 */
+#define LCD_F_BMCTL_BLKMOD_0                     ((uint32_t)0x00000000)          /*!< Blinking disabled */
+#define LCD_F_BMCTL_BLKMOD_1                     ((uint32_t)0x00000001)          /*!< Blinking of individual segments as enabled in blinking memory register  */
+                                                                                 /* LCDBMx. */
+#define LCD_F_BMCTL_BLKMOD_2                     ((uint32_t)0x00000002)          /*!< Blinking of all segments */
+#define LCD_F_BMCTL_BLKMOD_3                     ((uint32_t)0x00000003)          /*!< Switching between display contents as stored in LCDMx and LCDBMx memory  */
+                                                                                 /* registers. */
+/* LCD_F_BMCTL[BLKPRE] Bits */
+#define LCD_F_BMCTL_BLKPRE_OFS                   ( 2)                            /*!< LCDBLKPREx Bit Offset */
+#define LCD_F_BMCTL_BLKPRE_MASK                  ((uint32_t)0x0000001C)          /*!< LCDBLKPREx Bit Mask */
+#define LCD_F_BMCTL_BLKPRE0                      ((uint32_t)0x00000004)          /*!< BLKPRE Bit 0 */
+#define LCD_F_BMCTL_BLKPRE1                      ((uint32_t)0x00000008)          /*!< BLKPRE Bit 1 */
+#define LCD_F_BMCTL_BLKPRE2                      ((uint32_t)0x00000010)          /*!< BLKPRE Bit 2 */
+#define LCD_F_BMCTL_BLKPRE_0                     ((uint32_t)0x00000000)          /*!< Divide by 512 */
+#define LCD_F_BMCTL_BLKPRE_1                     ((uint32_t)0x00000004)          /*!< Divide by 1024 */
+#define LCD_F_BMCTL_BLKPRE_2                     ((uint32_t)0x00000008)          /*!< Divide by 2048 */
+#define LCD_F_BMCTL_BLKPRE_3                     ((uint32_t)0x0000000C)          /*!< Divide by 4096 */
+#define LCD_F_BMCTL_BLKPRE_4                     ((uint32_t)0x00000010)          /*!< Divide by 8162 */
+#define LCD_F_BMCTL_BLKPRE_5                     ((uint32_t)0x00000014)          /*!< Divide by 16384 */
+#define LCD_F_BMCTL_BLKPRE_6                     ((uint32_t)0x00000018)          /*!< Divide by 32768 */
+#define LCD_F_BMCTL_BLKPRE_7                     ((uint32_t)0x0000001C)          /*!< Divide by 65536 */
+/* LCD_F_BMCTL[BLKDIV] Bits */
+#define LCD_F_BMCTL_BLKDIV_OFS                   ( 5)                            /*!< LCDBLKDIVx Bit Offset */
+#define LCD_F_BMCTL_BLKDIV_MASK                  ((uint32_t)0x000000E0)          /*!< LCDBLKDIVx Bit Mask */
+#define LCD_F_BMCTL_BLKDIV0                      ((uint32_t)0x00000020)          /*!< BLKDIV Bit 0 */
+#define LCD_F_BMCTL_BLKDIV1                      ((uint32_t)0x00000040)          /*!< BLKDIV Bit 1 */
+#define LCD_F_BMCTL_BLKDIV2                      ((uint32_t)0x00000080)          /*!< BLKDIV Bit 2 */
+#define LCD_F_BMCTL_BLKDIV_0                     ((uint32_t)0x00000000)          /*!< Divide by 1 */
+#define LCD_F_BMCTL_BLKDIV_1                     ((uint32_t)0x00000020)          /*!< Divide by 2 */
+#define LCD_F_BMCTL_BLKDIV_2                     ((uint32_t)0x00000040)          /*!< Divide by 3 */
+#define LCD_F_BMCTL_BLKDIV_3                     ((uint32_t)0x00000060)          /*!< Divide by 4 */
+#define LCD_F_BMCTL_BLKDIV_4                     ((uint32_t)0x00000080)          /*!< Divide by 5 */
+#define LCD_F_BMCTL_BLKDIV_5                     ((uint32_t)0x000000A0)          /*!< Divide by 6 */
+#define LCD_F_BMCTL_BLKDIV_6                     ((uint32_t)0x000000C0)          /*!< Divide by 7 */
+#define LCD_F_BMCTL_BLKDIV_7                     ((uint32_t)0x000000E0)          /*!< Divide by 8 */
+/* LCD_F_BMCTL[DISP] Bits */
+#define LCD_F_BMCTL_DISP_OFS                     (16)                            /*!< LCDDISP Bit Offset */
+#define LCD_F_BMCTL_DISP                         ((uint32_t)0x00010000)          /*!< Select LCD memory registers for display */
+/* LCD_F_BMCTL[CLRM] Bits */
+#define LCD_F_BMCTL_CLRM_OFS                     (17)                            /*!< LCDCLRM Bit Offset */
+#define LCD_F_BMCTL_CLRM                         ((uint32_t)0x00020000)          /*!< Clear LCD memory */
+/* LCD_F_BMCTL[CLRBM] Bits */
+#define LCD_F_BMCTL_CLRBM_OFS                    (18)                            /*!< LCDCLRBM Bit Offset */
+#define LCD_F_BMCTL_CLRBM                        ((uint32_t)0x00040000)          /*!< Clear LCD blinking memory */
+/* LCD_F_VCTL[LCD2B] Bits */
+#define LCD_F_VCTL_LCD2B_OFS                     ( 0)                            /*!< LCD2B Bit Offset */
+#define LCD_F_VCTL_LCD2B                         ((uint32_t)0x00000001)          /*!< Bias select. */
+/* LCD_F_VCTL[EXTBIAS] Bits */
+#define LCD_F_VCTL_EXTBIAS_OFS                   ( 5)                            /*!< LCDEXTBIAS Bit Offset */
+#define LCD_F_VCTL_EXTBIAS                       ((uint32_t)0x00000020)          /*!< V2 to V4 voltage select */
+/* LCD_F_VCTL[R03EXT] Bits */
+#define LCD_F_VCTL_R03EXT_OFS                    ( 6)                            /*!< R03EXT Bit Offset */
+#define LCD_F_VCTL_R03EXT                        ((uint32_t)0x00000040)          /*!< V5 voltage select */
+/* LCD_F_VCTL[REXT] Bits */
+#define LCD_F_VCTL_REXT_OFS                      ( 7)                            /*!< LCDREXT Bit Offset */
+#define LCD_F_VCTL_REXT                          ((uint32_t)0x00000080)          /*!< V2 to V4 voltage on external Rx3 pins */
+/* LCD_F_PCTL0[S0] Bits */
+#define LCD_F_PCTL0_S0_OFS                       ( 0)                            /*!< LCDS0 Bit Offset */
+#define LCD_F_PCTL0_S0                           ((uint32_t)0x00000001)          /*!< LCD pin 0 enable */
+/* LCD_F_PCTL0[S1] Bits */
+#define LCD_F_PCTL0_S1_OFS                       ( 1)                            /*!< LCDS1 Bit Offset */
+#define LCD_F_PCTL0_S1                           ((uint32_t)0x00000002)          /*!< LCD pin 1 enable */
+/* LCD_F_PCTL0[S2] Bits */
+#define LCD_F_PCTL0_S2_OFS                       ( 2)                            /*!< LCDS2 Bit Offset */
+#define LCD_F_PCTL0_S2                           ((uint32_t)0x00000004)          /*!< LCD pin 2 enable */
+/* LCD_F_PCTL0[S3] Bits */
+#define LCD_F_PCTL0_S3_OFS                       ( 3)                            /*!< LCDS3 Bit Offset */
+#define LCD_F_PCTL0_S3                           ((uint32_t)0x00000008)          /*!< LCD pin 3 enable */
+/* LCD_F_PCTL0[S4] Bits */
+#define LCD_F_PCTL0_S4_OFS                       ( 4)                            /*!< LCDS4 Bit Offset */
+#define LCD_F_PCTL0_S4                           ((uint32_t)0x00000010)          /*!< LCD pin 4 enable */
+/* LCD_F_PCTL0[S5] Bits */
+#define LCD_F_PCTL0_S5_OFS                       ( 5)                            /*!< LCDS5 Bit Offset */
+#define LCD_F_PCTL0_S5                           ((uint32_t)0x00000020)          /*!< LCD pin 5 enable */
+/* LCD_F_PCTL0[S6] Bits */
+#define LCD_F_PCTL0_S6_OFS                       ( 6)                            /*!< LCDS6 Bit Offset */
+#define LCD_F_PCTL0_S6                           ((uint32_t)0x00000040)          /*!< LCD pin 6 enable */
+/* LCD_F_PCTL0[S7] Bits */
+#define LCD_F_PCTL0_S7_OFS                       ( 7)                            /*!< LCDS7 Bit Offset */
+#define LCD_F_PCTL0_S7                           ((uint32_t)0x00000080)          /*!< LCD pin 7 enable */
+/* LCD_F_PCTL0[S8] Bits */
+#define LCD_F_PCTL0_S8_OFS                       ( 8)                            /*!< LCDS8 Bit Offset */
+#define LCD_F_PCTL0_S8                           ((uint32_t)0x00000100)          /*!< LCD pin 8 enable */
+/* LCD_F_PCTL0[S9] Bits */
+#define LCD_F_PCTL0_S9_OFS                       ( 9)                            /*!< LCDS9 Bit Offset */
+#define LCD_F_PCTL0_S9                           ((uint32_t)0x00000200)          /*!< LCD pin 9 enable */
+/* LCD_F_PCTL0[S10] Bits */
+#define LCD_F_PCTL0_S10_OFS                      (10)                            /*!< LCDS10 Bit Offset */
+#define LCD_F_PCTL0_S10                          ((uint32_t)0x00000400)          /*!< LCD pin 10 enable */
+/* LCD_F_PCTL0[S11] Bits */
+#define LCD_F_PCTL0_S11_OFS                      (11)                            /*!< LCDS11 Bit Offset */
+#define LCD_F_PCTL0_S11                          ((uint32_t)0x00000800)          /*!< LCD pin 11 enable */
+/* LCD_F_PCTL0[S12] Bits */
+#define LCD_F_PCTL0_S12_OFS                      (12)                            /*!< LCDS12 Bit Offset */
+#define LCD_F_PCTL0_S12                          ((uint32_t)0x00001000)          /*!< LCD pin 12 enable */
+/* LCD_F_PCTL0[S13] Bits */
+#define LCD_F_PCTL0_S13_OFS                      (13)                            /*!< LCDS13 Bit Offset */
+#define LCD_F_PCTL0_S13                          ((uint32_t)0x00002000)          /*!< LCD pin 13 enable */
+/* LCD_F_PCTL0[S14] Bits */
+#define LCD_F_PCTL0_S14_OFS                      (14)                            /*!< LCDS14 Bit Offset */
+#define LCD_F_PCTL0_S14                          ((uint32_t)0x00004000)          /*!< LCD pin 14 enable */
+/* LCD_F_PCTL0[S15] Bits */
+#define LCD_F_PCTL0_S15_OFS                      (15)                            /*!< LCDS15 Bit Offset */
+#define LCD_F_PCTL0_S15                          ((uint32_t)0x00008000)          /*!< LCD pin 15 enable */
+/* LCD_F_PCTL0[S16] Bits */
+#define LCD_F_PCTL0_S16_OFS                      (16)                            /*!< LCDS16 Bit Offset */
+#define LCD_F_PCTL0_S16                          ((uint32_t)0x00010000)          /*!< LCD pin 16 enable */
+/* LCD_F_PCTL0[S17] Bits */
+#define LCD_F_PCTL0_S17_OFS                      (17)                            /*!< LCDS17 Bit Offset */
+#define LCD_F_PCTL0_S17                          ((uint32_t)0x00020000)          /*!< LCD pin 17 enable */
+/* LCD_F_PCTL0[S18] Bits */
+#define LCD_F_PCTL0_S18_OFS                      (18)                            /*!< LCDS18 Bit Offset */
+#define LCD_F_PCTL0_S18                          ((uint32_t)0x00040000)          /*!< LCD pin 18 enable */
+/* LCD_F_PCTL0[S19] Bits */
+#define LCD_F_PCTL0_S19_OFS                      (19)                            /*!< LCDS19 Bit Offset */
+#define LCD_F_PCTL0_S19                          ((uint32_t)0x00080000)          /*!< LCD pin 19 enable */
+/* LCD_F_PCTL0[S20] Bits */
+#define LCD_F_PCTL0_S20_OFS                      (20)                            /*!< LCDS20 Bit Offset */
+#define LCD_F_PCTL0_S20                          ((uint32_t)0x00100000)          /*!< LCD pin 20 enable */
+/* LCD_F_PCTL0[S21] Bits */
+#define LCD_F_PCTL0_S21_OFS                      (21)                            /*!< LCDS21 Bit Offset */
+#define LCD_F_PCTL0_S21                          ((uint32_t)0x00200000)          /*!< LCD pin 21 enable */
+/* LCD_F_PCTL0[S22] Bits */
+#define LCD_F_PCTL0_S22_OFS                      (22)                            /*!< LCDS22 Bit Offset */
+#define LCD_F_PCTL0_S22                          ((uint32_t)0x00400000)          /*!< LCD pin 22 enable */
+/* LCD_F_PCTL0[S23] Bits */
+#define LCD_F_PCTL0_S23_OFS                      (23)                            /*!< LCDS23 Bit Offset */
+#define LCD_F_PCTL0_S23                          ((uint32_t)0x00800000)          /*!< LCD pin 23 enable */
+/* LCD_F_PCTL0[S24] Bits */
+#define LCD_F_PCTL0_S24_OFS                      (24)                            /*!< LCDS24 Bit Offset */
+#define LCD_F_PCTL0_S24                          ((uint32_t)0x01000000)          /*!< LCD pin 24 enable */
+/* LCD_F_PCTL0[S25] Bits */
+#define LCD_F_PCTL0_S25_OFS                      (25)                            /*!< LCDS25 Bit Offset */
+#define LCD_F_PCTL0_S25                          ((uint32_t)0x02000000)          /*!< LCD pin 25 enable */
+/* LCD_F_PCTL0[S26] Bits */
+#define LCD_F_PCTL0_S26_OFS                      (26)                            /*!< LCDS26 Bit Offset */
+#define LCD_F_PCTL0_S26                          ((uint32_t)0x04000000)          /*!< LCD pin 26 enable */
+/* LCD_F_PCTL0[S27] Bits */
+#define LCD_F_PCTL0_S27_OFS                      (27)                            /*!< LCDS27 Bit Offset */
+#define LCD_F_PCTL0_S27                          ((uint32_t)0x08000000)          /*!< LCD pin 27 enable */
+/* LCD_F_PCTL0[S28] Bits */
+#define LCD_F_PCTL0_S28_OFS                      (28)                            /*!< LCDS28 Bit Offset */
+#define LCD_F_PCTL0_S28                          ((uint32_t)0x10000000)          /*!< LCD pin 28 enable */
+/* LCD_F_PCTL0[S29] Bits */
+#define LCD_F_PCTL0_S29_OFS                      (29)                            /*!< LCDS29 Bit Offset */
+#define LCD_F_PCTL0_S29                          ((uint32_t)0x20000000)          /*!< LCD pin 29 enable */
+/* LCD_F_PCTL0[S30] Bits */
+#define LCD_F_PCTL0_S30_OFS                      (30)                            /*!< LCDS30 Bit Offset */
+#define LCD_F_PCTL0_S30                          ((uint32_t)0x40000000)          /*!< LCD pin 30 enable */
+/* LCD_F_PCTL0[S31] Bits */
+#define LCD_F_PCTL0_S31_OFS                      (31)                            /*!< LCDS31 Bit Offset */
+#define LCD_F_PCTL0_S31                          ((uint32_t)0x80000000)          /*!< LCD pin 31 enable */
+/* LCD_F_PCTL1[S32] Bits */
+#define LCD_F_PCTL1_S32_OFS                      ( 0)                            /*!< LCDS32 Bit Offset */
+#define LCD_F_PCTL1_S32                          ((uint32_t)0x00000001)          /*!< LCD pin 32 enable */
+/* LCD_F_PCTL1[S33] Bits */
+#define LCD_F_PCTL1_S33_OFS                      ( 1)                            /*!< LCDS33 Bit Offset */
+#define LCD_F_PCTL1_S33                          ((uint32_t)0x00000002)          /*!< LCD pin 33 enable */
+/* LCD_F_PCTL1[S34] Bits */
+#define LCD_F_PCTL1_S34_OFS                      ( 2)                            /*!< LCDS34 Bit Offset */
+#define LCD_F_PCTL1_S34                          ((uint32_t)0x00000004)          /*!< LCD pin 34 enable */
+/* LCD_F_PCTL1[S35] Bits */
+#define LCD_F_PCTL1_S35_OFS                      ( 3)                            /*!< LCDS35 Bit Offset */
+#define LCD_F_PCTL1_S35                          ((uint32_t)0x00000008)          /*!< LCD pin 35 enable */
+/* LCD_F_PCTL1[S36] Bits */
+#define LCD_F_PCTL1_S36_OFS                      ( 4)                            /*!< LCDS36 Bit Offset */
+#define LCD_F_PCTL1_S36                          ((uint32_t)0x00000010)          /*!< LCD pin 36 enable */
+/* LCD_F_PCTL1[S37] Bits */
+#define LCD_F_PCTL1_S37_OFS                      ( 5)                            /*!< LCDS37 Bit Offset */
+#define LCD_F_PCTL1_S37                          ((uint32_t)0x00000020)          /*!< LCD pin 37 enable */
+/* LCD_F_PCTL1[S38] Bits */
+#define LCD_F_PCTL1_S38_OFS                      ( 6)                            /*!< LCDS38 Bit Offset */
+#define LCD_F_PCTL1_S38                          ((uint32_t)0x00000040)          /*!< LCD pin 38 enable */
+/* LCD_F_PCTL1[S39] Bits */
+#define LCD_F_PCTL1_S39_OFS                      ( 7)                            /*!< LCDS39 Bit Offset */
+#define LCD_F_PCTL1_S39                          ((uint32_t)0x00000080)          /*!< LCD pin 39 enable */
+/* LCD_F_PCTL1[S40] Bits */
+#define LCD_F_PCTL1_S40_OFS                      ( 8)                            /*!< LCDS40 Bit Offset */
+#define LCD_F_PCTL1_S40                          ((uint32_t)0x00000100)          /*!< LCD pin 40 enable */
+/* LCD_F_PCTL1[S41] Bits */
+#define LCD_F_PCTL1_S41_OFS                      ( 9)                            /*!< LCDS41 Bit Offset */
+#define LCD_F_PCTL1_S41                          ((uint32_t)0x00000200)          /*!< LCD pin 41 enable */
+/* LCD_F_PCTL1[S42] Bits */
+#define LCD_F_PCTL1_S42_OFS                      (10)                            /*!< LCDS42 Bit Offset */
+#define LCD_F_PCTL1_S42                          ((uint32_t)0x00000400)          /*!< LCD pin 42 enable */
+/* LCD_F_PCTL1[S43] Bits */
+#define LCD_F_PCTL1_S43_OFS                      (11)                            /*!< LCDS43 Bit Offset */
+#define LCD_F_PCTL1_S43                          ((uint32_t)0x00000800)          /*!< LCD pin 43 enable */
+/* LCD_F_PCTL1[S44] Bits */
+#define LCD_F_PCTL1_S44_OFS                      (12)                            /*!< LCDS44 Bit Offset */
+#define LCD_F_PCTL1_S44                          ((uint32_t)0x00001000)          /*!< LCD pin 44 enable */
+/* LCD_F_PCTL1[S45] Bits */
+#define LCD_F_PCTL1_S45_OFS                      (13)                            /*!< LCDS45 Bit Offset */
+#define LCD_F_PCTL1_S45                          ((uint32_t)0x00002000)          /*!< LCD pin 45 enable */
+/* LCD_F_PCTL1[S46] Bits */
+#define LCD_F_PCTL1_S46_OFS                      (14)                            /*!< LCDS46 Bit Offset */
+#define LCD_F_PCTL1_S46                          ((uint32_t)0x00004000)          /*!< LCD pin 46 enable */
+/* LCD_F_PCTL1[S47] Bits */
+#define LCD_F_PCTL1_S47_OFS                      (15)                            /*!< LCDS47 Bit Offset */
+#define LCD_F_PCTL1_S47                          ((uint32_t)0x00008000)          /*!< LCD pin 47 enable */
+/* LCD_F_PCTL1[S48] Bits */
+#define LCD_F_PCTL1_S48_OFS                      (16)                            /*!< LCDS48 Bit Offset */
+#define LCD_F_PCTL1_S48                          ((uint32_t)0x00010000)          /*!< LCD pin 48 enable */
+/* LCD_F_PCTL1[S49] Bits */
+#define LCD_F_PCTL1_S49_OFS                      (17)                            /*!< LCDS49 Bit Offset */
+#define LCD_F_PCTL1_S49                          ((uint32_t)0x00020000)          /*!< LCD pin 49 enable */
+/* LCD_F_PCTL1[S50] Bits */
+#define LCD_F_PCTL1_S50_OFS                      (18)                            /*!< LCDS50 Bit Offset */
+#define LCD_F_PCTL1_S50                          ((uint32_t)0x00040000)          /*!< LCD pin 50 enable */
+/* LCD_F_PCTL1[S51] Bits */
+#define LCD_F_PCTL1_S51_OFS                      (19)                            /*!< LCDS51 Bit Offset */
+#define LCD_F_PCTL1_S51                          ((uint32_t)0x00080000)          /*!< LCD pin 51 enable */
+/* LCD_F_PCTL1[S52] Bits */
+#define LCD_F_PCTL1_S52_OFS                      (20)                            /*!< LCDS52 Bit Offset */
+#define LCD_F_PCTL1_S52                          ((uint32_t)0x00100000)          /*!< LCD pin 52 enable */
+/* LCD_F_PCTL1[S53] Bits */
+#define LCD_F_PCTL1_S53_OFS                      (21)                            /*!< LCDS53 Bit Offset */
+#define LCD_F_PCTL1_S53                          ((uint32_t)0x00200000)          /*!< LCD pin 53 enable */
+/* LCD_F_PCTL1[S54] Bits */
+#define LCD_F_PCTL1_S54_OFS                      (22)                            /*!< LCDS54 Bit Offset */
+#define LCD_F_PCTL1_S54                          ((uint32_t)0x00400000)          /*!< LCD pin 54 enable */
+/* LCD_F_PCTL1[S55] Bits */
+#define LCD_F_PCTL1_S55_OFS                      (23)                            /*!< LCDS55 Bit Offset */
+#define LCD_F_PCTL1_S55                          ((uint32_t)0x00800000)          /*!< LCD pin 55 enable */
+/* LCD_F_PCTL1[S56] Bits */
+#define LCD_F_PCTL1_S56_OFS                      (24)                            /*!< LCDS56 Bit Offset */
+#define LCD_F_PCTL1_S56                          ((uint32_t)0x01000000)          /*!< LCD pin 56 enable */
+/* LCD_F_PCTL1[S57] Bits */
+#define LCD_F_PCTL1_S57_OFS                      (25)                            /*!< LCDS57 Bit Offset */
+#define LCD_F_PCTL1_S57                          ((uint32_t)0x02000000)          /*!< LCD pin 57 enable */
+/* LCD_F_PCTL1[S58] Bits */
+#define LCD_F_PCTL1_S58_OFS                      (26)                            /*!< LCDS58 Bit Offset */
+#define LCD_F_PCTL1_S58                          ((uint32_t)0x04000000)          /*!< LCD pin 58 enable */
+/* LCD_F_PCTL1[S59] Bits */
+#define LCD_F_PCTL1_S59_OFS                      (27)                            /*!< LCDS59 Bit Offset */
+#define LCD_F_PCTL1_S59                          ((uint32_t)0x08000000)          /*!< LCD pin 59 enable */
+/* LCD_F_PCTL1[S60] Bits */
+#define LCD_F_PCTL1_S60_OFS                      (28)                            /*!< LCDS60 Bit Offset */
+#define LCD_F_PCTL1_S60                          ((uint32_t)0x10000000)          /*!< LCD pin 60 enable */
+/* LCD_F_PCTL1[S61] Bits */
+#define LCD_F_PCTL1_S61_OFS                      (29)                            /*!< LCDS61 Bit Offset */
+#define LCD_F_PCTL1_S61                          ((uint32_t)0x20000000)          /*!< LCD pin 61 enable */
+/* LCD_F_PCTL1[S62] Bits */
+#define LCD_F_PCTL1_S62_OFS                      (30)                            /*!< LCDS62 Bit Offset */
+#define LCD_F_PCTL1_S62                          ((uint32_t)0x40000000)          /*!< LCD pin 62 enable */
+/* LCD_F_PCTL1[S63] Bits */
+#define LCD_F_PCTL1_S63_OFS                      (31)                            /*!< LCDS63 Bit Offset */
+#define LCD_F_PCTL1_S63                          ((uint32_t)0x80000000)          /*!< LCD pin 63 enable */
+/* LCD_F_CSSEL0[CSS0] Bits */
+#define LCD_F_CSSEL0_CSS0_OFS                    ( 0)                            /*!< LCDCSS0 Bit Offset */
+#define LCD_F_CSSEL0_CSS0                        ((uint32_t)0x00000001)          /*!< L0 Com Seg select */
+/* LCD_F_CSSEL0[CSS1] Bits */
+#define LCD_F_CSSEL0_CSS1_OFS                    ( 1)                            /*!< LCDCSS1 Bit Offset */
+#define LCD_F_CSSEL0_CSS1                        ((uint32_t)0x00000002)          /*!< L1 Com Seg select */
+/* LCD_F_CSSEL0[CSS2] Bits */
+#define LCD_F_CSSEL0_CSS2_OFS                    ( 2)                            /*!< LCDCSS2 Bit Offset */
+#define LCD_F_CSSEL0_CSS2                        ((uint32_t)0x00000004)          /*!< L2 Com Seg select */
+/* LCD_F_CSSEL0[CSS3] Bits */
+#define LCD_F_CSSEL0_CSS3_OFS                    ( 3)                            /*!< LCDCSS3 Bit Offset */
+#define LCD_F_CSSEL0_CSS3                        ((uint32_t)0x00000008)          /*!< L3 Com Seg select */
+/* LCD_F_CSSEL0[CSS4] Bits */
+#define LCD_F_CSSEL0_CSS4_OFS                    ( 4)                            /*!< LCDCSS4 Bit Offset */
+#define LCD_F_CSSEL0_CSS4                        ((uint32_t)0x00000010)          /*!< L4 Com Seg select */
+/* LCD_F_CSSEL0[CSS5] Bits */
+#define LCD_F_CSSEL0_CSS5_OFS                    ( 5)                            /*!< LCDCSS5 Bit Offset */
+#define LCD_F_CSSEL0_CSS5                        ((uint32_t)0x00000020)          /*!< L5 Com Seg select */
+/* LCD_F_CSSEL0[CSS6] Bits */
+#define LCD_F_CSSEL0_CSS6_OFS                    ( 6)                            /*!< LCDCSS6 Bit Offset */
+#define LCD_F_CSSEL0_CSS6                        ((uint32_t)0x00000040)          /*!< L6 Com Seg select */
+/* LCD_F_CSSEL0[CSS7] Bits */
+#define LCD_F_CSSEL0_CSS7_OFS                    ( 7)                            /*!< LCDCSS7 Bit Offset */
+#define LCD_F_CSSEL0_CSS7                        ((uint32_t)0x00000080)          /*!< L7 Com Seg select */
+/* LCD_F_CSSEL0[CSS8] Bits */
+#define LCD_F_CSSEL0_CSS8_OFS                    ( 8)                            /*!< LCDCSS8 Bit Offset */
+#define LCD_F_CSSEL0_CSS8                        ((uint32_t)0x00000100)          /*!< L8 Com Seg select */
+/* LCD_F_CSSEL0[CSS9] Bits */
+#define LCD_F_CSSEL0_CSS9_OFS                    ( 9)                            /*!< LCDCSS9 Bit Offset */
+#define LCD_F_CSSEL0_CSS9                        ((uint32_t)0x00000200)          /*!< L9 Com Seg select */
+/* LCD_F_CSSEL0[CSS10] Bits */
+#define LCD_F_CSSEL0_CSS10_OFS                   (10)                            /*!< LCDCSS10 Bit Offset */
+#define LCD_F_CSSEL0_CSS10                       ((uint32_t)0x00000400)          /*!< L10 Com Seg select */
+/* LCD_F_CSSEL0[CSS11] Bits */
+#define LCD_F_CSSEL0_CSS11_OFS                   (11)                            /*!< LCDCSS11 Bit Offset */
+#define LCD_F_CSSEL0_CSS11                       ((uint32_t)0x00000800)          /*!< L11 Com Seg select */
+/* LCD_F_CSSEL0[CSS12] Bits */
+#define LCD_F_CSSEL0_CSS12_OFS                   (12)                            /*!< LCDCSS12 Bit Offset */
+#define LCD_F_CSSEL0_CSS12                       ((uint32_t)0x00001000)          /*!< L12 Com Seg select */
+/* LCD_F_CSSEL0[CSS13] Bits */
+#define LCD_F_CSSEL0_CSS13_OFS                   (13)                            /*!< LCDCSS13 Bit Offset */
+#define LCD_F_CSSEL0_CSS13                       ((uint32_t)0x00002000)          /*!< L13 Com Seg select */
+/* LCD_F_CSSEL0[CSS14] Bits */
+#define LCD_F_CSSEL0_CSS14_OFS                   (14)                            /*!< LCDCSS14 Bit Offset */
+#define LCD_F_CSSEL0_CSS14                       ((uint32_t)0x00004000)          /*!< L14 Com Seg select */
+/* LCD_F_CSSEL0[CSS15] Bits */
+#define LCD_F_CSSEL0_CSS15_OFS                   (15)                            /*!< LCDCSS15 Bit Offset */
+#define LCD_F_CSSEL0_CSS15                       ((uint32_t)0x00008000)          /*!< L15 Com Seg select */
+/* LCD_F_CSSEL0[CSS16] Bits */
+#define LCD_F_CSSEL0_CSS16_OFS                   (16)                            /*!< LCDCSS16 Bit Offset */
+#define LCD_F_CSSEL0_CSS16                       ((uint32_t)0x00010000)          /*!< L16 Com Seg select */
+/* LCD_F_CSSEL0[CSS17] Bits */
+#define LCD_F_CSSEL0_CSS17_OFS                   (17)                            /*!< LCDCSS17 Bit Offset */
+#define LCD_F_CSSEL0_CSS17                       ((uint32_t)0x00020000)          /*!< L17 Com Seg select */
+/* LCD_F_CSSEL0[CSS18] Bits */
+#define LCD_F_CSSEL0_CSS18_OFS                   (18)                            /*!< LCDCSS18 Bit Offset */
+#define LCD_F_CSSEL0_CSS18                       ((uint32_t)0x00040000)          /*!< L18 Com Seg select */
+/* LCD_F_CSSEL0[CSS19] Bits */
+#define LCD_F_CSSEL0_CSS19_OFS                   (19)                            /*!< LCDCSS19 Bit Offset */
+#define LCD_F_CSSEL0_CSS19                       ((uint32_t)0x00080000)          /*!< L19 Com Seg select */
+/* LCD_F_CSSEL0[CSS20] Bits */
+#define LCD_F_CSSEL0_CSS20_OFS                   (20)                            /*!< LCDCSS20 Bit Offset */
+#define LCD_F_CSSEL0_CSS20                       ((uint32_t)0x00100000)          /*!< L20 Com Seg select */
+/* LCD_F_CSSEL0[CSS21] Bits */
+#define LCD_F_CSSEL0_CSS21_OFS                   (21)                            /*!< LCDCSS21 Bit Offset */
+#define LCD_F_CSSEL0_CSS21                       ((uint32_t)0x00200000)          /*!< L21 Com Seg select */
+/* LCD_F_CSSEL0[CSS22] Bits */
+#define LCD_F_CSSEL0_CSS22_OFS                   (22)                            /*!< LCDCSS22 Bit Offset */
+#define LCD_F_CSSEL0_CSS22                       ((uint32_t)0x00400000)          /*!< L22 Com Seg select */
+/* LCD_F_CSSEL0[CSS23] Bits */
+#define LCD_F_CSSEL0_CSS23_OFS                   (23)                            /*!< LCDCSS23 Bit Offset */
+#define LCD_F_CSSEL0_CSS23                       ((uint32_t)0x00800000)          /*!< L23 Com Seg select */
+/* LCD_F_CSSEL0[CSS24] Bits */
+#define LCD_F_CSSEL0_CSS24_OFS                   (24)                            /*!< LCDCSS24 Bit Offset */
+#define LCD_F_CSSEL0_CSS24                       ((uint32_t)0x01000000)          /*!< L24 Com Seg select */
+/* LCD_F_CSSEL0[CSS25] Bits */
+#define LCD_F_CSSEL0_CSS25_OFS                   (25)                            /*!< LCDCSS25 Bit Offset */
+#define LCD_F_CSSEL0_CSS25                       ((uint32_t)0x02000000)          /*!< L25 Com Seg select */
+/* LCD_F_CSSEL0[CSS26] Bits */
+#define LCD_F_CSSEL0_CSS26_OFS                   (26)                            /*!< LCDCSS26 Bit Offset */
+#define LCD_F_CSSEL0_CSS26                       ((uint32_t)0x04000000)          /*!< L26 Com Seg select */
+/* LCD_F_CSSEL0[CSS27] Bits */
+#define LCD_F_CSSEL0_CSS27_OFS                   (27)                            /*!< LCDCSS27 Bit Offset */
+#define LCD_F_CSSEL0_CSS27                       ((uint32_t)0x08000000)          /*!< L27 Com Seg select */
+/* LCD_F_CSSEL0[CSS28] Bits */
+#define LCD_F_CSSEL0_CSS28_OFS                   (28)                            /*!< LCDCSS28 Bit Offset */
+#define LCD_F_CSSEL0_CSS28                       ((uint32_t)0x10000000)          /*!< L28 Com Seg select */
+/* LCD_F_CSSEL0[CSS29] Bits */
+#define LCD_F_CSSEL0_CSS29_OFS                   (29)                            /*!< LCDCSS29 Bit Offset */
+#define LCD_F_CSSEL0_CSS29                       ((uint32_t)0x20000000)          /*!< L29 Com Seg select */
+/* LCD_F_CSSEL0[CSS30] Bits */
+#define LCD_F_CSSEL0_CSS30_OFS                   (30)                            /*!< LCDCSS30 Bit Offset */
+#define LCD_F_CSSEL0_CSS30                       ((uint32_t)0x40000000)          /*!< L30 Com Seg select */
+/* LCD_F_CSSEL0[CSS31] Bits */
+#define LCD_F_CSSEL0_CSS31_OFS                   (31)                            /*!< LCDCSS31 Bit Offset */
+#define LCD_F_CSSEL0_CSS31                       ((uint32_t)0x80000000)          /*!< L31 Com Seg select */
+/* LCD_F_CSSEL1[CSS32] Bits */
+#define LCD_F_CSSEL1_CSS32_OFS                   ( 0)                            /*!< LCDCSS32 Bit Offset */
+#define LCD_F_CSSEL1_CSS32                       ((uint32_t)0x00000001)          /*!< L32 Com Seg select */
+/* LCD_F_CSSEL1[CSS33] Bits */
+#define LCD_F_CSSEL1_CSS33_OFS                   ( 1)                            /*!< LCDCSS33 Bit Offset */
+#define LCD_F_CSSEL1_CSS33                       ((uint32_t)0x00000002)          /*!< L33 Com Seg select */
+/* LCD_F_CSSEL1[CSS34] Bits */
+#define LCD_F_CSSEL1_CSS34_OFS                   ( 2)                            /*!< LCDCSS34 Bit Offset */
+#define LCD_F_CSSEL1_CSS34                       ((uint32_t)0x00000004)          /*!< L34 Com Seg select */
+/* LCD_F_CSSEL1[CSS35] Bits */
+#define LCD_F_CSSEL1_CSS35_OFS                   ( 3)                            /*!< LCDCSS35 Bit Offset */
+#define LCD_F_CSSEL1_CSS35                       ((uint32_t)0x00000008)          /*!< L35 Com Seg select */
+/* LCD_F_CSSEL1[CSS36] Bits */
+#define LCD_F_CSSEL1_CSS36_OFS                   ( 4)                            /*!< LCDCSS36 Bit Offset */
+#define LCD_F_CSSEL1_CSS36                       ((uint32_t)0x00000010)          /*!< L36 Com Seg select */
+/* LCD_F_CSSEL1[CSS37] Bits */
+#define LCD_F_CSSEL1_CSS37_OFS                   ( 5)                            /*!< LCDCSS37 Bit Offset */
+#define LCD_F_CSSEL1_CSS37                       ((uint32_t)0x00000020)          /*!< L37 Com Seg select */
+/* LCD_F_CSSEL1[CSS38] Bits */
+#define LCD_F_CSSEL1_CSS38_OFS                   ( 6)                            /*!< LCDCSS38 Bit Offset */
+#define LCD_F_CSSEL1_CSS38                       ((uint32_t)0x00000040)          /*!< L38 Com Seg select */
+/* LCD_F_CSSEL1[CSS39] Bits */
+#define LCD_F_CSSEL1_CSS39_OFS                   ( 7)                            /*!< LCDCSS39 Bit Offset */
+#define LCD_F_CSSEL1_CSS39                       ((uint32_t)0x00000080)          /*!< L39 Com Seg select */
+/* LCD_F_CSSEL1[CSS40] Bits */
+#define LCD_F_CSSEL1_CSS40_OFS                   ( 8)                            /*!< LCDCSS40 Bit Offset */
+#define LCD_F_CSSEL1_CSS40                       ((uint32_t)0x00000100)          /*!< L40 Com Seg select */
+/* LCD_F_CSSEL1[CSS41] Bits */
+#define LCD_F_CSSEL1_CSS41_OFS                   ( 9)                            /*!< LCDCSS41 Bit Offset */
+#define LCD_F_CSSEL1_CSS41                       ((uint32_t)0x00000200)          /*!< L41 Com Seg select */
+/* LCD_F_CSSEL1[CSS42] Bits */
+#define LCD_F_CSSEL1_CSS42_OFS                   (10)                            /*!< LCDCSS42 Bit Offset */
+#define LCD_F_CSSEL1_CSS42                       ((uint32_t)0x00000400)          /*!< L42 Com Seg select */
+/* LCD_F_CSSEL1[CSS43] Bits */
+#define LCD_F_CSSEL1_CSS43_OFS                   (11)                            /*!< LCDCSS43 Bit Offset */
+#define LCD_F_CSSEL1_CSS43                       ((uint32_t)0x00000800)          /*!< L43 Com Seg select */
+/* LCD_F_CSSEL1[CSS44] Bits */
+#define LCD_F_CSSEL1_CSS44_OFS                   (12)                            /*!< LCDCSS44 Bit Offset */
+#define LCD_F_CSSEL1_CSS44                       ((uint32_t)0x00001000)          /*!< L44 Com Seg select */
+/* LCD_F_CSSEL1[CSS45] Bits */
+#define LCD_F_CSSEL1_CSS45_OFS                   (13)                            /*!< LCDCSS45 Bit Offset */
+#define LCD_F_CSSEL1_CSS45                       ((uint32_t)0x00002000)          /*!< L45 Com Seg select */
+/* LCD_F_CSSEL1[CSS46] Bits */
+#define LCD_F_CSSEL1_CSS46_OFS                   (14)                            /*!< LCDCSS46 Bit Offset */
+#define LCD_F_CSSEL1_CSS46                       ((uint32_t)0x00004000)          /*!< L46 Com Seg select */
+/* LCD_F_CSSEL1[CSS47] Bits */
+#define LCD_F_CSSEL1_CSS47_OFS                   (15)                            /*!< LCDCSS47 Bit Offset */
+#define LCD_F_CSSEL1_CSS47                       ((uint32_t)0x00008000)          /*!< L47 Com Seg select */
+/* LCD_F_CSSEL1[CSS48] Bits */
+#define LCD_F_CSSEL1_CSS48_OFS                   (16)                            /*!< LCDCSS48 Bit Offset */
+#define LCD_F_CSSEL1_CSS48                       ((uint32_t)0x00010000)          /*!< L48 Com Seg select */
+/* LCD_F_CSSEL1[CSS49] Bits */
+#define LCD_F_CSSEL1_CSS49_OFS                   (17)                            /*!< LCDCSS49 Bit Offset */
+#define LCD_F_CSSEL1_CSS49                       ((uint32_t)0x00020000)          /*!< L49 Com Seg select */
+/* LCD_F_CSSEL1[CSS50] Bits */
+#define LCD_F_CSSEL1_CSS50_OFS                   (18)                            /*!< LCDCSS50 Bit Offset */
+#define LCD_F_CSSEL1_CSS50                       ((uint32_t)0x00040000)          /*!< L50 Com Seg select */
+/* LCD_F_CSSEL1[CSS51] Bits */
+#define LCD_F_CSSEL1_CSS51_OFS                   (19)                            /*!< LCDCSS51 Bit Offset */
+#define LCD_F_CSSEL1_CSS51                       ((uint32_t)0x00080000)          /*!< L51 Com Seg select */
+/* LCD_F_CSSEL1[CSS52] Bits */
+#define LCD_F_CSSEL1_CSS52_OFS                   (20)                            /*!< LCDCSS52 Bit Offset */
+#define LCD_F_CSSEL1_CSS52                       ((uint32_t)0x00100000)          /*!< L52 Com Seg select */
+/* LCD_F_CSSEL1[CSS53] Bits */
+#define LCD_F_CSSEL1_CSS53_OFS                   (21)                            /*!< LCDCSS53 Bit Offset */
+#define LCD_F_CSSEL1_CSS53                       ((uint32_t)0x00200000)          /*!< L53 Com Seg select */
+/* LCD_F_CSSEL1[CSS54] Bits */
+#define LCD_F_CSSEL1_CSS54_OFS                   (22)                            /*!< LCDCSS54 Bit Offset */
+#define LCD_F_CSSEL1_CSS54                       ((uint32_t)0x00400000)          /*!< L54 Com Seg select */
+/* LCD_F_CSSEL1[CSS55] Bits */
+#define LCD_F_CSSEL1_CSS55_OFS                   (23)                            /*!< LCDCSS55 Bit Offset */
+#define LCD_F_CSSEL1_CSS55                       ((uint32_t)0x00800000)          /*!< L55 Com Seg select */
+/* LCD_F_CSSEL1[CSS56] Bits */
+#define LCD_F_CSSEL1_CSS56_OFS                   (24)                            /*!< LCDCSS56 Bit Offset */
+#define LCD_F_CSSEL1_CSS56                       ((uint32_t)0x01000000)          /*!< L56 Com Seg select */
+/* LCD_F_CSSEL1[CSS57] Bits */
+#define LCD_F_CSSEL1_CSS57_OFS                   (25)                            /*!< LCDCSS57 Bit Offset */
+#define LCD_F_CSSEL1_CSS57                       ((uint32_t)0x02000000)          /*!< L57 Com Seg select */
+/* LCD_F_CSSEL1[CSS58] Bits */
+#define LCD_F_CSSEL1_CSS58_OFS                   (26)                            /*!< LCDCSS58 Bit Offset */
+#define LCD_F_CSSEL1_CSS58                       ((uint32_t)0x04000000)          /*!< L58 Com Seg select */
+/* LCD_F_CSSEL1[CSS59] Bits */
+#define LCD_F_CSSEL1_CSS59_OFS                   (27)                            /*!< LCDCSS59 Bit Offset */
+#define LCD_F_CSSEL1_CSS59                       ((uint32_t)0x08000000)          /*!< L59 Com Seg select */
+/* LCD_F_CSSEL1[CSS60] Bits */
+#define LCD_F_CSSEL1_CSS60_OFS                   (28)                            /*!< LCDCSS60 Bit Offset */
+#define LCD_F_CSSEL1_CSS60                       ((uint32_t)0x10000000)          /*!< L60 Com Seg select */
+/* LCD_F_CSSEL1[CSS61] Bits */
+#define LCD_F_CSSEL1_CSS61_OFS                   (29)                            /*!< LCDCSS61 Bit Offset */
+#define LCD_F_CSSEL1_CSS61                       ((uint32_t)0x20000000)          /*!< L61 Com Seg select */
+/* LCD_F_CSSEL1[CSS62] Bits */
+#define LCD_F_CSSEL1_CSS62_OFS                   (30)                            /*!< LCDCSS62 Bit Offset */
+#define LCD_F_CSSEL1_CSS62                       ((uint32_t)0x40000000)          /*!< L62 Com Seg select */
+/* LCD_F_CSSEL1[CSS63] Bits */
+#define LCD_F_CSSEL1_CSS63_OFS                   (31)                            /*!< LCDCSS63 Bit Offset */
+#define LCD_F_CSSEL1_CSS63                       ((uint32_t)0x80000000)          /*!< L63 Com Seg select */
+/* LCD_F_ANMCTL[ANMEN] Bits */
+#define LCD_F_ANMCTL_ANMEN_OFS                   ( 0)                            /*!< LCDANMEN Bit Offset */
+#define LCD_F_ANMCTL_ANMEN                       ((uint32_t)0x00000001)          /*!< Enable Animation */
+/* LCD_F_ANMCTL[ANMSTP] Bits */
+#define LCD_F_ANMCTL_ANMSTP_OFS                  ( 1)                            /*!< LCDANMSTP Bit Offset */
+#define LCD_F_ANMCTL_ANMSTP_MASK                 ((uint32_t)0x0000000E)          /*!< LCDANMSTP Bit Mask */
+#define LCD_F_ANMCTL_ANMSTP0                     ((uint32_t)0x00000002)          /*!< ANMSTP Bit 0 */
+#define LCD_F_ANMCTL_ANMSTP1                     ((uint32_t)0x00000004)          /*!< ANMSTP Bit 1 */
+#define LCD_F_ANMCTL_ANMSTP2                     ((uint32_t)0x00000008)          /*!< ANMSTP Bit 2 */
+#define LCD_F_ANMCTL_ANMSTP_0                    ((uint32_t)0x00000000)          /*!< T0 */
+#define LCD_F_ANMCTL_ANMSTP_1                    ((uint32_t)0x00000002)          /*!< T0 to T1 */
+#define LCD_F_ANMCTL_ANMSTP_2                    ((uint32_t)0x00000004)          /*!< T0 to T2 */
+#define LCD_F_ANMCTL_ANMSTP_3                    ((uint32_t)0x00000006)          /*!< T0 to T3 */
+#define LCD_F_ANMCTL_ANMSTP_4                    ((uint32_t)0x00000008)          /*!< T0 to T4 */
+#define LCD_F_ANMCTL_ANMSTP_5                    ((uint32_t)0x0000000A)          /*!< T0 to T5 */
+#define LCD_F_ANMCTL_ANMSTP_6                    ((uint32_t)0x0000000C)          /*!< T0 to T6 */
+#define LCD_F_ANMCTL_ANMSTP_7                    ((uint32_t)0x0000000E)          /*!< T0 to T7 */
+/* LCD_F_ANMCTL[ANMCLR] Bits */
+#define LCD_F_ANMCTL_ANMCLR_OFS                  ( 7)                            /*!< LCDANMCLR Bit Offset */
+#define LCD_F_ANMCTL_ANMCLR                      ((uint32_t)0x00000080)          /*!< Clear Animation Memory */
+/* LCD_F_ANMCTL[ANMPRE] Bits */
+#define LCD_F_ANMCTL_ANMPRE_OFS                  (16)                            /*!< LCDANMPREx Bit Offset */
+#define LCD_F_ANMCTL_ANMPRE_MASK                 ((uint32_t)0x00070000)          /*!< LCDANMPREx Bit Mask */
+#define LCD_F_ANMCTL_ANMPRE0                     ((uint32_t)0x00010000)          /*!< ANMPRE Bit 0 */
+#define LCD_F_ANMCTL_ANMPRE1                     ((uint32_t)0x00020000)          /*!< ANMPRE Bit 1 */
+#define LCD_F_ANMCTL_ANMPRE2                     ((uint32_t)0x00040000)          /*!< ANMPRE Bit 2 */
+#define LCD_F_ANMCTL_ANMPRE_0                    ((uint32_t)0x00000000)          /*!< Divide by 512 */
+#define LCD_F_ANMCTL_ANMPRE_1                    ((uint32_t)0x00010000)          /*!< Divide by 1024 */
+#define LCD_F_ANMCTL_ANMPRE_2                    ((uint32_t)0x00020000)          /*!< Divide by 2048 */
+#define LCD_F_ANMCTL_ANMPRE_3                    ((uint32_t)0x00030000)          /*!< Divide by 4096 */
+#define LCD_F_ANMCTL_ANMPRE_4                    ((uint32_t)0x00040000)          /*!< Divide by 8162 */
+#define LCD_F_ANMCTL_ANMPRE_5                    ((uint32_t)0x00050000)          /*!< Divide by 16384 */
+#define LCD_F_ANMCTL_ANMPRE_6                    ((uint32_t)0x00060000)          /*!< Divide by 32768 */
+#define LCD_F_ANMCTL_ANMPRE_7                    ((uint32_t)0x00070000)          /*!< Divide by 65536 */
+/* LCD_F_ANMCTL[ANMDIV] Bits */
+#define LCD_F_ANMCTL_ANMDIV_OFS                  (19)                            /*!< LCDANMDIVx Bit Offset */
+#define LCD_F_ANMCTL_ANMDIV_MASK                 ((uint32_t)0x00380000)          /*!< LCDANMDIVx Bit Mask */
+#define LCD_F_ANMCTL_ANMDIV0                     ((uint32_t)0x00080000)          /*!< ANMDIV Bit 0 */
+#define LCD_F_ANMCTL_ANMDIV1                     ((uint32_t)0x00100000)          /*!< ANMDIV Bit 1 */
+#define LCD_F_ANMCTL_ANMDIV2                     ((uint32_t)0x00200000)          /*!< ANMDIV Bit 2 */
+#define LCD_F_ANMCTL_ANMDIV_0                    ((uint32_t)0x00000000)          /*!< Divide by 1 */
+#define LCD_F_ANMCTL_ANMDIV_1                    ((uint32_t)0x00080000)          /*!< Divide by 2 */
+#define LCD_F_ANMCTL_ANMDIV_2                    ((uint32_t)0x00100000)          /*!< Divide by 3 */
+#define LCD_F_ANMCTL_ANMDIV_3                    ((uint32_t)0x00180000)          /*!< Divide by 4 */
+#define LCD_F_ANMCTL_ANMDIV_4                    ((uint32_t)0x00200000)          /*!< Divide by 5 */
+#define LCD_F_ANMCTL_ANMDIV_5                    ((uint32_t)0x00280000)          /*!< Divide by 6 */
+#define LCD_F_ANMCTL_ANMDIV_6                    ((uint32_t)0x00300000)          /*!< Divide by 7 */
+#define LCD_F_ANMCTL_ANMDIV_7                    ((uint32_t)0x00380000)          /*!< Divide by 8 */
+/* LCD_F_IE[BLKOFFIE] Bits */
+#define LCD_F_IE_BLKOFFIE_OFS                    ( 1)                            /*!< LCDBLKOFFIE Bit Offset */
+#define LCD_F_IE_BLKOFFIE                        ((uint32_t)0x00000002)          /*!< LCD Blink, segments off interrupt enable */
+/* LCD_F_IE[BLKONIE] Bits */
+#define LCD_F_IE_BLKONIE_OFS                     ( 2)                            /*!< LCDBLKONIE Bit Offset */
+#define LCD_F_IE_BLKONIE                         ((uint32_t)0x00000004)          /*!< LCD Blink, segments on interrupt enable */
+/* LCD_F_IE[FRMIE] Bits */
+#define LCD_F_IE_FRMIE_OFS                       ( 3)                            /*!< LCDFRMIE Bit Offset */
+#define LCD_F_IE_FRMIE                           ((uint32_t)0x00000008)          /*!< LCD Frame interrupt enable */
+/* LCD_F_IE[ANMSTPIE] Bits */
+#define LCD_F_IE_ANMSTPIE_OFS                    ( 8)                            /*!< LCDANMSTPIE Bit Offset */
+#define LCD_F_IE_ANMSTPIE                        ((uint32_t)0x00000100)          /*!< LCD Animation step interrupt enable */
+/* LCD_F_IE[ANMLOOPIE] Bits */
+#define LCD_F_IE_ANMLOOPIE_OFS                   ( 9)                            /*!< LCDANMLOOPIE Bit Offset */
+#define LCD_F_IE_ANMLOOPIE                       ((uint32_t)0x00000200)          /*!< LCD Animation loop interrupt enable */
+/* LCD_F_IFG[BLKOFFIFG] Bits */
+#define LCD_F_IFG_BLKOFFIFG_OFS                  ( 1)                            /*!< LCDBLKOFFIFG Bit Offset */
+#define LCD_F_IFG_BLKOFFIFG                      ((uint32_t)0x00000002)          /*!< LCD Blink, segments off interrupt flag */
+/* LCD_F_IFG[BLKONIFG] Bits */
+#define LCD_F_IFG_BLKONIFG_OFS                   ( 2)                            /*!< LCDBLKONIFG Bit Offset */
+#define LCD_F_IFG_BLKONIFG                       ((uint32_t)0x00000004)          /*!< LCD Blink, segments on interrupt flag */
+/* LCD_F_IFG[FRMIFG] Bits */
+#define LCD_F_IFG_FRMIFG_OFS                     ( 3)                            /*!< LCDFRMIFG Bit Offset */
+#define LCD_F_IFG_FRMIFG                         ((uint32_t)0x00000008)          /*!< LCD Frame interrupt flag */
+/* LCD_F_IFG[ANMSTPIFG] Bits */
+#define LCD_F_IFG_ANMSTPIFG_OFS                  ( 8)                            /*!< LCDANMSTPIFG Bit Offset */
+#define LCD_F_IFG_ANMSTPIFG                      ((uint32_t)0x00000100)          /*!< LCD Animation step interrupt flag */
+/* LCD_F_IFG[ANMLOOPIFG] Bits */
+#define LCD_F_IFG_ANMLOOPIFG_OFS                 ( 9)                            /*!< LCDANMLOOPIFG Bit Offset */
+#define LCD_F_IFG_ANMLOOPIFG                     ((uint32_t)0x00000200)          /*!< LCD Animation loop interrupt flag */
+/* LCD_F_SETIFG[SETLCDBLKOFFIFG] Bits */
+#define LCD_F_SETIFG_SETLCDBLKOFFIFG_OFS         ( 1)                            /*!< SETLCDBLKOFFIFG Bit Offset */
+#define LCD_F_SETIFG_SETLCDBLKOFFIFG             ((uint32_t)0x00000002)          /*!< Sets LCDBLKOFFIFG */
+/* LCD_F_SETIFG[SETLCDBLKONIFG] Bits */
+#define LCD_F_SETIFG_SETLCDBLKONIFG_OFS          ( 2)                            /*!< SETLCDBLKONIFG Bit Offset */
+#define LCD_F_SETIFG_SETLCDBLKONIFG              ((uint32_t)0x00000004)          /*!< Sets LCDBLKONIFG */
+/* LCD_F_SETIFG[SETLCDFRMIFG] Bits */
+#define LCD_F_SETIFG_SETLCDFRMIFG_OFS            ( 3)                            /*!< SETLCDFRMIFG Bit Offset */
+#define LCD_F_SETIFG_SETLCDFRMIFG                ((uint32_t)0x00000008)          /*!< Sets LCDFRMIFG */
+/* LCD_F_SETIFG[SETLCDANMSTPIFG] Bits */
+#define LCD_F_SETIFG_SETLCDANMSTPIFG_OFS         ( 8)                            /*!< SETLCDANMSTPIFG Bit Offset */
+#define LCD_F_SETIFG_SETLCDANMSTPIFG             ((uint32_t)0x00000100)          /*!< Sets LCDANMSTPIFG */
+/* LCD_F_SETIFG[SETLCDANMLOOPIFG] Bits */
+#define LCD_F_SETIFG_SETLCDANMLOOPIFG_OFS        ( 9)                            /*!< SETLCDANMLOOPIFG Bit Offset */
+#define LCD_F_SETIFG_SETLCDANMLOOPIFG            ((uint32_t)0x00000200)          /*!< Sets LCDANMLOOPIFG */
+/* LCD_F_CLRIFG[CLRLCDBLKOFFIFG] Bits */
+#define LCD_F_CLRIFG_CLRLCDBLKOFFIFG_OFS         ( 1)                            /*!< CLRLCDBLKOFFIFG Bit Offset */
+#define LCD_F_CLRIFG_CLRLCDBLKOFFIFG             ((uint32_t)0x00000002)          /*!< Clears LCDBLKOFFIFG */
+/* LCD_F_CLRIFG[CLRLCDBLKONIFG] Bits */
+#define LCD_F_CLRIFG_CLRLCDBLKONIFG_OFS          ( 2)                            /*!< CLRLCDBLKONIFG Bit Offset */
+#define LCD_F_CLRIFG_CLRLCDBLKONIFG              ((uint32_t)0x00000004)          /*!< Clears LCDBLKONIFG */
+/* LCD_F_CLRIFG[CLRLCDFRMIFG] Bits */
+#define LCD_F_CLRIFG_CLRLCDFRMIFG_OFS            ( 3)                            /*!< CLRLCDFRMIFG Bit Offset */
+#define LCD_F_CLRIFG_CLRLCDFRMIFG                ((uint32_t)0x00000008)          /*!< Clears LCDFRMIFG */
+/* LCD_F_CLRIFG[CLRLCDANMSTPIFG] Bits */
+#define LCD_F_CLRIFG_CLRLCDANMSTPIFG_OFS         ( 8)                            /*!< CLRLCDANMSTPIFG Bit Offset */
+#define LCD_F_CLRIFG_CLRLCDANMSTPIFG             ((uint32_t)0x00000100)          /*!< Clears LCDANMSTPIFG */
+/* LCD_F_CLRIFG[CLRLCDANMLOOPIFG] Bits */
+#define LCD_F_CLRIFG_CLRLCDANMLOOPIFG_OFS        ( 9)                            /*!< CLRLCDANMLOOPIFG Bit Offset */
+#define LCD_F_CLRIFG_CLRLCDANMLOOPIFG            ((uint32_t)0x00000200)          /*!< Clears LCDANMLOOPIFG */
 
 /******************************************************************************
 * MPU Bits
@@ -5101,7 +7259,6 @@ typedef struct {
 /* PCM_CLRIFG[CLR_DCDC_ERROR_IFG] Bits */
 #define PCM_CLRIFG_CLR_DCDC_ERROR_IFG_OFS        ( 6)                            /*!< CLR_DCDC_ERROR_IFG Bit Offset */
 #define PCM_CLRIFG_CLR_DCDC_ERROR_IFG            ((uint32_t)0x00000040)          /*!< Clear DC-DC error flag */
-
 /* Pre-defined bitfield values */
 #define PCM_CTL0_KEY_VAL                         ((uint32_t)0x695A0000)          /*!< PCM key value */
 #define PCM_CTL1_KEY_VAL                         ((uint32_t)0x695A0000)          /*!< PCM key value */
@@ -5116,7 +7273,6 @@ typedef struct {
 /* PMAP_CTL[PRECFG] Bits */
 #define PMAP_CTL_PRECFG_OFS                      ( 1)                            /*!< PMAPRECFG Bit Offset */
 #define PMAP_CTL_PRECFG                          ((uint16_t)0x0002)              /*!< Port mapping reconfiguration control bit */
-
 /* Pre-defined bitfield values */
 #define PMAP_NONE                                            0
 #define PMAP_UCA0CLK                                         1
@@ -5216,7 +7372,6 @@ typedef struct {
 /* PSS_CLRIFG[CLRSVSMHIFG] Bits */
 #define PSS_CLRIFG_CLRSVSMHIFG_OFS               ( 1)                            /*!< CLRSVSMHIFG Bit Offset */
 #define PSS_CLRIFG_CLRSVSMHIFG                   ((uint32_t)0x00000002)          /*!< SVSMH clear interrupt flag */
-
 /* Pre-defined bitfield values */
 #define PSS_KEY_KEY_VAL                           ((uint32_t)0x0000695A)          /*!< PSS control key value */
 
@@ -5902,7 +8057,6 @@ typedef struct {
 /* RTC_C_ADOWDAY[DAY_HD] Bits */
 #define RTC_C_ADOWDAY_DAY_HD_OFS                 (12)                            /*!< DayHighDigit Bit Offset */
 #define RTC_C_ADOWDAY_DAY_HD_MASK                ((uint16_t)0x3000)              /*!< DayHighDigit Bit Mask */
-
 /* Pre-defined bitfield values */
 #define RTC_C_KEY                                 ((uint16_t)0xA500)              /*!< RTC_C Key Value for RTC_C write access */
 #define RTC_C_KEY_H                               ((uint16_t)0x00A5)              /*!< RTC_C Key Value for RTC_C write access */
@@ -6302,7 +8456,6 @@ typedef struct {
 /* SCB_CPACR[CP10] Bits */
 #define SCB_CPACR_CP10_OFS                       (20)                            /*!< CP10 Bit Offset */
 #define SCB_CPACR_CP10_MASK                      ((uint32_t)0x00300000)          /*!< CP10 Bit Mask */
-
 /* SCB_SHPR1[SCB_SHPR1_PRI_4] Bits */
 #define SCB_SHPR1_PRI_4_OFS                      ( 0)                            /*!< PRI_4 Offset */
 #define SCB_SHPR1_PRI_4_M                        ((uint32_t)0x000000ff)          /*  */
@@ -6400,190 +8553,918 @@ typedef struct {
 
 
 /******************************************************************************
-* SCnSCB Bits
+* SCNSCB Bits
 ******************************************************************************/
 
 
 /******************************************************************************
-* SYSCTL Bits
+* SYSCTL_A Bits
 ******************************************************************************/
-/* SYSCTL_REBOOT_CTL[REBOOT] Bits */
-#define SYSCTL_REBOOT_CTL_REBOOT_OFS             ( 0)                            /*!< REBOOT Bit Offset */
-#define SYSCTL_REBOOT_CTL_REBOOT                 ((uint32_t)0x00000001)          /*!< Write 1 initiates a Reboot of the device */
-/* SYSCTL_REBOOT_CTL[WKEY] Bits */
-#define SYSCTL_REBOOT_CTL_WKEY_OFS               ( 8)                            /*!< WKEY Bit Offset */
-#define SYSCTL_REBOOT_CTL_WKEY_MASK              ((uint32_t)0x0000FF00)          /*!< WKEY Bit Mask */
-/* SYSCTL_NMI_CTLSTAT[CS_SRC] Bits */
-#define SYSCTL_NMI_CTLSTAT_CS_SRC_OFS            ( 0)                            /*!< CS_SRC Bit Offset */
-#define SYSCTL_NMI_CTLSTAT_CS_SRC                ((uint32_t)0x00000001)          /*!< CS interrupt as a source of NMI */
-/* SYSCTL_NMI_CTLSTAT[PSS_SRC] Bits */
-#define SYSCTL_NMI_CTLSTAT_PSS_SRC_OFS           ( 1)                            /*!< PSS_SRC Bit Offset */
-#define SYSCTL_NMI_CTLSTAT_PSS_SRC               ((uint32_t)0x00000002)          /*!< PSS interrupt as a source of NMI */
-/* SYSCTL_NMI_CTLSTAT[PCM_SRC] Bits */
-#define SYSCTL_NMI_CTLSTAT_PCM_SRC_OFS           ( 2)                            /*!< PCM_SRC Bit Offset */
-#define SYSCTL_NMI_CTLSTAT_PCM_SRC               ((uint32_t)0x00000004)          /*!< PCM interrupt as a source of NMI */
-/* SYSCTL_NMI_CTLSTAT[PIN_SRC] Bits */
-#define SYSCTL_NMI_CTLSTAT_PIN_SRC_OFS           ( 3)                            /*!< PIN_SRC Bit Offset */
-#define SYSCTL_NMI_CTLSTAT_PIN_SRC               ((uint32_t)0x00000008)
-/* SYSCTL_NMI_CTLSTAT[CS_FLG] Bits */
-#define SYSCTL_NMI_CTLSTAT_CS_FLG_OFS            (16)                            /*!< CS_FLG Bit Offset */
-#define SYSCTL_NMI_CTLSTAT_CS_FLG                ((uint32_t)0x00010000)          /*!< CS interrupt was the source of NMI */
-/* SYSCTL_NMI_CTLSTAT[PSS_FLG] Bits */
-#define SYSCTL_NMI_CTLSTAT_PSS_FLG_OFS           (17)                            /*!< PSS_FLG Bit Offset */
-#define SYSCTL_NMI_CTLSTAT_PSS_FLG               ((uint32_t)0x00020000)          /*!< PSS interrupt was the source of NMI */
-/* SYSCTL_NMI_CTLSTAT[PCM_FLG] Bits */
-#define SYSCTL_NMI_CTLSTAT_PCM_FLG_OFS           (18)                            /*!< PCM_FLG Bit Offset */
-#define SYSCTL_NMI_CTLSTAT_PCM_FLG               ((uint32_t)0x00040000)          /*!< PCM interrupt was the source of NMI */
-/* SYSCTL_NMI_CTLSTAT[PIN_FLG] Bits */
-#define SYSCTL_NMI_CTLSTAT_PIN_FLG_OFS           (19)                            /*!< PIN_FLG Bit Offset */
-#define SYSCTL_NMI_CTLSTAT_PIN_FLG               ((uint32_t)0x00080000)          /*!< RSTn/NMI pin was the source of NMI */
-/* SYSCTL_WDTRESET_CTL[TIMEOUT] Bits */
-#define SYSCTL_WDTRESET_CTL_TIMEOUT_OFS          ( 0)                            /*!< TIMEOUT Bit Offset */
-#define SYSCTL_WDTRESET_CTL_TIMEOUT              ((uint32_t)0x00000001)          /*!< WDT timeout reset type */
-/* SYSCTL_WDTRESET_CTL[VIOLATION] Bits */
-#define SYSCTL_WDTRESET_CTL_VIOLATION_OFS        ( 1)                            /*!< VIOLATION Bit Offset */
-#define SYSCTL_WDTRESET_CTL_VIOLATION            ((uint32_t)0x00000002)          /*!< WDT password violation reset type */
-/* SYSCTL_PERIHALT_CTL[HALT_T16_0] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_T16_0_OFS       ( 0)                            /*!< HALT_T16_0 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_T16_0           ((uint32_t)0x00000001)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_T16_1] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_T16_1_OFS       ( 1)                            /*!< HALT_T16_1 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_T16_1           ((uint32_t)0x00000002)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_T16_2] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_T16_2_OFS       ( 2)                            /*!< HALT_T16_2 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_T16_2           ((uint32_t)0x00000004)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_T16_3] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_T16_3_OFS       ( 3)                            /*!< HALT_T16_3 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_T16_3           ((uint32_t)0x00000008)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_T32_0] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_T32_0_OFS       ( 4)                            /*!< HALT_T32_0 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_T32_0           ((uint32_t)0x00000010)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_eUA0] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_EUA0_OFS        ( 5)                            /*!< HALT_eUA0 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_EUA0            ((uint32_t)0x00000020)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_eUA1] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_EUA1_OFS        ( 6)                            /*!< HALT_eUA1 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_EUA1            ((uint32_t)0x00000040)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_eUA2] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_EUA2_OFS        ( 7)                            /*!< HALT_eUA2 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_EUA2            ((uint32_t)0x00000080)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_eUA3] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_EUA3_OFS        ( 8)                            /*!< HALT_eUA3 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_EUA3            ((uint32_t)0x00000100)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_eUB0] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_EUB0_OFS        ( 9)                            /*!< HALT_eUB0 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_EUB0            ((uint32_t)0x00000200)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_eUB1] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_EUB1_OFS        (10)                            /*!< HALT_eUB1 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_EUB1            ((uint32_t)0x00000400)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_eUB2] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_EUB2_OFS        (11)                            /*!< HALT_eUB2 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_EUB2            ((uint32_t)0x00000800)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_eUB3] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_EUB3_OFS        (12)                            /*!< HALT_eUB3 Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_EUB3            ((uint32_t)0x00001000)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_ADC] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_ADC_OFS         (13)                            /*!< HALT_ADC Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_ADC             ((uint32_t)0x00002000)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_WDT] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_WDT_OFS         (14)                            /*!< HALT_WDT Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_WDT             ((uint32_t)0x00004000)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_PERIHALT_CTL[HALT_DMA] Bits */
-#define SYSCTL_PERIHALT_CTL_HALT_DMA_OFS         (15)                            /*!< HALT_DMA Bit Offset */
-#define SYSCTL_PERIHALT_CTL_HALT_DMA             ((uint32_t)0x00008000)          /*!< Freezes IP operation when CPU is halted */
-/* SYSCTL_SRAM_BANKEN[BNK0_EN] Bits */
-#define SYSCTL_SRAM_BANKEN_BNK0_EN_OFS           ( 0)                            /*!< BNK0_EN Bit Offset */
-#define SYSCTL_SRAM_BANKEN_BNK0_EN               ((uint32_t)0x00000001)          /*!< SRAM Bank0 enable */
-/* SYSCTL_SRAM_BANKEN[BNK1_EN] Bits */
-#define SYSCTL_SRAM_BANKEN_BNK1_EN_OFS           ( 1)                            /*!< BNK1_EN Bit Offset */
-#define SYSCTL_SRAM_BANKEN_BNK1_EN               ((uint32_t)0x00000002)          /*!< SRAM Bank1 enable */
-/* SYSCTL_SRAM_BANKEN[BNK2_EN] Bits */
-#define SYSCTL_SRAM_BANKEN_BNK2_EN_OFS           ( 2)                            /*!< BNK2_EN Bit Offset */
-#define SYSCTL_SRAM_BANKEN_BNK2_EN               ((uint32_t)0x00000004)          /*!< SRAM Bank1 enable */
-/* SYSCTL_SRAM_BANKEN[BNK3_EN] Bits */
-#define SYSCTL_SRAM_BANKEN_BNK3_EN_OFS           ( 3)                            /*!< BNK3_EN Bit Offset */
-#define SYSCTL_SRAM_BANKEN_BNK3_EN               ((uint32_t)0x00000008)          /*!< SRAM Bank1 enable */
-/* SYSCTL_SRAM_BANKEN[BNK4_EN] Bits */
-#define SYSCTL_SRAM_BANKEN_BNK4_EN_OFS           ( 4)                            /*!< BNK4_EN Bit Offset */
-#define SYSCTL_SRAM_BANKEN_BNK4_EN               ((uint32_t)0x00000010)          /*!< SRAM Bank1 enable */
-/* SYSCTL_SRAM_BANKEN[BNK5_EN] Bits */
-#define SYSCTL_SRAM_BANKEN_BNK5_EN_OFS           ( 5)                            /*!< BNK5_EN Bit Offset */
-#define SYSCTL_SRAM_BANKEN_BNK5_EN               ((uint32_t)0x00000020)          /*!< SRAM Bank1 enable */
-/* SYSCTL_SRAM_BANKEN[BNK6_EN] Bits */
-#define SYSCTL_SRAM_BANKEN_BNK6_EN_OFS           ( 6)                            /*!< BNK6_EN Bit Offset */
-#define SYSCTL_SRAM_BANKEN_BNK6_EN               ((uint32_t)0x00000040)          /*!< SRAM Bank1 enable */
-/* SYSCTL_SRAM_BANKEN[BNK7_EN] Bits */
-#define SYSCTL_SRAM_BANKEN_BNK7_EN_OFS           ( 7)                            /*!< BNK7_EN Bit Offset */
-#define SYSCTL_SRAM_BANKEN_BNK7_EN               ((uint32_t)0x00000080)          /*!< SRAM Bank1 enable */
-/* SYSCTL_SRAM_BANKEN[SRAM_RDY] Bits */
-#define SYSCTL_SRAM_BANKEN_SRAM_RDY_OFS          (16)                            /*!< SRAM_RDY Bit Offset */
-#define SYSCTL_SRAM_BANKEN_SRAM_RDY              ((uint32_t)0x00010000)          /*!< SRAM ready */
-/* SYSCTL_SRAM_BANKRET[BNK0_RET] Bits */
-#define SYSCTL_SRAM_BANKRET_BNK0_RET_OFS         ( 0)                            /*!< BNK0_RET Bit Offset */
-#define SYSCTL_SRAM_BANKRET_BNK0_RET             ((uint32_t)0x00000001)          /*!< Bank0 retention */
-/* SYSCTL_SRAM_BANKRET[BNK1_RET] Bits */
-#define SYSCTL_SRAM_BANKRET_BNK1_RET_OFS         ( 1)                            /*!< BNK1_RET Bit Offset */
-#define SYSCTL_SRAM_BANKRET_BNK1_RET             ((uint32_t)0x00000002)          /*!< Bank1 retention */
-/* SYSCTL_SRAM_BANKRET[BNK2_RET] Bits */
-#define SYSCTL_SRAM_BANKRET_BNK2_RET_OFS         ( 2)                            /*!< BNK2_RET Bit Offset */
-#define SYSCTL_SRAM_BANKRET_BNK2_RET             ((uint32_t)0x00000004)          /*!< Bank2 retention */
-/* SYSCTL_SRAM_BANKRET[BNK3_RET] Bits */
-#define SYSCTL_SRAM_BANKRET_BNK3_RET_OFS         ( 3)                            /*!< BNK3_RET Bit Offset */
-#define SYSCTL_SRAM_BANKRET_BNK3_RET             ((uint32_t)0x00000008)          /*!< Bank3 retention */
-/* SYSCTL_SRAM_BANKRET[BNK4_RET] Bits */
-#define SYSCTL_SRAM_BANKRET_BNK4_RET_OFS         ( 4)                            /*!< BNK4_RET Bit Offset */
-#define SYSCTL_SRAM_BANKRET_BNK4_RET             ((uint32_t)0x00000010)          /*!< Bank4 retention */
-/* SYSCTL_SRAM_BANKRET[BNK5_RET] Bits */
-#define SYSCTL_SRAM_BANKRET_BNK5_RET_OFS         ( 5)                            /*!< BNK5_RET Bit Offset */
-#define SYSCTL_SRAM_BANKRET_BNK5_RET             ((uint32_t)0x00000020)          /*!< Bank5 retention */
-/* SYSCTL_SRAM_BANKRET[BNK6_RET] Bits */
-#define SYSCTL_SRAM_BANKRET_BNK6_RET_OFS         ( 6)                            /*!< BNK6_RET Bit Offset */
-#define SYSCTL_SRAM_BANKRET_BNK6_RET             ((uint32_t)0x00000040)          /*!< Bank6 retention */
-/* SYSCTL_SRAM_BANKRET[BNK7_RET] Bits */
-#define SYSCTL_SRAM_BANKRET_BNK7_RET_OFS         ( 7)                            /*!< BNK7_RET Bit Offset */
-#define SYSCTL_SRAM_BANKRET_BNK7_RET             ((uint32_t)0x00000080)          /*!< Bank7 retention */
-/* SYSCTL_SRAM_BANKRET[SRAM_RDY] Bits */
-#define SYSCTL_SRAM_BANKRET_SRAM_RDY_OFS         (16)                            /*!< SRAM_RDY Bit Offset */
-#define SYSCTL_SRAM_BANKRET_SRAM_RDY             ((uint32_t)0x00010000)          /*!< SRAM ready */
-/* SYSCTL_DIO_GLTFLT_CTL[GLTCH_EN] Bits */
-#define SYSCTL_DIO_GLTFLT_CTL_GLTCH_EN_OFS       ( 0)                            /*!< GLTCH_EN Bit Offset */
-#define SYSCTL_DIO_GLTFLT_CTL_GLTCH_EN           ((uint32_t)0x00000001)          /*!< Glitch filter enable */
-/* SYSCTL_SECDATA_UNLOCK[UNLKEY] Bits */
-#define SYSCTL_SECDATA_UNLOCK_UNLKEY_OFS         ( 0)                            /*!< UNLKEY Bit Offset */
-#define SYSCTL_SECDATA_UNLOCK_UNLKEY_MASK        ((uint32_t)0x0000FFFF)          /*!< UNLKEY Bit Mask */
-/* SYSCTL_MASTER_UNLOCK[UNLKEY] Bits */
-#define SYSCTL_MASTER_UNLOCK_UNLKEY_OFS          ( 0)                            /*!< UNLKEY Bit Offset */
-#define SYSCTL_MASTER_UNLOCK_UNLKEY_MASK         ((uint32_t)0x0000FFFF)          /*!< UNLKEY Bit Mask */
-/* SYSCTL_RESET_REQ[POR] Bits */
-#define SYSCTL_RESET_REQ_POR_OFS                 ( 0)                            /*!< POR Bit Offset */
-#define SYSCTL_RESET_REQ_POR                     ((uint32_t)0x00000001)          /*!< Generate POR */
-/* SYSCTL_RESET_REQ[REBOOT] Bits */
-#define SYSCTL_RESET_REQ_REBOOT_OFS              ( 1)                            /*!< REBOOT Bit Offset */
-#define SYSCTL_RESET_REQ_REBOOT                  ((uint32_t)0x00000002)          /*!< Generate Reboot_Reset */
-/* SYSCTL_RESET_REQ[WKEY] Bits */
-#define SYSCTL_RESET_REQ_WKEY_OFS                ( 8)                            /*!< WKEY Bit Offset */
-#define SYSCTL_RESET_REQ_WKEY_MASK               ((uint32_t)0x0000FF00)          /*!< WKEY Bit Mask */
-/* SYSCTL_RESET_STATOVER[SOFT] Bits */
-#define SYSCTL_RESET_STATOVER_SOFT_OFS           ( 0)                            /*!< SOFT Bit Offset */
-#define SYSCTL_RESET_STATOVER_SOFT               ((uint32_t)0x00000001)          /*!< Indicates if SOFT Reset is active */
-/* SYSCTL_RESET_STATOVER[HARD] Bits */
-#define SYSCTL_RESET_STATOVER_HARD_OFS           ( 1)                            /*!< HARD Bit Offset */
-#define SYSCTL_RESET_STATOVER_HARD               ((uint32_t)0x00000002)          /*!< Indicates if HARD Reset is active */
-/* SYSCTL_RESET_STATOVER[REBOOT] Bits */
-#define SYSCTL_RESET_STATOVER_REBOOT_OFS         ( 2)                            /*!< REBOOT Bit Offset */
-#define SYSCTL_RESET_STATOVER_REBOOT             ((uint32_t)0x00000004)          /*!< Indicates if Reboot Reset is active */
-/* SYSCTL_RESET_STATOVER[SOFT_OVER] Bits */
-#define SYSCTL_RESET_STATOVER_SOFT_OVER_OFS      ( 8)                            /*!< SOFT_OVER Bit Offset */
-#define SYSCTL_RESET_STATOVER_SOFT_OVER          ((uint32_t)0x00000100)          /*!< SOFT_Reset overwrite request */
-/* SYSCTL_RESET_STATOVER[HARD_OVER] Bits */
-#define SYSCTL_RESET_STATOVER_HARD_OVER_OFS      ( 9)                            /*!< HARD_OVER Bit Offset */
-#define SYSCTL_RESET_STATOVER_HARD_OVER          ((uint32_t)0x00000200)          /*!< HARD_Reset overwrite request */
-/* SYSCTL_RESET_STATOVER[RBT_OVER] Bits */
-#define SYSCTL_RESET_STATOVER_RBT_OVER_OFS       (10)                            /*!< RBT_OVER Bit Offset */
-#define SYSCTL_RESET_STATOVER_RBT_OVER           ((uint32_t)0x00000400)          /*!< Reboot Reset overwrite request */
+/* SYSCTL_A_REBOOT_CTL[REBOOT] Bits */
+#define SYSCTL_A_REBOOT_CTL_REBOOT_OFS           ( 0)                            /*!< REBOOT Bit Offset */
+#define SYSCTL_A_REBOOT_CTL_REBOOT               ((uint32_t)0x00000001)          /*!< Write 1 initiates a Reboot of the device */
+/* SYSCTL_A_REBOOT_CTL[WKEY] Bits */
+#define SYSCTL_A_REBOOT_CTL_WKEY_OFS             ( 8)                            /*!< WKEY Bit Offset */
+#define SYSCTL_A_REBOOT_CTL_WKEY_MASK            ((uint32_t)0x0000FF00)          /*!< WKEY Bit Mask */
+/* SYSCTL_A_NMI_CTLSTAT[CS_SRC] Bits */
+#define SYSCTL_A_NMI_CTLSTAT_CS_SRC_OFS          ( 0)                            /*!< CS_SRC Bit Offset */
+#define SYSCTL_A_NMI_CTLSTAT_CS_SRC              ((uint32_t)0x00000001)          /*!< CS interrupt as a source of NMI */
+/* SYSCTL_A_NMI_CTLSTAT[PSS_SRC] Bits */
+#define SYSCTL_A_NMI_CTLSTAT_PSS_SRC_OFS         ( 1)                            /*!< PSS_SRC Bit Offset */
+#define SYSCTL_A_NMI_CTLSTAT_PSS_SRC             ((uint32_t)0x00000002)          /*!< PSS interrupt as a source of NMI */
+/* SYSCTL_A_NMI_CTLSTAT[PCM_SRC] Bits */
+#define SYSCTL_A_NMI_CTLSTAT_PCM_SRC_OFS         ( 2)                            /*!< PCM_SRC Bit Offset */
+#define SYSCTL_A_NMI_CTLSTAT_PCM_SRC             ((uint32_t)0x00000004)          /*!< PCM interrupt as a source of NMI */
+/* SYSCTL_A_NMI_CTLSTAT[PIN_SRC] Bits */
+#define SYSCTL_A_NMI_CTLSTAT_PIN_SRC_OFS         ( 3)                            /*!< PIN_SRC Bit Offset */
+#define SYSCTL_A_NMI_CTLSTAT_PIN_SRC             ((uint32_t)0x00000008)
+/* SYSCTL_A_NMI_CTLSTAT[CS_FLG] Bits */
+#define SYSCTL_A_NMI_CTLSTAT_CS_FLG_OFS          (16)                            /*!< CS_FLG Bit Offset */
+#define SYSCTL_A_NMI_CTLSTAT_CS_FLG              ((uint32_t)0x00010000)          /*!< CS interrupt was the source of NMI */
+/* SYSCTL_A_NMI_CTLSTAT[PSS_FLG] Bits */
+#define SYSCTL_A_NMI_CTLSTAT_PSS_FLG_OFS         (17)                            /*!< PSS_FLG Bit Offset */
+#define SYSCTL_A_NMI_CTLSTAT_PSS_FLG             ((uint32_t)0x00020000)          /*!< PSS interrupt was the source of NMI */
+/* SYSCTL_A_NMI_CTLSTAT[PCM_FLG] Bits */
+#define SYSCTL_A_NMI_CTLSTAT_PCM_FLG_OFS         (18)                            /*!< PCM_FLG Bit Offset */
+#define SYSCTL_A_NMI_CTLSTAT_PCM_FLG             ((uint32_t)0x00040000)          /*!< PCM interrupt was the source of NMI */
+/* SYSCTL_A_NMI_CTLSTAT[PIN_FLG] Bits */
+#define SYSCTL_A_NMI_CTLSTAT_PIN_FLG_OFS         (19)                            /*!< PIN_FLG Bit Offset */
+#define SYSCTL_A_NMI_CTLSTAT_PIN_FLG             ((uint32_t)0x00080000)          /*!< RSTn/NMI pin was the source of NMI */
+/* SYSCTL_A_WDTRESET_CTL[TIMEOUT] Bits */
+#define SYSCTL_A_WDTRESET_CTL_TIMEOUT_OFS        ( 0)                            /*!< TIMEOUT Bit Offset */
+#define SYSCTL_A_WDTRESET_CTL_TIMEOUT            ((uint32_t)0x00000001)          /*!< WDT timeout reset type */
+/* SYSCTL_A_WDTRESET_CTL[VIOLATION] Bits */
+#define SYSCTL_A_WDTRESET_CTL_VIOLATION_OFS      ( 1)                            /*!< VIOLATION Bit Offset */
+#define SYSCTL_A_WDTRESET_CTL_VIOLATION          ((uint32_t)0x00000002)          /*!< WDT password violation reset type */
+/* SYSCTL_A_PERIHALT_CTL[HALT_T16_0] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_T16_0_OFS     ( 0)                            /*!< HALT_T16_0 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_T16_0         ((uint32_t)0x00000001)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_T16_1] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_T16_1_OFS     ( 1)                            /*!< HALT_T16_1 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_T16_1         ((uint32_t)0x00000002)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_T16_2] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_T16_2_OFS     ( 2)                            /*!< HALT_T16_2 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_T16_2         ((uint32_t)0x00000004)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_T16_3] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_T16_3_OFS     ( 3)                            /*!< HALT_T16_3 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_T16_3         ((uint32_t)0x00000008)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_T32_0] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_T32_0_OFS     ( 4)                            /*!< HALT_T32_0 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_T32_0         ((uint32_t)0x00000010)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_eUA0] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUA0_OFS      ( 5)                            /*!< HALT_eUA0 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUA0          ((uint32_t)0x00000020)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_eUA1] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUA1_OFS      ( 6)                            /*!< HALT_eUA1 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUA1          ((uint32_t)0x00000040)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_eUA2] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUA2_OFS      ( 7)                            /*!< HALT_eUA2 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUA2          ((uint32_t)0x00000080)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_eUA3] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUA3_OFS      ( 8)                            /*!< HALT_eUA3 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUA3          ((uint32_t)0x00000100)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_eUB0] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUB0_OFS      ( 9)                            /*!< HALT_eUB0 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUB0          ((uint32_t)0x00000200)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_eUB1] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUB1_OFS      (10)                            /*!< HALT_eUB1 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUB1          ((uint32_t)0x00000400)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_eUB2] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUB2_OFS      (11)                            /*!< HALT_eUB2 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUB2          ((uint32_t)0x00000800)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_eUB3] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUB3_OFS      (12)                            /*!< HALT_eUB3 Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_EUB3          ((uint32_t)0x00001000)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_ADC] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_ADC_OFS       (13)                            /*!< HALT_ADC Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_ADC           ((uint32_t)0x00002000)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_WDT] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_WDT_OFS       (14)                            /*!< HALT_WDT Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_WDT           ((uint32_t)0x00004000)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_DMA] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_DMA_OFS       (15)                            /*!< HALT_DMA Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_DMA           ((uint32_t)0x00008000)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_PERIHALT_CTL[HALT_LCD] Bits */
+#define SYSCTL_A_PERIHALT_CTL_HALT_LCD_OFS       (16)                            /*!< HALT_LCD Bit Offset */
+#define SYSCTL_A_PERIHALT_CTL_HALT_LCD           ((uint32_t)0x00010000)          /*!< Freezes IP operation when CPU is halted */
+/* SYSCTL_A_DIO_GLTFLT_CTL[GLTCH_EN] Bits */
+#define SYSCTL_A_DIO_GLTFLT_CTL_GLTCH_EN_OFS     ( 0)                            /*!< GLTCH_EN Bit Offset */
+#define SYSCTL_A_DIO_GLTFLT_CTL_GLTCH_EN         ((uint32_t)0x00000001)          /*!< Glitch filter enable */
+/* SYSCTL_A_SECDATA_UNLOCK[UNLKEY] Bits */
+#define SYSCTL_A_SECDATA_UNLOCK_UNLKEY_OFS       ( 0)                            /*!< UNLKEY Bit Offset */
+#define SYSCTL_A_SECDATA_UNLOCK_UNLKEY_MASK      ((uint32_t)0x0000FFFF)          /*!< UNLKEY Bit Mask */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK0_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK0_EN_OFS    ( 0)                            /*!< BNK0_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK0_EN        ((uint32_t)0x00000001)          /*!< When 1, enables Bank0 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK1_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK1_EN_OFS    ( 1)                            /*!< BNK1_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK1_EN        ((uint32_t)0x00000002)          /*!< When 1, enables Bank1 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK2_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK2_EN_OFS    ( 2)                            /*!< BNK2_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK2_EN        ((uint32_t)0x00000004)          /*!< When 1, enables Bank2 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK3_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK3_EN_OFS    ( 3)                            /*!< BNK3_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK3_EN        ((uint32_t)0x00000008)          /*!< When 1, enables Bank3 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK4_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK4_EN_OFS    ( 4)                            /*!< BNK4_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK4_EN        ((uint32_t)0x00000010)          /*!< When 1, enables Bank4 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK5_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK5_EN_OFS    ( 5)                            /*!< BNK5_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK5_EN        ((uint32_t)0x00000020)          /*!< When 1, enables Bank5 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK6_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK6_EN_OFS    ( 6)                            /*!< BNK6_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK6_EN        ((uint32_t)0x00000040)          /*!< When 1, enables Bank6 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK7_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK7_EN_OFS    ( 7)                            /*!< BNK7_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK7_EN        ((uint32_t)0x00000080)          /*!< When 1, enables Bank7 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK8_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK8_EN_OFS    ( 8)                            /*!< BNK8_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK8_EN        ((uint32_t)0x00000100)          /*!< When 1, enables Bank8 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK9_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK9_EN_OFS    ( 9)                            /*!< BNK9_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK9_EN        ((uint32_t)0x00000200)          /*!< When 1, enables Bank9 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK10_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK10_EN_OFS   (10)                            /*!< BNK10_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK10_EN       ((uint32_t)0x00000400)          /*!< When 1, enables Bank10 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK11_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK11_EN_OFS   (11)                            /*!< BNK11_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK11_EN       ((uint32_t)0x00000800)          /*!< When 1, enables Bank11 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK12_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK12_EN_OFS   (12)                            /*!< BNK12_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK12_EN       ((uint32_t)0x00001000)          /*!< When 1, enables Bank12 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK13_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK13_EN_OFS   (13)                            /*!< BNK13_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK13_EN       ((uint32_t)0x00002000)          /*!< When 1, enables Bank13 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK14_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK14_EN_OFS   (14)                            /*!< BNK14_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK14_EN       ((uint32_t)0x00004000)          /*!< When 1, enables Bank14 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK15_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK15_EN_OFS   (15)                            /*!< BNK15_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK15_EN       ((uint32_t)0x00008000)          /*!< When 1, enables Bank15 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK16_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK16_EN_OFS   (16)                            /*!< BNK16_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK16_EN       ((uint32_t)0x00010000)          /*!< When 1, enables Bank16 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK17_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK17_EN_OFS   (17)                            /*!< BNK17_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK17_EN       ((uint32_t)0x00020000)          /*!< When 1, enables Bank17 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK18_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK18_EN_OFS   (18)                            /*!< BNK18_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK18_EN       ((uint32_t)0x00040000)          /*!< When 1, enables Bank18 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK19_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK19_EN_OFS   (19)                            /*!< BNK19_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK19_EN       ((uint32_t)0x00080000)          /*!< When 1, enables Bank19 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK20_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK20_EN_OFS   (20)                            /*!< BNK20_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK20_EN       ((uint32_t)0x00100000)          /*!< When 1, enables Bank20 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK21_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK21_EN_OFS   (21)                            /*!< BNK21_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK21_EN       ((uint32_t)0x00200000)          /*!< When 1, enables Bank21 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK22_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK22_EN_OFS   (22)                            /*!< BNK22_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK22_EN       ((uint32_t)0x00400000)          /*!< When 1, enables Bank22 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK23_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK23_EN_OFS   (23)                            /*!< BNK23_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK23_EN       ((uint32_t)0x00800000)          /*!< When 1, enables Bank23 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK24_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK24_EN_OFS   (24)                            /*!< BNK24_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK24_EN       ((uint32_t)0x01000000)          /*!< When 1, enables Bank24 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK25_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK25_EN_OFS   (25)                            /*!< BNK25_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK25_EN       ((uint32_t)0x02000000)          /*!< When 1, enables Bank25 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK26_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK26_EN_OFS   (26)                            /*!< BNK26_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK26_EN       ((uint32_t)0x04000000)          /*!< When 1, enables Bank26 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK27_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK27_EN_OFS   (27)                            /*!< BNK27_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK27_EN       ((uint32_t)0x08000000)          /*!< When 1, enables Bank27 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK28_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK28_EN_OFS   (28)                            /*!< BNK28_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK28_EN       ((uint32_t)0x10000000)          /*!< When 1, enables Bank28 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK29_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK29_EN_OFS   (29)                            /*!< BNK29_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK29_EN       ((uint32_t)0x20000000)          /*!< When 1, enables Bank29 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK30_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK30_EN_OFS   (30)                            /*!< BNK30_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK30_EN       ((uint32_t)0x40000000)          /*!< When 1, enables Bank30 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL0[BNK31_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK31_EN_OFS   (31)                            /*!< BNK31_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL0_BNK31_EN       ((uint32_t)0x80000000)          /*!< When 1, enables Bank31 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK32_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK32_EN_OFS   ( 0)                            /*!< BNK32_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK32_EN       ((uint32_t)0x00000001)          /*!< When 1, enables Bank32 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK33_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK33_EN_OFS   ( 1)                            /*!< BNK33_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK33_EN       ((uint32_t)0x00000002)          /*!< When 1, enables Bank33 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK34_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK34_EN_OFS   ( 2)                            /*!< BNK34_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK34_EN       ((uint32_t)0x00000004)          /*!< When 1, enables Bank34 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK35_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK35_EN_OFS   ( 3)                            /*!< BNK35_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK35_EN       ((uint32_t)0x00000008)          /*!< When 1, enables Bank35 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK36_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK36_EN_OFS   ( 4)                            /*!< BNK36_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK36_EN       ((uint32_t)0x00000010)          /*!< When 1, enables Bank36 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK37_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK37_EN_OFS   ( 5)                            /*!< BNK37_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK37_EN       ((uint32_t)0x00000020)          /*!< When 1, enables Bank37 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK38_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK38_EN_OFS   ( 6)                            /*!< BNK38_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK38_EN       ((uint32_t)0x00000040)          /*!< When 1, enables Bank38 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK39_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK39_EN_OFS   ( 7)                            /*!< BNK39_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK39_EN       ((uint32_t)0x00000080)          /*!< When 1, enables Bank39 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK40_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK40_EN_OFS   ( 8)                            /*!< BNK40_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK40_EN       ((uint32_t)0x00000100)          /*!< When 1, enables Bank40 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK41_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK41_EN_OFS   ( 9)                            /*!< BNK41_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK41_EN       ((uint32_t)0x00000200)          /*!< When 1, enables Bank41 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK42_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK42_EN_OFS   (10)                            /*!< BNK42_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK42_EN       ((uint32_t)0x00000400)          /*!< When 1, enables Bank42 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK43_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK43_EN_OFS   (11)                            /*!< BNK43_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK43_EN       ((uint32_t)0x00000800)          /*!< When 1, enables Bank43 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK44_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK44_EN_OFS   (12)                            /*!< BNK44_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK44_EN       ((uint32_t)0x00001000)          /*!< When 1, enables Bank44 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK45_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK45_EN_OFS   (13)                            /*!< BNK45_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK45_EN       ((uint32_t)0x00002000)          /*!< When 1, enables Bank45 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK46_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK46_EN_OFS   (14)                            /*!< BNK46_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK46_EN       ((uint32_t)0x00004000)          /*!< When 1, enables Bank46 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK47_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK47_EN_OFS   (15)                            /*!< BNK47_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK47_EN       ((uint32_t)0x00008000)          /*!< When 1, enables Bank47 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK48_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK48_EN_OFS   (16)                            /*!< BNK48_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK48_EN       ((uint32_t)0x00010000)          /*!< When 1, enables Bank48 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK49_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK49_EN_OFS   (17)                            /*!< BNK49_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK49_EN       ((uint32_t)0x00020000)          /*!< When 1, enables Bank49 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK50_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK50_EN_OFS   (18)                            /*!< BNK50_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK50_EN       ((uint32_t)0x00040000)          /*!< When 1, enables Bank50 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK51_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK51_EN_OFS   (19)                            /*!< BNK51_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK51_EN       ((uint32_t)0x00080000)          /*!< When 1, enables Bank51 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK52_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK52_EN_OFS   (20)                            /*!< BNK52_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK52_EN       ((uint32_t)0x00100000)          /*!< When 1, enables Bank52 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK53_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK53_EN_OFS   (21)                            /*!< BNK53_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK53_EN       ((uint32_t)0x00200000)          /*!< When 1, enables Bank53 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK54_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK54_EN_OFS   (22)                            /*!< BNK54_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK54_EN       ((uint32_t)0x00400000)          /*!< When 1, enables Bank54 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK55_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK55_EN_OFS   (23)                            /*!< BNK55_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK55_EN       ((uint32_t)0x00800000)          /*!< When 1, enables Bank55 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK56_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK56_EN_OFS   (24)                            /*!< BNK56_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK56_EN       ((uint32_t)0x01000000)          /*!< When 1, enables Bank56 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK57_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK57_EN_OFS   (25)                            /*!< BNK57_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK57_EN       ((uint32_t)0x02000000)          /*!< When 1, enables Bank57 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK58_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK58_EN_OFS   (26)                            /*!< BNK58_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK58_EN       ((uint32_t)0x04000000)          /*!< When 1, enables Bank58 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK59_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK59_EN_OFS   (27)                            /*!< BNK59_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK59_EN       ((uint32_t)0x08000000)          /*!< When 1, enables Bank59 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK60_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK60_EN_OFS   (28)                            /*!< BNK60_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK60_EN       ((uint32_t)0x10000000)          /*!< When 1, enables Bank60 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK61_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK61_EN_OFS   (29)                            /*!< BNK61_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK61_EN       ((uint32_t)0x20000000)          /*!< When 1, enables Bank61 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK62_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK62_EN_OFS   (30)                            /*!< BNK62_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK62_EN       ((uint32_t)0x40000000)          /*!< When 1, enables Bank62 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL1[BNK63_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK63_EN_OFS   (31)                            /*!< BNK63_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL1_BNK63_EN       ((uint32_t)0x80000000)          /*!< When 1, enables Bank63 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK64_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK64_EN_OFS   ( 0)                            /*!< BNK64_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK64_EN       ((uint32_t)0x00000001)          /*!< When 1, enables Bank64 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK65_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK65_EN_OFS   ( 1)                            /*!< BNK65_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK65_EN       ((uint32_t)0x00000002)          /*!< When 1, enables Bank65 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK66_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK66_EN_OFS   ( 2)                            /*!< BNK66_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK66_EN       ((uint32_t)0x00000004)          /*!< When 1, enables Bank66 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK67_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK67_EN_OFS   ( 3)                            /*!< BNK67_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK67_EN       ((uint32_t)0x00000008)          /*!< When 1, enables Bank67 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK68_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK68_EN_OFS   ( 4)                            /*!< BNK68_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK68_EN       ((uint32_t)0x00000010)          /*!< When 1, enables Bank68 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK69_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK69_EN_OFS   ( 5)                            /*!< BNK69_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK69_EN       ((uint32_t)0x00000020)          /*!< When 1, enables Bank69 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK70_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK70_EN_OFS   ( 6)                            /*!< BNK70_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK70_EN       ((uint32_t)0x00000040)          /*!< When 1, enables Bank70 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK71_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK71_EN_OFS   ( 7)                            /*!< BNK71_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK71_EN       ((uint32_t)0x00000080)          /*!< When 1, enables Bank71 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK72_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK72_EN_OFS   ( 8)                            /*!< BNK72_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK72_EN       ((uint32_t)0x00000100)          /*!< When 1, enables Bank72 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK73_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK73_EN_OFS   ( 9)                            /*!< BNK73_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK73_EN       ((uint32_t)0x00000200)          /*!< When 1, enables Bank73 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK74_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK74_EN_OFS   (10)                            /*!< BNK74_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK74_EN       ((uint32_t)0x00000400)          /*!< When 1, enables Bank74 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK75_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK75_EN_OFS   (11)                            /*!< BNK75_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK75_EN       ((uint32_t)0x00000800)          /*!< When 1, enables Bank75 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK76_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK76_EN_OFS   (12)                            /*!< BNK76_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK76_EN       ((uint32_t)0x00001000)          /*!< When 1, enables Bank76 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK77_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK77_EN_OFS   (13)                            /*!< BNK77_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK77_EN       ((uint32_t)0x00002000)          /*!< When 1, enables Bank77 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK78_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK78_EN_OFS   (14)                            /*!< BNK78_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK78_EN       ((uint32_t)0x00004000)          /*!< When 1, enables Bank78 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK79_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK79_EN_OFS   (15)                            /*!< BNK79_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK79_EN       ((uint32_t)0x00008000)          /*!< When 1, enables Bank79 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK80_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK80_EN_OFS   (16)                            /*!< BNK80_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK80_EN       ((uint32_t)0x00010000)          /*!< When 1, enables Bank80 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK81_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK81_EN_OFS   (17)                            /*!< BNK81_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK81_EN       ((uint32_t)0x00020000)          /*!< When 1, enables Bank81 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK82_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK82_EN_OFS   (18)                            /*!< BNK82_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK82_EN       ((uint32_t)0x00040000)          /*!< When 1, enables Bank82 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK83_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK83_EN_OFS   (19)                            /*!< BNK83_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK83_EN       ((uint32_t)0x00080000)          /*!< When 1, enables Bank83 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK84_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK84_EN_OFS   (20)                            /*!< BNK84_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK84_EN       ((uint32_t)0x00100000)          /*!< When 1, enables Bank84 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK85_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK85_EN_OFS   (21)                            /*!< BNK85_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK85_EN       ((uint32_t)0x00200000)          /*!< When 1, enables Bank85 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK86_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK86_EN_OFS   (22)                            /*!< BNK86_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK86_EN       ((uint32_t)0x00400000)          /*!< When 1, enables Bank86 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK87_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK87_EN_OFS   (23)                            /*!< BNK87_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK87_EN       ((uint32_t)0x00800000)          /*!< When 1, enables Bank87 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK88_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK88_EN_OFS   (24)                            /*!< BNK88_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK88_EN       ((uint32_t)0x01000000)          /*!< When 1, enables Bank88 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK89_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK89_EN_OFS   (25)                            /*!< BNK89_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK89_EN       ((uint32_t)0x02000000)          /*!< When 1, enables Bank89 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK90_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK90_EN_OFS   (26)                            /*!< BNK90_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK90_EN       ((uint32_t)0x04000000)          /*!< When 1, enables Bank90 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK91_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK91_EN_OFS   (27)                            /*!< BNK91_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK91_EN       ((uint32_t)0x08000000)          /*!< When 1, enables Bank91 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK92_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK92_EN_OFS   (28)                            /*!< BNK92_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK92_EN       ((uint32_t)0x10000000)          /*!< When 1, enables Bank92 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK93_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK93_EN_OFS   (29)                            /*!< BNK93_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK93_EN       ((uint32_t)0x20000000)          /*!< When 1, enables Bank93 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK94_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK94_EN_OFS   (30)                            /*!< BNK94_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK94_EN       ((uint32_t)0x40000000)          /*!< When 1, enables Bank94 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL2[BNK95_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK95_EN_OFS   (31)                            /*!< BNK95_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL2_BNK95_EN       ((uint32_t)0x80000000)          /*!< When 1, enables Bank95 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK96_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK96_EN_OFS   ( 0)                            /*!< BNK96_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK96_EN       ((uint32_t)0x00000001)          /*!< When 1, enables Bank96 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK97_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK97_EN_OFS   ( 1)                            /*!< BNK97_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK97_EN       ((uint32_t)0x00000002)          /*!< When 1, enables Bank97 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK98_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK98_EN_OFS   ( 2)                            /*!< BNK98_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK98_EN       ((uint32_t)0x00000004)          /*!< When 1, enables Bank98 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK99_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK99_EN_OFS   ( 3)                            /*!< BNK99_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK99_EN       ((uint32_t)0x00000008)          /*!< When 1, enables Bank99 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK100_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK100_EN_OFS  ( 4)                            /*!< BNK100_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK100_EN      ((uint32_t)0x00000010)          /*!< When 1, enables Bank100 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK101_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK101_EN_OFS  ( 5)                            /*!< BNK101_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK101_EN      ((uint32_t)0x00000020)          /*!< When 1, enables Bank101 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK102_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK102_EN_OFS  ( 6)                            /*!< BNK102_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK102_EN      ((uint32_t)0x00000040)          /*!< When 1, enables Bank102 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK103_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK103_EN_OFS  ( 7)                            /*!< BNK103_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK103_EN      ((uint32_t)0x00000080)          /*!< When 1, enables Bank103 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK104_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK104_EN_OFS  ( 8)                            /*!< BNK104_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK104_EN      ((uint32_t)0x00000100)          /*!< When 1, enables Bank104 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK105_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK105_EN_OFS  ( 9)                            /*!< BNK105_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK105_EN      ((uint32_t)0x00000200)          /*!< When 1, enables Bank105 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK106_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK106_EN_OFS  (10)                            /*!< BNK106_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK106_EN      ((uint32_t)0x00000400)          /*!< When 1, enables Bank106 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK107_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK107_EN_OFS  (11)                            /*!< BNK107_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK107_EN      ((uint32_t)0x00000800)          /*!< When 1, enables Bank107 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK108_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK108_EN_OFS  (12)                            /*!< BNK108_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK108_EN      ((uint32_t)0x00001000)          /*!< When 1, enables Bank108 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK109_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK109_EN_OFS  (13)                            /*!< BNK109_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK109_EN      ((uint32_t)0x00002000)          /*!< When 1, enables Bank109 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK110_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK110_EN_OFS  (14)                            /*!< BNK110_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK110_EN      ((uint32_t)0x00004000)          /*!< When 1, enables Bank110 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK111_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK111_EN_OFS  (15)                            /*!< BNK111_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK111_EN      ((uint32_t)0x00008000)          /*!< When 1, enables Bank111 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK112_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK112_EN_OFS  (16)                            /*!< BNK112_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK112_EN      ((uint32_t)0x00010000)          /*!< When 1, enables Bank112 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK113_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK113_EN_OFS  (17)                            /*!< BNK113_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK113_EN      ((uint32_t)0x00020000)          /*!< When 1, enables Bank113 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK114_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK114_EN_OFS  (18)                            /*!< BNK114_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK114_EN      ((uint32_t)0x00040000)          /*!< When 1, enables Bank114 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK115_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK115_EN_OFS  (19)                            /*!< BNK115_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK115_EN      ((uint32_t)0x00080000)          /*!< When 1, enables Bank115 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK116_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK116_EN_OFS  (20)                            /*!< BNK116_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK116_EN      ((uint32_t)0x00100000)          /*!< When 1, enables Bank116 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK117_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK117_EN_OFS  (21)                            /*!< BNK117_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK117_EN      ((uint32_t)0x00200000)          /*!< When 1, enables Bank117 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK118_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK118_EN_OFS  (22)                            /*!< BNK118_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK118_EN      ((uint32_t)0x00400000)          /*!< When 1, enables Bank118 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK119_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK119_EN_OFS  (23)                            /*!< BNK119_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK119_EN      ((uint32_t)0x00800000)          /*!< When 1, enables Bank119 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK120_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK120_EN_OFS  (24)                            /*!< BNK120_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK120_EN      ((uint32_t)0x01000000)          /*!< When 1, enables Bank120 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK121_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK121_EN_OFS  (25)                            /*!< BNK121_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK121_EN      ((uint32_t)0x02000000)          /*!< When 1, enables Bank121 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK122_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK122_EN_OFS  (26)                            /*!< BNK122_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK122_EN      ((uint32_t)0x04000000)          /*!< When 1, enables Bank122 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK123_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK123_EN_OFS  (27)                            /*!< BNK123_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK123_EN      ((uint32_t)0x08000000)          /*!< When 1, enables Bank123 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK124_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK124_EN_OFS  (28)                            /*!< BNK124_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK124_EN      ((uint32_t)0x10000000)          /*!< When 1, enables Bank124 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK125_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK125_EN_OFS  (29)                            /*!< BNK125_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK125_EN      ((uint32_t)0x20000000)          /*!< When 1, enables Bank125 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK126_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK126_EN_OFS  (30)                            /*!< BNK126_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK126_EN      ((uint32_t)0x40000000)          /*!< When 1, enables Bank126 of the SRAM */
+/* SYSCTL_A_SRAM_BANKEN_CTL3[BNK127_EN] Bits */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK127_EN_OFS  (31)                            /*!< BNK127_EN Bit Offset */
+#define SYSCTL_A_SRAM_BANKEN_CTL3_BNK127_EN      ((uint32_t)0x80000000)          /*!< When 1, enables Bank127 of the SRAM */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK0_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK0_EN_OFS    ( 0)                            /*!< BLK0_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK0_EN        ((uint32_t)0x00000001)          /*!< Block0 is always retained in LPM3, LPM4 and LPM3.5 modes of operation */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK1_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK1_EN_OFS    ( 1)                            /*!< BLK1_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK1_EN        ((uint32_t)0x00000002)          /*!< When 1, Block1 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK2_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK2_EN_OFS    ( 2)                            /*!< BLK2_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK2_EN        ((uint32_t)0x00000004)          /*!< When 1, Block2 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK3_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK3_EN_OFS    ( 3)                            /*!< BLK3_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK3_EN        ((uint32_t)0x00000008)          /*!< When 1, Block3 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK4_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK4_EN_OFS    ( 4)                            /*!< BLK4_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK4_EN        ((uint32_t)0x00000010)          /*!< When 1, Block4 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK5_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK5_EN_OFS    ( 5)                            /*!< BLK5_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK5_EN        ((uint32_t)0x00000020)          /*!< When 1, Block5 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK6_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK6_EN_OFS    ( 6)                            /*!< BLK6_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK6_EN        ((uint32_t)0x00000040)          /*!< When 1, Block6 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK7_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK7_EN_OFS    ( 7)                            /*!< BLK7_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK7_EN        ((uint32_t)0x00000080)          /*!< When 1, Block7 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK8_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK8_EN_OFS    ( 8)                            /*!< BLK8_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK8_EN        ((uint32_t)0x00000100)          /*!< When 1, Block8 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK9_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK9_EN_OFS    ( 9)                            /*!< BLK9_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK9_EN        ((uint32_t)0x00000200)          /*!< When 1, Block9 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK10_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK10_EN_OFS   (10)                            /*!< BLK10_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK10_EN       ((uint32_t)0x00000400)          /*!< When 1, Block10 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK11_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK11_EN_OFS   (11)                            /*!< BLK11_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK11_EN       ((uint32_t)0x00000800)          /*!< When 1, Block11 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK12_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK12_EN_OFS   (12)                            /*!< BLK12_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK12_EN       ((uint32_t)0x00001000)          /*!< When 1, Block12 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK13_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK13_EN_OFS   (13)                            /*!< BLK13_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK13_EN       ((uint32_t)0x00002000)          /*!< When 1, Block13 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK14_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK14_EN_OFS   (14)                            /*!< BLK14_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK14_EN       ((uint32_t)0x00004000)          /*!< When 1, Block14 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK15_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK15_EN_OFS   (15)                            /*!< BLK15_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK15_EN       ((uint32_t)0x00008000)          /*!< When 1, Block15 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK16_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK16_EN_OFS   (16)                            /*!< BLK16_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK16_EN       ((uint32_t)0x00010000)          /*!< When 1, Block16 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK17_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK17_EN_OFS   (17)                            /*!< BLK17_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK17_EN       ((uint32_t)0x00020000)          /*!< When 1, Block17 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK18_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK18_EN_OFS   (18)                            /*!< BLK18_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK18_EN       ((uint32_t)0x00040000)          /*!< When 1, Block18 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK19_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK19_EN_OFS   (19)                            /*!< BLK19_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK19_EN       ((uint32_t)0x00080000)          /*!< When 1, Block19 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK20_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK20_EN_OFS   (20)                            /*!< BLK20_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK20_EN       ((uint32_t)0x00100000)          /*!< When 1, Block20 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK21_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK21_EN_OFS   (21)                            /*!< BLK21_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK21_EN       ((uint32_t)0x00200000)          /*!< When 1, Block21 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK22_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK22_EN_OFS   (22)                            /*!< BLK22_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK22_EN       ((uint32_t)0x00400000)          /*!< When 1, Block22 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK23_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK23_EN_OFS   (23)                            /*!< BLK23_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK23_EN       ((uint32_t)0x00800000)          /*!< When 1, Block23 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK24_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK24_EN_OFS   (24)                            /*!< BLK24_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK24_EN       ((uint32_t)0x01000000)          /*!< When 1, Block24 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK25_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK25_EN_OFS   (25)                            /*!< BLK25_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK25_EN       ((uint32_t)0x02000000)          /*!< When 1, Block25 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK26_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK26_EN_OFS   (26)                            /*!< BLK26_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK26_EN       ((uint32_t)0x04000000)          /*!< When 1, Block26 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK27_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK27_EN_OFS   (27)                            /*!< BLK27_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK27_EN       ((uint32_t)0x08000000)          /*!< When 1, Block27 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK28_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK28_EN_OFS   (28)                            /*!< BLK28_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK28_EN       ((uint32_t)0x10000000)          /*!< When 1, Block28 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK29_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK29_EN_OFS   (29)                            /*!< BLK29_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK29_EN       ((uint32_t)0x20000000)          /*!< When 1, Block29 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK30_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK30_EN_OFS   (30)                            /*!< BLK30_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK30_EN       ((uint32_t)0x40000000)          /*!< When 1, Block30 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL0[BLK31_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK31_EN_OFS   (31)                            /*!< BLK31_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL0_BLK31_EN       ((uint32_t)0x80000000)          /*!< When 1, Block31 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK32_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK32_EN_OFS   ( 0)                            /*!< BLK32_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK32_EN       ((uint32_t)0x00000001)          /*!< When 1, Block32 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK33_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK33_EN_OFS   ( 1)                            /*!< BLK33_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK33_EN       ((uint32_t)0x00000002)          /*!< When 1, Block33 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK34_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK34_EN_OFS   ( 2)                            /*!< BLK34_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK34_EN       ((uint32_t)0x00000004)          /*!< When 1, Block34 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK35_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK35_EN_OFS   ( 3)                            /*!< BLK35_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK35_EN       ((uint32_t)0x00000008)          /*!< When 1, Block35 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK36_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK36_EN_OFS   ( 4)                            /*!< BLK36_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK36_EN       ((uint32_t)0x00000010)          /*!< When 1, Block36 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK37_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK37_EN_OFS   ( 5)                            /*!< BLK37_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK37_EN       ((uint32_t)0x00000020)          /*!< When 1, Block37 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK38_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK38_EN_OFS   ( 6)                            /*!< BLK38_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK38_EN       ((uint32_t)0x00000040)          /*!< When 1, Block38 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK39_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK39_EN_OFS   ( 7)                            /*!< BLK39_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK39_EN       ((uint32_t)0x00000080)          /*!< When 1, Block39 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK40_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK40_EN_OFS   ( 8)                            /*!< BLK40_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK40_EN       ((uint32_t)0x00000100)          /*!< When 1, Block40 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK41_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK41_EN_OFS   ( 9)                            /*!< BLK41_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK41_EN       ((uint32_t)0x00000200)          /*!< When 1, Block41 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK42_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK42_EN_OFS   (10)                            /*!< BLK42_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK42_EN       ((uint32_t)0x00000400)          /*!< When 1, Block42 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK43_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK43_EN_OFS   (11)                            /*!< BLK43_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK43_EN       ((uint32_t)0x00000800)          /*!< When 1, Block43 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK44_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK44_EN_OFS   (12)                            /*!< BLK44_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK44_EN       ((uint32_t)0x00001000)          /*!< When 1, Block44 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK45_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK45_EN_OFS   (13)                            /*!< BLK45_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK45_EN       ((uint32_t)0x00002000)          /*!< When 1, Block45 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK46_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK46_EN_OFS   (14)                            /*!< BLK46_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK46_EN       ((uint32_t)0x00004000)          /*!< When 1, Block46 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK47_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK47_EN_OFS   (15)                            /*!< BLK47_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK47_EN       ((uint32_t)0x00008000)          /*!< When 1, Block47 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK48_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK48_EN_OFS   (16)                            /*!< BLK48_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK48_EN       ((uint32_t)0x00010000)          /*!< When 1, Block48 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK49_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK49_EN_OFS   (17)                            /*!< BLK49_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK49_EN       ((uint32_t)0x00020000)          /*!< When 1, Block49 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK50_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK50_EN_OFS   (18)                            /*!< BLK50_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK50_EN       ((uint32_t)0x00040000)          /*!< When 1, Block50 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK51_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK51_EN_OFS   (19)                            /*!< BLK51_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK51_EN       ((uint32_t)0x00080000)          /*!< When 1, Block51 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK52_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK52_EN_OFS   (20)                            /*!< BLK52_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK52_EN       ((uint32_t)0x00100000)          /*!< When 1, Block52 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK53_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK53_EN_OFS   (21)                            /*!< BLK53_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK53_EN       ((uint32_t)0x00200000)          /*!< When 1, Block53 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK54_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK54_EN_OFS   (22)                            /*!< BLK54_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK54_EN       ((uint32_t)0x00400000)          /*!< When 1, Block54 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK55_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK55_EN_OFS   (23)                            /*!< BLK55_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK55_EN       ((uint32_t)0x00800000)          /*!< When 1, Block55 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK56_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK56_EN_OFS   (24)                            /*!< BLK56_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK56_EN       ((uint32_t)0x01000000)          /*!< When 1, Block56 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK57_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK57_EN_OFS   (25)                            /*!< BLK57_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK57_EN       ((uint32_t)0x02000000)          /*!< When 1, Block57 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK58_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK58_EN_OFS   (26)                            /*!< BLK58_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK58_EN       ((uint32_t)0x04000000)          /*!< When 1, Block58 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK59_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK59_EN_OFS   (27)                            /*!< BLK59_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK59_EN       ((uint32_t)0x08000000)          /*!< When 1, Block59 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK60_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK60_EN_OFS   (28)                            /*!< BLK60_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK60_EN       ((uint32_t)0x10000000)          /*!< When 1, Block60 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK61_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK61_EN_OFS   (29)                            /*!< BLK61_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK61_EN       ((uint32_t)0x20000000)          /*!< When 1, Block61 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK62_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK62_EN_OFS   (30)                            /*!< BLK62_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK62_EN       ((uint32_t)0x40000000)          /*!< When 1, Block62 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL1[BLK63_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK63_EN_OFS   (31)                            /*!< BLK63_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL1_BLK63_EN       ((uint32_t)0x80000000)          /*!< When 1, Block63 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK64_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK64_EN_OFS   ( 0)                            /*!< BLK64_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK64_EN       ((uint32_t)0x00000001)          /*!< When 1, Block64 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK65_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK65_EN_OFS   ( 1)                            /*!< BLK65_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK65_EN       ((uint32_t)0x00000002)          /*!< When 1, Block65 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK66_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK66_EN_OFS   ( 2)                            /*!< BLK66_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK66_EN       ((uint32_t)0x00000004)          /*!< When 1, Block66 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK67_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK67_EN_OFS   ( 3)                            /*!< BLK67_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK67_EN       ((uint32_t)0x00000008)          /*!< When 1, Block67 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK68_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK68_EN_OFS   ( 4)                            /*!< BLK68_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK68_EN       ((uint32_t)0x00000010)          /*!< When 1, Block68 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK69_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK69_EN_OFS   ( 5)                            /*!< BLK69_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK69_EN       ((uint32_t)0x00000020)          /*!< When 1, Block69 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK70_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK70_EN_OFS   ( 6)                            /*!< BLK70_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK70_EN       ((uint32_t)0x00000040)          /*!< When 1, Block70 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK71_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK71_EN_OFS   ( 7)                            /*!< BLK71_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK71_EN       ((uint32_t)0x00000080)          /*!< When 1, Block71 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK72_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK72_EN_OFS   ( 8)                            /*!< BLK72_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK72_EN       ((uint32_t)0x00000100)          /*!< When 1, Block72 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK73_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK73_EN_OFS   ( 9)                            /*!< BLK73_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK73_EN       ((uint32_t)0x00000200)          /*!< When 1, Block73 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK74_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK74_EN_OFS   (10)                            /*!< BLK74_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK74_EN       ((uint32_t)0x00000400)          /*!< When 1, Block74 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK75_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK75_EN_OFS   (11)                            /*!< BLK75_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK75_EN       ((uint32_t)0x00000800)          /*!< When 1, Block75 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK76_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK76_EN_OFS   (12)                            /*!< BLK76_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK76_EN       ((uint32_t)0x00001000)          /*!< When 1, Block76 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK77_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK77_EN_OFS   (13)                            /*!< BLK77_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK77_EN       ((uint32_t)0x00002000)          /*!< When 1, Block77 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK78_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK78_EN_OFS   (14)                            /*!< BLK78_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK78_EN       ((uint32_t)0x00004000)          /*!< When 1, Block78 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK79_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK79_EN_OFS   (15)                            /*!< BLK79_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK79_EN       ((uint32_t)0x00008000)          /*!< When 1, Block79 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK80_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK80_EN_OFS   (16)                            /*!< BLK80_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK80_EN       ((uint32_t)0x00010000)          /*!< When 1, Block80 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK81_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK81_EN_OFS   (17)                            /*!< BLK81_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK81_EN       ((uint32_t)0x00020000)          /*!< When 1, Block81 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK82_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK82_EN_OFS   (18)                            /*!< BLK82_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK82_EN       ((uint32_t)0x00040000)          /*!< When 1, Block82 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK83_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK83_EN_OFS   (19)                            /*!< BLK83_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK83_EN       ((uint32_t)0x00080000)          /*!< When 1, Block83 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK84_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK84_EN_OFS   (20)                            /*!< BLK84_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK84_EN       ((uint32_t)0x00100000)          /*!< When 1, Block84 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK85_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK85_EN_OFS   (21)                            /*!< BLK85_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK85_EN       ((uint32_t)0x00200000)          /*!< When 1, Block85 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK86_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK86_EN_OFS   (22)                            /*!< BLK86_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK86_EN       ((uint32_t)0x00400000)          /*!< When 1, Block86 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK87_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK87_EN_OFS   (23)                            /*!< BLK87_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK87_EN       ((uint32_t)0x00800000)          /*!< When 1, Block87 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK88_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK88_EN_OFS   (24)                            /*!< BLK88_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK88_EN       ((uint32_t)0x01000000)          /*!< When 1, Block88 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK89_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK89_EN_OFS   (25)                            /*!< BLK89_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK89_EN       ((uint32_t)0x02000000)          /*!< When 1, Block89 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK90_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK90_EN_OFS   (26)                            /*!< BLK90_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK90_EN       ((uint32_t)0x04000000)          /*!< When 1, Block90 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK91_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK91_EN_OFS   (27)                            /*!< BLK91_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK91_EN       ((uint32_t)0x08000000)          /*!< When 1, Block91 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK92_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK92_EN_OFS   (28)                            /*!< BLK92_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK92_EN       ((uint32_t)0x10000000)          /*!< When 1, Block92 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK93_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK93_EN_OFS   (29)                            /*!< BLK93_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK93_EN       ((uint32_t)0x20000000)          /*!< When 1, Block93 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK94_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK94_EN_OFS   (30)                            /*!< BLK94_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK94_EN       ((uint32_t)0x40000000)          /*!< When 1, Block94 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL2[BLK95_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK95_EN_OFS   (31)                            /*!< BLK95_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL2_BLK95_EN       ((uint32_t)0x80000000)          /*!< When 1, Block95 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK96_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK96_EN_OFS   ( 0)                            /*!< BLK96_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK96_EN       ((uint32_t)0x00000001)          /*!< When 1, Block96 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK97_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK97_EN_OFS   ( 1)                            /*!< BLK97_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK97_EN       ((uint32_t)0x00000002)          /*!< When 1, Block97 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK98_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK98_EN_OFS   ( 2)                            /*!< BLK98_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK98_EN       ((uint32_t)0x00000004)          /*!< When 1, Block98 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK99_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK99_EN_OFS   ( 3)                            /*!< BLK99_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK99_EN       ((uint32_t)0x00000008)          /*!< When 1, Block99 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK100_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK100_EN_OFS  ( 4)                            /*!< BLK100_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK100_EN      ((uint32_t)0x00000010)          /*!< When 1, Block100 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK101_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK101_EN_OFS  ( 5)                            /*!< BLK101_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK101_EN      ((uint32_t)0x00000020)          /*!< When 1, Block101 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK102_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK102_EN_OFS  ( 6)                            /*!< BLK102_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK102_EN      ((uint32_t)0x00000040)          /*!< When 1, Block102 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK103_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK103_EN_OFS  ( 7)                            /*!< BLK103_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK103_EN      ((uint32_t)0x00000080)          /*!< When 1, Block103 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK104_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK104_EN_OFS  ( 8)                            /*!< BLK104_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK104_EN      ((uint32_t)0x00000100)          /*!< When 1, Block104 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK105_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK105_EN_OFS  ( 9)                            /*!< BLK105_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK105_EN      ((uint32_t)0x00000200)          /*!< When 1, Block105 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK106_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK106_EN_OFS  (10)                            /*!< BLK106_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK106_EN      ((uint32_t)0x00000400)          /*!< When 1, Block106 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK107_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK107_EN_OFS  (11)                            /*!< BLK107_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK107_EN      ((uint32_t)0x00000800)          /*!< When 1, Block107 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK108_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK108_EN_OFS  (12)                            /*!< BLK108_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK108_EN      ((uint32_t)0x00001000)          /*!< When 1, Block108 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK109_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK109_EN_OFS  (13)                            /*!< BLK109_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK109_EN      ((uint32_t)0x00002000)          /*!< When 1, Block109 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK110_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK110_EN_OFS  (14)                            /*!< BLK110_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK110_EN      ((uint32_t)0x00004000)          /*!< When 1, Block110 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK111_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK111_EN_OFS  (15)                            /*!< BLK111_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK111_EN      ((uint32_t)0x00008000)          /*!< When 1, Block111 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK112_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK112_EN_OFS  (16)                            /*!< BLK112_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK112_EN      ((uint32_t)0x00010000)          /*!< When 1, Block112 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK113_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK113_EN_OFS  (17)                            /*!< BLK113_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK113_EN      ((uint32_t)0x00020000)          /*!< When 1, Block113 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK114_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK114_EN_OFS  (18)                            /*!< BLK114_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK114_EN      ((uint32_t)0x00040000)          /*!< When 1, Block114 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK115_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK115_EN_OFS  (19)                            /*!< BLK115_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK115_EN      ((uint32_t)0x00080000)          /*!< When 1, Block115 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK116_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK116_EN_OFS  (20)                            /*!< BLK116_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK116_EN      ((uint32_t)0x00100000)          /*!< When 1, Block116 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK117_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK117_EN_OFS  (21)                            /*!< BLK117_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK117_EN      ((uint32_t)0x00200000)          /*!< When 1, Block117 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK118_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK118_EN_OFS  (22)                            /*!< BLK118_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK118_EN      ((uint32_t)0x00400000)          /*!< When 1, Block118 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK119_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK119_EN_OFS  (23)                            /*!< BLK119_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK119_EN      ((uint32_t)0x00800000)          /*!< When 1, Block119 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK120_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK120_EN_OFS  (24)                            /*!< BLK120_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK120_EN      ((uint32_t)0x01000000)          /*!< When 1, Block120 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK121_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK121_EN_OFS  (25)                            /*!< BLK121_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK121_EN      ((uint32_t)0x02000000)          /*!< When 1, Block121 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK122_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK122_EN_OFS  (26)                            /*!< BLK122_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK122_EN      ((uint32_t)0x04000000)          /*!< When 1, Block122 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK123_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK123_EN_OFS  (27)                            /*!< BLK123_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK123_EN      ((uint32_t)0x08000000)          /*!< When 1, Block123 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK124_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK124_EN_OFS  (28)                            /*!< BLK124_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK124_EN      ((uint32_t)0x10000000)          /*!< When 1, Block124 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK125_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK125_EN_OFS  (29)                            /*!< BLK125_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK125_EN      ((uint32_t)0x20000000)          /*!< When 1, Block125 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK126_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK126_EN_OFS  (30)                            /*!< BLK126_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK126_EN      ((uint32_t)0x40000000)          /*!< When 1, Block126 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_BLKRET_CTL3[BLK127_EN] Bits */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK127_EN_OFS  (31)                            /*!< BLK127_EN Bit Offset */
+#define SYSCTL_A_SRAM_BLKRET_CTL3_BLK127_EN      ((uint32_t)0x80000000)          /*!< When 1, Block127 of the SRAM is retained in LPM3 and LPM4 */
+/* SYSCTL_A_SRAM_STAT[BNKEN_RDY] Bits */
+#define SYSCTL_A_SRAM_STAT_BNKEN_RDY_OFS         ( 0)                            /*!< BNKEN_RDY Bit Offset */
+#define SYSCTL_A_SRAM_STAT_BNKEN_RDY             ((uint32_t)0x00000001)          /*!< When 1, indicates SRAM is ready for access and banks can be  */
+                                                                                 /* enabled/disabled. */
+/* SYSCTL_A_SRAM_STAT[BLKRET_RDY] Bits */
+#define SYSCTL_A_SRAM_STAT_BLKRET_RDY_OFS        ( 1)                            /*!< BLKRET_RDY Bit Offset */
+#define SYSCTL_A_SRAM_STAT_BLKRET_RDY            ((uint32_t)0x00000002)          /*!< When 1, indicates SRAM is ready for access and blocks can be  */
+                                                                                 /* enabled/disabled for retention. */
+/* SYSCTL_A_MASTER_UNLOCK[UNLKEY] Bits */
+#define SYSCTL_A_MASTER_UNLOCK_UNLKEY_OFS        ( 0)                            /*!< UNLKEY Bit Offset */
+#define SYSCTL_A_MASTER_UNLOCK_UNLKEY_MASK       ((uint32_t)0x0000FFFF)          /*!< UNLKEY Bit Mask */
+/* SYSCTL_A_RESET_REQ[POR] Bits */
+#define SYSCTL_A_RESET_REQ_POR_OFS               ( 0)                            /*!< POR Bit Offset */
+#define SYSCTL_A_RESET_REQ_POR                   ((uint32_t)0x00000001)          /*!< Generate POR */
+/* SYSCTL_A_RESET_REQ[REBOOT] Bits */
+#define SYSCTL_A_RESET_REQ_REBOOT_OFS            ( 1)                            /*!< REBOOT Bit Offset */
+#define SYSCTL_A_RESET_REQ_REBOOT                ((uint32_t)0x00000002)          /*!< Generate Reboot_Reset */
+/* SYSCTL_A_RESET_REQ[WKEY] Bits */
+#define SYSCTL_A_RESET_REQ_WKEY_OFS              ( 8)                            /*!< WKEY Bit Offset */
+#define SYSCTL_A_RESET_REQ_WKEY_MASK             ((uint32_t)0x0000FF00)          /*!< WKEY Bit Mask */
+/* SYSCTL_A_RESET_STATOVER[SOFT] Bits */
+#define SYSCTL_A_RESET_STATOVER_SOFT_OFS         ( 0)                            /*!< SOFT Bit Offset */
+#define SYSCTL_A_RESET_STATOVER_SOFT             ((uint32_t)0x00000001)          /*!< Indicates if SOFT Reset is active */
+/* SYSCTL_A_RESET_STATOVER[HARD] Bits */
+#define SYSCTL_A_RESET_STATOVER_HARD_OFS         ( 1)                            /*!< HARD Bit Offset */
+#define SYSCTL_A_RESET_STATOVER_HARD             ((uint32_t)0x00000002)          /*!< Indicates if HARD Reset is active */
+/* SYSCTL_A_RESET_STATOVER[REBOOT] Bits */
+#define SYSCTL_A_RESET_STATOVER_REBOOT_OFS       ( 2)                            /*!< REBOOT Bit Offset */
+#define SYSCTL_A_RESET_STATOVER_REBOOT           ((uint32_t)0x00000004)          /*!< Indicates if Reboot Reset is active */
+/* SYSCTL_A_RESET_STATOVER[SOFT_OVER] Bits */
+#define SYSCTL_A_RESET_STATOVER_SOFT_OVER_OFS    ( 8)                            /*!< SOFT_OVER Bit Offset */
+#define SYSCTL_A_RESET_STATOVER_SOFT_OVER        ((uint32_t)0x00000100)          /*!< SOFT_Reset overwrite request */
+/* SYSCTL_A_RESET_STATOVER[HARD_OVER] Bits */
+#define SYSCTL_A_RESET_STATOVER_HARD_OVER_OFS    ( 9)                            /*!< HARD_OVER Bit Offset */
+#define SYSCTL_A_RESET_STATOVER_HARD_OVER        ((uint32_t)0x00000200)          /*!< HARD_Reset overwrite request */
+/* SYSCTL_A_RESET_STATOVER[RBT_OVER] Bits */
+#define SYSCTL_A_RESET_STATOVER_RBT_OVER_OFS     (10)                            /*!< RBT_OVER Bit Offset */
+#define SYSCTL_A_RESET_STATOVER_RBT_OVER         ((uint32_t)0x00000400)          /*!< Reboot Reset overwrite request */
 /* Pre-defined bitfield values */
-#define SYSCTL_REBOOT_CTL_WKEY_VAL              ((uint32_t)0x00006900)          /*!< Key value to enable writes to bit 0 */
-                                                                                /* cleared */
+#define SYSCTL_A_CSYS_MASTER_UNLOCK_UNLKEY_VAL  ((uint32_t)0x0000695A)          /*!< Unlock key value which when written, determines if accesses to other CPU_SYS register */
+#define SYSCTL_A_REBOOT_CTL_WKEY_VAL            ((uint32_t)0x00006900)          /*!< Key value to validate write to bit 0 */
+#define SYSCTL_A_BOOT_CTL_WKEY_VAL              ((uint32_t)0x00006900)          /*!< Key value to validate write to bit 0 */
+#define SYSCTL_A_ETW_CTL_WKEY_VAL               ((uint32_t)0x00006900)          /*!< Key value to validate write to bit 0 */
+#define SYSCTL_A_SECDATA_UNLOCK_KEY_VAL         ((uint32_t)0x0000695A)          /*!< Unlock Key value, which requests for secure data region to be unlocked for data access */
 
 
 /******************************************************************************
@@ -6836,7 +9717,6 @@ typedef struct {
 /* WDT_A_CTL[PW] Bits */
 #define WDT_A_CTL_PW_OFS                         ( 8)                            /*!< WDTPW Bit Offset */
 #define WDT_A_CTL_PW_MASK                        ((uint16_t)0xFF00)              /*!< WDTPW Bit Mask */
-
 /* Pre-defined bitfield values */
 #define WDT_A_CTL_PW                              ((uint16_t)0x5A00)              /*!< WDT Key Value for WDT write access */
 
@@ -6950,4 +9830,4 @@ typedef struct {
 }
 #endif
 
-#endif /* __MSP432P401R_H__ */
+#endif /* __MSP432P4111_H__ */

@@ -1,6 +1,6 @@
 /******************************************************************************
 *
-* Copyright (C) 2012 - 2016 Texas Instruments Incorporated - http://www.ti.com/
+* Copyright (C) 2012 - 2017 Texas Instruments Incorporated - http://www.ti.com/
 *
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions
@@ -35,7 +35,7 @@
 * This file includes MSP430 style component and register definitions
 * for legacy components re-used in MSP432
 *
-* File creation date: 2016-08-16
+* File creation date: 2017-04-18
 *
 ******************************************************************************/
 
@@ -44,8 +44,6 @@
 
 /* Use standard integer types with explicit width */
 #include <stdint.h>
-
-#include <msp_compatibility.h>
 
 #ifdef __cplusplus
  extern "C" {
@@ -437,162 +435,162 @@
 #define OFS_PJSEL1                                         (0x012C)              /*!< Port J Select 1 */
 #define OFS_PJSELC                                         (0x0136)              /*!< Port J Complement Select */
 #define OFS_P1IN                                           (0x0000)              /*!< Port 1 Input */
-#define OFS_P2IN                                           (0x0000)              /*!< Port 2 Input */
-#define OFS_P2OUT                                          (0x0002)              /*!< Port 2 Output */
+#define OFS_P2IN                                           (0x0001)              /*!< Port 2 Input */
+#define OFS_P2OUT                                          (0x0003)              /*!< Port 2 Output */
 #define OFS_P1OUT                                          (0x0002)              /*!< Port 1 Output */
 #define OFS_P1DIR                                          (0x0004)              /*!< Port 1 Direction */
-#define OFS_P2DIR                                          (0x0004)              /*!< Port 2 Direction */
+#define OFS_P2DIR                                          (0x0005)              /*!< Port 2 Direction */
 #define OFS_P1REN                                          (0x0006)              /*!< Port 1 Resistor Enable */
-#define OFS_P2REN                                          (0x0006)              /*!< Port 2 Resistor Enable */
+#define OFS_P2REN                                          (0x0007)              /*!< Port 2 Resistor Enable */
 #define OFS_P1DS                                           (0x0008)              /*!< Port 1 Drive Strength */
-#define OFS_P2DS                                           (0x0008)              /*!< Port 2 Drive Strength */
+#define OFS_P2DS                                           (0x0009)              /*!< Port 2 Drive Strength */
 #define OFS_P1SEL0                                         (0x000A)              /*!< Port 1 Select 0 */
-#define OFS_P2SEL0                                         (0x000A)              /*!< Port 2 Select 0 */
+#define OFS_P2SEL0                                         (0x000B)              /*!< Port 2 Select 0 */
 #define OFS_P1SEL1                                         (0x000C)              /*!< Port 1 Select 1 */
-#define OFS_P2SEL1                                         (0x000C)              /*!< Port 2 Select 1 */
+#define OFS_P2SEL1                                         (0x000D)              /*!< Port 2 Select 1 */
 #define OFS_P1SELC                                         (0x0016)              /*!< Port 1 Complement Select */
-#define OFS_P2SELC                                         (0x0016)              /*!< Port 2 Complement Select */
+#define OFS_P2SELC                                         (0x0017)              /*!< Port 2 Complement Select */
 #define OFS_P1IES                                          (0x0018)              /*!< Port 1 Interrupt Edge Select */
-#define OFS_P2IES                                          (0x0018)              /*!< Port 2 Interrupt Edge Select */
+#define OFS_P2IES                                          (0x0019)              /*!< Port 2 Interrupt Edge Select */
 #define OFS_P1IE                                           (0x001A)              /*!< Port 1 Interrupt Enable */
-#define OFS_P2IE                                           (0x001A)              /*!< Port 2 Interrupt Enable */
+#define OFS_P2IE                                           (0x001B)              /*!< Port 2 Interrupt Enable */
 #define OFS_P1IFG                                          (0x001C)              /*!< Port 1 Interrupt Flag */
-#define OFS_P2IFG                                          (0x001C)              /*!< Port 2 Interrupt Flag */
+#define OFS_P2IFG                                          (0x001D)              /*!< Port 2 Interrupt Flag */
 #define OFS_P3IN                                           (0x0020)              /*!< Port 3 Input */
-#define OFS_P4IN                                           (0x0020)              /*!< Port 4 Input */
+#define OFS_P4IN                                           (0x0021)              /*!< Port 4 Input */
 #define OFS_P3OUT                                          (0x0022)              /*!< Port 3 Output */
-#define OFS_P4OUT                                          (0x0022)              /*!< Port 4 Output */
+#define OFS_P4OUT                                          (0x0023)              /*!< Port 4 Output */
 #define OFS_P3DIR                                          (0x0024)              /*!< Port 3 Direction */
-#define OFS_P4DIR                                          (0x0024)              /*!< Port 4 Direction */
+#define OFS_P4DIR                                          (0x0025)              /*!< Port 4 Direction */
 #define OFS_P3REN                                          (0x0026)              /*!< Port 3 Resistor Enable */
-#define OFS_P4REN                                          (0x0026)              /*!< Port 4 Resistor Enable */
+#define OFS_P4REN                                          (0x0027)              /*!< Port 4 Resistor Enable */
 #define OFS_P3DS                                           (0x0028)              /*!< Port 3 Drive Strength */
-#define OFS_P4DS                                           (0x0028)              /*!< Port 4 Drive Strength */
-#define OFS_P4SEL0                                         (0x002A)              /*!< Port 4 Select 0 */
+#define OFS_P4DS                                           (0x0029)              /*!< Port 4 Drive Strength */
+#define OFS_P4SEL0                                         (0x002B)              /*!< Port 4 Select 0 */
 #define OFS_P3SEL0                                         (0x002A)              /*!< Port 3 Select 0 */
 #define OFS_P3SEL1                                         (0x002C)              /*!< Port 3 Select 1 */
-#define OFS_P4SEL1                                         (0x002C)              /*!< Port 4 Select 1 */
+#define OFS_P4SEL1                                         (0x002D)              /*!< Port 4 Select 1 */
 #define OFS_P3SELC                                         (0x0036)              /*!< Port 3 Complement Select */
-#define OFS_P4SELC                                         (0x0036)              /*!< Port 4 Complement Select */
+#define OFS_P4SELC                                         (0x0037)              /*!< Port 4 Complement Select */
 #define OFS_P3IES                                          (0x0038)              /*!< Port 3 Interrupt Edge Select */
-#define OFS_P4IES                                          (0x0038)              /*!< Port 4 Interrupt Edge Select */
+#define OFS_P4IES                                          (0x0039)              /*!< Port 4 Interrupt Edge Select */
 #define OFS_P3IE                                           (0x003A)              /*!< Port 3 Interrupt Enable */
-#define OFS_P4IE                                           (0x003A)              /*!< Port 4 Interrupt Enable */
+#define OFS_P4IE                                           (0x003B)              /*!< Port 4 Interrupt Enable */
 #define OFS_P3IFG                                          (0x003C)              /*!< Port 3 Interrupt Flag */
-#define OFS_P4IFG                                          (0x003C)              /*!< Port 4 Interrupt Flag */
+#define OFS_P4IFG                                          (0x003D)              /*!< Port 4 Interrupt Flag */
 #define OFS_P5IN                                           (0x0040)              /*!< Port 5 Input */
-#define OFS_P6IN                                           (0x0040)              /*!< Port 6 Input */
+#define OFS_P6IN                                           (0x0041)              /*!< Port 6 Input */
 #define OFS_P5OUT                                          (0x0042)              /*!< Port 5 Output */
-#define OFS_P6OUT                                          (0x0042)              /*!< Port 6 Output */
+#define OFS_P6OUT                                          (0x0043)              /*!< Port 6 Output */
 #define OFS_P5DIR                                          (0x0044)              /*!< Port 5 Direction */
-#define OFS_P6DIR                                          (0x0044)              /*!< Port 6 Direction */
+#define OFS_P6DIR                                          (0x0045)              /*!< Port 6 Direction */
 #define OFS_P5REN                                          (0x0046)              /*!< Port 5 Resistor Enable */
-#define OFS_P6REN                                          (0x0046)              /*!< Port 6 Resistor Enable */
+#define OFS_P6REN                                          (0x0047)              /*!< Port 6 Resistor Enable */
 #define OFS_P5DS                                           (0x0048)              /*!< Port 5 Drive Strength */
-#define OFS_P6DS                                           (0x0048)              /*!< Port 6 Drive Strength */
+#define OFS_P6DS                                           (0x0049)              /*!< Port 6 Drive Strength */
 #define OFS_P5SEL0                                         (0x004A)              /*!< Port 5 Select 0 */
-#define OFS_P6SEL0                                         (0x004A)              /*!< Port 6 Select 0 */
+#define OFS_P6SEL0                                         (0x004B)              /*!< Port 6 Select 0 */
 #define OFS_P5SEL1                                         (0x004C)              /*!< Port 5 Select 1 */
-#define OFS_P6SEL1                                         (0x004C)              /*!< Port 6 Select 1 */
+#define OFS_P6SEL1                                         (0x004D)              /*!< Port 6 Select 1 */
 #define OFS_P5SELC                                         (0x0056)              /*!< Port 5 Complement Select */
-#define OFS_P6SELC                                         (0x0056)              /*!< Port 6 Complement Select */
+#define OFS_P6SELC                                         (0x0057)              /*!< Port 6 Complement Select */
 #define OFS_P5IES                                          (0x0058)              /*!< Port 5 Interrupt Edge Select */
-#define OFS_P6IES                                          (0x0058)              /*!< Port 6 Interrupt Edge Select */
+#define OFS_P6IES                                          (0x0059)              /*!< Port 6 Interrupt Edge Select */
 #define OFS_P5IE                                           (0x005A)              /*!< Port 5 Interrupt Enable */
-#define OFS_P6IE                                           (0x005A)              /*!< Port 6 Interrupt Enable */
+#define OFS_P6IE                                           (0x005B)              /*!< Port 6 Interrupt Enable */
 #define OFS_P5IFG                                          (0x005C)              /*!< Port 5 Interrupt Flag */
-#define OFS_P6IFG                                          (0x005C)              /*!< Port 6 Interrupt Flag */
+#define OFS_P6IFG                                          (0x005D)              /*!< Port 6 Interrupt Flag */
 #define OFS_P7IN                                           (0x0060)              /*!< Port 7 Input */
-#define OFS_P8IN                                           (0x0060)              /*!< Port 8 Input */
+#define OFS_P8IN                                           (0x0061)              /*!< Port 8 Input */
 #define OFS_P7OUT                                          (0x0062)              /*!< Port 7 Output */
-#define OFS_P8OUT                                          (0x0062)              /*!< Port 8 Output */
+#define OFS_P8OUT                                          (0x0063)              /*!< Port 8 Output */
 #define OFS_P7DIR                                          (0x0064)              /*!< Port 7 Direction */
-#define OFS_P8DIR                                          (0x0064)              /*!< Port 8 Direction */
+#define OFS_P8DIR                                          (0x0065)              /*!< Port 8 Direction */
 #define OFS_P7REN                                          (0x0066)              /*!< Port 7 Resistor Enable */
-#define OFS_P8REN                                          (0x0066)              /*!< Port 8 Resistor Enable */
+#define OFS_P8REN                                          (0x0067)              /*!< Port 8 Resistor Enable */
 #define OFS_P7DS                                           (0x0068)              /*!< Port 7 Drive Strength */
-#define OFS_P8DS                                           (0x0068)              /*!< Port 8 Drive Strength */
+#define OFS_P8DS                                           (0x0069)              /*!< Port 8 Drive Strength */
 #define OFS_P7SEL0                                         (0x006A)              /*!< Port 7 Select 0 */
-#define OFS_P8SEL0                                         (0x006A)              /*!< Port 8 Select 0 */
+#define OFS_P8SEL0                                         (0x006B)              /*!< Port 8 Select 0 */
 #define OFS_P7SEL1                                         (0x006C)              /*!< Port 7 Select 1 */
-#define OFS_P8SEL1                                         (0x006C)              /*!< Port 8 Select 1 */
+#define OFS_P8SEL1                                         (0x006D)              /*!< Port 8 Select 1 */
 #define OFS_P7SELC                                         (0x0076)              /*!< Port 7 Complement Select */
-#define OFS_P8SELC                                         (0x0076)              /*!< Port 8 Complement Select */
+#define OFS_P8SELC                                         (0x0077)              /*!< Port 8 Complement Select */
 #define OFS_P7IES                                          (0x0078)              /*!< Port 7 Interrupt Edge Select */
-#define OFS_P8IES                                          (0x0078)              /*!< Port 8 Interrupt Edge Select */
+#define OFS_P8IES                                          (0x0079)              /*!< Port 8 Interrupt Edge Select */
 #define OFS_P7IE                                           (0x007A)              /*!< Port 7 Interrupt Enable */
-#define OFS_P8IE                                           (0x007A)              /*!< Port 8 Interrupt Enable */
+#define OFS_P8IE                                           (0x007B)              /*!< Port 8 Interrupt Enable */
 #define OFS_P7IFG                                          (0x007C)              /*!< Port 7 Interrupt Flag */
-#define OFS_P8IFG                                          (0x007C)              /*!< Port 8 Interrupt Flag */
+#define OFS_P8IFG                                          (0x007D)              /*!< Port 8 Interrupt Flag */
 #define OFS_P9IN                                           (0x0080)              /*!< Port 9 Input */
-#define OFS_P10IN                                          (0x0080)              /*!< Port 10 Input */
+#define OFS_P10IN                                          (0x0081)              /*!< Port 10 Input */
 #define OFS_P9OUT                                          (0x0082)              /*!< Port 9 Output */
-#define OFS_P10OUT                                         (0x0082)              /*!< Port 10 Output */
+#define OFS_P10OUT                                         (0x0083)              /*!< Port 10 Output */
 #define OFS_P9DIR                                          (0x0084)              /*!< Port 9 Direction */
-#define OFS_P10DIR                                         (0x0084)              /*!< Port 10 Direction */
+#define OFS_P10DIR                                         (0x0085)              /*!< Port 10 Direction */
 #define OFS_P9REN                                          (0x0086)              /*!< Port 9 Resistor Enable */
-#define OFS_P10REN                                         (0x0086)              /*!< Port 10 Resistor Enable */
+#define OFS_P10REN                                         (0x0087)              /*!< Port 10 Resistor Enable */
 #define OFS_P9DS                                           (0x0088)              /*!< Port 9 Drive Strength */
-#define OFS_P10DS                                          (0x0088)              /*!< Port 10 Drive Strength */
+#define OFS_P10DS                                          (0x0089)              /*!< Port 10 Drive Strength */
 #define OFS_P9SEL0                                         (0x008A)              /*!< Port 9 Select 0 */
-#define OFS_P10SEL0                                        (0x008A)              /*!< Port 10 Select 0 */
+#define OFS_P10SEL0                                        (0x008B)              /*!< Port 10 Select 0 */
 #define OFS_P9SEL1                                         (0x008C)              /*!< Port 9 Select 1 */
-#define OFS_P10SEL1                                        (0x008C)              /*!< Port 10 Select 1 */
+#define OFS_P10SEL1                                        (0x008D)              /*!< Port 10 Select 1 */
 #define OFS_P9SELC                                         (0x0096)              /*!< Port 9 Complement Select */
-#define OFS_P10SELC                                        (0x0096)              /*!< Port 10 Complement Select */
+#define OFS_P10SELC                                        (0x0097)              /*!< Port 10 Complement Select */
 #define OFS_P9IES                                          (0x0098)              /*!< Port 9 Interrupt Edge Select */
-#define OFS_P10IES                                         (0x0098)              /*!< Port 10 Interrupt Edge Select */
+#define OFS_P10IES                                         (0x0099)              /*!< Port 10 Interrupt Edge Select */
 #define OFS_P9IE                                           (0x009A)              /*!< Port 9 Interrupt Enable */
-#define OFS_P10IE                                          (0x009A)              /*!< Port 10 Interrupt Enable */
+#define OFS_P10IE                                          (0x009B)              /*!< Port 10 Interrupt Enable */
 #define OFS_P9IFG                                          (0x009C)              /*!< Port 9 Interrupt Flag */
-#define OFS_P10IFG                                         (0x009C)              /*!< Port 10 Interrupt Flag */
+#define OFS_P10IFG                                         (0x009D)              /*!< Port 10 Interrupt Flag */
 
 
 /******************************************************************************
 * EUSCI_A0 Registers
 ******************************************************************************/
 #define UCA0CTLW0                                (HWREG16(0x40001000))           /*!< eUSCI_Ax Control Word Register 0 */
-#define UCA0CTLW0_SPI                            (HWREG16(0x40001000))           /*!< eUSCI_Ax Control Word Register 0 */
+#define UCA0CTLW0_SPI                            (HWREG16(0x40001000))
 #define UCA0CTLW1                                (HWREG16(0x40001002))           /*!< eUSCI_Ax Control Word Register 1 */
 #define UCA0BRW                                  (HWREG16(0x40001006))           /*!< eUSCI_Ax Baud Rate Control Word Register */
-#define UCA0BRW_SPI                              (HWREG16(0x40001006))           /*!< eUSCI_Ax Bit Rate Control Register 1 */
+#define UCA0BRW_SPI                              (HWREG16(0x40001006))
 #define UCA0MCTLW                                (HWREG16(0x40001008))           /*!< eUSCI_Ax Modulation Control Word Register */
 #define UCA0STATW                                (HWREG16(0x4000100A))           /*!< eUSCI_Ax Status Register */
 #define UCA0STATW_SPI                            (HWREG16(0x4000100A))
 #define UCA0RXBUF                                (HWREG16(0x4000100C))           /*!< eUSCI_Ax Receive Buffer Register */
-#define UCA0RXBUF_SPI                            (HWREG16(0x4000100C))           /*!< eUSCI_Ax Receive Buffer Register */
+#define UCA0RXBUF_SPI                            (HWREG16(0x4000100C))
 #define UCA0TXBUF                                (HWREG16(0x4000100E))           /*!< eUSCI_Ax Transmit Buffer Register */
-#define UCA0TXBUF_SPI                            (HWREG16(0x4000100E))           /*!< eUSCI_Ax Transmit Buffer Register */
+#define UCA0TXBUF_SPI                            (HWREG16(0x4000100E))
 #define UCA0ABCTL                                (HWREG16(0x40001010))           /*!< eUSCI_Ax Auto Baud Rate Control Register */
 #define UCA0IRCTL                                (HWREG16(0x40001012))           /*!< eUSCI_Ax IrDA Control Word Register */
 #define UCA0IE                                   (HWREG16(0x4000101A))           /*!< eUSCI_Ax Interrupt Enable Register */
-#define UCA0IE_SPI                               (HWREG16(0x4000101A))           /*!< eUSCI_Ax Interrupt Enable Register */
+#define UCA0IE_SPI                               (HWREG16(0x4000101A))
 #define UCA0IFG                                  (HWREG16(0x4000101C))           /*!< eUSCI_Ax Interrupt Flag Register */
-#define UCA0IFG_SPI                              (HWREG16(0x4000101C))           /*!< eUSCI_Ax Interrupt Flag Register */
+#define UCA0IFG_SPI                              (HWREG16(0x4000101C))
 #define UCA0IV                                   (HWREG16(0x4000101E))           /*!< eUSCI_Ax Interrupt Vector Register */
-#define UCA0IV_SPI                               (HWREG16(0x4000101E))           /*!< eUSCI_Ax Interrupt Vector Register */
+#define UCA0IV_SPI                               (HWREG16(0x4000101E))
 
 /* Register offsets from EUSCI_A0_BASE address */
 #define OFS_UCA0CTLW0                                      (0x0000)              /*!< eUSCI_Ax Control Word Register 0 */
-#define OFS_UCA0CTLW0_SPI                                  (0x0000)              /*!< eUSCI_Ax Control Word Register 0 */
+#define OFS_UCA0CTLW0_SPI                                  (0x0000)
 #define OFS_UCA0CTLW1                                      (0x0002)              /*!< eUSCI_Ax Control Word Register 1 */
 #define OFS_UCA0BRW                                        (0x0006)              /*!< eUSCI_Ax Baud Rate Control Word Register */
-#define OFS_UCA0BRW_SPI                                    (0x0006)              /*!< eUSCI_Ax Bit Rate Control Register 1 */
+#define OFS_UCA0BRW_SPI                                    (0x0006)
 #define OFS_UCA0MCTLW                                      (0x0008)              /*!< eUSCI_Ax Modulation Control Word Register */
 #define OFS_UCA0STATW                                      (0x000A)              /*!< eUSCI_Ax Status Register */
 #define OFS_UCA0STATW_SPI                                  (0x000A)
 #define OFS_UCA0RXBUF                                      (0x000C)              /*!< eUSCI_Ax Receive Buffer Register */
-#define OFS_UCA0RXBUF_SPI                                  (0x000C)              /*!< eUSCI_Ax Receive Buffer Register */
+#define OFS_UCA0RXBUF_SPI                                  (0x000C)
 #define OFS_UCA0TXBUF                                      (0x000E)              /*!< eUSCI_Ax Transmit Buffer Register */
-#define OFS_UCA0TXBUF_SPI                                  (0x000E)              /*!< eUSCI_Ax Transmit Buffer Register */
+#define OFS_UCA0TXBUF_SPI                                  (0x000E)
 #define OFS_UCA0ABCTL                                      (0x0010)              /*!< eUSCI_Ax Auto Baud Rate Control Register */
 #define OFS_UCA0IRCTL                                      (0x0012)              /*!< eUSCI_Ax IrDA Control Word Register */
 #define OFS_UCA0IE                                         (0x001A)              /*!< eUSCI_Ax Interrupt Enable Register */
-#define OFS_UCA0IE_SPI                                     (0x001A)              /*!< eUSCI_Ax Interrupt Enable Register */
+#define OFS_UCA0IE_SPI                                     (0x001A)
 #define OFS_UCA0IFG                                        (0x001C)              /*!< eUSCI_Ax Interrupt Flag Register */
-#define OFS_UCA0IFG_SPI                                    (0x001C)              /*!< eUSCI_Ax Interrupt Flag Register */
+#define OFS_UCA0IFG_SPI                                    (0x001C)
 #define OFS_UCA0IV                                         (0x001E)              /*!< eUSCI_Ax Interrupt Vector Register */
-#define OFS_UCA0IV_SPI                                     (0x001E)              /*!< eUSCI_Ax Interrupt Vector Register */
+#define OFS_UCA0IV_SPI                                     (0x001E)
 
 #define UCA0CTL0                                           (HWREG8_L(UCA0CTLW0)) /* eUSCI_Ax Control 0 */
 #define UCA0CTL1                                           (HWREG8_H(UCA0CTLW0)) /* eUSCI_Ax Control 1 */
@@ -605,47 +603,47 @@
 * EUSCI_A1 Registers
 ******************************************************************************/
 #define UCA1CTLW0                                (HWREG16(0x40001400))           /*!< eUSCI_Ax Control Word Register 0 */
-#define UCA1CTLW0_SPI                            (HWREG16(0x40001400))           /*!< eUSCI_Ax Control Word Register 0 */
+#define UCA1CTLW0_SPI                            (HWREG16(0x40001400))
 #define UCA1CTLW1                                (HWREG16(0x40001402))           /*!< eUSCI_Ax Control Word Register 1 */
 #define UCA1BRW                                  (HWREG16(0x40001406))           /*!< eUSCI_Ax Baud Rate Control Word Register */
-#define UCA1BRW_SPI                              (HWREG16(0x40001406))           /*!< eUSCI_Ax Bit Rate Control Register 1 */
+#define UCA1BRW_SPI                              (HWREG16(0x40001406))
 #define UCA1MCTLW                                (HWREG16(0x40001408))           /*!< eUSCI_Ax Modulation Control Word Register */
 #define UCA1STATW                                (HWREG16(0x4000140A))           /*!< eUSCI_Ax Status Register */
 #define UCA1STATW_SPI                            (HWREG16(0x4000140A))
 #define UCA1RXBUF                                (HWREG16(0x4000140C))           /*!< eUSCI_Ax Receive Buffer Register */
-#define UCA1RXBUF_SPI                            (HWREG16(0x4000140C))           /*!< eUSCI_Ax Receive Buffer Register */
+#define UCA1RXBUF_SPI                            (HWREG16(0x4000140C))
 #define UCA1TXBUF                                (HWREG16(0x4000140E))           /*!< eUSCI_Ax Transmit Buffer Register */
-#define UCA1TXBUF_SPI                            (HWREG16(0x4000140E))           /*!< eUSCI_Ax Transmit Buffer Register */
+#define UCA1TXBUF_SPI                            (HWREG16(0x4000140E))
 #define UCA1ABCTL                                (HWREG16(0x40001410))           /*!< eUSCI_Ax Auto Baud Rate Control Register */
 #define UCA1IRCTL                                (HWREG16(0x40001412))           /*!< eUSCI_Ax IrDA Control Word Register */
 #define UCA1IE                                   (HWREG16(0x4000141A))           /*!< eUSCI_Ax Interrupt Enable Register */
-#define UCA1IE_SPI                               (HWREG16(0x4000141A))           /*!< eUSCI_Ax Interrupt Enable Register */
+#define UCA1IE_SPI                               (HWREG16(0x4000141A))
 #define UCA1IFG                                  (HWREG16(0x4000141C))           /*!< eUSCI_Ax Interrupt Flag Register */
-#define UCA1IFG_SPI                              (HWREG16(0x4000141C))           /*!< eUSCI_Ax Interrupt Flag Register */
+#define UCA1IFG_SPI                              (HWREG16(0x4000141C))
 #define UCA1IV                                   (HWREG16(0x4000141E))           /*!< eUSCI_Ax Interrupt Vector Register */
-#define UCA1IV_SPI                               (HWREG16(0x4000141E))           /*!< eUSCI_Ax Interrupt Vector Register */
+#define UCA1IV_SPI                               (HWREG16(0x4000141E))
 
 /* Register offsets from EUSCI_A1_BASE address */
 #define OFS_UCA1CTLW0                                      (0x0000)              /*!< eUSCI_Ax Control Word Register 0 */
-#define OFS_UCA1CTLW0_SPI                                  (0x0000)              /*!< eUSCI_Ax Control Word Register 0 */
+#define OFS_UCA1CTLW0_SPI                                  (0x0000)
 #define OFS_UCA1CTLW1                                      (0x0002)              /*!< eUSCI_Ax Control Word Register 1 */
 #define OFS_UCA1BRW                                        (0x0006)              /*!< eUSCI_Ax Baud Rate Control Word Register */
-#define OFS_UCA1BRW_SPI                                    (0x0006)              /*!< eUSCI_Ax Bit Rate Control Register 1 */
+#define OFS_UCA1BRW_SPI                                    (0x0006)
 #define OFS_UCA1MCTLW                                      (0x0008)              /*!< eUSCI_Ax Modulation Control Word Register */
 #define OFS_UCA1STATW                                      (0x000A)              /*!< eUSCI_Ax Status Register */
 #define OFS_UCA1STATW_SPI                                  (0x000A)
 #define OFS_UCA1RXBUF                                      (0x000C)              /*!< eUSCI_Ax Receive Buffer Register */
-#define OFS_UCA1RXBUF_SPI                                  (0x000C)              /*!< eUSCI_Ax Receive Buffer Register */
+#define OFS_UCA1RXBUF_SPI                                  (0x000C)
 #define OFS_UCA1TXBUF                                      (0x000E)              /*!< eUSCI_Ax Transmit Buffer Register */
-#define OFS_UCA1TXBUF_SPI                                  (0x000E)              /*!< eUSCI_Ax Transmit Buffer Register */
+#define OFS_UCA1TXBUF_SPI                                  (0x000E)
 #define OFS_UCA1ABCTL                                      (0x0010)              /*!< eUSCI_Ax Auto Baud Rate Control Register */
 #define OFS_UCA1IRCTL                                      (0x0012)              /*!< eUSCI_Ax IrDA Control Word Register */
 #define OFS_UCA1IE                                         (0x001A)              /*!< eUSCI_Ax Interrupt Enable Register */
-#define OFS_UCA1IE_SPI                                     (0x001A)              /*!< eUSCI_Ax Interrupt Enable Register */
+#define OFS_UCA1IE_SPI                                     (0x001A)
 #define OFS_UCA1IFG                                        (0x001C)              /*!< eUSCI_Ax Interrupt Flag Register */
-#define OFS_UCA1IFG_SPI                                    (0x001C)              /*!< eUSCI_Ax Interrupt Flag Register */
+#define OFS_UCA1IFG_SPI                                    (0x001C)
 #define OFS_UCA1IV                                         (0x001E)              /*!< eUSCI_Ax Interrupt Vector Register */
-#define OFS_UCA1IV_SPI                                     (0x001E)              /*!< eUSCI_Ax Interrupt Vector Register */
+#define OFS_UCA1IV_SPI                                     (0x001E)
 
 #define UCA1CTL0                                           (HWREG8_L(UCA1CTLW0)) /* eUSCI_Ax Control 0 */
 #define UCA1CTL1                                           (HWREG8_H(UCA1CTLW0)) /* eUSCI_Ax Control 1 */
@@ -658,47 +656,47 @@
 * EUSCI_A2 Registers
 ******************************************************************************/
 #define UCA2CTLW0                                (HWREG16(0x40001800))           /*!< eUSCI_Ax Control Word Register 0 */
-#define UCA2CTLW0_SPI                            (HWREG16(0x40001800))           /*!< eUSCI_Ax Control Word Register 0 */
+#define UCA2CTLW0_SPI                            (HWREG16(0x40001800))
 #define UCA2CTLW1                                (HWREG16(0x40001802))           /*!< eUSCI_Ax Control Word Register 1 */
 #define UCA2BRW                                  (HWREG16(0x40001806))           /*!< eUSCI_Ax Baud Rate Control Word Register */
-#define UCA2BRW_SPI                              (HWREG16(0x40001806))           /*!< eUSCI_Ax Bit Rate Control Register 1 */
+#define UCA2BRW_SPI                              (HWREG16(0x40001806))
 #define UCA2MCTLW                                (HWREG16(0x40001808))           /*!< eUSCI_Ax Modulation Control Word Register */
 #define UCA2STATW                                (HWREG16(0x4000180A))           /*!< eUSCI_Ax Status Register */
 #define UCA2STATW_SPI                            (HWREG16(0x4000180A))
 #define UCA2RXBUF                                (HWREG16(0x4000180C))           /*!< eUSCI_Ax Receive Buffer Register */
-#define UCA2RXBUF_SPI                            (HWREG16(0x4000180C))           /*!< eUSCI_Ax Receive Buffer Register */
+#define UCA2RXBUF_SPI                            (HWREG16(0x4000180C))
 #define UCA2TXBUF                                (HWREG16(0x4000180E))           /*!< eUSCI_Ax Transmit Buffer Register */
-#define UCA2TXBUF_SPI                            (HWREG16(0x4000180E))           /*!< eUSCI_Ax Transmit Buffer Register */
+#define UCA2TXBUF_SPI                            (HWREG16(0x4000180E))
 #define UCA2ABCTL                                (HWREG16(0x40001810))           /*!< eUSCI_Ax Auto Baud Rate Control Register */
 #define UCA2IRCTL                                (HWREG16(0x40001812))           /*!< eUSCI_Ax IrDA Control Word Register */
 #define UCA2IE                                   (HWREG16(0x4000181A))           /*!< eUSCI_Ax Interrupt Enable Register */
-#define UCA2IE_SPI                               (HWREG16(0x4000181A))           /*!< eUSCI_Ax Interrupt Enable Register */
+#define UCA2IE_SPI                               (HWREG16(0x4000181A))
 #define UCA2IFG                                  (HWREG16(0x4000181C))           /*!< eUSCI_Ax Interrupt Flag Register */
-#define UCA2IFG_SPI                              (HWREG16(0x4000181C))           /*!< eUSCI_Ax Interrupt Flag Register */
+#define UCA2IFG_SPI                              (HWREG16(0x4000181C))
 #define UCA2IV                                   (HWREG16(0x4000181E))           /*!< eUSCI_Ax Interrupt Vector Register */
-#define UCA2IV_SPI                               (HWREG16(0x4000181E))           /*!< eUSCI_Ax Interrupt Vector Register */
+#define UCA2IV_SPI                               (HWREG16(0x4000181E))
 
 /* Register offsets from EUSCI_A2_BASE address */
 #define OFS_UCA2CTLW0                                      (0x0000)              /*!< eUSCI_Ax Control Word Register 0 */
-#define OFS_UCA2CTLW0_SPI                                  (0x0000)              /*!< eUSCI_Ax Control Word Register 0 */
+#define OFS_UCA2CTLW0_SPI                                  (0x0000)
 #define OFS_UCA2CTLW1                                      (0x0002)              /*!< eUSCI_Ax Control Word Register 1 */
 #define OFS_UCA2BRW                                        (0x0006)              /*!< eUSCI_Ax Baud Rate Control Word Register */
-#define OFS_UCA2BRW_SPI                                    (0x0006)              /*!< eUSCI_Ax Bit Rate Control Register 1 */
+#define OFS_UCA2BRW_SPI                                    (0x0006)
 #define OFS_UCA2MCTLW                                      (0x0008)              /*!< eUSCI_Ax Modulation Control Word Register */
 #define OFS_UCA2STATW                                      (0x000A)              /*!< eUSCI_Ax Status Register */
 #define OFS_UCA2STATW_SPI                                  (0x000A)
 #define OFS_UCA2RXBUF                                      (0x000C)              /*!< eUSCI_Ax Receive Buffer Register */
-#define OFS_UCA2RXBUF_SPI                                  (0x000C)              /*!< eUSCI_Ax Receive Buffer Register */
+#define OFS_UCA2RXBUF_SPI                                  (0x000C)
 #define OFS_UCA2TXBUF                                      (0x000E)              /*!< eUSCI_Ax Transmit Buffer Register */
-#define OFS_UCA2TXBUF_SPI                                  (0x000E)              /*!< eUSCI_Ax Transmit Buffer Register */
+#define OFS_UCA2TXBUF_SPI                                  (0x000E)
 #define OFS_UCA2ABCTL                                      (0x0010)              /*!< eUSCI_Ax Auto Baud Rate Control Register */
 #define OFS_UCA2IRCTL                                      (0x0012)              /*!< eUSCI_Ax IrDA Control Word Register */
 #define OFS_UCA2IE                                         (0x001A)              /*!< eUSCI_Ax Interrupt Enable Register */
-#define OFS_UCA2IE_SPI                                     (0x001A)              /*!< eUSCI_Ax Interrupt Enable Register */
+#define OFS_UCA2IE_SPI                                     (0x001A)
 #define OFS_UCA2IFG                                        (0x001C)              /*!< eUSCI_Ax Interrupt Flag Register */
-#define OFS_UCA2IFG_SPI                                    (0x001C)              /*!< eUSCI_Ax Interrupt Flag Register */
+#define OFS_UCA2IFG_SPI                                    (0x001C)
 #define OFS_UCA2IV                                         (0x001E)              /*!< eUSCI_Ax Interrupt Vector Register */
-#define OFS_UCA2IV_SPI                                     (0x001E)              /*!< eUSCI_Ax Interrupt Vector Register */
+#define OFS_UCA2IV_SPI                                     (0x001E)
 
 #define UCA2CTL0                                           (HWREG8_L(UCA2CTLW0)) /* eUSCI_Ax Control 0 */
 #define UCA2CTL1                                           (HWREG8_H(UCA2CTLW0)) /* eUSCI_Ax Control 1 */
@@ -711,47 +709,47 @@
 * EUSCI_A3 Registers
 ******************************************************************************/
 #define UCA3CTLW0                                (HWREG16(0x40001C00))           /*!< eUSCI_Ax Control Word Register 0 */
-#define UCA3CTLW0_SPI                            (HWREG16(0x40001C00))           /*!< eUSCI_Ax Control Word Register 0 */
+#define UCA3CTLW0_SPI                            (HWREG16(0x40001C00))
 #define UCA3CTLW1                                (HWREG16(0x40001C02))           /*!< eUSCI_Ax Control Word Register 1 */
 #define UCA3BRW                                  (HWREG16(0x40001C06))           /*!< eUSCI_Ax Baud Rate Control Word Register */
-#define UCA3BRW_SPI                              (HWREG16(0x40001C06))           /*!< eUSCI_Ax Bit Rate Control Register 1 */
+#define UCA3BRW_SPI                              (HWREG16(0x40001C06))
 #define UCA3MCTLW                                (HWREG16(0x40001C08))           /*!< eUSCI_Ax Modulation Control Word Register */
 #define UCA3STATW                                (HWREG16(0x40001C0A))           /*!< eUSCI_Ax Status Register */
 #define UCA3STATW_SPI                            (HWREG16(0x40001C0A))
 #define UCA3RXBUF                                (HWREG16(0x40001C0C))           /*!< eUSCI_Ax Receive Buffer Register */
-#define UCA3RXBUF_SPI                            (HWREG16(0x40001C0C))           /*!< eUSCI_Ax Receive Buffer Register */
+#define UCA3RXBUF_SPI                            (HWREG16(0x40001C0C))
 #define UCA3TXBUF                                (HWREG16(0x40001C0E))           /*!< eUSCI_Ax Transmit Buffer Register */
-#define UCA3TXBUF_SPI                            (HWREG16(0x40001C0E))           /*!< eUSCI_Ax Transmit Buffer Register */
+#define UCA3TXBUF_SPI                            (HWREG16(0x40001C0E))
 #define UCA3ABCTL                                (HWREG16(0x40001C10))           /*!< eUSCI_Ax Auto Baud Rate Control Register */
 #define UCA3IRCTL                                (HWREG16(0x40001C12))           /*!< eUSCI_Ax IrDA Control Word Register */
 #define UCA3IE                                   (HWREG16(0x40001C1A))           /*!< eUSCI_Ax Interrupt Enable Register */
-#define UCA3IE_SPI                               (HWREG16(0x40001C1A))           /*!< eUSCI_Ax Interrupt Enable Register */
+#define UCA3IE_SPI                               (HWREG16(0x40001C1A))
 #define UCA3IFG                                  (HWREG16(0x40001C1C))           /*!< eUSCI_Ax Interrupt Flag Register */
-#define UCA3IFG_SPI                              (HWREG16(0x40001C1C))           /*!< eUSCI_Ax Interrupt Flag Register */
+#define UCA3IFG_SPI                              (HWREG16(0x40001C1C))
 #define UCA3IV                                   (HWREG16(0x40001C1E))           /*!< eUSCI_Ax Interrupt Vector Register */
-#define UCA3IV_SPI                               (HWREG16(0x40001C1E))           /*!< eUSCI_Ax Interrupt Vector Register */
+#define UCA3IV_SPI                               (HWREG16(0x40001C1E))
 
 /* Register offsets from EUSCI_A3_BASE address */
 #define OFS_UCA3CTLW0                                      (0x0000)              /*!< eUSCI_Ax Control Word Register 0 */
-#define OFS_UCA3CTLW0_SPI                                  (0x0000)              /*!< eUSCI_Ax Control Word Register 0 */
+#define OFS_UCA3CTLW0_SPI                                  (0x0000)
 #define OFS_UCA3CTLW1                                      (0x0002)              /*!< eUSCI_Ax Control Word Register 1 */
 #define OFS_UCA3BRW                                        (0x0006)              /*!< eUSCI_Ax Baud Rate Control Word Register */
-#define OFS_UCA3BRW_SPI                                    (0x0006)              /*!< eUSCI_Ax Bit Rate Control Register 1 */
+#define OFS_UCA3BRW_SPI                                    (0x0006)
 #define OFS_UCA3MCTLW                                      (0x0008)              /*!< eUSCI_Ax Modulation Control Word Register */
 #define OFS_UCA3STATW                                      (0x000A)              /*!< eUSCI_Ax Status Register */
 #define OFS_UCA3STATW_SPI                                  (0x000A)
 #define OFS_UCA3RXBUF                                      (0x000C)              /*!< eUSCI_Ax Receive Buffer Register */
-#define OFS_UCA3RXBUF_SPI                                  (0x000C)              /*!< eUSCI_Ax Receive Buffer Register */
+#define OFS_UCA3RXBUF_SPI                                  (0x000C)
 #define OFS_UCA3TXBUF                                      (0x000E)              /*!< eUSCI_Ax Transmit Buffer Register */
-#define OFS_UCA3TXBUF_SPI                                  (0x000E)              /*!< eUSCI_Ax Transmit Buffer Register */
+#define OFS_UCA3TXBUF_SPI                                  (0x000E)
 #define OFS_UCA3ABCTL                                      (0x0010)              /*!< eUSCI_Ax Auto Baud Rate Control Register */
 #define OFS_UCA3IRCTL                                      (0x0012)              /*!< eUSCI_Ax IrDA Control Word Register */
 #define OFS_UCA3IE                                         (0x001A)              /*!< eUSCI_Ax Interrupt Enable Register */
-#define OFS_UCA3IE_SPI                                     (0x001A)              /*!< eUSCI_Ax Interrupt Enable Register */
+#define OFS_UCA3IE_SPI                                     (0x001A)
 #define OFS_UCA3IFG                                        (0x001C)              /*!< eUSCI_Ax Interrupt Flag Register */
-#define OFS_UCA3IFG_SPI                                    (0x001C)              /*!< eUSCI_Ax Interrupt Flag Register */
+#define OFS_UCA3IFG_SPI                                    (0x001C)
 #define OFS_UCA3IV                                         (0x001E)              /*!< eUSCI_Ax Interrupt Vector Register */
-#define OFS_UCA3IV_SPI                                     (0x001E)              /*!< eUSCI_Ax Interrupt Vector Register */
+#define OFS_UCA3IV_SPI                                     (0x001E)
 
 #define UCA3CTL0                                           (HWREG8_L(UCA3CTLW0)) /* eUSCI_Ax Control 0 */
 #define UCA3CTL1                                           (HWREG8_H(UCA3CTLW0)) /* eUSCI_Ax Control 1 */
@@ -764,17 +762,17 @@
 * EUSCI_B0 Registers
 ******************************************************************************/
 #define UCB0CTLW0                                (HWREG16(0x40002000))           /*!< eUSCI_Bx Control Word Register 0 */
-#define UCB0CTLW0_SPI                            (HWREG16(0x40002000))           /*!< eUSCI_Bx Control Word Register 0 */
+#define UCB0CTLW0_SPI                            (HWREG16(0x40002000))
 #define UCB0CTLW1                                (HWREG16(0x40002002))           /*!< eUSCI_Bx Control Word Register 1 */
 #define UCB0BRW                                  (HWREG16(0x40002006))           /*!< eUSCI_Bx Baud Rate Control Word Register */
-#define UCB0BRW_SPI                              (HWREG16(0x40002006))           /*!< eUSCI_Bx Bit Rate Control Register 1 */
+#define UCB0BRW_SPI                              (HWREG16(0x40002006))
 #define UCB0STATW                                (HWREG16(0x40002008))           /*!< eUSCI_Bx Status Register */
 #define UCB0STATW_SPI                            (HWREG16(0x40002008))
 #define UCB0TBCNT                                (HWREG16(0x4000200A))           /*!< eUSCI_Bx Byte Counter Threshold Register */
 #define UCB0RXBUF                                (HWREG16(0x4000200C))           /*!< eUSCI_Bx Receive Buffer Register */
-#define UCB0RXBUF_SPI                            (HWREG16(0x4000200C))           /*!< eUSCI_Bx Receive Buffer Register */
+#define UCB0RXBUF_SPI                            (HWREG16(0x4000200C))
 #define UCB0TXBUF                                (HWREG16(0x4000200E))           /*!< eUSCI_Bx Transmit Buffer Register */
-#define UCB0TXBUF_SPI                            (HWREG16(0x4000200E))           /*!< eUSCI_Bx Transmit Buffer Register */
+#define UCB0TXBUF_SPI                            (HWREG16(0x4000200E))
 #define UCB0I2COA0                               (HWREG16(0x40002014))           /*!< eUSCI_Bx I2C Own Address 0 Register */
 #define UCB0I2COA1                               (HWREG16(0x40002016))           /*!< eUSCI_Bx I2C Own Address 1 Register */
 #define UCB0I2COA2                               (HWREG16(0x40002018))           /*!< eUSCI_Bx I2C Own Address 2 Register */
@@ -783,25 +781,25 @@
 #define UCB0ADDMASK                              (HWREG16(0x4000201E))           /*!< eUSCI_Bx I2C Address Mask Register */
 #define UCB0I2CSA                                (HWREG16(0x40002020))           /*!< eUSCI_Bx I2C Slave Address Register */
 #define UCB0IE                                   (HWREG16(0x4000202A))           /*!< eUSCI_Bx Interrupt Enable Register */
-#define UCB0IE_SPI                               (HWREG16(0x4000202A))           /*!< eUSCI_Bx Interrupt Enable Register */
+#define UCB0IE_SPI                               (HWREG16(0x4000202A))
 #define UCB0IFG                                  (HWREG16(0x4000202C))           /*!< eUSCI_Bx Interrupt Flag Register */
-#define UCB0IFG_SPI                              (HWREG16(0x4000202C))           /*!< eUSCI_Bx Interrupt Flag Register */
+#define UCB0IFG_SPI                              (HWREG16(0x4000202C))
 #define UCB0IV                                   (HWREG16(0x4000202E))           /*!< eUSCI_Bx Interrupt Vector Register */
-#define UCB0IV_SPI                               (HWREG16(0x4000202E))           /*!< eUSCI_Bx Interrupt Vector Register */
+#define UCB0IV_SPI                               (HWREG16(0x4000202E))
 
 /* Register offsets from EUSCI_B0_BASE address */
 #define OFS_UCB0CTLW0                                      (0x0000)              /*!< eUSCI_Bx Control Word Register 0 */
-#define OFS_UCB0CTLW0_SPI                                  (0x0000)              /*!< eUSCI_Bx Control Word Register 0 */
+#define OFS_UCB0CTLW0_SPI                                  (0x0000)
 #define OFS_UCB0CTLW1                                      (0x0002)              /*!< eUSCI_Bx Control Word Register 1 */
 #define OFS_UCB0BRW                                        (0x0006)              /*!< eUSCI_Bx Baud Rate Control Word Register */
-#define OFS_UCB0BRW_SPI                                    (0x0006)              /*!< eUSCI_Bx Bit Rate Control Register 1 */
+#define OFS_UCB0BRW_SPI                                    (0x0006)
 #define OFS_UCB0STATW                                      (0x0008)              /*!< eUSCI_Bx Status Register */
 #define OFS_UCB0STATW_SPI                                  (0x0008)
 #define OFS_UCB0TBCNT                                      (0x000A)              /*!< eUSCI_Bx Byte Counter Threshold Register */
 #define OFS_UCB0RXBUF                                      (0x000C)              /*!< eUSCI_Bx Receive Buffer Register */
-#define OFS_UCB0RXBUF_SPI                                  (0x000C)              /*!< eUSCI_Bx Receive Buffer Register */
+#define OFS_UCB0RXBUF_SPI                                  (0x000C)
 #define OFS_UCB0TXBUF                                      (0x000E)              /*!< eUSCI_Bx Transmit Buffer Register */
-#define OFS_UCB0TXBUF_SPI                                  (0x000E)              /*!< eUSCI_Bx Transmit Buffer Register */
+#define OFS_UCB0TXBUF_SPI                                  (0x000E)
 #define OFS_UCB0I2COA0                                     (0x0014)              /*!< eUSCI_Bx I2C Own Address 0 Register */
 #define OFS_UCB0I2COA1                                     (0x0016)              /*!< eUSCI_Bx I2C Own Address 1 Register */
 #define OFS_UCB0I2COA2                                     (0x0018)              /*!< eUSCI_Bx I2C Own Address 2 Register */
@@ -810,11 +808,11 @@
 #define OFS_UCB0ADDMASK                                    (0x001E)              /*!< eUSCI_Bx I2C Address Mask Register */
 #define OFS_UCB0I2CSA                                      (0x0020)              /*!< eUSCI_Bx I2C Slave Address Register */
 #define OFS_UCB0IE                                         (0x002A)              /*!< eUSCI_Bx Interrupt Enable Register */
-#define OFS_UCB0IE_SPI                                     (0x002A)              /*!< eUSCI_Bx Interrupt Enable Register */
+#define OFS_UCB0IE_SPI                                     (0x002A)
 #define OFS_UCB0IFG                                        (0x002C)              /*!< eUSCI_Bx Interrupt Flag Register */
-#define OFS_UCB0IFG_SPI                                    (0x002C)              /*!< eUSCI_Bx Interrupt Flag Register */
+#define OFS_UCB0IFG_SPI                                    (0x002C)
 #define OFS_UCB0IV                                         (0x002E)              /*!< eUSCI_Bx Interrupt Vector Register */
-#define OFS_UCB0IV_SPI                                     (0x002E)              /*!< eUSCI_Bx Interrupt Vector Register */
+#define OFS_UCB0IV_SPI                                     (0x002E)
 
 #define UCB0CTL0                                           (HWREG8_L(UCB0CTLW0)) /* eUSCI_Bx Control 1 */
 #define UCB0CTL1                                           (HWREG8_H(UCB0CTLW0)) /* eUSCI_Bx Control 0 */
@@ -827,17 +825,17 @@
 * EUSCI_B1 Registers
 ******************************************************************************/
 #define UCB1CTLW0                                (HWREG16(0x40002400))           /*!< eUSCI_Bx Control Word Register 0 */
-#define UCB1CTLW0_SPI                            (HWREG16(0x40002400))           /*!< eUSCI_Bx Control Word Register 0 */
+#define UCB1CTLW0_SPI                            (HWREG16(0x40002400))
 #define UCB1CTLW1                                (HWREG16(0x40002402))           /*!< eUSCI_Bx Control Word Register 1 */
 #define UCB1BRW                                  (HWREG16(0x40002406))           /*!< eUSCI_Bx Baud Rate Control Word Register */
-#define UCB1BRW_SPI                              (HWREG16(0x40002406))           /*!< eUSCI_Bx Bit Rate Control Register 1 */
+#define UCB1BRW_SPI                              (HWREG16(0x40002406))
 #define UCB1STATW                                (HWREG16(0x40002408))           /*!< eUSCI_Bx Status Register */
 #define UCB1STATW_SPI                            (HWREG16(0x40002408))
 #define UCB1TBCNT                                (HWREG16(0x4000240A))           /*!< eUSCI_Bx Byte Counter Threshold Register */
 #define UCB1RXBUF                                (HWREG16(0x4000240C))           /*!< eUSCI_Bx Receive Buffer Register */
-#define UCB1RXBUF_SPI                            (HWREG16(0x4000240C))           /*!< eUSCI_Bx Receive Buffer Register */
+#define UCB1RXBUF_SPI                            (HWREG16(0x4000240C))
 #define UCB1TXBUF                                (HWREG16(0x4000240E))           /*!< eUSCI_Bx Transmit Buffer Register */
-#define UCB1TXBUF_SPI                            (HWREG16(0x4000240E))           /*!< eUSCI_Bx Transmit Buffer Register */
+#define UCB1TXBUF_SPI                            (HWREG16(0x4000240E))
 #define UCB1I2COA0                               (HWREG16(0x40002414))           /*!< eUSCI_Bx I2C Own Address 0 Register */
 #define UCB1I2COA1                               (HWREG16(0x40002416))           /*!< eUSCI_Bx I2C Own Address 1 Register */
 #define UCB1I2COA2                               (HWREG16(0x40002418))           /*!< eUSCI_Bx I2C Own Address 2 Register */
@@ -846,25 +844,25 @@
 #define UCB1ADDMASK                              (HWREG16(0x4000241E))           /*!< eUSCI_Bx I2C Address Mask Register */
 #define UCB1I2CSA                                (HWREG16(0x40002420))           /*!< eUSCI_Bx I2C Slave Address Register */
 #define UCB1IE                                   (HWREG16(0x4000242A))           /*!< eUSCI_Bx Interrupt Enable Register */
-#define UCB1IE_SPI                               (HWREG16(0x4000242A))           /*!< eUSCI_Bx Interrupt Enable Register */
+#define UCB1IE_SPI                               (HWREG16(0x4000242A))
 #define UCB1IFG                                  (HWREG16(0x4000242C))           /*!< eUSCI_Bx Interrupt Flag Register */
-#define UCB1IFG_SPI                              (HWREG16(0x4000242C))           /*!< eUSCI_Bx Interrupt Flag Register */
+#define UCB1IFG_SPI                              (HWREG16(0x4000242C))
 #define UCB1IV                                   (HWREG16(0x4000242E))           /*!< eUSCI_Bx Interrupt Vector Register */
-#define UCB1IV_SPI                               (HWREG16(0x4000242E))           /*!< eUSCI_Bx Interrupt Vector Register */
+#define UCB1IV_SPI                               (HWREG16(0x4000242E))
 
 /* Register offsets from EUSCI_B1_BASE address */
 #define OFS_UCB1CTLW0                                      (0x0000)              /*!< eUSCI_Bx Control Word Register 0 */
-#define OFS_UCB1CTLW0_SPI                                  (0x0000)              /*!< eUSCI_Bx Control Word Register 0 */
+#define OFS_UCB1CTLW0_SPI                                  (0x0000)
 #define OFS_UCB1CTLW1                                      (0x0002)              /*!< eUSCI_Bx Control Word Register 1 */
 #define OFS_UCB1BRW                                        (0x0006)              /*!< eUSCI_Bx Baud Rate Control Word Register */
-#define OFS_UCB1BRW_SPI                                    (0x0006)              /*!< eUSCI_Bx Bit Rate Control Register 1 */
+#define OFS_UCB1BRW_SPI                                    (0x0006)
 #define OFS_UCB1STATW                                      (0x0008)              /*!< eUSCI_Bx Status Register */
 #define OFS_UCB1STATW_SPI                                  (0x0008)
 #define OFS_UCB1TBCNT                                      (0x000A)              /*!< eUSCI_Bx Byte Counter Threshold Register */
 #define OFS_UCB1RXBUF                                      (0x000C)              /*!< eUSCI_Bx Receive Buffer Register */
-#define OFS_UCB1RXBUF_SPI                                  (0x000C)              /*!< eUSCI_Bx Receive Buffer Register */
+#define OFS_UCB1RXBUF_SPI                                  (0x000C)
 #define OFS_UCB1TXBUF                                      (0x000E)              /*!< eUSCI_Bx Transmit Buffer Register */
-#define OFS_UCB1TXBUF_SPI                                  (0x000E)              /*!< eUSCI_Bx Transmit Buffer Register */
+#define OFS_UCB1TXBUF_SPI                                  (0x000E)
 #define OFS_UCB1I2COA0                                     (0x0014)              /*!< eUSCI_Bx I2C Own Address 0 Register */
 #define OFS_UCB1I2COA1                                     (0x0016)              /*!< eUSCI_Bx I2C Own Address 1 Register */
 #define OFS_UCB1I2COA2                                     (0x0018)              /*!< eUSCI_Bx I2C Own Address 2 Register */
@@ -873,11 +871,11 @@
 #define OFS_UCB1ADDMASK                                    (0x001E)              /*!< eUSCI_Bx I2C Address Mask Register */
 #define OFS_UCB1I2CSA                                      (0x0020)              /*!< eUSCI_Bx I2C Slave Address Register */
 #define OFS_UCB1IE                                         (0x002A)              /*!< eUSCI_Bx Interrupt Enable Register */
-#define OFS_UCB1IE_SPI                                     (0x002A)              /*!< eUSCI_Bx Interrupt Enable Register */
+#define OFS_UCB1IE_SPI                                     (0x002A)
 #define OFS_UCB1IFG                                        (0x002C)              /*!< eUSCI_Bx Interrupt Flag Register */
-#define OFS_UCB1IFG_SPI                                    (0x002C)              /*!< eUSCI_Bx Interrupt Flag Register */
+#define OFS_UCB1IFG_SPI                                    (0x002C)
 #define OFS_UCB1IV                                         (0x002E)              /*!< eUSCI_Bx Interrupt Vector Register */
-#define OFS_UCB1IV_SPI                                     (0x002E)              /*!< eUSCI_Bx Interrupt Vector Register */
+#define OFS_UCB1IV_SPI                                     (0x002E)
 
 #define UCB1CTL0                                           (HWREG8_L(UCB1CTLW0)) /* eUSCI_Bx Control 1 */
 #define UCB1CTL1                                           (HWREG8_H(UCB1CTLW0)) /* eUSCI_Bx Control 0 */
@@ -890,17 +888,17 @@
 * EUSCI_B2 Registers
 ******************************************************************************/
 #define UCB2CTLW0                                (HWREG16(0x40002800))           /*!< eUSCI_Bx Control Word Register 0 */
-#define UCB2CTLW0_SPI                            (HWREG16(0x40002800))           /*!< eUSCI_Bx Control Word Register 0 */
+#define UCB2CTLW0_SPI                            (HWREG16(0x40002800))
 #define UCB2CTLW1                                (HWREG16(0x40002802))           /*!< eUSCI_Bx Control Word Register 1 */
 #define UCB2BRW                                  (HWREG16(0x40002806))           /*!< eUSCI_Bx Baud Rate Control Word Register */
-#define UCB2BRW_SPI                              (HWREG16(0x40002806))           /*!< eUSCI_Bx Bit Rate Control Register 1 */
+#define UCB2BRW_SPI                              (HWREG16(0x40002806))
 #define UCB2STATW                                (HWREG16(0x40002808))           /*!< eUSCI_Bx Status Register */
 #define UCB2STATW_SPI                            (HWREG16(0x40002808))
 #define UCB2TBCNT                                (HWREG16(0x4000280A))           /*!< eUSCI_Bx Byte Counter Threshold Register */
 #define UCB2RXBUF                                (HWREG16(0x4000280C))           /*!< eUSCI_Bx Receive Buffer Register */
-#define UCB2RXBUF_SPI                            (HWREG16(0x4000280C))           /*!< eUSCI_Bx Receive Buffer Register */
+#define UCB2RXBUF_SPI                            (HWREG16(0x4000280C))
 #define UCB2TXBUF                                (HWREG16(0x4000280E))           /*!< eUSCI_Bx Transmit Buffer Register */
-#define UCB2TXBUF_SPI                            (HWREG16(0x4000280E))           /*!< eUSCI_Bx Transmit Buffer Register */
+#define UCB2TXBUF_SPI                            (HWREG16(0x4000280E))
 #define UCB2I2COA0                               (HWREG16(0x40002814))           /*!< eUSCI_Bx I2C Own Address 0 Register */
 #define UCB2I2COA1                               (HWREG16(0x40002816))           /*!< eUSCI_Bx I2C Own Address 1 Register */
 #define UCB2I2COA2                               (HWREG16(0x40002818))           /*!< eUSCI_Bx I2C Own Address 2 Register */
@@ -909,25 +907,25 @@
 #define UCB2ADDMASK                              (HWREG16(0x4000281E))           /*!< eUSCI_Bx I2C Address Mask Register */
 #define UCB2I2CSA                                (HWREG16(0x40002820))           /*!< eUSCI_Bx I2C Slave Address Register */
 #define UCB2IE                                   (HWREG16(0x4000282A))           /*!< eUSCI_Bx Interrupt Enable Register */
-#define UCB2IE_SPI                               (HWREG16(0x4000282A))           /*!< eUSCI_Bx Interrupt Enable Register */
+#define UCB2IE_SPI                               (HWREG16(0x4000282A))
 #define UCB2IFG                                  (HWREG16(0x4000282C))           /*!< eUSCI_Bx Interrupt Flag Register */
-#define UCB2IFG_SPI                              (HWREG16(0x4000282C))           /*!< eUSCI_Bx Interrupt Flag Register */
+#define UCB2IFG_SPI                              (HWREG16(0x4000282C))
 #define UCB2IV                                   (HWREG16(0x4000282E))           /*!< eUSCI_Bx Interrupt Vector Register */
-#define UCB2IV_SPI                               (HWREG16(0x4000282E))           /*!< eUSCI_Bx Interrupt Vector Register */
+#define UCB2IV_SPI                               (HWREG16(0x4000282E))
 
 /* Register offsets from EUSCI_B2_BASE address */
 #define OFS_UCB2CTLW0                                      (0x0000)              /*!< eUSCI_Bx Control Word Register 0 */
-#define OFS_UCB2CTLW0_SPI                                  (0x0000)              /*!< eUSCI_Bx Control Word Register 0 */
+#define OFS_UCB2CTLW0_SPI                                  (0x0000)
 #define OFS_UCB2CTLW1                                      (0x0002)              /*!< eUSCI_Bx Control Word Register 1 */
 #define OFS_UCB2BRW                                        (0x0006)              /*!< eUSCI_Bx Baud Rate Control Word Register */
-#define OFS_UCB2BRW_SPI                                    (0x0006)              /*!< eUSCI_Bx Bit Rate Control Register 1 */
+#define OFS_UCB2BRW_SPI                                    (0x0006)
 #define OFS_UCB2STATW                                      (0x0008)              /*!< eUSCI_Bx Status Register */
 #define OFS_UCB2STATW_SPI                                  (0x0008)
 #define OFS_UCB2TBCNT                                      (0x000A)              /*!< eUSCI_Bx Byte Counter Threshold Register */
 #define OFS_UCB2RXBUF                                      (0x000C)              /*!< eUSCI_Bx Receive Buffer Register */
-#define OFS_UCB2RXBUF_SPI                                  (0x000C)              /*!< eUSCI_Bx Receive Buffer Register */
+#define OFS_UCB2RXBUF_SPI                                  (0x000C)
 #define OFS_UCB2TXBUF                                      (0x000E)              /*!< eUSCI_Bx Transmit Buffer Register */
-#define OFS_UCB2TXBUF_SPI                                  (0x000E)              /*!< eUSCI_Bx Transmit Buffer Register */
+#define OFS_UCB2TXBUF_SPI                                  (0x000E)
 #define OFS_UCB2I2COA0                                     (0x0014)              /*!< eUSCI_Bx I2C Own Address 0 Register */
 #define OFS_UCB2I2COA1                                     (0x0016)              /*!< eUSCI_Bx I2C Own Address 1 Register */
 #define OFS_UCB2I2COA2                                     (0x0018)              /*!< eUSCI_Bx I2C Own Address 2 Register */
@@ -936,11 +934,11 @@
 #define OFS_UCB2ADDMASK                                    (0x001E)              /*!< eUSCI_Bx I2C Address Mask Register */
 #define OFS_UCB2I2CSA                                      (0x0020)              /*!< eUSCI_Bx I2C Slave Address Register */
 #define OFS_UCB2IE                                         (0x002A)              /*!< eUSCI_Bx Interrupt Enable Register */
-#define OFS_UCB2IE_SPI                                     (0x002A)              /*!< eUSCI_Bx Interrupt Enable Register */
+#define OFS_UCB2IE_SPI                                     (0x002A)
 #define OFS_UCB2IFG                                        (0x002C)              /*!< eUSCI_Bx Interrupt Flag Register */
-#define OFS_UCB2IFG_SPI                                    (0x002C)              /*!< eUSCI_Bx Interrupt Flag Register */
+#define OFS_UCB2IFG_SPI                                    (0x002C)
 #define OFS_UCB2IV                                         (0x002E)              /*!< eUSCI_Bx Interrupt Vector Register */
-#define OFS_UCB2IV_SPI                                     (0x002E)              /*!< eUSCI_Bx Interrupt Vector Register */
+#define OFS_UCB2IV_SPI                                     (0x002E)
 
 #define UCB2CTL0                                           (HWREG8_L(UCB2CTLW0)) /* eUSCI_Bx Control 1 */
 #define UCB2CTL1                                           (HWREG8_H(UCB2CTLW0)) /* eUSCI_Bx Control 0 */
@@ -953,17 +951,17 @@
 * EUSCI_B3 Registers
 ******************************************************************************/
 #define UCB3CTLW0                                (HWREG16(0x40002C00))           /*!< eUSCI_Bx Control Word Register 0 */
-#define UCB3CTLW0_SPI                            (HWREG16(0x40002C00))           /*!< eUSCI_Bx Control Word Register 0 */
+#define UCB3CTLW0_SPI                            (HWREG16(0x40002C00))
 #define UCB3CTLW1                                (HWREG16(0x40002C02))           /*!< eUSCI_Bx Control Word Register 1 */
 #define UCB3BRW                                  (HWREG16(0x40002C06))           /*!< eUSCI_Bx Baud Rate Control Word Register */
-#define UCB3BRW_SPI                              (HWREG16(0x40002C06))           /*!< eUSCI_Bx Bit Rate Control Register 1 */
+#define UCB3BRW_SPI                              (HWREG16(0x40002C06))
 #define UCB3STATW                                (HWREG16(0x40002C08))           /*!< eUSCI_Bx Status Register */
 #define UCB3STATW_SPI                            (HWREG16(0x40002C08))
 #define UCB3TBCNT                                (HWREG16(0x40002C0A))           /*!< eUSCI_Bx Byte Counter Threshold Register */
 #define UCB3RXBUF                                (HWREG16(0x40002C0C))           /*!< eUSCI_Bx Receive Buffer Register */
-#define UCB3RXBUF_SPI                            (HWREG16(0x40002C0C))           /*!< eUSCI_Bx Receive Buffer Register */
+#define UCB3RXBUF_SPI                            (HWREG16(0x40002C0C))
 #define UCB3TXBUF                                (HWREG16(0x40002C0E))           /*!< eUSCI_Bx Transmit Buffer Register */
-#define UCB3TXBUF_SPI                            (HWREG16(0x40002C0E))           /*!< eUSCI_Bx Transmit Buffer Register */
+#define UCB3TXBUF_SPI                            (HWREG16(0x40002C0E))
 #define UCB3I2COA0                               (HWREG16(0x40002C14))           /*!< eUSCI_Bx I2C Own Address 0 Register */
 #define UCB3I2COA1                               (HWREG16(0x40002C16))           /*!< eUSCI_Bx I2C Own Address 1 Register */
 #define UCB3I2COA2                               (HWREG16(0x40002C18))           /*!< eUSCI_Bx I2C Own Address 2 Register */
@@ -972,25 +970,25 @@
 #define UCB3ADDMASK                              (HWREG16(0x40002C1E))           /*!< eUSCI_Bx I2C Address Mask Register */
 #define UCB3I2CSA                                (HWREG16(0x40002C20))           /*!< eUSCI_Bx I2C Slave Address Register */
 #define UCB3IE                                   (HWREG16(0x40002C2A))           /*!< eUSCI_Bx Interrupt Enable Register */
-#define UCB3IE_SPI                               (HWREG16(0x40002C2A))           /*!< eUSCI_Bx Interrupt Enable Register */
+#define UCB3IE_SPI                               (HWREG16(0x40002C2A))
 #define UCB3IFG                                  (HWREG16(0x40002C2C))           /*!< eUSCI_Bx Interrupt Flag Register */
-#define UCB3IFG_SPI                              (HWREG16(0x40002C2C))           /*!< eUSCI_Bx Interrupt Flag Register */
+#define UCB3IFG_SPI                              (HWREG16(0x40002C2C))
 #define UCB3IV                                   (HWREG16(0x40002C2E))           /*!< eUSCI_Bx Interrupt Vector Register */
-#define UCB3IV_SPI                               (HWREG16(0x40002C2E))           /*!< eUSCI_Bx Interrupt Vector Register */
+#define UCB3IV_SPI                               (HWREG16(0x40002C2E))
 
 /* Register offsets from EUSCI_B3_BASE address */
 #define OFS_UCB3CTLW0                                      (0x0000)              /*!< eUSCI_Bx Control Word Register 0 */
-#define OFS_UCB3CTLW0_SPI                                  (0x0000)              /*!< eUSCI_Bx Control Word Register 0 */
+#define OFS_UCB3CTLW0_SPI                                  (0x0000)
 #define OFS_UCB3CTLW1                                      (0x0002)              /*!< eUSCI_Bx Control Word Register 1 */
 #define OFS_UCB3BRW                                        (0x0006)              /*!< eUSCI_Bx Baud Rate Control Word Register */
-#define OFS_UCB3BRW_SPI                                    (0x0006)              /*!< eUSCI_Bx Bit Rate Control Register 1 */
+#define OFS_UCB3BRW_SPI                                    (0x0006)
 #define OFS_UCB3STATW                                      (0x0008)              /*!< eUSCI_Bx Status Register */
 #define OFS_UCB3STATW_SPI                                  (0x0008)
 #define OFS_UCB3TBCNT                                      (0x000A)              /*!< eUSCI_Bx Byte Counter Threshold Register */
 #define OFS_UCB3RXBUF                                      (0x000C)              /*!< eUSCI_Bx Receive Buffer Register */
-#define OFS_UCB3RXBUF_SPI                                  (0x000C)              /*!< eUSCI_Bx Receive Buffer Register */
+#define OFS_UCB3RXBUF_SPI                                  (0x000C)
 #define OFS_UCB3TXBUF                                      (0x000E)              /*!< eUSCI_Bx Transmit Buffer Register */
-#define OFS_UCB3TXBUF_SPI                                  (0x000E)              /*!< eUSCI_Bx Transmit Buffer Register */
+#define OFS_UCB3TXBUF_SPI                                  (0x000E)
 #define OFS_UCB3I2COA0                                     (0x0014)              /*!< eUSCI_Bx I2C Own Address 0 Register */
 #define OFS_UCB3I2COA1                                     (0x0016)              /*!< eUSCI_Bx I2C Own Address 1 Register */
 #define OFS_UCB3I2COA2                                     (0x0018)              /*!< eUSCI_Bx I2C Own Address 2 Register */
@@ -999,11 +997,11 @@
 #define OFS_UCB3ADDMASK                                    (0x001E)              /*!< eUSCI_Bx I2C Address Mask Register */
 #define OFS_UCB3I2CSA                                      (0x0020)              /*!< eUSCI_Bx I2C Slave Address Register */
 #define OFS_UCB3IE                                         (0x002A)              /*!< eUSCI_Bx Interrupt Enable Register */
-#define OFS_UCB3IE_SPI                                     (0x002A)              /*!< eUSCI_Bx Interrupt Enable Register */
+#define OFS_UCB3IE_SPI                                     (0x002A)
 #define OFS_UCB3IFG                                        (0x002C)              /*!< eUSCI_Bx Interrupt Flag Register */
-#define OFS_UCB3IFG_SPI                                    (0x002C)              /*!< eUSCI_Bx Interrupt Flag Register */
+#define OFS_UCB3IFG_SPI                                    (0x002C)
 #define OFS_UCB3IV                                         (0x002E)              /*!< eUSCI_Bx Interrupt Vector Register */
-#define OFS_UCB3IV_SPI                                     (0x002E)              /*!< eUSCI_Bx Interrupt Vector Register */
+#define OFS_UCB3IV_SPI                                     (0x002E)
 
 #define UCB3CTL0                                           (HWREG8_L(UCB3CTLW0)) /* eUSCI_Bx Control 1 */
 #define UCB3CTL1                                           (HWREG8_H(UCB3CTLW0)) /* eUSCI_Bx Control 0 */
@@ -1101,18 +1099,18 @@
 #define RTCPS1CTL                                (HWREG16(0x4000440A))           /*!< Real-Time Clock Prescale Timer 1 Control Register */
 #define RTCPS                                    (HWREG16(0x4000440C))           /*!< Real-Time Clock Prescale Timer Counter Register */
 #define RTCIV                                    (HWREG16(0x4000440E))           /*!< Real-Time Clock Interrupt Vector Register */
-#define RTCTIM0                                  (HWREG16(0x40004410))           /*!< RTCTIM0 Register ? Hexadecimal Format */
-#define RTCTIM0_BCD                              (HWREG16(0x40004410))           /*!< RTCTIM0 Register ? BCD Format */
+#define RTCTIM0                                  (HWREG16(0x40004410))           /*!< RTCTIM0 Register  Hexadecimal Format */
+#define RTCTIM0_BCD                              (HWREG16(0x40004410))
 #define RTCTIM1                                  (HWREG16(0x40004412))           /*!< Real-Time Clock Hour, Day of Week */
-#define RTCTIM1_BCD                              (HWREG16(0x40004412))           /*!< RTCTIM1 Register ? BCD Format */
+#define RTCTIM1_BCD                              (HWREG16(0x40004412))
 #define RTCDATE                                  (HWREG16(0x40004414))           /*!< RTCDATE - Hexadecimal Format */
-#define RTCDATE_BCD                              (HWREG16(0x40004414))           /*!< Real-Time Clock Date - BCD Format */
-#define RTCYEAR                                  (HWREG16(0x40004416))           /*!< RTCYEAR Register ? Hexadecimal Format */
-#define RTCYEAR_BCD                              (HWREG16(0x40004416))           /*!< RTCYEAR Register ? BCD Format */
+#define RTCDATE_BCD                              (HWREG16(0x40004414))
+#define RTCYEAR                                  (HWREG16(0x40004416))           /*!< RTCYEAR Register  Hexadecimal Format */
+#define RTCYEAR_BCD                              (HWREG16(0x40004416))
 #define RTCAMINHR                                (HWREG16(0x40004418))           /*!< RTCMINHR - Hexadecimal Format */
-#define RTCAMINHR_BCD                            (HWREG16(0x40004418))           /*!< RTCMINHR - BCD Format */
+#define RTCAMINHR_BCD                            (HWREG16(0x40004418))
 #define RTCADOWDAY                               (HWREG16(0x4000441A))           /*!< RTCADOWDAY - Hexadecimal Format */
-#define RTCADOWDAY_BCD                           (HWREG16(0x4000441A))           /*!< RTCADOWDAY - BCD Format */
+#define RTCADOWDAY_BCD                           (HWREG16(0x4000441A))
 #define RTCBIN2BCD                               (HWREG16(0x4000441C))           /*!< Binary-to-BCD Conversion Register */
 #define RTCBCD2BIN                               (HWREG16(0x4000441E))           /*!< BCD-to-Binary Conversion Register */
 
@@ -1125,18 +1123,18 @@
 #define OFS_RTCPS1CTL                                      (0x000A)              /*!< Real-Time Clock Prescale Timer 1 Control Register */
 #define OFS_RTCPS                                          (0x000C)              /*!< Real-Time Clock Prescale Timer Counter Register */
 #define OFS_RTCIV                                          (0x000E)              /*!< Real-Time Clock Interrupt Vector Register */
-#define OFS_RTCTIM0                                        (0x0010)              /*!< RTCTIM0 Register ? Hexadecimal Format */
-#define OFS_RTCTIM0_BCD                                    (0x0010)              /*!< RTCTIM0 Register ? BCD Format */
+#define OFS_RTCTIM0                                        (0x0010)              /*!< RTCTIM0 Register  Hexadecimal Format */
+#define OFS_RTCTIM0_BCD                                    (0x0010)
 #define OFS_RTCTIM1                                        (0x0012)              /*!< Real-Time Clock Hour, Day of Week */
-#define OFS_RTCTIM1_BCD                                    (0x0012)              /*!< RTCTIM1 Register ? BCD Format */
+#define OFS_RTCTIM1_BCD                                    (0x0012)
 #define OFS_RTCDATE                                        (0x0014)              /*!< RTCDATE - Hexadecimal Format */
-#define OFS_RTCDATE_BCD                                    (0x0014)              /*!< Real-Time Clock Date - BCD Format */
-#define OFS_RTCYEAR                                        (0x0016)              /*!< RTCYEAR Register ? Hexadecimal Format */
-#define OFS_RTCYEAR_BCD                                    (0x0016)              /*!< RTCYEAR Register ? BCD Format */
+#define OFS_RTCDATE_BCD                                    (0x0014)
+#define OFS_RTCYEAR                                        (0x0016)              /*!< RTCYEAR Register  Hexadecimal Format */
+#define OFS_RTCYEAR_BCD                                    (0x0016)
 #define OFS_RTCAMINHR                                      (0x0018)              /*!< RTCMINHR - Hexadecimal Format */
-#define OFS_RTCAMINHR_BCD                                  (0x0018)              /*!< RTCMINHR - BCD Format */
+#define OFS_RTCAMINHR_BCD                                  (0x0018)
 #define OFS_RTCADOWDAY                                     (0x001A)              /*!< RTCADOWDAY - Hexadecimal Format */
-#define OFS_RTCADOWDAY_BCD                                 (0x001A)              /*!< RTCADOWDAY - BCD Format */
+#define OFS_RTCADOWDAY_BCD                                 (0x001A)
 #define OFS_RTCBIN2BCD                                     (0x001C)              /*!< Binary-to-BCD Conversion Register */
 #define OFS_RTCBCD2BIN                                     (0x001E)              /*!< BCD-to-Binary Conversion Register */
 
@@ -1188,16 +1186,12 @@
 #define TA0CCTL2                                 (HWREG16(0x40000006))           /*!< Timer_A Capture/Compare Control Register */
 #define TA0CCTL3                                 (HWREG16(0x40000008))           /*!< Timer_A Capture/Compare Control Register */
 #define TA0CCTL4                                 (HWREG16(0x4000000A))           /*!< Timer_A Capture/Compare Control Register */
-#define TA0CCTL5                                 (HWREG16(0x4000000C))           /*!< Timer_A Capture/Compare Control Register */
-#define TA0CCTL6                                 (HWREG16(0x4000000E))           /*!< Timer_A Capture/Compare Control Register */
 #define TA0R                                     (HWREG16(0x40000010))           /*!< TimerA register */
 #define TA0CCR0                                  (HWREG16(0x40000012))           /*!< Timer_A Capture/Compare  Register */
 #define TA0CCR1                                  (HWREG16(0x40000014))           /*!< Timer_A Capture/Compare  Register */
 #define TA0CCR2                                  (HWREG16(0x40000016))           /*!< Timer_A Capture/Compare  Register */
 #define TA0CCR3                                  (HWREG16(0x40000018))           /*!< Timer_A Capture/Compare  Register */
 #define TA0CCR4                                  (HWREG16(0x4000001A))           /*!< Timer_A Capture/Compare  Register */
-#define TA0CCR5                                  (HWREG16(0x4000001C))           /*!< Timer_A Capture/Compare  Register */
-#define TA0CCR6                                  (HWREG16(0x4000001E))           /*!< Timer_A Capture/Compare  Register */
 #define TA0EX0                                   (HWREG16(0x40000020))           /*!< TimerAx Expansion 0 Register */
 #define TA0IV                                    (HWREG16(0x4000002E))           /*!< TimerAx Interrupt Vector Register */
 
@@ -1208,16 +1202,12 @@
 #define OFS_TA0CCTL2                                       (0x0006)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA0CCTL3                                       (0x0008)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA0CCTL4                                       (0x000A)              /*!< Timer_A Capture/Compare Control Register */
-#define OFS_TA0CCTL5                                       (0x000C)              /*!< Timer_A Capture/Compare Control Register */
-#define OFS_TA0CCTL6                                       (0x000E)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA0R                                           (0x0010)              /*!< TimerA register */
 #define OFS_TA0CCR0                                        (0x0012)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA0CCR1                                        (0x0014)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA0CCR2                                        (0x0016)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA0CCR3                                        (0x0018)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA0CCR4                                        (0x001A)              /*!< Timer_A Capture/Compare  Register */
-#define OFS_TA0CCR5                                        (0x001C)              /*!< Timer_A Capture/Compare  Register */
-#define OFS_TA0CCR6                                        (0x001E)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA0EX0                                         (0x0020)              /*!< TimerAx Expansion 0 Register */
 #define OFS_TA0IV                                          (0x002E)              /*!< TimerAx Interrupt Vector Register */
 
@@ -1231,16 +1221,12 @@
 #define TA1CCTL2                                 (HWREG16(0x40000406))           /*!< Timer_A Capture/Compare Control Register */
 #define TA1CCTL3                                 (HWREG16(0x40000408))           /*!< Timer_A Capture/Compare Control Register */
 #define TA1CCTL4                                 (HWREG16(0x4000040A))           /*!< Timer_A Capture/Compare Control Register */
-#define TA1CCTL5                                 (HWREG16(0x4000040C))           /*!< Timer_A Capture/Compare Control Register */
-#define TA1CCTL6                                 (HWREG16(0x4000040E))           /*!< Timer_A Capture/Compare Control Register */
 #define TA1R                                     (HWREG16(0x40000410))           /*!< TimerA register */
 #define TA1CCR0                                  (HWREG16(0x40000412))           /*!< Timer_A Capture/Compare  Register */
 #define TA1CCR1                                  (HWREG16(0x40000414))           /*!< Timer_A Capture/Compare  Register */
 #define TA1CCR2                                  (HWREG16(0x40000416))           /*!< Timer_A Capture/Compare  Register */
 #define TA1CCR3                                  (HWREG16(0x40000418))           /*!< Timer_A Capture/Compare  Register */
 #define TA1CCR4                                  (HWREG16(0x4000041A))           /*!< Timer_A Capture/Compare  Register */
-#define TA1CCR5                                  (HWREG16(0x4000041C))           /*!< Timer_A Capture/Compare  Register */
-#define TA1CCR6                                  (HWREG16(0x4000041E))           /*!< Timer_A Capture/Compare  Register */
 #define TA1EX0                                   (HWREG16(0x40000420))           /*!< TimerAx Expansion 0 Register */
 #define TA1IV                                    (HWREG16(0x4000042E))           /*!< TimerAx Interrupt Vector Register */
 
@@ -1251,16 +1237,12 @@
 #define OFS_TA1CCTL2                                       (0x0006)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA1CCTL3                                       (0x0008)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA1CCTL4                                       (0x000A)              /*!< Timer_A Capture/Compare Control Register */
-#define OFS_TA1CCTL5                                       (0x000C)              /*!< Timer_A Capture/Compare Control Register */
-#define OFS_TA1CCTL6                                       (0x000E)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA1R                                           (0x0010)              /*!< TimerA register */
 #define OFS_TA1CCR0                                        (0x0012)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA1CCR1                                        (0x0014)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA1CCR2                                        (0x0016)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA1CCR3                                        (0x0018)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA1CCR4                                        (0x001A)              /*!< Timer_A Capture/Compare  Register */
-#define OFS_TA1CCR5                                        (0x001C)              /*!< Timer_A Capture/Compare  Register */
-#define OFS_TA1CCR6                                        (0x001E)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA1EX0                                         (0x0020)              /*!< TimerAx Expansion 0 Register */
 #define OFS_TA1IV                                          (0x002E)              /*!< TimerAx Interrupt Vector Register */
 
@@ -1274,16 +1256,12 @@
 #define TA2CCTL2                                 (HWREG16(0x40000806))           /*!< Timer_A Capture/Compare Control Register */
 #define TA2CCTL3                                 (HWREG16(0x40000808))           /*!< Timer_A Capture/Compare Control Register */
 #define TA2CCTL4                                 (HWREG16(0x4000080A))           /*!< Timer_A Capture/Compare Control Register */
-#define TA2CCTL5                                 (HWREG16(0x4000080C))           /*!< Timer_A Capture/Compare Control Register */
-#define TA2CCTL6                                 (HWREG16(0x4000080E))           /*!< Timer_A Capture/Compare Control Register */
 #define TA2R                                     (HWREG16(0x40000810))           /*!< TimerA register */
 #define TA2CCR0                                  (HWREG16(0x40000812))           /*!< Timer_A Capture/Compare  Register */
 #define TA2CCR1                                  (HWREG16(0x40000814))           /*!< Timer_A Capture/Compare  Register */
 #define TA2CCR2                                  (HWREG16(0x40000816))           /*!< Timer_A Capture/Compare  Register */
 #define TA2CCR3                                  (HWREG16(0x40000818))           /*!< Timer_A Capture/Compare  Register */
 #define TA2CCR4                                  (HWREG16(0x4000081A))           /*!< Timer_A Capture/Compare  Register */
-#define TA2CCR5                                  (HWREG16(0x4000081C))           /*!< Timer_A Capture/Compare  Register */
-#define TA2CCR6                                  (HWREG16(0x4000081E))           /*!< Timer_A Capture/Compare  Register */
 #define TA2EX0                                   (HWREG16(0x40000820))           /*!< TimerAx Expansion 0 Register */
 #define TA2IV                                    (HWREG16(0x4000082E))           /*!< TimerAx Interrupt Vector Register */
 
@@ -1294,16 +1272,12 @@
 #define OFS_TA2CCTL2                                       (0x0006)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA2CCTL3                                       (0x0008)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA2CCTL4                                       (0x000A)              /*!< Timer_A Capture/Compare Control Register */
-#define OFS_TA2CCTL5                                       (0x000C)              /*!< Timer_A Capture/Compare Control Register */
-#define OFS_TA2CCTL6                                       (0x000E)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA2R                                           (0x0010)              /*!< TimerA register */
 #define OFS_TA2CCR0                                        (0x0012)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA2CCR1                                        (0x0014)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA2CCR2                                        (0x0016)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA2CCR3                                        (0x0018)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA2CCR4                                        (0x001A)              /*!< Timer_A Capture/Compare  Register */
-#define OFS_TA2CCR5                                        (0x001C)              /*!< Timer_A Capture/Compare  Register */
-#define OFS_TA2CCR6                                        (0x001E)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA2EX0                                         (0x0020)              /*!< TimerAx Expansion 0 Register */
 #define OFS_TA2IV                                          (0x002E)              /*!< TimerAx Interrupt Vector Register */
 
@@ -1317,16 +1291,12 @@
 #define TA3CCTL2                                 (HWREG16(0x40000C06))           /*!< Timer_A Capture/Compare Control Register */
 #define TA3CCTL3                                 (HWREG16(0x40000C08))           /*!< Timer_A Capture/Compare Control Register */
 #define TA3CCTL4                                 (HWREG16(0x40000C0A))           /*!< Timer_A Capture/Compare Control Register */
-#define TA3CCTL5                                 (HWREG16(0x40000C0C))           /*!< Timer_A Capture/Compare Control Register */
-#define TA3CCTL6                                 (HWREG16(0x40000C0E))           /*!< Timer_A Capture/Compare Control Register */
 #define TA3R                                     (HWREG16(0x40000C10))           /*!< TimerA register */
 #define TA3CCR0                                  (HWREG16(0x40000C12))           /*!< Timer_A Capture/Compare  Register */
 #define TA3CCR1                                  (HWREG16(0x40000C14))           /*!< Timer_A Capture/Compare  Register */
 #define TA3CCR2                                  (HWREG16(0x40000C16))           /*!< Timer_A Capture/Compare  Register */
 #define TA3CCR3                                  (HWREG16(0x40000C18))           /*!< Timer_A Capture/Compare  Register */
 #define TA3CCR4                                  (HWREG16(0x40000C1A))           /*!< Timer_A Capture/Compare  Register */
-#define TA3CCR5                                  (HWREG16(0x40000C1C))           /*!< Timer_A Capture/Compare  Register */
-#define TA3CCR6                                  (HWREG16(0x40000C1E))           /*!< Timer_A Capture/Compare  Register */
 #define TA3EX0                                   (HWREG16(0x40000C20))           /*!< TimerAx Expansion 0 Register */
 #define TA3IV                                    (HWREG16(0x40000C2E))           /*!< TimerAx Interrupt Vector Register */
 
@@ -1337,16 +1307,12 @@
 #define OFS_TA3CCTL2                                       (0x0006)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA3CCTL3                                       (0x0008)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA3CCTL4                                       (0x000A)              /*!< Timer_A Capture/Compare Control Register */
-#define OFS_TA3CCTL5                                       (0x000C)              /*!< Timer_A Capture/Compare Control Register */
-#define OFS_TA3CCTL6                                       (0x000E)              /*!< Timer_A Capture/Compare Control Register */
 #define OFS_TA3R                                           (0x0010)              /*!< TimerA register */
 #define OFS_TA3CCR0                                        (0x0012)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA3CCR1                                        (0x0014)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA3CCR2                                        (0x0016)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA3CCR3                                        (0x0018)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA3CCR4                                        (0x001A)              /*!< Timer_A Capture/Compare  Register */
-#define OFS_TA3CCR5                                        (0x001C)              /*!< Timer_A Capture/Compare  Register */
-#define OFS_TA3CCR6                                        (0x001E)              /*!< Timer_A Capture/Compare  Register */
 #define OFS_TA3EX0                                         (0x0020)              /*!< TimerAx Expansion 0 Register */
 #define OFS_TA3IV                                          (0x002E)              /*!< TimerAx Interrupt Vector Register */
 
@@ -1368,7 +1334,7 @@
 * AES256 Bits (legacy section)
 ******************************************************************************/
 /* AESACTL0[AESOP] Bits */
-#define AESOP_OFS                                AES256_CTL0_OP_OFS              /*!< AESOPx Offset */
+#define AESOP_OFS                                AES256_CTL0_OP_OFS              /*!< AESOP Offset */
 #define AESOP_M                                  AES256_CTL0_OP_MASK             /*!< AES operation */
 #define AESOP0                                   AES256_CTL0_OP0                 /*!< AESOP Bit 0 */
 #define AESOP1                                   AES256_CTL0_OP1                 /*!< AESOP Bit 1 */
@@ -1377,7 +1343,7 @@
 #define AESOP_2                                  AES256_CTL0_OP_2                /*!< Generate first round key required for decryption */
 #define AESOP_3                                  AES256_CTL0_OP_3                /*!< Decryption. The provided key is the first round key required for decryption */
 /* AESACTL0[AESKL] Bits */
-#define AESKL_OFS                                AES256_CTL0_KL_OFS              /*!< AESKLx Offset */
+#define AESKL_OFS                                AES256_CTL0_KL_OFS              /*!< AESKL Offset */
 #define AESKL_M                                  AES256_CTL0_KL_MASK             /*!< AES key length */
 #define AESKL0                                   AES256_CTL0_KL0                 /*!< AESKL Bit 0 */
 #define AESKL1                                   AES256_CTL0_KL1                 /*!< AESKL Bit 1 */
@@ -1388,7 +1354,7 @@
 #define AESKL__192BIT                            AES256_CTL0_KL__192BIT          /*!< AES192. The key size is 192 bit. */
 #define AESKL__256BIT                            AES256_CTL0_KL__256BIT          /*!< AES256. The key size is 256 bit */
 /* AESACTL0[AESCM] Bits */
-#define AESCM_OFS                                AES256_CTL0_CM_OFS              /*!< AESCMx Offset */
+#define AESCM_OFS                                AES256_CTL0_CM_OFS              /*!< AESCM Offset */
 #define AESCM_M                                  AES256_CTL0_CM_MASK             /*!< AES cipher mode select */
 #define AESCM0                                   AES256_CTL0_CM0                 /*!< AESCM Bit 0 */
 #define AESCM1                                   AES256_CTL0_CM1                 /*!< AESCM Bit 1 */
@@ -1416,7 +1382,7 @@
 #define AESCMEN_OFS                              AES256_CTL0_CMEN_OFS            /*!< AESCMEN Offset */
 #define AESCMEN                                  AES256_CTL0_CMEN                /*!< AES cipher mode enable */
 /* AESACTL1[AESBLKCNT] Bits */
-#define AESBLKCNT_OFS                            AES256_CTL1_BLKCNT_OFS          /*!< AESBLKCNTx Offset */
+#define AESBLKCNT_OFS                            AES256_CTL1_BLKCNT_OFS          /*!< AESBLKCNT Offset */
 #define AESBLKCNT_M                              AES256_CTL1_BLKCNT_MASK         /*!< Cipher Block Counter */
 #define AESBLKCNT0                               AES256_CTL1_BLKCNT0             /*!< AESBLKCNT Bit 0 */
 #define AESBLKCNT1                               AES256_CTL1_BLKCNT1             /*!< AESBLKCNT Bit 1 */
@@ -1439,28 +1405,28 @@
 #define AESDOUTRD_OFS                            AES256_STAT_DOUTRD_OFS          /*!< AESDOUTRD Offset */
 #define AESDOUTRD                                AES256_STAT_DOUTRD              /*!< All 16 bytes read from AESADOUT */
 /* AESASTAT[AESKEYCNT] Bits */
-#define AESKEYCNT_OFS                            AES256_STAT_KEYCNT_OFS          /*!< AESKEYCNTx Offset */
+#define AESKEYCNT_OFS                            AES256_STAT_KEYCNT_OFS          /*!< AESKEYCNT Offset */
 #define AESKEYCNT_M                              AES256_STAT_KEYCNT_MASK         /*!< Bytes written via AESAKEY for AESKLx=00, half-words written via AESAKEY */
 #define AESKEYCNT0                               AES256_STAT_KEYCNT0             /*!< AESKEYCNT Bit 0 */
 #define AESKEYCNT1                               AES256_STAT_KEYCNT1             /*!< AESKEYCNT Bit 1 */
 #define AESKEYCNT2                               AES256_STAT_KEYCNT2             /*!< AESKEYCNT Bit 2 */
 #define AESKEYCNT3                               AES256_STAT_KEYCNT3             /*!< AESKEYCNT Bit 3 */
 /* AESASTAT[AESDINCNT] Bits */
-#define AESDINCNT_OFS                            AES256_STAT_DINCNT_OFS          /*!< AESDINCNTx Offset */
+#define AESDINCNT_OFS                            AES256_STAT_DINCNT_OFS          /*!< AESDINCNT Offset */
 #define AESDINCNT_M                              AES256_STAT_DINCNT_MASK         /*!< Bytes written via AESADIN, AESAXDIN or AESAXIN */
 #define AESDINCNT0                               AES256_STAT_DINCNT0             /*!< AESDINCNT Bit 0 */
 #define AESDINCNT1                               AES256_STAT_DINCNT1             /*!< AESDINCNT Bit 1 */
 #define AESDINCNT2                               AES256_STAT_DINCNT2             /*!< AESDINCNT Bit 2 */
 #define AESDINCNT3                               AES256_STAT_DINCNT3             /*!< AESDINCNT Bit 3 */
 /* AESASTAT[AESDOUTCNT] Bits */
-#define AESDOUTCNT_OFS                           AES256_STAT_DOUTCNT_OFS         /*!< AESDOUTCNTx Offset */
+#define AESDOUTCNT_OFS                           AES256_STAT_DOUTCNT_OFS         /*!< AESDOUTCNT Offset */
 #define AESDOUTCNT_M                             AES256_STAT_DOUTCNT_MASK        /*!< Bytes read via AESADOUT */
 #define AESDOUTCNT0                              AES256_STAT_DOUTCNT0            /*!< AESDOUTCNT Bit 0 */
 #define AESDOUTCNT1                              AES256_STAT_DOUTCNT1            /*!< AESDOUTCNT Bit 1 */
 #define AESDOUTCNT2                              AES256_STAT_DOUTCNT2            /*!< AESDOUTCNT Bit 2 */
 #define AESDOUTCNT3                              AES256_STAT_DOUTCNT3            /*!< AESDOUTCNT Bit 3 */
 /* AESAKEY[AESKEY0] Bits */
-#define AESKEY0_OFS                              AES256_KEY_KEY0_OFS             /*!< AESKEY0x Offset */
+#define AESKEY0_OFS                              AES256_KEY_KEY0_OFS             /*!< AESKEY0 Offset */
 #define AESKEY0_M                                AES256_KEY_KEY0_MASK            /*!< AES key byte n when AESAKEY is written as half-word */
 #define AESKEY00                                 AES256_KEY_KEY00                /*!< AESKEY0 Bit 0 */
 #define AESKEY01                                 AES256_KEY_KEY01                /*!< AESKEY0 Bit 1 */
@@ -1471,7 +1437,7 @@
 #define AESKEY06                                 AES256_KEY_KEY06                /*!< AESKEY0 Bit 6 */
 #define AESKEY07                                 AES256_KEY_KEY07                /*!< AESKEY0 Bit 7 */
 /* AESAKEY[AESKEY1] Bits */
-#define AESKEY1_OFS                              AES256_KEY_KEY1_OFS             /*!< AESKEY1x Offset */
+#define AESKEY1_OFS                              AES256_KEY_KEY1_OFS             /*!< AESKEY1 Offset */
 #define AESKEY1_M                                AES256_KEY_KEY1_MASK            /*!< AES key byte n+1 when AESAKEY is written as half-word */
 #define AESKEY10                                 AES256_KEY_KEY10                /*!< AESKEY1 Bit 0 */
 #define AESKEY11                                 AES256_KEY_KEY11                /*!< AESKEY1 Bit 1 */
@@ -1482,7 +1448,7 @@
 #define AESKEY16                                 AES256_KEY_KEY16                /*!< AESKEY1 Bit 6 */
 #define AESKEY17                                 AES256_KEY_KEY17                /*!< AESKEY1 Bit 7 */
 /* AESADIN[AESDIN0] Bits */
-#define AESDIN0_OFS                              AES256_DIN_DIN0_OFS             /*!< AESDIN0x Offset */
+#define AESDIN0_OFS                              AES256_DIN_DIN0_OFS             /*!< AESDIN0 Offset */
 #define AESDIN0_M                                AES256_DIN_DIN0_MASK            /*!< AES data in byte n when AESADIN is written as half-word */
 #define AESDIN00                                 AES256_DIN_DIN00                /*!< AESDIN0 Bit 0 */
 #define AESDIN01                                 AES256_DIN_DIN01                /*!< AESDIN0 Bit 1 */
@@ -1493,7 +1459,7 @@
 #define AESDIN06                                 AES256_DIN_DIN06                /*!< AESDIN0 Bit 6 */
 #define AESDIN07                                 AES256_DIN_DIN07                /*!< AESDIN0 Bit 7 */
 /* AESADIN[AESDIN1] Bits */
-#define AESDIN1_OFS                              AES256_DIN_DIN1_OFS             /*!< AESDIN1x Offset */
+#define AESDIN1_OFS                              AES256_DIN_DIN1_OFS             /*!< AESDIN1 Offset */
 #define AESDIN1_M                                AES256_DIN_DIN1_MASK            /*!< AES data in byte n+1 when AESADIN is written as half-word */
 #define AESDIN10                                 AES256_DIN_DIN10                /*!< AESDIN1 Bit 0 */
 #define AESDIN11                                 AES256_DIN_DIN11                /*!< AESDIN1 Bit 1 */
@@ -1504,7 +1470,7 @@
 #define AESDIN16                                 AES256_DIN_DIN16                /*!< AESDIN1 Bit 6 */
 #define AESDIN17                                 AES256_DIN_DIN17                /*!< AESDIN1 Bit 7 */
 /* AESADOUT[AESDOUT0] Bits */
-#define AESDOUT0_OFS                             AES256_DOUT_DOUT0_OFS           /*!< AESDOUT0x Offset */
+#define AESDOUT0_OFS                             AES256_DOUT_DOUT0_OFS           /*!< AESDOUT0 Offset */
 #define AESDOUT0_M                               AES256_DOUT_DOUT0_MASK          /*!< AES data out byte n when AESADOUT is read as half-word */
 #define AESDOUT00                                AES256_DOUT_DOUT00              /*!< AESDOUT0 Bit 0 */
 #define AESDOUT01                                AES256_DOUT_DOUT01              /*!< AESDOUT0 Bit 1 */
@@ -1515,7 +1481,7 @@
 #define AESDOUT06                                AES256_DOUT_DOUT06              /*!< AESDOUT0 Bit 6 */
 #define AESDOUT07                                AES256_DOUT_DOUT07              /*!< AESDOUT0 Bit 7 */
 /* AESADOUT[AESDOUT1] Bits */
-#define AESDOUT1_OFS                             AES256_DOUT_DOUT1_OFS           /*!< AESDOUT1x Offset */
+#define AESDOUT1_OFS                             AES256_DOUT_DOUT1_OFS           /*!< AESDOUT1 Offset */
 #define AESDOUT1_M                               AES256_DOUT_DOUT1_MASK          /*!< AES data out byte n+1 when AESADOUT is read as half-word */
 #define AESDOUT10                                AES256_DOUT_DOUT10              /*!< AESDOUT1 Bit 0 */
 #define AESDOUT11                                AES256_DOUT_DOUT11              /*!< AESDOUT1 Bit 1 */
@@ -1526,7 +1492,7 @@
 #define AESDOUT16                                AES256_DOUT_DOUT16              /*!< AESDOUT1 Bit 6 */
 #define AESDOUT17                                AES256_DOUT_DOUT17              /*!< AESDOUT1 Bit 7 */
 /* AESAXDIN[AESXDIN0] Bits */
-#define AESXDIN0_OFS                             AES256_XDIN_XDIN0_OFS           /*!< AESXDIN0x Offset */
+#define AESXDIN0_OFS                             AES256_XDIN_XDIN0_OFS           /*!< AESXDIN0 Offset */
 #define AESXDIN0_M                               AES256_XDIN_XDIN0_MASK          /*!< AES data in byte n when AESAXDIN is written as half-word */
 #define AESXDIN00                                AES256_XDIN_XDIN00              /*!< AESXDIN0 Bit 0 */
 #define AESXDIN01                                AES256_XDIN_XDIN01              /*!< AESXDIN0 Bit 1 */
@@ -1537,7 +1503,7 @@
 #define AESXDIN06                                AES256_XDIN_XDIN06              /*!< AESXDIN0 Bit 6 */
 #define AESXDIN07                                AES256_XDIN_XDIN07              /*!< AESXDIN0 Bit 7 */
 /* AESAXDIN[AESXDIN1] Bits */
-#define AESXDIN1_OFS                             AES256_XDIN_XDIN1_OFS           /*!< AESXDIN1x Offset */
+#define AESXDIN1_OFS                             AES256_XDIN_XDIN1_OFS           /*!< AESXDIN1 Offset */
 #define AESXDIN1_M                               AES256_XDIN_XDIN1_MASK          /*!< AES data in byte n+1 when AESAXDIN is written as half-word */
 #define AESXDIN10                                AES256_XDIN_XDIN10              /*!< AESXDIN1 Bit 0 */
 #define AESXDIN11                                AES256_XDIN_XDIN11              /*!< AESXDIN1 Bit 1 */
@@ -1548,7 +1514,7 @@
 #define AESXDIN16                                AES256_XDIN_XDIN16              /*!< AESXDIN1 Bit 6 */
 #define AESXDIN17                                AES256_XDIN_XDIN17              /*!< AESXDIN1 Bit 7 */
 /* AESAXIN[AESXIN0] Bits */
-#define AESXIN0_OFS                              AES256_XIN_XIN0_OFS             /*!< AESXIN0x Offset */
+#define AESXIN0_OFS                              AES256_XIN_XIN0_OFS             /*!< AESXIN0 Offset */
 #define AESXIN0_M                                AES256_XIN_XIN0_MASK            /*!< AES data in byte n when AESAXIN is written as half-word */
 #define AESXIN00                                 AES256_XIN_XIN00                /*!< AESXIN0 Bit 0 */
 #define AESXIN01                                 AES256_XIN_XIN01                /*!< AESXIN0 Bit 1 */
@@ -1559,7 +1525,7 @@
 #define AESXIN06                                 AES256_XIN_XIN06                /*!< AESXIN0 Bit 6 */
 #define AESXIN07                                 AES256_XIN_XIN07                /*!< AESXIN0 Bit 7 */
 /* AESAXIN[AESXIN1] Bits */
-#define AESXIN1_OFS                              AES256_XIN_XIN1_OFS             /*!< AESXIN1x Offset */
+#define AESXIN1_OFS                              AES256_XIN_XIN1_OFS             /*!< AESXIN1 Offset */
 #define AESXIN1_M                                AES256_XIN_XIN1_MASK            /*!< AES data in byte n+1 when AESAXIN is written as half-word */
 #define AESXIN10                                 AES256_XIN_XIN10                /*!< AESXIN1 Bit 0 */
 #define AESXIN11                                 AES256_XIN_XIN11                /*!< AESXIN1 Bit 1 */
@@ -1570,12 +1536,11 @@
 #define AESXIN16                                 AES256_XIN_XIN16                /*!< AESXIN1 Bit 6 */
 #define AESXIN17                                 AES256_XIN_XIN17                /*!< AESXIN1 Bit 7 */
 
-
 /******************************************************************************
 * CAPTIO Bits (legacy section)
 ******************************************************************************/
 /* CAPTIO0CTL[CAPTIOPISEL] Bits */
-#define CAPTIOPISEL_OFS                          CAPTIO_CTL_PISEL_OFS            /*!< CAPTIOPISELx Offset */
+#define CAPTIOPISEL_OFS                          CAPTIO_CTL_PISEL_OFS            /*!< CAPTIOPISEL Offset */
 #define CAPTIOPISEL_M                            CAPTIO_CTL_PISEL_MASK           /*!< Capacitive Touch IO pin select */
 #define CAPTIOPISEL0                             CAPTIO_CTL_PISEL0               /*!< CAPTIOPISEL Bit 0 */
 #define CAPTIOPISEL1                             CAPTIO_CTL_PISEL1               /*!< CAPTIOPISEL Bit 1 */
@@ -1589,7 +1554,7 @@
 #define CAPTIOPISEL_6                            CAPTIO_CTL_PISEL_6              /*!< Px.6 */
 #define CAPTIOPISEL_7                            CAPTIO_CTL_PISEL_7              /*!< Px.7 */
 /* CAPTIO0CTL[CAPTIOPOSEL] Bits */
-#define CAPTIOPOSEL_OFS                          CAPTIO_CTL_POSEL_OFS            /*!< CAPTIOPOSELx Offset */
+#define CAPTIOPOSEL_OFS                          CAPTIO_CTL_POSEL_OFS            /*!< CAPTIOPOSEL Offset */
 #define CAPTIOPOSEL_M                            CAPTIO_CTL_POSEL_MASK           /*!< Capacitive Touch IO port select */
 #define CAPTIOPOSEL0                             CAPTIO_CTL_POSEL0               /*!< CAPTIOPOSEL Bit 0 */
 #define CAPTIOPOSEL1                             CAPTIO_CTL_POSEL1               /*!< CAPTIOPOSEL Bit 1 */
@@ -1633,7 +1598,6 @@
 /* CAPTIO0CTL[CAPTIOSTATE] Bits */
 #define CAPTIOSTATE_OFS                          CAPTIO_CTL_STATE_OFS            /*!< CAPTIOSTATE Offset */
 #define CAPTIOSTATE                              CAPTIO_CTL_STATE                /*!< Capacitive Touch IO state */
-
 
 /******************************************************************************
 * COMP_E Bits (legacy section)
@@ -1909,11 +1873,9 @@
 #define CERDYIE_OFS                              COMP_E_INT_RDYIE_OFS            /*!< CERDYIE Offset */
 #define CERDYIE                                  COMP_E_INT_RDYIE                /*!< Comparator ready interrupt enable */
 
-
 /******************************************************************************
 * CRC32 Bits (legacy section)
 ******************************************************************************/
-
 /* DIO_PAIN[P1IN] Bits */
 #define P1IN_OFS                                           ( 0)                  /*!< P1IN Offset */
 #define P1IN_M                                             (0x00ff)              /*!< Port 1 Input */
@@ -2576,9 +2538,9 @@
 //#define UCSSEL_M                                 EUSCI_A_CTLW0_SSEL_MASK         /*!< eUSCI_A clock source select */
 //#define UCSSEL0                                  EUSCI_A_CTLW0_SSEL0             /*!< UCSSEL Bit 0 */
 //#define UCSSEL1                                  EUSCI_A_CTLW0_SSEL1             /*!< UCSSEL Bit 1 */
+//#define UCSSEL_0                                 EUSCI_A_CTLW0_UCSSEL_0          /*!< Reserved */
 //#define UCSSEL_1                                 EUSCI_A_CTLW0_UCSSEL_1          /*!< ACLK */
 //#define UCSSEL_2                                 EUSCI_A_CTLW0_UCSSEL_2          /*!< SMCLK */
-//#define UCSSEL_0                                 EUSCI_A_CTLW0_SSEL_0            /*!< Reserved */
 //#define UCSSEL__ACLK                             EUSCI_A_CTLW0_SSEL__ACLK        /*!< ACLK */
 //#define UCSSEL__SMCLK                            EUSCI_A_CTLW0_SSEL__SMCLK       /*!< SMCLK */
 /* UCA0CTLW0_SPI[UCSYNC] Bits */
@@ -2746,7 +2708,6 @@
 //#define UCTXIFG_OFS                              EUSCI_A_IFG_TXIFG_OFS           /*!< UCTXIFG Offset */
 //#define UCTXIFG                                  EUSCI_A_IFG_TXIFG               /*!< Transmit interrupt flag */
 
-
 /******************************************************************************
 * EUSCI_B Bits (legacy section)
 ******************************************************************************/
@@ -2776,10 +2737,10 @@
 //#define UCSSEL_0                                 EUSCI_B_CTLW0_UCSSEL_0          /*!< UCLKI */
 //#define UCSSEL_1                                 EUSCI_B_CTLW0_UCSSEL_1          /*!< ACLK */
 //#define UCSSEL_2                                 EUSCI_B_CTLW0_UCSSEL_2          /*!< SMCLK */
+#define UCSSEL_3                                 EUSCI_B_CTLW0_UCSSEL_3          /*!< SMCLK */
 #define UCSSEL__UCLKI                            EUSCI_B_CTLW0_SSEL__UCLKI       /*!< UCLKI */
 //#define UCSSEL__ACLK                             EUSCI_B_CTLW0_SSEL__ACLK        /*!< ACLK */
 //#define UCSSEL__SMCLK                            EUSCI_B_CTLW0_SSEL__SMCLK       /*!< SMCLK */
-#define UCSSEL_3                                 EUSCI_B_CTLW0_SSEL_3            /*!< SMCLK */
 /* UCB0CTLW0[UCSYNC] Bits */
 //#define UCSYNC_OFS                               EUSCI_B_CTLW0_SYNC_OFS          /*!< UCSYNC Offset */
 //#define UCSYNC                                   EUSCI_B_CTLW0_SYNC              /*!< Synchronous mode enable */
@@ -2815,12 +2776,12 @@
 //#define UCSSEL_M                                 EUSCI_B_CTLW0_SSEL_MASK         /*!< eUSCI_B clock source select */
 //#define UCSSEL0                                  EUSCI_B_CTLW0_SSEL0             /*!< UCSSEL Bit 0 */
 //#define UCSSEL1                                  EUSCI_B_CTLW0_SSEL1             /*!< UCSSEL Bit 1 */
+//#define UCSSEL_0                                 EUSCI_B_CTLW0_UCSSEL_0          /*!< Reserved */
 //#define UCSSEL_1                                 EUSCI_B_CTLW0_UCSSEL_1          /*!< ACLK */
 //#define UCSSEL_2                                 EUSCI_B_CTLW0_UCSSEL_2          /*!< SMCLK */
-//#define UCSSEL_0                                 EUSCI_B_CTLW0_SSEL_0            /*!< Reserved */
+//#define UCSSEL_3                                 EUSCI_B_CTLW0_UCSSEL_3          /*!< SMCLK */
 //#define UCSSEL__ACLK                             EUSCI_B_CTLW0_SSEL__ACLK        /*!< ACLK */
 //#define UCSSEL__SMCLK                            EUSCI_B_CTLW0_SSEL__SMCLK       /*!< SMCLK */
-//#define UCSSEL_3                                 EUSCI_B_CTLW0_SSEL_3            /*!< SMCLK */
 /* UCB0CTLW0_SPI[UCSYNC] Bits */
 //#define UCSYNC_OFS                               EUSCI_B_CTLW0_SYNC_OFS          /*!< UCSYNC Offset */
 //#define UCSYNC                                   EUSCI_B_CTLW0_SYNC              /*!< Synchronous mode enable */
@@ -2867,7 +2828,7 @@
 #define UCASTP_1                                 EUSCI_B_CTLW1_ASTP_1            /*!< UCBCNTIFG is set with the byte counter reaches the threshold defined in  */
                                                                                  /* UCBxTBCNT */
 #define UCASTP_2                                 EUSCI_B_CTLW1_ASTP_2            /*!< A STOP condition is generated automatically after the byte counter value  */
-                                                                                 /* reached UCBxTBCNT. UCBCNTIFG is set with the byte counter reaching the  */
+                                                                                 /* reached UCBxTBCNT. UCBCNTIFG is set with the byte counter reaching the */
                                                                                  /* threshold */
 /* UCB0CTLW1[UCSWACK] Bits */
 #define UCSWACK_OFS                              EUSCI_B_CTLW1_SWACK_OFS         /*!< UCSWACK Offset */
@@ -2956,6 +2917,16 @@
 /* UCB0ADDRX[ADDRX] Bits */
 #define ADDRX_OFS                                EUSCI_B_ADDRX_ADDRX_OFS         /*!< ADDRX Offset */
 #define ADDRX_M                                  EUSCI_B_ADDRX_ADDRX_MASK        /*!< Received Address Register */
+#define ADDRX0                                   EUSCI_B_ADDRX_ADDRX0            /*!< ADDRX Bit 0 */
+#define ADDRX1                                   EUSCI_B_ADDRX_ADDRX1            /*!< ADDRX Bit 1 */
+#define ADDRX2                                   EUSCI_B_ADDRX_ADDRX2            /*!< ADDRX Bit 2 */
+#define ADDRX3                                   EUSCI_B_ADDRX_ADDRX3            /*!< ADDRX Bit 3 */
+#define ADDRX4                                   EUSCI_B_ADDRX_ADDRX4            /*!< ADDRX Bit 4 */
+#define ADDRX5                                   EUSCI_B_ADDRX_ADDRX5            /*!< ADDRX Bit 5 */
+#define ADDRX6                                   EUSCI_B_ADDRX_ADDRX6            /*!< ADDRX Bit 6 */
+#define ADDRX7                                   EUSCI_B_ADDRX_ADDRX7            /*!< ADDRX Bit 7 */
+#define ADDRX8                                   EUSCI_B_ADDRX_ADDRX8            /*!< ADDRX Bit 8 */
+#define ADDRX9                                   EUSCI_B_ADDRX_ADDRX9            /*!< ADDRX Bit 9 */
 /* UCB0ADDMASK[ADDMASK] Bits */
 #define ADDMASK_OFS                              EUSCI_B_ADDMASK_ADDMASK_OFS     /*!< ADDMASK Offset */
 #define ADDMASK_M                                EUSCI_B_ADDMASK_ADDMASK_MASK
@@ -3065,7 +3036,6 @@
 //#define UCTXIFG_OFS                              EUSCI_B_IFG_TXIFG_OFS           /*!< UCTXIFG Offset */
 //#define UCTXIFG                                  EUSCI_B_IFG_TXIFG               /*!< Transmit interrupt flag */
 
-
 /******************************************************************************
 * PMAP Bits (legacy section)
 ******************************************************************************/
@@ -3075,7 +3045,6 @@
 /* PMAPCTL[PMAPRECFG] Bits */
 #define PMAPRECFG_OFS                            PMAP_CTL_PRECFG_OFS             /*!< PMAPRECFG Offset */
 #define PMAPRECFG                                PMAP_CTL_PRECFG                 /*!< Port mapping reconfiguration control bit */
-
 /* Pre-defined bitfield values */
 /* PMAP_PMAPCTL[PMAPLOCKED] Bits */
 #define PMAPLOCKED_OFS                                     PMAP_CTL_LOCKED_OFS   /*!< PMAPLOCKED Offset */
@@ -3179,7 +3148,6 @@
 /* REFCTL0[REFBGRDY] Bits */
 #define REFBGRDY_OFS                             REF_A_CTL0_BGRDY_OFS            /*!< REFBGRDY Offset */
 #define REFBGRDY                                 REF_A_CTL0_BGRDY                /*!< Buffered bandgap voltage ready status */
-
 
 /******************************************************************************
 * RTC_C Bits (legacy section)
@@ -3340,16 +3308,16 @@
 #define MINUTES_M                                RTC_C_TIM0_MIN_MASK             /*!< Minutes (0 to 59) */
 /* RTCTIM0_BCD[SECONDSLOWDIGIT] Bits */
 #define SECONDSLOWDIGIT_OFS                      RTC_C_TIM0_SEC_LD_OFS           /*!< SecondsLowDigit Offset */
-#define SECONDSLOWDIGIT_M                        RTC_C_TIM0_SEC_LD_MASK          /*!< Seconds ? low digit (0 to 9) */
+#define SECONDSLOWDIGIT_M                        RTC_C_TIM0_SEC_LD_MASK          /*!< Seconds  low digit (0 to 9) */
 /* RTCTIM0_BCD[SECONDSHIGHDIGIT] Bits */
 #define SECONDSHIGHDIGIT_OFS                     RTC_C_TIM0_SEC_HD_OFS           /*!< SecondsHighDigit Offset */
-#define SECONDSHIGHDIGIT_M                       RTC_C_TIM0_SEC_HD_MASK          /*!< Seconds ? high digit (0 to 5) */
+#define SECONDSHIGHDIGIT_M                       RTC_C_TIM0_SEC_HD_MASK          /*!< Seconds  high digit (0 to 5) */
 /* RTCTIM0_BCD[MINUTESLOWDIGIT] Bits */
 #define MINUTESLOWDIGIT_OFS                      RTC_C_TIM0_MIN_LD_OFS           /*!< MinutesLowDigit Offset */
-#define MINUTESLOWDIGIT_M                        RTC_C_TIM0_MIN_LD_MASK          /*!< Minutes ? low digit (0 to 9) */
+#define MINUTESLOWDIGIT_M                        RTC_C_TIM0_MIN_LD_MASK          /*!< Minutes  low digit (0 to 9) */
 /* RTCTIM0_BCD[MINUTESHIGHDIGIT] Bits */
 #define MINUTESHIGHDIGIT_OFS                     RTC_C_TIM0_MIN_HD_OFS           /*!< MinutesHighDigit Offset */
-#define MINUTESHIGHDIGIT_M                       RTC_C_TIM0_MIN_HD_MASK          /*!< Minutes ? high digit (0 to 5) */
+#define MINUTESHIGHDIGIT_M                       RTC_C_TIM0_MIN_HD_MASK          /*!< Minutes  high digit (0 to 5) */
 /* RTCTIM1[HOURS] Bits */
 #define HOURS_OFS                                RTC_C_TIM1_HOUR_OFS             /*!< Hours Offset */
 #define HOURS_M                                  RTC_C_TIM1_HOUR_MASK            /*!< Hours (0 to 23) */
@@ -3358,10 +3326,10 @@
 #define DAYOFWEEK_M                              RTC_C_TIM1_DOW_MASK             /*!< Day of week (0 to 6) */
 /* RTCTIM1_BCD[HOURSLOWDIGIT] Bits */
 #define HOURSLOWDIGIT_OFS                        RTC_C_TIM1_HOUR_LD_OFS          /*!< HoursLowDigit Offset */
-#define HOURSLOWDIGIT_M                          RTC_C_TIM1_HOUR_LD_MASK         /*!< Hours ? low digit (0 to 9) */
+#define HOURSLOWDIGIT_M                          RTC_C_TIM1_HOUR_LD_MASK         /*!< Hours  low digit (0 to 9) */
 /* RTCTIM1_BCD[HOURSHIGHDIGIT] Bits */
 #define HOURSHIGHDIGIT_OFS                       RTC_C_TIM1_HOUR_HD_OFS          /*!< HoursHighDigit Offset */
-#define HOURSHIGHDIGIT_M                         RTC_C_TIM1_HOUR_HD_MASK         /*!< Hours ? high digit (0 to 2) */
+#define HOURSHIGHDIGIT_M                         RTC_C_TIM1_HOUR_HD_MASK         /*!< Hours  high digit (0 to 2) */
 /* RTCTIM1_BCD[DAYOFWEEK] Bits */
 //#define DAYOFWEEK_OFS                            RTC_C_TIM1_DOW_OFS              /*!< DayofWeek Offset */
 //#define DAYOFWEEK_M                              RTC_C_TIM1_DOW_MASK             /*!< Day of week (0 to 6) */
@@ -3373,34 +3341,34 @@
 #define MONTH_M                                  RTC_C_DATE_MON_MASK             /*!< Month (1 to 12) */
 /* RTCDATE_BCD[DAYLOWDIGIT] Bits */
 #define DAYLOWDIGIT_OFS                          RTC_C_DATE_DAY_LD_OFS           /*!< DayLowDigit Offset */
-#define DAYLOWDIGIT_M                            RTC_C_DATE_DAY_LD_MASK          /*!< Day of month ? low digit (0 to 9) */
+#define DAYLOWDIGIT_M                            RTC_C_DATE_DAY_LD_MASK          /*!< Day of month  low digit (0 to 9) */
 /* RTCDATE_BCD[DAYHIGHDIGIT] Bits */
 #define DAYHIGHDIGIT_OFS                         RTC_C_DATE_DAY_HD_OFS           /*!< DayHighDigit Offset */
-#define DAYHIGHDIGIT_M                           RTC_C_DATE_DAY_HD_MASK          /*!< Day of month ? high digit (0 to 3) */
+#define DAYHIGHDIGIT_M                           RTC_C_DATE_DAY_HD_MASK          /*!< Day of month  high digit (0 to 3) */
 /* RTCDATE_BCD[MONTHLOWDIGIT] Bits */
 #define MONTHLOWDIGIT_OFS                        RTC_C_DATE_MON_LD_OFS           /*!< MonthLowDigit Offset */
-#define MONTHLOWDIGIT_M                          RTC_C_DATE_MON_LD_MASK          /*!< Month ? low digit (0 to 9) */
+#define MONTHLOWDIGIT_M                          RTC_C_DATE_MON_LD_MASK          /*!< Month  low digit (0 to 9) */
 /* RTCDATE_BCD[MONTHHIGHDIGIT] Bits */
 #define MONTHHIGHDIGIT_OFS                       RTC_C_DATE_MON_HD_OFS           /*!< MonthHighDigit Offset */
-#define MONTHHIGHDIGIT                           RTC_C_DATE_MON_HD               /*!< Month ? high digit (0 or 1) */
+#define MONTHHIGHDIGIT                           RTC_C_DATE_MON_HD               /*!< Month  high digit (0 or 1) */
 /* RTCYEAR[YEARLOWBYTE] Bits */
 #define YEARLOWBYTE_OFS                          RTC_C_YEAR_YEAR_LB_OFS          /*!< YearLowByte Offset */
-#define YEARLOWBYTE_M                            RTC_C_YEAR_YEAR_LB_MASK         /*!< Year ? low byte. Valid values for Year are 0 to 4095. */
+#define YEARLOWBYTE_M                            RTC_C_YEAR_YEAR_LB_MASK         /*!< Year  low byte. Valid values for Year are 0 to 4095. */
 /* RTCYEAR[YEARHIGHBYTE] Bits */
 #define YEARHIGHBYTE_OFS                         RTC_C_YEAR_YEAR_HB_OFS          /*!< YearHighByte Offset */
-#define YEARHIGHBYTE_M                           RTC_C_YEAR_YEAR_HB_MASK         /*!< Year ? high byte. Valid values for Year are 0 to 4095. */
+#define YEARHIGHBYTE_M                           RTC_C_YEAR_YEAR_HB_MASK         /*!< Year  high byte. Valid values for Year are 0 to 4095. */
 /* RTCYEAR_BCD[YEAR] Bits */
 #define YEAR_OFS                                 RTC_C_YEAR_YEAR_OFS             /*!< Year Offset */
-#define YEAR_M                                   RTC_C_YEAR_YEAR_MASK            /*!< Year ? lowest digit (0 to 9) */
+#define YEAR_M                                   RTC_C_YEAR_YEAR_MASK            /*!< Year  lowest digit (0 to 9) */
 /* RTCYEAR_BCD[DECADE] Bits */
 #define DECADE_OFS                               RTC_C_YEAR_DEC_OFS              /*!< Decade Offset */
 #define DECADE_M                                 RTC_C_YEAR_DEC_MASK             /*!< Decade (0 to 9) */
 /* RTCYEAR_BCD[CENTURYLOWDIGIT] Bits */
 #define CENTURYLOWDIGIT_OFS                      RTC_C_YEAR_CENT_LD_OFS          /*!< CenturyLowDigit Offset */
-#define CENTURYLOWDIGIT_M                        RTC_C_YEAR_CENT_LD_MASK         /*!< Century ? low digit (0 to 9) */
+#define CENTURYLOWDIGIT_M                        RTC_C_YEAR_CENT_LD_MASK         /*!< Century  low digit (0 to 9) */
 /* RTCYEAR_BCD[CENTURYHIGHDIGIT] Bits */
 #define CENTURYHIGHDIGIT_OFS                     RTC_C_YEAR_CENT_HD_OFS          /*!< CenturyHighDigit Offset */
-#define CENTURYHIGHDIGIT_M                       RTC_C_YEAR_CENT_HD_MASK         /*!< Century ? high digit (0 to 4) */
+#define CENTURYHIGHDIGIT_M                       RTC_C_YEAR_CENT_HD_MASK         /*!< Century  high digit (0 to 4) */
 /* RTCAMINHR[MINUTES] Bits */
 //#define MINUTES_OFS                              RTC_C_AMINHR_MIN_OFS            /*!< Minutes Offset */
 //#define MINUTES_M                                RTC_C_AMINHR_MIN_MASK           /*!< Minutes (0 to 59) */
@@ -3415,19 +3383,19 @@
 #define HOURAE                                   RTC_C_AMINHR_HOURAE             /*!< Alarm enable */
 /* RTCAMINHR_BCD[MINUTESLOWDIGIT] Bits */
 //#define MINUTESLOWDIGIT_OFS                      RTC_C_AMINHR_MIN_LD_OFS         /*!< MinutesLowDigit Offset */
-//#define MINUTESLOWDIGIT_M                        RTC_C_AMINHR_MIN_LD_MASK        /*!< Minutes ? low digit (0 to 9) */
+//#define MINUTESLOWDIGIT_M                        RTC_C_AMINHR_MIN_LD_MASK        /*!< Minutes  low digit (0 to 9) */
 /* RTCAMINHR_BCD[MINUTESHIGHDIGIT] Bits */
 //#define MINUTESHIGHDIGIT_OFS                     RTC_C_AMINHR_MIN_HD_OFS         /*!< MinutesHighDigit Offset */
-//#define MINUTESHIGHDIGIT_M                       RTC_C_AMINHR_MIN_HD_MASK        /*!< Minutes ? high digit (0 to 5) */
+//#define MINUTESHIGHDIGIT_M                       RTC_C_AMINHR_MIN_HD_MASK        /*!< Minutes  high digit (0 to 5) */
 /* RTCAMINHR_BCD[MINAE] Bits */
-//#define MINAE_OFS                                RTC_C_AMINHR__OFS               /*!< MINAE Offset */
-//#define MINAE                                    RTC_C_AMINHR_                   /*!< Alarm enable */
+//#define MINAE_OFS                                RTC_C_AMINHR_MINAE_OFS          /*!< MINAE Offset */
+//#define MINAE                                    RTC_C_AMINHR_MINAE              /*!< Alarm enable */
 /* RTCAMINHR_BCD[HOURSLOWDIGIT] Bits */
 //#define HOURSLOWDIGIT_OFS                        RTC_C_AMINHR_HOUR_LD_OFS        /*!< HoursLowDigit Offset */
-//#define HOURSLOWDIGIT_M                          RTC_C_AMINHR_HOUR_LD_MASK       /*!< Hours ? low digit (0 to 9) */
+//#define HOURSLOWDIGIT_M                          RTC_C_AMINHR_HOUR_LD_MASK       /*!< Hours  low digit (0 to 9) */
 /* RTCAMINHR_BCD[HOURSHIGHDIGIT] Bits */
 //#define HOURSHIGHDIGIT_OFS                       RTC_C_AMINHR_HOUR_HD_OFS        /*!< HoursHighDigit Offset */
-//#define HOURSHIGHDIGIT_M                         RTC_C_AMINHR_HOUR_HD_MASK       /*!< Hours ? high digit (0 to 2) */
+//#define HOURSHIGHDIGIT_M                         RTC_C_AMINHR_HOUR_HD_MASK       /*!< Hours  high digit (0 to 2) */
 /* RTCAMINHR_BCD[HOURAE] Bits */
 //#define HOURAE_OFS                               RTC_C_AMINHR_HOURAE_OFS         /*!< HOURAE Offset */
 //#define HOURAE                                   RTC_C_AMINHR_HOURAE             /*!< Alarm enable */
@@ -3451,14 +3419,13 @@
 //#define DOWAE                                    RTC_C_ADOWDAY_DOWAE             /*!< Alarm enable */
 /* RTCADOWDAY_BCD[DAYLOWDIGIT] Bits */
 //#define DAYLOWDIGIT_OFS                          RTC_C_ADOWDAY_DAY_LD_OFS        /*!< DayLowDigit Offset */
-//#define DAYLOWDIGIT_M                            RTC_C_ADOWDAY_DAY_LD_MASK       /*!< Day of month ? low digit (0 to 9) */
+//#define DAYLOWDIGIT_M                            RTC_C_ADOWDAY_DAY_LD_MASK       /*!< Day of month  low digit (0 to 9) */
 /* RTCADOWDAY_BCD[DAYHIGHDIGIT] Bits */
 //#define DAYHIGHDIGIT_OFS                         RTC_C_ADOWDAY_DAY_HD_OFS        /*!< DayHighDigit Offset */
-//#define DAYHIGHDIGIT_M                           RTC_C_ADOWDAY_DAY_HD_MASK       /*!< Day of month ? high digit (0 to 3) */
+//#define DAYHIGHDIGIT_M                           RTC_C_ADOWDAY_DAY_HD_MASK       /*!< Day of month  high digit (0 to 3) */
 /* RTCADOWDAY_BCD[DAYAE] Bits */
 //#define DAYAE_OFS                                RTC_C_ADOWDAY_DAYAE_OFS         /*!< DAYAE Offset */
 //#define DAYAE                                    RTC_C_ADOWDAY_DAYAE             /*!< Alarm enable */
-
 /* Pre-defined bitfield values */
 #define RTCKEY                                             RTC_C_KEY              /*!< RTC_C Key Value for RTC_C write access */
 #define RTCKEY_H                                           RTC_C_KEY_H            /*!< RTC_C Key Value for RTC_C write access */
@@ -3466,7 +3433,7 @@
 
 
 /******************************************************************************
-* Timer_A Bits (legacy section)
+* TIMER_A Bits (legacy section)
 ******************************************************************************/
 /* TA0CTL[TAIFG] Bits */
 #define TAIFG_OFS                                TIMER_A_CTL_IFG_OFS             /*!< TAIFG Offset */
@@ -3516,22 +3483,22 @@
 #define TASSEL__ACLK                             TIMER_A_CTL_SSEL__ACLK          /*!< ACLK */
 #define TASSEL__SMCLK                            TIMER_A_CTL_SSEL__SMCLK         /*!< SMCLK */
 #define TASSEL__INCLK                            TIMER_A_CTL_SSEL__INCLK         /*!< INCLK */
-/* TA0CCTLN[CCIFG] Bits */
+/* TA0CCTLn[CCIFG] Bits */
 #define CCIFG_OFS                                TIMER_A_CCTLN_CCIFG_OFS         /*!< CCIFG Offset */
 #define CCIFG                                    TIMER_A_CCTLN_CCIFG             /*!< Capture/compare interrupt flag */
-/* TA0CCTLN[COV] Bits */
+/* TA0CCTLn[COV] Bits */
 #define COV_OFS                                  TIMER_A_CCTLN_COV_OFS           /*!< COV Offset */
 #define COV                                      TIMER_A_CCTLN_COV               /*!< Capture overflow */
-/* TA0CCTLN[OUT] Bits */
-//#define OUT_OFS                                  TIMER_A_CCTLN_OUT_OFS           /*!< OUT Offset */
+/* TA0CCTLn[OUT] Bits */
+#define OUT_OFS                                  TIMER_A_CCTLN_OUT_OFS           /*!< OUT Offset */
 //#define OUT                                      TIMER_A_CCTLN_OUT               /*!< Output */
-/* TA0CCTLN[CCI] Bits */
+/* TA0CCTLn[CCI] Bits */
 #define CCI_OFS                                  TIMER_A_CCTLN_CCI_OFS           /*!< CCI Offset */
 #define CCI                                      TIMER_A_CCTLN_CCI               /*!< Capture/compare input */
-/* TA0CCTLN[CCIE] Bits */
+/* TA0CCTLn[CCIE] Bits */
 #define CCIE_OFS                                 TIMER_A_CCTLN_CCIE_OFS          /*!< CCIE Offset */
 #define CCIE                                     TIMER_A_CCTLN_CCIE              /*!< Capture/compare interrupt enable */
-/* TA0CCTLN[OUTMOD] Bits */
+/* TA0CCTLn[OUTMOD] Bits */
 #define OUTMOD_OFS                               TIMER_A_CCTLN_OUTMOD_OFS        /*!< OUTMOD Offset */
 #define OUTMOD_M                                 TIMER_A_CCTLN_OUTMOD_MASK       /*!< Output mode */
 #define OUTMOD0                                  TIMER_A_CCTLN_OUTMOD0           /*!< OUTMOD Bit 0 */
@@ -3545,16 +3512,16 @@
 #define OUTMOD_5                                 TIMER_A_CCTLN_OUTMOD_5          /*!< Reset */
 #define OUTMOD_6                                 TIMER_A_CCTLN_OUTMOD_6          /*!< Toggle/set */
 #define OUTMOD_7                                 TIMER_A_CCTLN_OUTMOD_7          /*!< Reset/set */
-/* TA0CCTLN[CAP] Bits */
+/* TA0CCTLn[CAP] Bits */
 #define CAP_OFS                                  TIMER_A_CCTLN_CAP_OFS           /*!< CAP Offset */
 #define CAP                                      TIMER_A_CCTLN_CAP               /*!< Capture mode */
-/* TA0CCTLN[SCCI] Bits */
+/* TA0CCTLn[SCCI] Bits */
 #define SCCI_OFS                                 TIMER_A_CCTLN_SCCI_OFS          /*!< SCCI Offset */
 #define SCCI                                     TIMER_A_CCTLN_SCCI              /*!< Synchronized capture/compare input */
-/* TA0CCTLN[SCS] Bits */
+/* TA0CCTLn[SCS] Bits */
 #define SCS_OFS                                  TIMER_A_CCTLN_SCS_OFS           /*!< SCS Offset */
 #define SCS                                      TIMER_A_CCTLN_SCS               /*!< Synchronize capture source */
-/* TA0CCTLN[CCIS] Bits */
+/* TA0CCTLn[CCIS] Bits */
 #define CCIS_OFS                                 TIMER_A_CCTLN_CCIS_OFS          /*!< CCIS Offset */
 #define CCIS_M                                   TIMER_A_CCTLN_CCIS_MASK         /*!< Capture/compare input select */
 #define CCIS0                                    TIMER_A_CCTLN_CCIS0             /*!< CCIS Bit 0 */
@@ -3567,7 +3534,7 @@
 #define CCIS__CCIB                               TIMER_A_CCTLN_CCIS__CCIB        /*!< CCIxB */
 #define CCIS__GND                                TIMER_A_CCTLN_CCIS__GND         /*!< GND */
 #define CCIS__VCC                                TIMER_A_CCTLN_CCIS__VCC         /*!< VCC */
-/* TA0CCTLN[CM] Bits */
+/* TA0CCTLn[CM] Bits */
 #define CM_OFS                                   TIMER_A_CCTLN_CM_OFS            /*!< CM Offset */
 #define CM_M                                     TIMER_A_CCTLN_CM_MASK           /*!< Capture mode */
 #define CM0                                      TIMER_A_CCTLN_CM0               /*!< CM Bit 0 */
@@ -3602,7 +3569,6 @@
 #define TAIDEX__6                                TIMER_A_EX0_IDEX__6             /*!< Divide by 6 */
 #define TAIDEX__7                                TIMER_A_EX0_IDEX__7             /*!< Divide by 7 */
 #define TAIDEX__8                                TIMER_A_EX0_IDEX__8             /*!< Divide by 8 */
-
 
 /******************************************************************************
 * WDT_A Bits (legacy section)
@@ -3646,7 +3612,6 @@
 /* WDTCTL[WDTPW] Bits */
 #define WDTPW_OFS                                WDT_A_CTL_PW_OFS                /*!< WDTPW Offset */
 #define WDTPW_M                                  WDT_A_CTL_PW_MASK               /*!< Watchdog timer password */
-
 /* Pre-defined bitfield values */
 #define WDTPW                                          WDT_A_CTL_PW              /*!< WDT Key Value for WDT write access */
 
