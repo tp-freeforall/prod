@@ -34,7 +34,7 @@ Development is only supported on Linux hosts, in particular the Ubuntu and/or De
 strains.  Ubuntu 14.04 has been directly tested (on ASUS i7 quad core).
 
 Obtain an ISO image from releases/ubuntu.com or alternatively from tinyprod.net/downloads.
-Put the iso on to a bootable media (dvd or usb stick).  You can also use grub loopback 
+Put the iso on to a bootable media (dvd or usb stick).  You can also use grub loopback
 for installation on an exiting Linux installation.  (How to do this is beyond the scope
 of this document).  A simple install is fine and will take less time.
 
@@ -118,7 +118,7 @@ repository contains.   It actively tracks the main tinyos development repo.
 
 gh:tinyos/tinyos-main(master): This is the main tinyos development repository.
 
-gh:tinyos/tinyos-release(tinyos-2_1_2): This is the main tinyos release repository.  Its 
+gh:tinyos/tinyos-release(tinyos-2_1_2): This is the main tinyos release repository.  Its
 default branch (currently tinyos-2_1_2) will always point at the current release.
 
 
@@ -167,15 +167,15 @@ for details.
 Set TINYOS_ROOT_DIR to point at the top of the tinyprod tree.
 
     for example:  working dir ~/top
-  
+
   	#!/bin/sh
-  
+
   	MOTECOM="serial@/dev/ttyUSB0:telosb"
-  
+
   	TINYOS_ROOT_DIR=~/top/t2_cur/tinyos-2.x
   	CLASSPATH=.:$TINYOS_ROOT_DIR/support/sdk/java/tinyos.jar
   	PYTHONPATH=$TINYOS_ROOT_DIR/support/sdk/python:$PYTHONPATH
-  
+
   	export TINYOS_ROOT_DIR CLASSPATH PYTHONPATH MOTECOM
 
 
@@ -249,20 +249,20 @@ Documentation on getting started with T2 can be found at:
 
     a) make sure that tinyos.jar has been built.  It should live in $TINYOS_ROOT_DIR/support/sdk/java/tinyos.jar
     b) to rebuild:
-  
+
        cd $TINYOS_ROOT_DIR/support/sdk/java/
        make tinyos.jar
-  
+
     c) Install TOSComm JNI support if needed.  Did java bitch about not finding TOSComm JNI support?
-  
+
        assuming tinyos-tools is installed run:
-  
+
        tos-install-jni
-  
+
     d) To watch raw bytes coming from the serial port
-  
+
        Make sure CLASSPATH includes $TINYOS_ROOT_DIR/support/sdk/java/tinyos.jar, ie:
-  
+
            CLASSPATH=.:/home/joe/mm/t2_cur/tinyos-2.x/support/sdk/java/tinyos.jar
 
 execute:
@@ -277,7 +277,7 @@ And you should see packets that look something like this:  (depends on what the 
             00 FF FF 00 00 0E 00 A1 00 0E 07 06 00 0C 9E 33 00 0C 9E 46 78 80
             00 FF FF 00 00 0E 00 A1 00 0E 07 07 00 0C 9E 33 00 0C 9E 52 FF FF
             00 FF FF 00 00 10 00 A1 00 10 07 08 00 0C 9E 33 00 0C 9E 61 FF FF FF FF
-  
+
             00 FF FF 00 00 10 00 A1 00 10 07 08 00 0C 9E 33 00 0C 9E 61 FF FF FF FF
             ^  ^     ^     ^  ^  ^  ^     ^  ^  | -- sensor 8 data
             |  |     |     |  |  |  |     |  |- sensor id
@@ -286,10 +286,10 @@ And you should see packets that look something like this:  (depends on what the 
             |  |     |     |  |  |-- AM type MM_DT (data, typed)
             |  |     |     |  |-- AM group
             |  |     |     |-- serial length
-            |  |     |-- src addr           
+            |  |     |-- src addr
             |  |-- dest addr
             |-- dispatch byte - 0 says AM
-                             
+
 If you define MOTECOM you won't need to specify the -comm parameter.  ie:
 
        MOTECOM=serial@/dev/ttyUSB1:telosb
