@@ -1,21 +1,18 @@
-# /dev/ttyACM0, mm5a, 2331
-# /dev/ttyACM1, mm5 (exp5438_gps), 2431
 
 # to launch msp432-gdb
 # M-x gdb
-# arm-none-eabi-gdb-py -i=mi -nx -ex "target remote localhost:2331" -x .gdbinit -x .gdb_mm   build/exp_msp432/main.exe
-# arm-none-eabi-gdb-py -i=mi -nx -ex "target remote localhost:2431" -x .gdbinit -x .gdb_mm5a build/exp_msp432/main.exe
+# arm-none-eabi-gdb-py -i=mi -iex "target remote localhost:2331" main.exe
+
+# (setq make-command ". ~/.environment_bash; make dev6a")
+# (setq gud-gdb-command-name "arm-none-eabi-gdb-py -i=mi -iex \\"target remote localhost:2331\\" main.exe")
+#
+# 2331 is Jlink
+# 55000 is TI's gdb-agent-console, gag
 
 set remoteaddresssize 32
 set remotetimeout 999999
 
 set mem inaccessible-by-default off
-
-# 2331 is Jlink
-# 55000 is TI's gdb-agent-console, gag
-# target extended-remote :55000
-#
-# what target remote to use is determined by a command line option.
 
 add-symbol-file symbols_hw 0
 source ../../.gdb_msp432
