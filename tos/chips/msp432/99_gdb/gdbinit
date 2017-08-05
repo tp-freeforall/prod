@@ -11,11 +11,11 @@ set remotetimeout 999999
 
 set mem inaccessible-by-default off
 
-# 55000 is TI's gdb-agent-console, gag
-#target extended-remote :55000
-
 # 2331 is Jlink
-target extended-remote :2331
+# 55000 is TI's gdb-agent-console, gag
+# target extended-remote :55000
+#
+# what target remote to use is determined by a command line option.
 
 add-symbol-file symbols_hw 0
 source ../../.gdb_msp432
