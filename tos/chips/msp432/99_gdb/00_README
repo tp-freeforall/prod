@@ -32,7 +32,7 @@ To set up the application directory, apps/<blah> do the following:
     cd apps/<blah>
     cp ../../tos/chips/msp432/99_gdb/gdbinit ./.gdbinit
     cp ../../tos/chips/msp432/99_gdb/gdb_msp432  ./.gdb_msp432
-    make debugopt exp_msp432
+    make debug_opt exp_msp432
 
 another way to get debugging symbols into the object is to specify the
 following you the applications Makefile:
@@ -57,12 +57,12 @@ Fire up the gdb server.   Probably from another terminal window.
 
 And connect to the beasty using gdb.   From the apps/<blah> directory:
 
-    arm-none-eabi-gdb build/exp_msp432/main.exe 
+    arm-none-eabi-gdb build/exp_msp432/main.exe
 
 Emacs also provides a very nice interface for source level debugging.
 From within emacs use M-x gdb and then
 
-    Run gdb (like this): arm-none-eabi-gdb -i=mi build/exp_msp432/main.exe 
+    Run gdb (like this): arm-none-eabi-gdb -i=mi build/exp_msp432/main.exe
 
 
 To load program code from gdb use the "load" command.  After loading you
