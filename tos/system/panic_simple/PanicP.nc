@@ -76,6 +76,7 @@ implementation {
     while ((call Platform.usecsRaw() - t0) < WIGGLE_DELAY) ;
     WIGGLE_EXC; WIGGLE_EXC; WIGGLE_EXC; WIGGLE_EXC;     /* 4 */
 
+    nop();
     ROM_DEBUG_BREAK(1);
   }
 #else

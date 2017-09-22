@@ -89,6 +89,7 @@ implementation
 		else // Update timer for next event
 		  timer->t0 += timer->dt;
 
+                nop();
 		signal Timer.fired[num]();
     break;
 	      }

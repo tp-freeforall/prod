@@ -156,9 +156,11 @@ implementation
       {
 	while ((nextTask = popTask()) == NO_TASK)
 	{
+          nop();
 	  call McuSleep.sleep();
 	}
       }
+      nop();
       signal TaskBasic.runTask[nextTask]();
     }
   }
