@@ -171,6 +171,19 @@ implementation {
        *
        * We also need to check to see if this client is already waiting for the
        * resource (ie. it is the next one to get it, reqResId).
+       *
+       * Note: we DO NOT check for the current owner being the requester.  This
+       * is intentional to allow ping ponging.  Ie.  Another client wants to
+       * get the resource (calls Resource.request(), the current owner sees
+       * this via ResourceRequested.requested(), does its own Resource.request()
+       * which puts them back in the queue, then does a Resource.release() to
+       * allow the new requester to get the resource.
+       *
+       * Current owner should not request for itself while it still owns the
+       * resource.  For ping-pong, it needs to do Resource.release first,
+       * followed by Resource.request in the Requested.requested signal handler.
+       * Otherwise, the request will invoke ResourceRequested.requested for
+       * itself which cause an infinite loop.
        */
       if (reqResId == id)		/* already waiting for the resource. */
 	return EBUSY;
