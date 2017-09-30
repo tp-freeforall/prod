@@ -1,0 +1,17 @@
+#!/bin/bash
+# git-unique-abbrev
+
+OBJECTS="$(mktemp)"
+git rev-list --all --objects | cut -c1-40 | sort >"$OBJECTS"
+printf "%d objects\n" $(wc -l <"$OBJECTS")
+for abbrev in $(seq 4 40); do
+    DUPES="$(mktemp)"
+    uniq -D -w $abbrev <"$OBJECTS" >"$DUPES"
+    count=$(wc -l <"$DUPES")
+    acount=$(uniq -w $abbrev <"$DUPES" | wc -l)
+    printf "%2d: %d / %d\n" $abbrev $count $acount
+    test $count -eq 0 && cat "$OBJECTS"
+    mv "$DUPES" "$OBJECTS"
+    test $count -eq 0 && break
+done
+rm -f "$OBJECTS"
