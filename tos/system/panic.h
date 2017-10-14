@@ -31,13 +31,19 @@
 
 /*
  * main system hardcoded (HC) pcodes start at 0x70
+ *
+ * EXC          exception handler
+ * KERN         kernel panics
+ * DVR          undifferentiated driver panics
  */
 
 enum {
-  __pcode_kern = 0x70,
-  __pcode_dvr  = 0x71,
+  __pcode_exc  = 0x70,
+  __pcode_kern = 0x71,
+  __pcode_dvr  = 0x72,
 };
 
+#define PANIC_EXC  __pcode_exc
 #define PANIC_KERN __pcode_kern
 #define PANIC_DVR  __pcode_dvr
 
