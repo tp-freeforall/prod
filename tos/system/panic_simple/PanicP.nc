@@ -77,12 +77,12 @@ implementation {
     WIGGLE_EXC; WIGGLE_EXC; WIGGLE_EXC; WIGGLE_EXC;     /* 4 */
 
     nop();
-    ROM_DEBUG_BREAK(1);
+    ROM_DEBUG_BREAK(0xf0);
   }
 #else
   void debug_break(parg_t arg)  __attribute__ ((noinline)) {
     _arg = arg;
-    ROM_DEBUG_BREAK(1);
+    ROM_DEBUG_BREAK(0xf0);
   }
 #endif
 
