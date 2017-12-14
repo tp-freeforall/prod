@@ -1,6 +1,11 @@
 Spi Interfaces.
 
-There are three supplied interfaces to underlying SPI hardware:
+There are four supplied interfaces to underlying SPI hardware:
+
+SpiBus:  It is possible to hang multiple devices off a single
+  SPI bus.  Each device is then selected via a chip select (CS).
+  SpiBus provides an interface that selects the proper device via
+  these chip selects.
 
 SpiByte: Single byte tx/rx interface.
 
@@ -9,6 +14,10 @@ SpiBlock: tx buffer is sent, rx buffer received, single phase,
 
 SpiPacket: tx buffer sent, rx buffer received.  Split phase.
   Intended for interrupt driven or DMA driven transfers.
+
+SpiReg:  simple register based access method for h/w that talks
+  registers via SPI.  assumes small number of bytes transfered and
+  is single phase.
 
 Which approach is appropriate depends on a number of factors, including
 SPI clock speed, transfer size, additional system activity, and desired
