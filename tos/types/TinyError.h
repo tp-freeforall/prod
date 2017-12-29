@@ -63,7 +63,8 @@ typedef enum {
   ENOACK         = 11,           // A packet was not acknowledged
   ETIMEOUT	 = 12,		 // operation timed out
   ESUBSYSDIS     = 13,           // subsystem is disabled (vs. off)
-  ELAST          = 13            // Last enum value
+  EODATA         = 14,           // end of data (stream or file)
+  ELAST          = 14            // Last enum value
 } error_t NESC_COMBINE("ecombine");
 
 /*
