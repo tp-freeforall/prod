@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Eric B. Decker
+ * Copyright (c) 2016-2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,6 +42,10 @@
 
 interface Msp432Dma {
 
+  /* used for debugging, capturing state */
+  async command uint8_t dma_channel();
+  async command void   *dma_cb();
+
   async command void dma_start_channel(
         uint32_t trigger, uint32_t length,
         void * dst, void * src, uint32_t control);
@@ -82,7 +86,6 @@ interface Msp432Dma {
    * clears any pending DMA_INT0 interrupt for this channel
    */
   async command void dma_clear_int();
-
 
   /*
    * signal from the DMA interrupt handler to the client.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Eric B. Decker
+ * Copyright (c) 2016-2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,6 +76,16 @@ implementation {
   command error_t Init.init() {
     dma_init(ControlTable);
     return SUCCESS;
+  }
+
+
+  async command uint8_t Dma.dma_channel[uint8_t chan]() {
+    return chan;
+  }
+
+
+  async command void *Dma.dma_cb[uint8_t chan]() {
+    return (void *) &ControlTable[chan];
   }
 
 
