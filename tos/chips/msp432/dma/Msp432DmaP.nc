@@ -95,17 +95,18 @@ implementation {
 
     dma_cb_t *cb;
     uint32_t src_inc, dst_inc;
-    uint32_t nm1, mod;
+    uint32_t nm1, mod, enaset, int0;
 
     /*
      * check chan in range
      * chan already enabled ... bad
      * chan has pending interrupt ... bad
      */
-    if ((chan >= 8) ||
-        (DMA_Control->ENASET & (1 << chan)) ||
-        (DMA_Channel->INT0_SRCFLG & (1 << chan))) {
-      call Panic.panic(PANIC_DVR, 1, chan, 0, 0, 0);
+    enaset = DMA_Control->ENASET;
+    int0   = DMA_Channel->INT0_SRCFLG;
+    if ((chan >= 8) || (enaset & (1 << chan)) ||
+        (int0 & (1 << chan))) {
+      call Panic.panic(PANIC_DVR, 1, chan, enaset, int0, 0);
     }
 
     dst_inc = (control & UDMA_CHCTL_DSTINC_M);
