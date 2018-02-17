@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Eric B. Decker
+ * Copyright (c) 2017-2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,17 @@
  *
  * reboot(sysreboot_type): reboot the system.  The sysreboot_param indicates
  * the kind of reboot to perform.
+ *
+ * soft_reboot(sysreboot_type): reboot the system under software control.
+ * typically this will get used when we need to reboot but don't want to
+ * use a hardware reset.  For example, if the processor when reset resets
+ * all i/o pins to input (a reasonable thing to do), this can effect power
+ * regulators and power switches that are under processor control.  If
+ * instead the software is responsible for reseting any necessary h/w,
+ * we can avoid changing any pin state (at the risk of not starting up
+ * in a presumed (reset) state).  At least that is one example of why it
+ * would be used.  The software can basically do anything reasonable that
+ * the software can pull off.
  *
  * shutdown_flush: is a signal used to tell any components we are about
  * to shutdown (and reboot).  Any actions the component may want to
@@ -96,8 +107,9 @@ interface SysReboot {
    * run to completion.  No invoking tasks etc.  These will not run.
    */
   async command error_t reboot(sysreboot_t reboot_type);
-  async command void     clear(sysreboot_t reboot_type);
-  async command void     flush();
+  async command error_t soft_reboot(sysreboot_t reboot_type);
+  async command void    clear(sysreboot_t reboot_type);
+  async command void    flush();
 
   async event void shutdown_flush();
 }
