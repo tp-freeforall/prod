@@ -92,6 +92,9 @@
  *
  * Typically Panics in h/w modules get wired in via a platform dependent mapping
  * module, ie. PlatformUsciMapC.nc.
+ *
+ * By convention, a panic with a pcode of 0 indicates a null pointer failure.
+ * These will typically be optimized out.
  */
 
 interface Panic {
