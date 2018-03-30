@@ -41,6 +41,7 @@ struct @exactlyonce { };
 /* This platform_bootstrap macro exists in accordance with TEP
    107. A platform may override this through a platform.h file. */
 #include <platform.h>
+
 #ifndef platform_bootstrap
 #define platform_bootstrap() {}
 #endif
@@ -50,9 +51,8 @@ struct @exactlyonce { };
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
 
 #ifndef TOSSIM
-#define dbg(s, ...) 
-#define dbgerror(s, ...) 
-#define dbg_clear(s, ...) 
-#define dbgerror_clear(s, ...) 
+#define dbg(s, ...)
+#define dbgerror(s, ...)
+#define dbg_clear(s, ...)
+#define dbgerror_clear(s, ...)
 #endif
-
