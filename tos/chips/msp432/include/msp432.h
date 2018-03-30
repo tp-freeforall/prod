@@ -39,6 +39,8 @@
 #ifndef __MSP432_H__
 #define __MSP432_H__
 
+#include <compiler_defs.h>
+
 /******************************************************************************
 * MSP432 devices                                                              *
 ******************************************************************************/
@@ -55,10 +57,6 @@
 ******************************************************************************/
 #else
 #error "Failed to match a default include file"
-#endif
-
-#ifndef noinit
-#define noinit	__attribute__ ((section(".noinit")))
 #endif
 
 /*
