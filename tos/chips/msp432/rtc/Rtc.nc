@@ -1,8 +1,6 @@
 /*
- * Copyright (c) 2010 People Power Co.
+ * Copyright (c) 2018 Eric B. Decker
  * All rights reserved.
- *
- * This open source code was developed with funding from People Power Company
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -34,34 +32,80 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "RealTimeClock.h"
+#include <rtc.h>
+#include <rtctime.h>
 
-/** Interface to a real-time clock.
+/**
+ * Interface to the ti msp432 real-time clock.
  *
  * This interface assumes hardware support for a calendar-based clock
- * including date and time, with nominally one-second resolution.
- * Events and operations on this clock are assumed to be synchronous
- * with these date/time changes.
+ * including date and time, with sub-second resolution provided by the
+ * msp432 rtc hardware.
  *
- * @author Peter A. Bigot <pab@peoplepowerco.com>
+ * This interface is intended to be a reasonable abstraction of typical
+ * RTC h/w.  It is based on the TI MSP432 RTC h/w.
  */
 
-interface RealTimeClock {
+interface Rtc {
 
-  /** Set the local time.
+  /**
+   * Basic Rtc access
+   */
+  command void rtcStop();
+  command void rtcStart();
+
+  /**
+   * rtcValid
    *
-   * The clock must be running.
+   * return TRUE if we think the time in the rtc h/w is valid.
+   *
+   * Currently this means that all fields of the RTC are within range,
+   * sec, min, hr, dow, day, and mon.  We also check for year being
+   * between 2018 and 2099 inclusive.
+   */
+  command bool rtcValid();
+
+
+  /**
+   * set the rtc time.
    *
    * @return SUCCESS normally; EINVAL if the time pointer is null or
-   * the referenced structure does not represent a valid time; EOFF if
-   * the clock is not running.
+   * the referenced structure does not represent a valid time;
    */
-  command error_t setTime (const struct tm* time);
+  command error_t setTime(rtctime_t *timep);
 
-  /** Request that the current time be provided.
+
+  /**
+   * getTime
+   *
+   * get current time.  non split-phase
+   */
+  command error_t getTime(rtctime_t *timep);
+
+
+  /**
+   * clrTime
+   *
+   * zero the time structure.
+   */
+  command void clearTime(rtctime_t *timep);
+
+
+  /**
+   * copyTime
+   *
+   * copy one time structure to another.
+   */
+  command void copyTime(rtctime_t *dtimep, rtctime_t *stimep);
+
+
+  /**
+   * Request current time be provided at next second boundary.
+   *
+   * A split phase request for the time.
    *
    * Since reading clock registers is not an atomic action for some
-   * clocks, and the instability period can be long (3ms on MSP430),
+   * clocks, and the instability period can be long (~4ms on MSP432p401R),
    * rather than potentially delay or return an error, invoking this
    * function will cause a currentTime() event to be raised the next
    * time the clock is updated, possibly during the execution of this
@@ -69,9 +113,10 @@ interface RealTimeClock {
    * "current time", but rather the time at which the next
    * calendar-second rollover event completes.
    *
-   * @param event_code An event bit from RtcTimeEventReason_b that
-   * will be included in the notification event set.  Pass zero if you
-   * don't need to distinguish this particular event.
+   * @param event_code An event code from RtcTimeEventReason_t enums
+   * that will be included in the notification event set.  Pass zero
+   * (RTC_REASON_NONE) if you don't need to distinguish this particular
+   * event (just yield the next second rollover).
    *
    * @note The delay until a valid time is provided may be up to one
    * second.
@@ -83,26 +128,50 @@ interface RealTimeClock {
    *
    * @return SUCCESS, probably.
    */
-  command error_t requestTime (unsigned int event_code);
+  command error_t requestTime(uint32_t event_code);
 
-  /** Configure events at a periodic real-time interval.
+
+  /**
+   * Notification of a time event completion.
    *
-   * Prior to reconfiguring, any current interval event is disabled,
+   * This event is synchronous with completion of a roll-over to a
+   * specific time.  That is, all events associated with a specific
+   * time should be reflected in the reason_set.
+   *
+   * @param timep Pointer to the time of the event.  This is allocated
+   * on the stack of the event signaller.  The receiptent should either
+   * immediately use the time or copy it to a more permanent location.
+   *
+   * @param reason_set Bits are set to values from the enum
+   * RtcTimeEventReason_t to indicate what caused this event to fire.
+   *
+   * Examples are RTC_REASON_EVENT, RTC_REASON_ALARM, and anything
+   * provided by invoking requestTime().
+   */
+  event void currentTime(rtctime_t *timep, uint32_t reason_set);
+
+
+  /**
+   * Configure specific rtc events.
+   *
+   * Prior to reconfiguring, any current event is disabled,
    * meaning that if you provide an invalid argument, your previous
    * configuration gets wiped.
    *
-   * @param interval_mode the type of interval for which events should
-   * be signaled
+   * @param event_mode the type of event that should be signaled
    *
    * @return SUCCESS if the event is scheduled; EINVAL if the mode is
    * not supported on this hardware.
    */
-  command error_t setIntervalMode (RtcIntervalMode_e interval_mode);
+  command error_t setEventMode(RtcEvent_t event_mode);
 
-  /** Read the current periodic event interval mode. */
-  command RtcIntervalMode_e getIntervalMode ();
 
-  /** Set the alarm to occur at a particular time.
+  /** Read the current rtc event mode. */
+  command RtcEvent_t getEventMode();
+
+
+  /**
+   * Set the alarm to occur at a particular time.
    *
    * The time of the alarm is mediated by a set of bits that indicate
    * which time fields contribute to the alarm scheduling.  For
@@ -114,7 +183,7 @@ interface RealTimeClock {
    * fields that are specified in field_set affect the alarm schedule.
    * Pass a null pointer to disable the alarm.
    *
-   * @param field_set A bit set comprising values from RtcAlarmField_b
+   * @param field_set A bit set comprising values from RtcAlarmField_t
    * indicating which fields affect the alarm.  Some field conditions
    * may not be supported on some RTC hardware; in that case, the
    * request should be rejected with an error.
@@ -123,34 +192,19 @@ interface RealTimeClock {
    * the field_set specifies an unsupported field.  The alarm is
    * cleared if this function does not return SUCCESS.
    */
-  command error_t setAlarm (const struct tm* time,
-                            unsigned int field_set);
+  command error_t setAlarm(rtctime_t *timep, uint32_t field_set);
 
-  /** Read the current alarm setting.
+
+  /**
+   * Read the current alarm.
    *
    * @param time Where the alarm values should be stored.  If
-   * provided, all relevant alarm fields are stored, even if they are
-   * not part of the field set.
+   * provided, all relevant alarm fields are stored, even if they
+   * are not part of the field set.
    *
-   * @return A bit set comprising values from RtcAlarmField_b
-   * indicating which fields are part of the alarm.  A return value of
-   * zero indicates that no alarm is scheduled.
+   * @return A bit set comprising values from RtcAlarmField_t
+   * indicating which fields are part of the alarm.  A return value
+   * of zero indicates that no alarm is scheduled.
    */
-  command unsigned int getAlarm (struct tm* time);
-
-  /** Notification of the time of an activity.
-   *
-   * This event is synchronous with completion of a roll-over to a
-   * specific time.  That is, all events associated with a specific
-   * time should be reflected in the reason_set.
-   *
-   * @param timep Pointer to the time of the event.
-   *
-   * @param reason_set Bits are set to fields from
-   * RtcTimeEventReason_b to indicate what caused this event to fire.
-   * Examples are RTC_REASON_INTERVAL, RTC_REASON_ALARM, and anything
-   * provided by invoking requestTime().
-   */
-  async event void currentTime (const struct tm* timep,
-                                unsigned int reason_set);
+  command uint32_t getAlarm(rtctime_t *timep);
 }
