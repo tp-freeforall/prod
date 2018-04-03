@@ -75,12 +75,12 @@
 
 #include <panic.h>
 
-#ifndef PANIC_TIMING
+#ifndef PANIC_TIME
 enum {
-  __pcode_timing = unique(UQ_PANIC_SUBSYS)
+  __pcode_time = unique(UQ_PANIC_SUBSYS)
 };
 
-#define PANIC_TIMING __pcode_timing
+#define PANIC_TIME __pcode_time
 #endif
 
 generic module Msp432TimerP(uint32_t timer_ptr, uint32_t irqn, bool isAsync) {
@@ -99,8 +99,8 @@ generic module Msp432TimerP(uint32_t timer_ptr, uint32_t irqn, bool isAsync) {
 implementation {
 
 #define TAx ((Timer_A_Type *) timer_ptr)
-#define __PANIC_TIMING(where, w, x, y, z) do {                          \
-    call Panic.panic(PANIC_TIMING, where, w, x, y, z);                  \
+#define __PANIC_TIME(where, w, x, y, z) do {                          \
+    call Panic.panic(PANIC_TIME, where, w, x, y, z);                  \
   } while (0)
 
   /*
@@ -172,7 +172,7 @@ implementation {
           t1 = TAx->R;
           cnt++;
           if (cnt > 10) {
-            __PANIC_TIMING(1, cnt, t0, t1, 0);
+            __PANIC_TIME(1, cnt, t0, t1, 0);
           }
         } while( t0 != t1 );
         return t1;
