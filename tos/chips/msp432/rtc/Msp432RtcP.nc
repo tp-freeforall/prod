@@ -44,7 +44,7 @@ enum {
 #define PANIC_TIME __pcode_time
 #endif
 
-module RtcP {
+module Msp432RtcP {
   provides interface Rtc;
   uses     interface Panic;
 }
@@ -122,7 +122,7 @@ implementation {
   command error_t Rtc.getTime(rtctime_t *timep) {
     if (!timep)
       call Panic.panic(PANIC_TIME, 0, 0, 0, 0, 0);
-    get_rtc_time(timep);
+    __get_rtc_time(timep);
     return SUCCESS;
   }
 
