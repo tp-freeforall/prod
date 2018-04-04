@@ -80,17 +80,17 @@ implementation {
   }
 
 
-  command void Rtc.rtcStop() {
+  async command void Rtc.rtcStop() {
     BITBAND_PERI(RTC_C->CTL13, RTC_C_CTL13_HOLD_OFS) = 1;
   }
 
 
-  command void Rtc.rtcStart() {
+  async command void Rtc.rtcStart() {
     BITBAND_PERI(RTC_C->CTL13, RTC_C_CTL13_HOLD_OFS) = 0;
   }
 
 
-  command bool Rtc.rtcValid() {
+  async command bool Rtc.rtcValid() {
     rtctime_t time;
 
     __get_rtc_time(&time);
@@ -98,7 +98,7 @@ implementation {
   }
 
 
-  command error_t Rtc.setTime(rtctime_t *timep) {
+  async command error_t Rtc.setTime(rtctime_t *timep) {
     bool running;
 
     if (!timep)
@@ -119,7 +119,7 @@ implementation {
   }
 
 
-  command error_t Rtc.getTime(rtctime_t *timep) {
+  async command error_t Rtc.getTime(rtctime_t *timep) {
     if (!timep)
       call Panic.panic(PANIC_TIME, 0, 0, 0, 0, 0);
     __get_rtc_time(timep);
@@ -127,47 +127,47 @@ implementation {
   }
 
 
-  command void Rtc.clearTime(rtctime_t *timep) {
+  async command void Rtc.clearTime(rtctime_t *timep) {
     if (!timep)
       call Panic.panic(PANIC_TIME, 0, 0, 0, 0, 0);
     memset((void *) timep, 0, sizeof(rtctime_t));
   }
 
 
-  command void Rtc.copyTime(rtctime_t *dtimep, rtctime_t *stimep) {
+  async command void Rtc.copyTime(rtctime_t *dtimep, rtctime_t *stimep) {
     if (!dtimep || !stimep)
       call Panic.panic(PANIC_TIME, 0, 0, 0, 0, 0);
     memcpy((void *) dtimep, (void *) stimep, sizeof(rtctime_t));
   }
 
 
-  command error_t Rtc.requestTime(uint32_t event_code) {
+  async command error_t Rtc.requestTime(uint32_t event_code) {
     return FAIL;
   }
 
 
-  command error_t Rtc.setEventMode(RtcEvent_t event_mode) {
+  async command error_t Rtc.setEventMode(RtcEvent_t event_mode) {
     return FAIL;
   }
 
 
-  command RtcEvent_t Rtc.getEventMode() {
+  async command RtcEvent_t Rtc.getEventMode() {
     return RTC_EVENT_NONE;
   }
 
 
-  command error_t Rtc.setAlarm(rtctime_t *timep, uint32_t field_set) {
+  async command error_t Rtc.setAlarm(rtctime_t *timep, uint32_t field_set) {
     return FAIL;
   }
 
 
-  command uint32_t Rtc.getAlarm(rtctime_t *timep) {
+  async command uint32_t Rtc.getAlarm(rtctime_t *timep) {
     return 0;
   }
 
 
-  default event void Rtc.currentTime(rtctime_t *timep,
-                                     uint32_t reason_set) { }
+  default async event void Rtc.currentTime(rtctime_t *timep,
+                                           uint32_t reason_set) { }
 
   async event void Panic.hook() { }
 }

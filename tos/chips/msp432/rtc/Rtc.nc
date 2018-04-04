@@ -51,8 +51,8 @@ interface Rtc {
   /**
    * Basic Rtc access
    */
-  command void rtcStop();
-  command void rtcStart();
+  async command void rtcStop();
+  async command void rtcStart();
 
   /**
    * rtcValid
@@ -63,7 +63,7 @@ interface Rtc {
    * sec, min, hr, dow, day, and mon.  We also check for year being
    * between 2018 and 2099 inclusive.
    */
-  command bool rtcValid();
+  async command bool rtcValid();
 
 
   /**
@@ -72,7 +72,7 @@ interface Rtc {
    * @return SUCCESS normally; EINVAL if the time pointer is null or
    * the referenced structure does not represent a valid time;
    */
-  command error_t setTime(rtctime_t *timep);
+  async command error_t setTime(rtctime_t *timep);
 
 
   /**
@@ -80,7 +80,7 @@ interface Rtc {
    *
    * get current time.  non split-phase
    */
-  command error_t getTime(rtctime_t *timep);
+  async command error_t getTime(rtctime_t *timep);
 
 
   /**
@@ -88,7 +88,7 @@ interface Rtc {
    *
    * zero the time structure.
    */
-  command void clearTime(rtctime_t *timep);
+  async command void clearTime(rtctime_t *timep);
 
 
   /**
@@ -96,7 +96,7 @@ interface Rtc {
    *
    * copy one time structure to another.
    */
-  command void copyTime(rtctime_t *dtimep, rtctime_t *stimep);
+  async command void copyTime(rtctime_t *dtimep, rtctime_t *stimep);
 
 
   /**
@@ -128,7 +128,7 @@ interface Rtc {
    *
    * @return SUCCESS, probably.
    */
-  command error_t requestTime(uint32_t event_code);
+  async command error_t requestTime(uint32_t event_code);
 
 
   /**
@@ -148,7 +148,7 @@ interface Rtc {
    * Examples are RTC_REASON_EVENT, RTC_REASON_ALARM, and anything
    * provided by invoking requestTime().
    */
-  event void currentTime(rtctime_t *timep, uint32_t reason_set);
+  async event void currentTime(rtctime_t *timep, uint32_t reason_set);
 
 
   /**
@@ -163,11 +163,11 @@ interface Rtc {
    * @return SUCCESS if the event is scheduled; EINVAL if the mode is
    * not supported on this hardware.
    */
-  command error_t setEventMode(RtcEvent_t event_mode);
+  async command error_t setEventMode(RtcEvent_t event_mode);
 
 
   /** Read the current rtc event mode. */
-  command RtcEvent_t getEventMode();
+  async command RtcEvent_t getEventMode();
 
 
   /**
@@ -192,7 +192,7 @@ interface Rtc {
    * the field_set specifies an unsupported field.  The alarm is
    * cleared if this function does not return SUCCESS.
    */
-  command error_t setAlarm(rtctime_t *timep, uint32_t field_set);
+  async command error_t setAlarm(rtctime_t *timep, uint32_t field_set);
 
 
   /**
@@ -206,5 +206,5 @@ interface Rtc {
    * indicating which fields are part of the alarm.  A return value
    * of zero indicates that no alarm is scheduled.
    */
-  command uint32_t getAlarm(rtctime_t *timep);
+  async command uint32_t getAlarm(rtctime_t *timep);
 }
