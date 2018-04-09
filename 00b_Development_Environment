@@ -129,19 +129,30 @@ To install:
   sudo apt-get install nesc tinyos-tools-devel
 
 4b) Install ARM toolchain.  TinyOS for the msp432 requires the
-    gcc-arm-none-eabi-4_9-2015q3 toolchain.  Later toolchains break something.
+    gcc-arm-none-eabi-4_9-2015q3 toolchain.  Later toolchains have the nesc restrict issue.
 
-    ARM_TOOLS_URL=https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q3-update/+download/gcc-arm-none-eabi-4_9-2015q3-20150921-linux.tar.bz2
-    wget -nv -O gcc-arm-none-eabi.tar.bz2 $ARM_TOOLS_URL
+    ARM_TOOLS_BASE=https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q3-update/+download
+    ARM_TOOLS_TAR=gcc-arm-none-eabi-4_9-2015q3-20150921-linux.tar.bz2
+    wget -nv -O gcc-arm-none-eabi.tar.bz2 $ARM_TOOLS_BASE/$ARM_TOOLS_TAR
 
     echo "*** Installing ARM toolchain"
     tar xf /home/vagrant/installs/gcc-arm-none-eabi.tar.bz2 -C /usr
 
-
     this will install the arm toolchain into /usr/gcc-arm-none-eabi-4_9-2015q3.  Your path
     should include /usr/gcc-arm-none-eabi-4_9-2015q3/bin
 
-4c) Install Segger Jlink.
+4c) Install 32 bit libraries for the ARM toolchain
+
+    apt-get install -qy -V libc6:i386 libx11-6:i386 libasound2:i386         \
+        libatk1.0-0:i386 libcairo2:i386 libcups2:i386 libdbus-glib-1-2:i386 \
+        libgconf-2-4:i386 libgdk-pixbuf2.0-0:i386 libgtk-3-0:i386           \
+        libice6:i386 libncurses5:i386 libsm6:i386 liborbit2:i386            \
+        libudev1:i386 libusb-0.1-4:i386 libstdc++6:i386 libxt6:i386         \
+        libxtst6:i386 libgnomeui-0:i386 libusb-1.0-0-dev:i386               \
+        libcanberra-gtk-module:i386 gtk2-engines-murrine:i386 unzip         \
+        libpython2.7:i386
+
+4d) Install Segger Jlink.
 
     SUPPORT_ARCHIVE=http://tinyprod.net/dev-archive
     JLINK_DEB=${SUPPORT_ARCHIVE}/JLink_Linux_V616j_x86_64.deb
