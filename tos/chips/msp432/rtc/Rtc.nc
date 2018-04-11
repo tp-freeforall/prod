@@ -57,13 +57,15 @@ interface Rtc {
   /**
    * rtcValid
    *
-   * return TRUE if we think the time in the rtc h/w is valid.
+   * return TRUE if we think the time is valid.
    *
    * Currently this means that all fields of the RTC are within range,
    * sec, min, hr, dow, day, and mon.  We also check for year being
    * between 2018 and 2099 inclusive.
+   *
+   * One must fetch the current time value from the h/w via getTime().
    */
-  async command bool rtcValid();
+  async command bool rtcValid(rtctime_t *time);
 
 
   /**
@@ -97,6 +99,21 @@ interface Rtc {
    * copy one time structure to another.
    */
   async command void copyTime(rtctime_t *dtimep, rtctime_t *stimep);
+
+
+  /**
+   * compareTimes
+   *
+   * compares two rtctimes and returns less, equal, or greater
+   *
+   * input:     time0p  pointer to an rtc time
+   *            time1p  pointer to 2nd rtc time
+   *
+   * output:    return  -1, time0  < time1
+   *                     0, time0 == time1
+   *                     1, time0  > time1
+   */
+  async command int compareTimes(rtctime_t *time0p, rtctime_t *time1p);
 
 
   /**
