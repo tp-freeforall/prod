@@ -71,10 +71,10 @@ interface Rtc {
   /**
    * set the rtc time.
    *
-   * @return SUCCESS normally; EINVAL if the time pointer is null or
-   * the referenced structure does not represent a valid time;
+   * its hardware, can't fail.  If it fails, the driver panics.
+   * null pointers are also caught by 0 panics.
    */
-  async command error_t setTime(rtctime_t *timep);
+  async command void setTime(rtctime_t *timep);
 
 
   /**
@@ -82,7 +82,7 @@ interface Rtc {
    *
    * get current time.  non split-phase
    */
-  async command error_t getTime(rtctime_t *timep);
+  async command void getTime(rtctime_t *timep);
 
 
   /**

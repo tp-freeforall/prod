@@ -150,7 +150,7 @@ implementation {
   }
 
 
-  async command error_t Rtc.setTime(rtctime_t *timep) {
+  async command void Rtc.setTime(rtctime_t *timep) {
     bool running;
 
     if (!timep)
@@ -170,11 +170,10 @@ implementation {
         BITBAND_PERI(RTC_C->CTL13, RTC_C_CTL13_HOLD_OFS) = 0;
       BITBAND_PERI(RTC_C->CTL0, RTC_C_CTL0_KEY_OFS) = 0;    /* close lock */
     }
-    return SUCCESS;
   }
 
 
-  async command error_t Rtc.getTime(rtctime_t *timep) {
+  async command void Rtc.getTime(rtctime_t *timep) {
     msp432_rtc_t rtc0, rtc1;
     msp432_rtc_t *old_cur, *cur, *next;
     int i;
@@ -194,7 +193,7 @@ implementation {
       atomic {
         grab_time(&rtc0);
         set_timep(timep, &rtc0);
-        return SUCCESS;
+        return;
       }
     }
 
@@ -260,7 +259,7 @@ implementation {
         grab_time(next);
         if (check_time(cur, next)) {
           set_timep(timep, cur);
-          return SUCCESS;
+          return;
         }
         old_cur = cur;                 /* swap time space */
         cur     = next;
@@ -270,8 +269,8 @@ implementation {
       /* something went wrong, shouldn't be here */
       call Panic.panic(PANIC_TIME, 1, (parg_t) cur, (parg_t) next,
                        cur->minsec, next->minsec);
-      return FAIL;
     }
+    /* not reached */
   }
 
 
@@ -375,12 +374,12 @@ implementation {
     call Rtc.rtcStart();
   }
 
-  error_t __rtc_setTime(rtctime_t *timep) @C() @spontaneous() {
-    return call Rtc.setTime(timep);
+  void __rtc_setTime(rtctime_t *timep) @C() @spontaneous() {
+    call Rtc.setTime(timep);
   }
 
-  error_t __rtc_getTime(rtctime_t *timep) @C() @spontaneous() {
-    return call Rtc.getTime(timep);
+  void __rtc_getTime(rtctime_t *timep) @C() @spontaneous() {
+    call Rtc.getTime(timep);
   }
 
   bool __rtc_rtcValid(rtctime_t *timep) @C() @spontaneous() {
