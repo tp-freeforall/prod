@@ -161,11 +161,24 @@ implementation {
       /* open lock and stop the RTC */
       RTC_C->CTL0 = (RTC_C->CTL0 & ~RTC_C_CTL0_KEY_MASK) | RTC_C_KEY;
       BITBAND_PERI(RTC_C->CTL13, RTC_C_CTL13_HOLD_OFS) = 1;
-      RTC_C->PS   = timep->sub_sec;
       RTC_C->TIM0 = timep->min << 8 | timep->sec;
       RTC_C->TIM1 = timep->dow << 8 | timep->hr;
       RTC_C->DATE = timep->mon << 8 | timep->day;
       RTC_C->YEAR = timep->year;
+
+      /* you have to set PS last, TI in their infinite wisdom clears
+       * PS when one writes to TIM0.  not sure why, but keeps things
+       * interesting.  Not documented in the references.
+       */
+      RTC_C->PS   = timep->sub_sec;
+
+      if (RTC_C->PS   != timep->sub_sec ||
+          RTC_C->TIM0 != (timep->min << 8 | timep-> sec) ||
+          RTC_C->TIM1 != (timep->dow << 8 | timep->hr)   ||
+          RTC_C->DATE != (timep->mon << 8 | timep->day)  ||
+          RTC_C->YEAR != timep->year) {
+        call Panic.panic(PANIC_TIME, 1, 0, 0, 0, 0);
+      }
       if (running)
         BITBAND_PERI(RTC_C->CTL13, RTC_C_CTL13_HOLD_OFS) = 0;
       BITBAND_PERI(RTC_C->CTL0, RTC_C_CTL0_KEY_OFS) = 0;    /* close lock */
@@ -267,7 +280,7 @@ implementation {
       }
 
       /* something went wrong, shouldn't be here */
-      call Panic.panic(PANIC_TIME, 1, (parg_t) cur, (parg_t) next,
+      call Panic.panic(PANIC_TIME, 2, (parg_t) cur, (parg_t) next,
                        cur->minsec, next->minsec);
     }
     /* not reached */
