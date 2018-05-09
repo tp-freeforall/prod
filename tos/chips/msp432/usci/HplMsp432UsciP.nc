@@ -204,6 +204,11 @@ implementation {
     else    BITBAND_PERI(APTR(up)->IFG, EUSCI_A_IFG_RXIFG_OFS) = 0;
   }
 
+  async command void	 Usci.setRxIntr() {
+    if (_t) BITBAND_PERI(BPTR(up)->IFG, EUSCI_B_IFG_RXIFG_OFS) = 1;
+    else    BITBAND_PERI(APTR(up)->IFG, EUSCI_A_IFG_RXIFG_OFS) = 1;
+  }
+
   /* EUSCI_{A,B}_IE_RXIE_OFS, EUSCI_B_IE_RXIE0_OFS (i2c) */
   async command void	 Usci.disableRxIntr() {
     if (_t) BITBAND_PERI(BPTR(up)->IE, EUSCI_B_IE_RXIE_OFS) = 0;
@@ -224,6 +229,11 @@ implementation {
   async command void	 Usci.clrTxIntr() {
     if (_t) BITBAND_PERI(BPTR(up)->IFG, EUSCI_B_IFG_TXIFG_OFS) = 0;
     else    BITBAND_PERI(APTR(up)->IFG, EUSCI_A_IFG_TXIFG_OFS) = 0;
+  }
+
+  async command void	 Usci.setTxIntr() {
+    if (_t) BITBAND_PERI(BPTR(up)->IFG, EUSCI_B_IFG_TXIFG_OFS) = 1;
+    else    BITBAND_PERI(APTR(up)->IFG, EUSCI_A_IFG_TXIFG_OFS) = 1;
   }
 
   /* EUSCI_{A,B}_IE_TXIE_OFS, EUSCI_B_IE_TXIE0_OFS (i2c) */

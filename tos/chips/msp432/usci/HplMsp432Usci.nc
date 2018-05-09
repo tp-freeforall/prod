@@ -141,15 +141,21 @@ interface HplMsp432Usci {
    *
    * Further on the MSP432/Cortex-M4F we hit individual bits using bitband which
    * is inherently atomic.
+   *
+   * set{Rx,Tx}Intr are strange but potentially needed to work around h/w
+   * bugs that appear to be there in the TI silicon.  Haven't located the
+   * smoking gun.  setTxIntr is actively used.
    */
 
   async command bool isRxIntrPending();
   async command void clrRxIntr();
+  async command void setRxIntr();
   async command void disableRxIntr();
   async command void enableRxIntr();
 
   async command bool isTxIntrPending();
   async command void clrTxIntr();
+  async command void setTxIntr();
   async command void disableTxIntr();
   async command void enableTxIntr();
 
