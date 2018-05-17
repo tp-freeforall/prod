@@ -63,5 +63,6 @@ implementation {
   Interrupts = I2CP.Interrupts;
 
   components HplMsp430UsciB1C as UsciC;
-  I2CP.UsciB -> UsciC;
+  I2CP.Usci -> UsciC;
+  I2CP.I2C -> UsciC;
 }

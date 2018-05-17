@@ -57,7 +57,9 @@
 
 module HplMsp430UsciA1P @safe() {
   provides {
-    interface HplMsp430UsciA as Usci;
+    interface HplMsp430Usci as Usci;
+    interface HplMsp430UsciUart as Uart;
+    interface HplMsp430UsciSpi as Spi;
     interface HplMsp430UsciInterrupts as Interrupts;
   }
   uses {
@@ -128,11 +130,11 @@ implementation {
     }
   }
 
-  async command void Usci.setUmctl(uint8_t control) {
+  async command void Uart.setUmctl(uint8_t control) {
     UCA1MCTL=control;
   }
 
-  async command uint8_t Usci.getUmctl() {
+  async command uint8_t Uart.getUmctl() {
     return UCA1MCTL;
   }
 
@@ -179,11 +181,8 @@ implementation {
     return isSpi();
   }
 
-  bool isI2C() {
-    msp430_uctl0_t tmp;
-
-    tmp = int2uctl0(UCA1CTL0);
-    return (tmp.ucsync && tmp.ucmode == 3);
+  async command bool Usci.isI2C() {
+    return FALSE;
   }
 
   bool isUart() {
@@ -196,14 +195,12 @@ implementation {
   async command msp430_uscimode_t Usci.getMode() {
     if (isSpi())
       return USCI_SPI;
-    if (isI2C())
-      return USCI_I2C;
     if (isUart())
       return USCI_UART;
     return USCI_NONE;
   }
 
-  async command void Usci.enableSpi() {
+  async command void Spi.enableSpi() {
     atomic {
       call SIMO.selectModuleFunc();
       call SOMI.selectModuleFunc();
@@ -211,7 +208,7 @@ implementation {
     }
   }
 
-  async command void Usci.disableSpi() {
+  async command void Spi.disableSpi() {
     atomic {
       call SIMO.selectIOFunc();
       call SOMI.selectIOFunc();
@@ -237,10 +234,10 @@ implementation {
    * Also note that resetting the usci will clear any interrupt enables
    * for the device.  Don't need to explicitly disableIntr.
    */
-  async command void Usci.setModeSpi(const msp430_spi_union_config_t* config) {
+  async command void Spi.setModeSpi(const msp430_spi_union_config_t* config) {
     atomic {
       call Usci.resetUsci_n();
-      call Usci.enableSpi();
+      call Spi.enableSpi();
       configSpi(config);
       call Usci.unresetUsci_n();
       call Usci.clrIntr();
@@ -358,14 +355,14 @@ implementation {
     return isUart();
   }
 
-  async command void Usci.enableUart() {
+  async command void Uart.enableUart() {
     atomic {
       call UTXD.selectModuleFunc();
       call URXD.selectModuleFunc();
     }
   }
 
-  async command void Usci.disableUart() {
+  async command void Uart.disableUart() {
     atomic {
       call UTXD.selectIOFunc();
       call URXD.selectIOFunc();
@@ -376,7 +373,7 @@ implementation {
     UCA1CTL1 = (config->uartRegisters.uctl1 | UCSWRST);
     UCA1CTL0 = config->uartRegisters.uctl0;		/* ucsync should be off */
     call Usci.setUbr(config->uartRegisters.ubr);
-    call Usci.setUmctl(config->uartRegisters.umctl);
+    call Uart.setUmctl(config->uartRegisters.umctl);
   }
 
   /*
@@ -389,10 +386,10 @@ implementation {
    * Also note that resetting the usci will clear any interrupt enables
    * for the device.  Don't need to explicitly disableIntr.
    */
-  async command void Usci.setModeUart(const msp430_uart_union_config_t* config) {
+  async command void Uart.setModeUart(const msp430_uart_union_config_t* config) {
     atomic {
       call Usci.resetUsci_n();
-      call Usci.enableUart();
+      call Uart.enableUart();
       configUart(config);
       call Usci.unresetUsci_n();
       call Usci.clrIntr();

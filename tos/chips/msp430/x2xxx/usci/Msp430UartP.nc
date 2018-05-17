@@ -52,7 +52,8 @@ generic module Msp430UartP() {
   uses {
     interface Resource as UsciResource[ uint8_t id ];
     interface Msp430UartConfigure[ uint8_t id ];
-    interface HplMsp430UsciA as Usci;
+    interface HplMsp430Usci as Usci;
+    interface HplMsp430UsciUart as Uart;
     interface HplMsp430UsciInterrupts as UsciInterrupts[ uint8_t id ];
     interface Counter<T32khz,uint16_t>;
   }
@@ -93,13 +94,13 @@ implementation {
     m_byte_time = config->uartConfig.ubr / 2;
     if (!m_byte_time)
       m_byte_time = 1;
-    call Usci.setModeUart(config);
+    call Uart.setModeUart(config);
     call Usci.enableIntr();
   }
 
   async command void ResourceConfigure.unconfigure[ uint8_t id ]() {
     call Usci.resetUsci_n();		/* also turns off interrupt enables */
-    call Usci.disableUart();
+    call Uart.disableUart();
     /* leave in reset */
   }
 

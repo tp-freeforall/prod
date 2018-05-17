@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2010-2011 Eric B. Decker
+ * Copyright (c) 2010 Eric B. Decker
  * Copyright (c) 2009 DEXMA SENSORS SL
- * Copyright (c) 2005-2006 Arch Rock Corporation
+ * Copyright (c) 2004-2005, Technische Universitaet Berlin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,34 +35,44 @@
  */
 
 /*
- * @author Jonathan Hui <jhui@archrock.com>
+ * Byte-level interface to control Usci based modules (MSP430X), msp430f2618 etc.
+ * USCI_A supports Uart, SPI, and irDA modes.  USCI_B SPI and I2C.  Stateless
+ * interface modeled after HplMsp430Usart of the MSP430 family.
+ *
+ * @author Vlado Handziski (handzisk@tkn.tu-berlin.de)
+ * @author Jan Hauer (hauer@tkn.tu-berlin.de)
+ * @author Joe Polastre
  * @author Xavier Orduna <xorduna@dexmatech.com>
  * @author Eric B. Decker <cire831@gmail.com>
+ *
+ * see msp430usci.h for basic definitions.
+ * See TI MSP430x2xx Family User's Guide SLAU144E for details.
  */
 
-configuration Msp430I2CB0P {
-  provides {
-    interface Resource[uint8_t id];
-    interface ResourceConfigure[uint8_t id];
-    interface I2CPacket<TI2CBasicAddr> as I2CBasicAddr;
-  }
-  uses {
-    interface Resource as UsciResource[uint8_t id];
-    interface Msp430I2CConfigure[uint8_t id];
-    interface HplMsp430UsciInterrupts as Interrupts;
-  }
-}
+#include "msp430usci.h"
 
-implementation {
-  components new Msp430I2CP() as I2CP;
-  Resource = I2CP.Resource;
-  ResourceConfigure = I2CP.ResourceConfigure;
-  Msp430I2CConfigure = I2CP.Msp430I2CConfigure;
-  I2CBasicAddr = I2CP.I2CBasicAddr;
-  UsciResource = I2CP.UsciResource;
-  Interrupts = I2CP.Interrupts;
+interface HplMsp430UsciUart {
+  /***********************************************************************
+   *
+   * UART Mode interface
+   *
+   ***********************************************************************/
 
-  components HplMsp430UsciB0C as UsciC;
-  I2CP.Usci -> UsciC;
-  I2CP.I2C -> UsciC;
+  /*
+   * configure or deconfigure gpio pins for UART mode
+   *
+   * switches io pins between port and module function.
+   */
+  async command void enableUart();
+  async command void disableUart();
+
+  /*
+   * configure usci as uart using config.
+   * leaves interrupts disabled.
+   */
+  async command void setModeUart(const msp430_uart_union_config_t* config);
+
+  /* UCxxMCTL */
+  async command void setUmctl(uint8_t umctl);
+  async command uint8_t getUmctl();
 }

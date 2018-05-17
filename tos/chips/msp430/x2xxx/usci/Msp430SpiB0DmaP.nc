@@ -77,6 +77,7 @@ implementation {
 
   components HplMsp430UsciB0C as UsciC;
   SpiP.Usci -> UsciC;
+  SpiP.Spi -> UsciC;
 
   components Msp430DmaC as DmaC;
   SpiP.DmaChannel1 -> DmaC.Channel1;

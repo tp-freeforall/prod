@@ -58,7 +58,9 @@
 
 module HplMsp430UsciB1P @safe() {
   provides {
-    interface HplMsp430UsciB as Usci;
+    interface HplMsp430Usci as Usci;
+    interface HplMsp430UsciI2C as I2C;
+    interface HplMsp430UsciSpi as Spi;
     interface HplMsp430UsciInterrupts as Interrupts;
   }
   uses {
@@ -174,6 +176,10 @@ implementation {
     return isSpi();
   }
 
+  async command bool Usci.isUart() {
+    return FALSE;
+  }
+
   bool isI2C() {
     msp430_uctl0_t tmp;
 
@@ -189,7 +195,7 @@ implementation {
     return USCI_NONE;
   }
 
-  async command void Usci.enableSpi() {
+  async command void Spi.enableSpi() {
     atomic {
       call SIMO.selectModuleFunc();
       call SOMI.selectModuleFunc();
@@ -197,7 +203,7 @@ implementation {
     }
   }
 
-  async command void Usci.disableSpi() {
+  async command void Spi.disableSpi() {
     atomic {
       call SIMO.selectIOFunc();
       call SOMI.selectIOFunc();
@@ -223,10 +229,10 @@ implementation {
    * Also note that resetting the usci will clear any interrupt enables
    * for the device.  Don't need to explicitly disableIntr.
    */
-  async command void Usci.setModeSpi(const msp430_spi_union_config_t* config) {
+  async command void Spi.setModeSpi(const msp430_spi_union_config_t* config) {
     atomic {
       call Usci.resetUsci_n();
-      call Usci.enableSpi();
+      call Spi.enableSpi();
       configSpi(config);
       call Usci.unresetUsci_n();
       call Usci.clrIntr();
@@ -347,7 +353,7 @@ implementation {
     return isI2C();
   }
 
-  async command void Usci.enableI2C() {
+  async command void I2C.enableI2C() {
     atomic {
  #ifdef PLATFORM_Z1
       /* Dirty, needs fixing */
@@ -361,7 +367,7 @@ implementation {
     }
   }
 
-  async command void Usci.disableI2C() {
+  async command void I2C.disableI2C() {
     atomic {
       call USDA.selectIOFunc();
       call USCL.selectIOFunc();
@@ -377,10 +383,10 @@ implementation {
     UCB1I2CIE = 0;
   }
 
-  async command void Usci.setModeI2C(const msp430_i2c_union_config_t* config) {
+  async command void I2C.setModeI2C(const msp430_i2c_union_config_t* config) {
     atomic {
       call Usci.resetUsci_n();
-      call Usci.enableI2C();
+      call I2C.enableI2C();
       configI2C(config);
       call Usci.unresetUsci_n();
       call Usci.clrIntr();
@@ -399,22 +405,22 @@ implementation {
    */
 
   /* set direction of the bus */
-  async command void Usci.setTransmitMode() { UCB1CTL1 |=  UCTR; }
-  async command void Usci.setReceiveMode()  { UCB1CTL1 &= ~UCTR; }
+  async command void I2C.setTransmitMode() { UCB1CTL1 |=  UCTR; }
+  async command void I2C.setReceiveMode()  { UCB1CTL1 &= ~UCTR; }
 
   /* transmit a NACK, Stop condition, or Start condition, automatically cleared */
-  async command void Usci.setTXNACK()  { UCB1CTL1 |= UCTXNACK; }
-  async command void Usci.setTXStop()  { UCB1CTL1 |= UCTXSTP;  }
-  async command void Usci.setTXStart() { UCB1CTL1 |= UCTXSTT; }
+  async command void I2C.setTXNACK()  { UCB1CTL1 |= UCTXNACK; }
+  async command void I2C.setTXStop()  { UCB1CTL1 |= UCTXSTP;  }
+  async command void I2C.setTXStart() { UCB1CTL1 |= UCTXSTT; }
 
   /*
    * get/set I2COA, Own Address register
    */
-  async command uint16_t Usci.getOwnAddress() {
+  async command uint16_t I2C.getOwnAddress() {
     return (UCB1I2COA & ~UCGCEN);
   }
 
-  async command void Usci.setOwnAddress( uint16_t addr ) {
+  async command void I2C.setOwnAddress( uint16_t addr ) {
     atomic {
       UCB1I2COA &= UCGCEN;
       UCB1I2COA |= (addr & ~UCGCEN);
@@ -422,36 +428,36 @@ implementation {
   }
 
   /* set whether to respond to GeneralCall. */
-  async command void Usci.clearGeneralCall() { UCB1I2COA &= ~UCGCEN; }
-  async command void Usci.setGeneralCall()   { UCB1I2COA |=  UCGCEN; }
+  async command void I2C.clearGeneralCall() { UCB1I2COA &= ~UCGCEN; }
+  async command void I2C.setGeneralCall()   { UCB1I2COA |=  UCGCEN; }
 
   /* set master/slave mode, i2c */
-  async command void Usci.setSlaveMode()  { UCB1CTL0 |=  UCMST; }
-  async command void Usci.setMasterMode() { UCB1CTL0 &= ~UCMST; }
+  async command void I2C.setSlaveMode()  { UCB1CTL0 |=  UCMST; }
+  async command void I2C.setMasterMode() { UCB1CTL0 &= ~UCMST; }
 
   /* get stop bit in i2c mode */
-  async command bool Usci.getStartBit() { return (UCB1CTL1 & UCTXSTT); } 
-  async command bool Usci.getStopBit() { return (UCB1CTL1 & UCTXSTP); }
-  async command bool Usci.getTransmitReceiveMode() { return (UCB1CTL1 & UCTR); }
+  async command bool I2C.getStartBit() { return (UCB1CTL1 & UCTXSTT); }
+  async command bool I2C.getStopBit() { return (UCB1CTL1 & UCTXSTP); }
+  async command bool I2C.getTransmitReceiveMode() { return (UCB1CTL1 & UCTR); }
 
-  /* get/set Slave Address, i2cSA */
+  /* get/set Slave Address, I2Csa */
   /* do you really need the atomic? */
-  async command uint16_t Usci.getSlaveAddress()            { atomic { return UCB1I2CSA; } }
-  async command void Usci.setSlaveAddress( uint16_t addr ) { atomic { UCB1I2CSA = addr; } }
+  async command uint16_t I2C.getSlaveAddress()            { atomic { return UCB1I2CSA; } }
+  async command void I2C.setSlaveAddress( uint16_t addr ) { atomic { UCB1I2CSA = addr; } }
 
   /* enable/disable NACK interrupt */
-  async command void Usci.disableNACKInt() { UCB1I2CIE &= ~UCNACKIE; }
-  async command void Usci.enableNACKInt()  { UCB1I2CIE |=  UCNACKIE; }
+  async command void I2C.disableNACKInt() { UCB1I2CIE &= ~UCNACKIE; }
+  async command void I2C.enableNACKInt()  { UCB1I2CIE |=  UCNACKIE; }
 
   /* enable/disable stop condition interrupt */
-  async command void Usci.disableStopInt() { UCB1I2CIE &= ~UCSTPIE; }
-  async command void Usci.enableStopInt()  { UCB1I2CIE |=  UCSTPIE; }
+  async command void I2C.disableStopInt() { UCB1I2CIE &= ~UCSTPIE; }
+  async command void I2C.enableStopInt()  { UCB1I2CIE |=  UCSTPIE; }
 
   /* enable/disable start condition interrupt */
-  async command void Usci.disableStartInt() { UCB1I2CIE &= ~UCSTTIE; }
-  async command void Usci.enableStartInt()  { UCB1I2CIE |=  UCSTTIE; }
+  async command void I2C.disableStartInt() { UCB1I2CIE &= ~UCSTTIE; }
+  async command void I2C.enableStartInt()  { UCB1I2CIE |=  UCSTTIE; }
 
   /* enable/disable arbitration lost interrupt */
-  async command void Usci.disableArbLostInt() { UCB1I2CIE &= ~UCALIE; }
-  async command void Usci.enableArbLostInt()  { UCB1I2CIE |=  UCALIE; }
+  async command void I2C.disableArbLostInt() { UCB1I2CIE &= ~UCALIE; }
+  async command void I2C.enableArbLostInt()  { UCB1I2CIE |=  UCALIE; }
 }

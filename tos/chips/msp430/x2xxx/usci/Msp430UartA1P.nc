@@ -65,6 +65,7 @@ implementation {
 
   components HplMsp430UsciA1C as UsciC;
   UartP.Usci -> UsciC;
+  UartP.Uart -> UsciC;
 
   components Counter32khz16C as CounterC;
   UartP.Counter -> CounterC;

@@ -48,13 +48,19 @@
 
 
 configuration HplMsp430UsciA1C {
-  provides interface HplMsp430UsciA;
-  provides interface HplMsp430UsciInterrupts;
+  provides {
+    interface HplMsp430Usci;
+    interface HplMsp430UsciUart;
+    interface HplMsp430UsciSpi;
+    interface HplMsp430UsciInterrupts;
+  }
 }
 
 implementation {
   components HplMsp430UsciA1P as HplUsciP;
-  HplMsp430UsciA = HplUsciP;
+  HplMsp430Usci = HplUsciP;
+  HplMsp430UsciUart = HplUsciP;
+  HplMsp430UsciSpi = HplUsciP;
   HplMsp430UsciInterrupts = HplUsciP;
 
   components HplMsp430GeneralIOC as GIO;
