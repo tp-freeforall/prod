@@ -64,6 +64,7 @@ implementation {
   uint8_t m_head;
   uint8_t m_tail;
   uint8_t m_next[NUM_TASKS];
+  uint8_t lastTask;
 
   // Helper functions (internal functions) intentionally do not have atomic
   // sections.  It is left as the duty of the exported interface functions to
@@ -114,30 +115,26 @@ implementation {
   }
 
   command bool Scheduler.runNextTask() {
-    uint8_t nextTask;
-
     atomic {
-      nextTask = popTask();
-      if (nextTask == NO_TASK)
+      lastTask = popTask();
+      if (lastTask == NO_TASK)
 	return FALSE;
     }
-    signal TaskBasic.runTask[nextTask]();
+    signal TaskBasic.runTask[lastTask]();
     return TRUE;
   }
 
 
   command void Scheduler.taskLoop() {
     for (;;) {
-      uint8_t nextTask;
-
       atomic {
-	while ((nextTask = popTask()) == NO_TASK) {
+	while ((lastTask = popTask()) == NO_TASK) {
           nop();
 	  call McuSleep.sleep();
 	}
       }
       nop();
-      signal TaskBasic.runTask[nextTask]();
+      signal TaskBasic.runTask[lastTask]();
     }
   }
 
