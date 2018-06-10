@@ -1,7 +1,6 @@
-// $Id: SchedulerBasicP.nc,v 1.11 2010-06-29 22:07:56 scipio Exp $
-
 /*
  * Copyright (c) 2000-2003 The Regents of the University  of California.
+ * Copyright (c) 2018, Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,10 +55,8 @@ module SchedulerBasicP @safe() {
   provides interface TaskBasic[uint8_t id];
   uses interface McuSleep;
 }
-implementation
-{
-  enum
-  {
+implementation {
+  enum {
     NUM_TASKS = uniqueCount("TinySchedulerC.TaskBasic"),
     NO_TASK = 255,
   };
@@ -75,87 +72,66 @@ implementation
   // move the head forward
   // if the head is at the end, mark the tail at the end, too
   // mark the task as not in the queue
-  inline uint8_t popTask()
-  {
-    if( m_head != NO_TASK )
-    {
+  inline uint8_t popTask() {
+    if (m_head != NO_TASK) {
       uint8_t id = m_head;
+
       m_head = m_next[m_head];
-      if( m_head == NO_TASK )
-      {
+      if( m_head == NO_TASK ) {
 	m_tail = NO_TASK;
       }
       m_next[id] = NO_TASK;
       return id;
-    }
-    else
-    {
+    } else
       return NO_TASK;
-    }
   }
 
-  bool isWaiting( uint8_t id )
-  {
+  bool isWaiting( uint8_t id ) {
     return (m_next[id] != NO_TASK) || (m_tail == id);
   }
 
-  bool pushTask( uint8_t id )
-  {
-    if( !isWaiting(id) )
-    {
-      if( m_head == NO_TASK )
-      {
+  bool pushTask( uint8_t id ) {
+    if (!isWaiting(id)) {
+      if (m_head == NO_TASK) {
 	m_head = id;
 	m_tail = id;
-      }
-      else
-      {
+      } else {
 	m_next[m_tail] = id;
 	m_tail = id;
       }
       return TRUE;
-    }
-    else
-    {
+    } else {
       return FALSE;
     }
   }
 
-  command void Scheduler.init()
-  {
-    atomic
-    {
+  command void Scheduler.init() {
+    atomic {
       memset( (void *)m_next, NO_TASK, sizeof(m_next) );
       m_head = NO_TASK;
       m_tail = NO_TASK;
     }
   }
 
-  command bool Scheduler.runNextTask()
-  {
+  command bool Scheduler.runNextTask() {
     uint8_t nextTask;
-    atomic
-    {
+
+    atomic {
       nextTask = popTask();
-      if( nextTask == NO_TASK )
-      {
+      if (nextTask == NO_TASK)
 	return FALSE;
-      }
     }
     signal TaskBasic.runTask[nextTask]();
     return TRUE;
   }
 
-  command void Scheduler.taskLoop()
-  {
-    for (;;)
-    {
+
+  command void Scheduler.taskLoop() {
+    for (;;) {
       uint8_t nextTask;
 
-      atomic
-      {
-	while ((nextTask = popTask()) == NO_TASK)
-	{
+      atomic {
+	while ((nextTask = popTask()) == NO_TASK) {
           nop();
 	  call McuSleep.sleep();
 	}
@@ -169,12 +145,9 @@ implementation
    * Return SUCCESS if the post succeeded, EBUSY if it was already posted.
    */
 
-  async command error_t TaskBasic.postTask[uint8_t id]()
-  {
+  async command error_t TaskBasic.postTask[uint8_t id]() {
     atomic { return pushTask(id) ? SUCCESS : EBUSY; }
   }
 
-  default event void TaskBasic.runTask[uint8_t id]()
-  {
-  }
+  default event void TaskBasic.runTask[uint8_t id]() { }
 }
