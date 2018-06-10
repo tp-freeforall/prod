@@ -1,6 +1,5 @@
-//$Id: VirtualizeTimerC.nc,v 1.13 2010-06-29 22:07:50 scipio Exp $
-
-/* Copyright (c) 2000-2003 The Regents of the University of California.  
+/* Copyright (c) 2000-2003 The Regents of the University of California.
+ * Copyright (c) 2018, Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,28 +35,27 @@
  *
  * <p>See TEP102 for more details.
  *
- * @param precision_tag A type indicating the precision of the Timer being 
+ * @param precision_tag A type indicating the precision of the Timer being
  *   virtualized.
  * @param max_timers Number of virtual timers to create.
  *
  * @author Cory Sharp <cssharp@eecs.berkeley.edu>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
-generic module VirtualizeTimerC(typedef precision_tag, int max_timers) @safe()
-{
+generic module VirtualizeTimerC(typedef precision_tag,
+                                int max_timers) @safe() {
   provides interface Timer<precision_tag> as Timer[uint8_t num];
   uses interface Timer<precision_tag> as TimerFrom;
 }
-implementation
-{
-  enum
-    {
-      NUM_TIMERS = max_timers,
-      END_OF_LIST = 255,
-    };
+implementation {
 
-  typedef struct
-  {
+  enum {
+    NUM_TIMERS = max_timers,
+    END_OF_LIST = 255,
+  };
+
+  typedef struct {
     uint32_t t0;
     uint32_t dt;
     bool isoneshot : 1;
@@ -70,81 +68,74 @@ implementation
 
   task void updateFromTimer();
 
-  void fireTimers(uint32_t now)
-  {
+  void fireTimers(uint32_t now) {
     uint16_t num;
 
-    for (num=0; num<NUM_TIMERS; num++)
-      {
-	Timer_t* timer = &m_timers[num];
+    for (num = 0; num < NUM_TIMERS; num++) {
+      Timer_t* timer = &m_timers[num];
 
-	if (timer->isrunning)
-	  {
-	    uint32_t elapsed = now - timer->t0;
+      if (timer->isrunning) {
+        uint32_t elapsed = now - timer->t0;
 
-	    if (elapsed >= timer->dt)
-	      {
-		if (timer->isoneshot)
-		  timer->isrunning = FALSE;
-		else // Update timer for next event
-		  timer->t0 += timer->dt;
+        if (elapsed >= timer->dt) {
+          if (timer->isoneshot)
+            timer->isrunning = FALSE;
+          else // Update timer for next event
+            timer->t0 += timer->dt;
 
-                nop();
-		signal Timer.fired[num]();
-    break;
-	      }
-	  }
+          nop();                        /* BRK */
+          signal Timer.fired[num]();
+          break;
+        }
       }
+    }
     post updateFromTimer();
   }
-  
-  task void updateFromTimer()
-  {
-    /* This code supports a maximum dt of MAXINT. If min_remaining and
-       remaining were switched to uint32_t, and the logic changed a
-       little, dt's up to 2^32-1 should work (but at a slightly higher
-       runtime cost). */
+
+  task void updateFromTimer() {
+    /*
+     * This code supports a maximum dt of MAXINT. If min_remaining and
+     * remaining were switched to uint32_t, and the logic changed a
+     * little, dt's up to 2^32-1 should work (but at a slightly higher
+     * runtime cost).
+     */
+
     uint32_t now = call TimerFrom.getNow();
-    int32_t min_remaining = (1UL << 31) - 1; /* max int32_t */
-    bool min_remaining_isset = FALSE;
+    int32_t  min_remaining = (1UL << 31) - 1; /* max int32_t */
+    bool     min_remaining_isset = FALSE;
     uint16_t num;
 
     call TimerFrom.stop();
 
-    for (num=0; num<NUM_TIMERS; num++)
-      {
-	Timer_t* timer = &m_timers[num];
+    for (num = 0; num < NUM_TIMERS; num++) {
+      Timer_t* timer = &m_timers[num];
 
-	if (timer->isrunning)
-	  {
-	    uint32_t elapsed = now - timer->t0;
-	    int32_t remaining = timer->dt - elapsed;
+      if (timer->isrunning) {
+        uint32_t elapsed = now - timer->t0;
+        int32_t remaining = timer->dt - elapsed;
 
-	    if (remaining < min_remaining)
-	      {
-		min_remaining = remaining;
-		min_remaining_isset = TRUE;
-	      }
-	  }
+        if (remaining < min_remaining) {
+          min_remaining = remaining;
+          min_remaining_isset = TRUE;
+        }
       }
+    }
 
-    if (min_remaining_isset)
-      {
-	if (min_remaining <= 0)
-	  fireTimers(now);
-	else
-	  call TimerFrom.startOneShotAt(now, min_remaining);
-      }
+    if (min_remaining_isset) {
+      if (min_remaining <= 0)
+        fireTimers(now);
+      else
+        call TimerFrom.startOneShotAt(now, min_remaining);
+    }
   }
-  
-  event void TimerFrom.fired()
-  {
+
+  event void TimerFrom.fired() {
     fireTimers(call TimerFrom.getNow());
   }
 
-  void startTimer(uint8_t num, uint32_t t0, uint32_t dt, bool isoneshot)
-  {
+  void startTimer(uint8_t num, uint32_t t0, uint32_t dt, bool isoneshot) {
     Timer_t* timer = &m_timers[num];
+
     timer->t0 = t0;
     timer->dt = dt;
     timer->isoneshot = isoneshot;
@@ -152,58 +143,45 @@ implementation
     post updateFromTimer();
   }
 
-  command void Timer.startPeriodic[uint8_t num](uint32_t dt)
-  {
+  command void Timer.startPeriodic[uint8_t num](uint32_t dt) {
     startTimer(num, call TimerFrom.getNow(), dt, FALSE);
   }
 
-  command void Timer.startOneShot[uint8_t num](uint32_t dt)
-  {
+  command void Timer.startOneShot[uint8_t num](uint32_t dt) {
     startTimer(num, call TimerFrom.getNow(), dt, TRUE);
   }
 
-  command void Timer.stop[uint8_t num]()
-  {
+  command void Timer.stop[uint8_t num]() {
     m_timers[num].isrunning = FALSE;
   }
 
-  command bool Timer.isRunning[uint8_t num]()
-  {
+  command bool Timer.isRunning[uint8_t num]() {
     return m_timers[num].isrunning;
   }
 
-  command bool Timer.isOneShot[uint8_t num]()
-  {
+  command bool Timer.isOneShot[uint8_t num]() {
     return m_timers[num].isoneshot;
   }
 
-  command void Timer.startPeriodicAt[uint8_t num](uint32_t t0, uint32_t dt)
-  {
+  command void Timer.startPeriodicAt[uint8_t num](uint32_t t0, uint32_t dt) {
     startTimer(num, t0, dt, FALSE);
   }
 
-  command void Timer.startOneShotAt[uint8_t num](uint32_t t0, uint32_t dt)
-  {
+  command void Timer.startOneShotAt[uint8_t num](uint32_t t0, uint32_t dt) {
     startTimer(num, t0, dt, TRUE);
   }
 
-  command uint32_t Timer.getNow[uint8_t num]()
-  {
+  command uint32_t Timer.getNow[uint8_t num]() {
     return call TimerFrom.getNow();
   }
 
-  command uint32_t Timer.gett0[uint8_t num]()
-  {
+  command uint32_t Timer.gett0[uint8_t num]() {
     return m_timers[num].t0;
   }
 
-  command uint32_t Timer.getdt[uint8_t num]()
-  {
+  command uint32_t Timer.getdt[uint8_t num]() {
     return m_timers[num].dt;
   }
 
-  default event void Timer.fired[uint8_t num]()
-  {
-  }
+  default event void Timer.fired[uint8_t num]() { }
 }
-
