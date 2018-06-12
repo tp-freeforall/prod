@@ -43,10 +43,10 @@
  * @author Eric B. Decker <cire831@gmail.com>
  */
 
-generic module VirtualizeTimerC(typedef precision_tag,
-                                int max_timers) @safe() {
+generic module VirtualizeTimerImplP(typedef precision_tag,
+                                    int max_timers) @safe() {
   provides interface Timer<precision_tag> as Timer[uint8_t num];
-  uses interface Timer<precision_tag> as TimerFrom;
+  uses     interface Timer<precision_tag> as TimerFrom;
 }
 implementation {
 
