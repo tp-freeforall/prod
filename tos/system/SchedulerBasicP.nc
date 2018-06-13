@@ -54,6 +54,7 @@ module SchedulerBasicP @safe() {
   provides interface Scheduler;
   provides interface TaskBasic[uint8_t id];
   uses interface McuSleep;
+//  uses interface Platform;
 }
 implementation {
   enum {
@@ -65,6 +66,81 @@ implementation {
   uint8_t m_tail;
   uint8_t m_next[NUM_TASKS];
   uint8_t lastTask;
+
+#ifdef  TRACE_TASKS
+
+#ifndef TRACE_TASKS_ENTRIES
+#define TRACE_TASKS_ENTRIES (NUM_TASKS * 4)
+#endif
+
+  typedef enum {
+    TT_POST_LT = 1,                     /* Tmilli */
+    TT_POST_USECS,                      /* usecs  */
+    TT_RUN,                             /* usecs  */
+    TT_END,                             /* usecs  */
+    TT_DELTA,                           /* delta usecs */
+    TT_16 = 0xffff,                     /* make sure 2 bytes */
+  } tt_t;
+
+  typedef struct {
+    uint16_t num;
+    tt_t     ttype;
+    uint32_t val;
+  } trace_task_t;
+
+  trace_task_t task_trace[TRACE_TASKS_ENTRIES];
+  norace uint16_t nxt_tt;
+
+  uint32_t trace_usecsRaw() {
+//    return call Platform.usecsRaw();
+    return 0;
+  }
+
+  uint32_t trace_msecsRaw() {
+//    return call Platform.localTime();
+    return 0;
+  }
+
+  void trace_add_entry(uint16_t num, tt_t ttype, uint32_t val) {
+    trace_task_t *ttp;
+
+    ttp = &task_trace[nxt_tt++];
+    if (nxt_tt >= TRACE_TASKS_ENTRIES)
+      nxt_tt   = 0;
+    ttp->num   = num;
+    ttp->ttype = ttype;
+    ttp->val   = val;
+  }
+
+  void trace_post_task(uint16_t num) {
+    trace_add_entry(num, TT_POST_LT,    trace_msecsRaw());
+    trace_add_entry(num, TT_POST_USECS, trace_usecsRaw());
+  }
+
+  void trace_task_start(uint16_t num) {
+    trace_add_entry(num, TT_RUN, trace_usecsRaw());
+  }
+
+  void trace_task_end(uint16_t num, uint32_t delta) {
+    trace_add_entry(num, TT_END,   trace_usecsRaw());
+    trace_add_entry(num, TT_DELTA, delta);
+  }
+
+#else
+
+  uint32_t trace_usecsRaw() {
+    return 0;
+  }
+
+  uint32_t trace_msecsRaw() {
+    return 0;
+  }
+
+  void trace_post_task(uint16_t num)  { }
+  void trace_task_start(uint16_t num) { }
+  void trace_task_end(uint16_t num, uint32_t delta) { }
+
+#endif
 
   // Helper functions (internal functions) intentionally do not have atomic
   // sections.  It is left as the duty of the exported interface functions to
@@ -126,6 +202,8 @@ implementation {
 
 
   command void Scheduler.taskLoop() {
+    uint32_t delta;
+
     for (;;) {
       atomic {
 	while ((lastTask = popTask()) == NO_TASK) {
@@ -133,8 +211,12 @@ implementation {
 	  call McuSleep.sleep();
 	}
       }
+      trace_task_start(lastTask);
+      delta = trace_usecsRaw();
 //      nop();                            /* BRK */
       signal TaskBasic.runTask[lastTask]();
+      delta = trace_usecsRaw() - delta;
+      trace_task_end(lastTask, delta);
     }
   }
 
@@ -143,7 +225,13 @@ implementation {
    */
 
   async command error_t TaskBasic.postTask[uint8_t id]() {
-    atomic { return pushTask(id) ? SUCCESS : EBUSY; }
+    atomic {
+      if (pushTask(id)) {
+        trace_post_task(id);
+        return SUCCESS;
+      } else
+        return EBUSY;
+    }
   }
 
   default event void TaskBasic.runTask[uint8_t id]() { }
