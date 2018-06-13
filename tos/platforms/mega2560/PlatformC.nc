@@ -9,15 +9,16 @@
  * 94704.  Attention:  Intel License Inquiry.
  */
 
-configuration PlatformC { 
-	provides interface Init;
+configuration PlatformC {
+  provides interface Init;
+  provides interface Platform;
 }
-
 implementation {
     components PlatformP, HplAtm128GeneralIOC as IO;
     
-    Init = PlatformP;
     
     PlatformP.OrangeLedPin -> IO.PortB7;
 }
 
+  Init     = PlatformP;
+  Platform = PlatformP;

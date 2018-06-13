@@ -42,12 +42,10 @@
 
 #include "hardware.h"
 
-configuration PlatformC
-{
+configuration PlatformC {
   provides interface Init;
-
+  provides interface Platform;
   uses interface Init as SubInit;
-
 }
 implementation
 {
@@ -57,10 +55,10 @@ implementation
     M16c60ControlC,
     new StopModeControlC();
 
-  Init = PlatformP.Init;
-  SubInit = PlatformP.SubInit;
+  Init     = PlatformP.Init;
+  SubInit  = PlatformP.SubInit;
+  Platform = PlatformP;
   PlatformP.M16c60Control -> M16c60ControlC;
-
   PlatformP.StopModeControl -> StopModeControlC;
 
 #ifdef ENABLE_STOP_MODE

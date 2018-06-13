@@ -44,6 +44,7 @@
 configuration PlatformC {
   provides {
     interface Init;
+    interface Platform;
     /**
      * Provides calibration information for other components.
      */
@@ -54,8 +55,9 @@ configuration PlatformC {
 implementation
 {
   components PlatformP, MotePlatformC, MeasureClockC;
-  
-  Init = PlatformP;
+
+  Init     = PlatformP;
+  Platform = PlatformP;
   Atm128Calibrate = MeasureClockC;
 
   PlatformP.MeasureClock -> MeasureClockC;

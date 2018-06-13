@@ -36,15 +36,23 @@
  * @date   November 22 2005
  */
 
-// $Id: PlatformC.nc,v 1.6 2010-06-29 22:07:51 scipio Exp $
-
 module PlatformC {
   provides interface Init;
+  provides interface Platform;
 }
 implementation {
   command error_t Init.init() {
     dbg("PlatformC", "Initialized mote.\n");
     return SUCCESS;
+  }
+
+  async command uint32_t Platform.localTime()      { return 0; }
+  async command uint32_t Platform.usecsRaw()       { return 0; }
+  async command uint32_t Platform.usecsRawSize()   { return 0; }
+  async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  async command uint32_t Platform.jiffiesRawSize() { return 0; }
+  async command bool     Platform.set_unaligned_traps(bool on_off) {
+    return FALSE;
   }
 }
 

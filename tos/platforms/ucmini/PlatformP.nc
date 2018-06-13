@@ -34,12 +34,10 @@
 
 #include "hardware.h"
 
-module PlatformP @safe()
-{
+module PlatformP @safe() {
   provides interface Init;
-
-  uses
-  {
+  provides interface Platform;
+  uses {
     interface Init as McuInit;
     interface Init as LedsInit;
     interface Init as Stm25pInit; 
@@ -63,6 +61,15 @@ implementation
     ok = ecombine(ok, call BatteryWarning.init());
     #endif
     return ok;
+  }
+
+  async command uint32_t Platform.localTime()      { return 0; }
+  async command uint32_t Platform.usecsRaw()       { return 0; }
+  async command uint32_t Platform.usecsRawSize()   { return 0; }
+  async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  async command uint32_t Platform.jiffiesRawSize() { return 0; }
+  async command bool     Platform.set_unaligned_traps(bool on_off) {
+    return FALSE;
   }
 
   default command error_t LedsInit.init() { return SUCCESS; }

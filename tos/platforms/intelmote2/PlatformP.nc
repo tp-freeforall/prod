@@ -35,6 +35,7 @@
 
 module PlatformP {
   provides interface Init;
+  provides interface Platform;
   provides interface PlatformReset;
   uses {
     interface Init as InitL0;
@@ -112,6 +113,15 @@ implementation {
 
     //call PMICInit.init();
     return SUCCESS;
+  }
+
+  async command uint32_t Platform.localTime()      { return 0; }
+  async command uint32_t Platform.usecsRaw()       { return 0; }
+  async command uint32_t Platform.usecsRawSize()   { return 0; }
+  async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  async command uint32_t Platform.jiffiesRawSize() { return 0; }
+  async command bool     Platform.set_unaligned_traps(bool on_off) {
+    return FALSE;
   }
 
   async command void PlatformReset.reset() {

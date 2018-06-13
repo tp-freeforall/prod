@@ -31,19 +31,20 @@
 
 /**
  * @author Joe Polastre and Cory Sharp
- * @version $Revision: 1.2 $ $Date: 2010-06-29 22:07:54 $
  */
+
 #include "hardware.h"
 
-configuration PlatformC
-{
+configuration PlatformC {
   provides interface Init;
+  provides interface Platform;
 }
 implementation
 {
   components PlatformP, MotePlatformC, MoteClockC;
 
-  Init = PlatformP;
+  Init     = PlatformP;
+  Platform = PlatformP;
   PlatformP.MoteClockInit -> MoteClockC;
   PlatformP.MoteInit -> MotePlatformC;
 }

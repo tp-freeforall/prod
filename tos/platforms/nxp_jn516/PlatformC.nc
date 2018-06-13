@@ -30,14 +30,14 @@
  * @author Jasper Büsch <code@tkn.tu-berlin.de>
  */
 
-configuration PlatformC
-{
+configuration PlatformC {
   provides interface Init;
+  provides interface Platform;
 }
-implementation
-{
+implementation {
   components PlatformP;
-  Init = PlatformP;
+  Init     = PlatformP;
+  Platform = PlatformP;
 
   components Jn516TimerInitC;
   PlatformP.Jn516TimerInit -> Jn516TimerInitC;

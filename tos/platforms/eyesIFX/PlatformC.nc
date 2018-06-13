@@ -1,5 +1,3 @@
-// $Id: PlatformC.nc,v 1.5 2010-06-29 22:07:53 scipio Exp $
-
 /* Copyright (c) 2000-2005 The Regents of the University of California.
  * All rights reserved.
  *
@@ -34,19 +32,18 @@
 /**
  * @author Joe Polastre and Cory Sharp
  */
+
 #include "hardware.h"
 
-configuration PlatformC
-{
+configuration PlatformC {
   provides interface Init;
+  provides interface Platform;
 }
-implementation
-{
-  components PlatformP
-    , Msp430ClockC
-    ;
+implementation {
+  components PlatformP, Msp430ClockC;
 
-  Init = PlatformP;
+  Init     = PlatformP;
+  Platform = PlatformP;
   PlatformP.Msp430ClockInit -> Msp430ClockC.Init;
 }
 

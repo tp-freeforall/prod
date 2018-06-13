@@ -1,5 +1,3 @@
-// $Id: PlatformC.nc,v 1.3 2010-06-29 22:07:52 scipio Exp $
-
 /*
  * Copyright (c) 2004-2008 The Regents of the University of
  * California.  All rights reserved.
@@ -38,11 +36,13 @@
  *
  * @author Prabal Dutta <prabal@cs.berkeley.edu>
  */
+
 #include "hardware.h"
 
 configuration PlatformC {
   provides {
     interface Init;
+    interface Platform;
   }
 }
 implementation {
@@ -50,7 +50,8 @@ implementation {
   components MoteClockC;
   components MotePlatformC;
 
-  Init = PlatformP;
+  Init     = PlatformP;
+  Platform = PlatformP;
   PlatformP.MoteClockInit -> MoteClockC;
   PlatformP.MoteInit -> MotePlatformC;
 }

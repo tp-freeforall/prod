@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Eric B. Decker
+ * Copyright (c) 2016-2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,6 +53,7 @@ module PlatformP {
     interface Init as PlatformLeds;
     interface Init as PlatformClock;
     interface Init as PeripheralInit;
+    interface LocalTime<TMilli>;
     interface Stack;
   }
 }
@@ -67,6 +68,8 @@ implementation {
     return SUCCESS;
   }
 
+
+  async command uint32_t Platform.localTime()      { return call LocalTime.get(); }
 
   /* T32 is a count down so negate it */
   async command uint32_t Platform.usecsRaw()       { return -(TIMER32_1->VALUE); }

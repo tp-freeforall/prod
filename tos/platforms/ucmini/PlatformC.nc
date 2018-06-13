@@ -32,21 +32,20 @@
  * Author: Miklos Maroti
  */
 
-configuration PlatformC
-{
-  provides
-  {
+configuration PlatformC {
+  provides {
     interface Init;
+    interface Platform;
     interface Atm128Calibrate; // TODO: should be moved to McuInitC
   }
-
   uses interface Init as LedsInit;
 }
 implementation
 {
   //initialization
   components PlatformP, McuInitC, MeasureClockC;
-  Init = PlatformP;
+  Init     = PlatformP;
+  Platform = PlatformP;
   LedsInit = PlatformP.LedsInit;
   PlatformP.McuInit -> McuInitC;
   Atm128Calibrate = MeasureClockC;
@@ -59,7 +58,7 @@ implementation
   components BatteryWarningC;
   PlatformP.BatteryWarning -> BatteryWarningC;
   #endif
-  
+
   #ifndef DISABLE_SERIAL_AUTO
     components SerialAutoControlC;
   #endif

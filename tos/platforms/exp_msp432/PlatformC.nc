@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2016 Eric B. Decker
+/* Copyright (c) 2016, 2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,4 +64,6 @@ implementation {
 
   /* clocks are initilized by startup */
 
+  components LocalTimeMilliC;
+  PlatformP.LocalTime -> LocalTimeMilliC;
 }

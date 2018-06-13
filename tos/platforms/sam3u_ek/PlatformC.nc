@@ -35,14 +35,11 @@
 
 #include "hardware.h"
 
-configuration PlatformC
-{
-	provides
-	{
-		/* Called after platform_bootstrap() and Scheduler.init() (see TEP 107)
-		 * I/O pin configuration, clock calibration, and LED configuration */
-		interface Init;
-	}
+configuration PlatformC {
+  provides {
+    interface Init;
+    interface Platform;
+  }
 }
 
 implementation
@@ -50,7 +47,8 @@ implementation
 	components PlatformP, MoteClockC, HplSam3TCC as MoteTimerC;
     components McuSleepC;
 
-	Init = PlatformP;
+  Init     = PlatformP;
+  Platform = PlatformP;
 
     PlatformP.MoteClockInit -> MoteClockC;
     PlatformP.IRQInit -> MoteClockC;

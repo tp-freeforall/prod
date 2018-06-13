@@ -36,9 +36,9 @@
 #include <AppHardwareApi.h>
 #include "jn516hardware.h"
 
-module PlatformP
-{
+module PlatformP {
   provides interface Init;
+  provides interface Platform;
   uses interface Init as LedsInit;
   uses interface Init as Jn516TimerInit;
   uses interface Init as Jn516WakeTimerInit;
@@ -122,6 +122,15 @@ enum {  // power status bit positions
     vAHI_DioSetPullup(0x00000000, 0xffffffff);
 
     return SUCCESS;
+  }
+
+  async command uint32_t Platform.localTime()      { return 0; }
+  async command uint32_t Platform.usecsRaw()       { return 0; }
+  async command uint32_t Platform.usecsRawSize()   { return 0; }
+  async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  async command uint32_t Platform.jiffiesRawSize() { return 0; }
+  async command bool     Platform.set_unaligned_traps(bool on_off) {
+    return FALSE;
   }
 
   async event void Jn516Timer.fired(uint8_t timer_id) {}

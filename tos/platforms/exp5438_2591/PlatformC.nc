@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2014 Eric B. Decker
+ * Copyright (c) 2013-2014, 2018 Eric B. Decker
  * Copyright (c) 2009-2010 People Power Co.
  * Copyright (c) 2000-2005 The Regents of the University of California.
  * All rights reserved.
@@ -72,4 +72,7 @@ implementation {
 
   components PlatformClockC;
   PlatformP.PlatformClock -> PlatformClockC;
+
+  components LocalTimeMilliC;
+  PlatformP.LocalTime -> LocalTimeMilliC;
 }

@@ -1,12 +1,13 @@
 #include "hardware.h"
 
 module PlatformP @safe() {
-	provides interface Init;
     uses {
         interface GeneralIO as OrangeLedPin;
         interface Init as LedsInit;
         interface Init as McuInit;
     }
+  provides interface Init;
+  provides interface Platform;
 }
 
 implementation {
@@ -27,3 +28,12 @@ implementation {
 	}
 }
 
+  async command uint32_t Platform.localTime()      { return 0; }
+  async command uint32_t Platform.usecsRaw()       { return 0; }
+  async command uint32_t Platform.usecsRawSize()   { return 0; }
+  async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  async command uint32_t Platform.jiffiesRawSize() { return 0; }
+  async command bool     Platform.set_unaligned_traps(bool on_off) {
+    return FALSE;
+  }
+}

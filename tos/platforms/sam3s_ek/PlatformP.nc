@@ -35,12 +35,9 @@
 
 #include "hardware.h"
 
-module PlatformP
-{
-    provides
-	{
+module PlatformP {
+  provides {
         interface Init;
-    }
 	uses
 	{
 		interface Init as LedsInit;
@@ -49,6 +46,8 @@ module PlatformP
         interface Init as MoteTimerInit;
         interface Sam3LowPower;
 	}
+        interface Platform;
+  }
 }
 
 implementation
@@ -69,6 +68,14 @@ implementation
     async event void Sam3LowPower.customizePio() {
         // currently not optimized for sam3s-ek
     }
+  async command uint32_t Platform.localTime()      { return 0; }
+  async command uint32_t Platform.usecsRaw()       { return 0; }
+  async command uint32_t Platform.usecsRawSize()   { return 0; }
+  async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  async command uint32_t Platform.jiffiesRawSize() { return 0; }
+  async command bool     Platform.set_unaligned_traps(bool on_off) {
+    return FALSE;
+  }
 
 	default command error_t LedsInit.init()
 	{

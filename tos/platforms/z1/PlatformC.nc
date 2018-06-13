@@ -41,10 +41,12 @@
  
 configuration PlatformC {
   provides interface Init;
+  provides interface Platform;
 }
 
 implementation{
   components PlatformP, Msp430ClockC; 
-  Init = PlatformP;
+  Init     = PlatformP;
+  Platform = PlatformP;
   PlatformP.Msp430ClockInit -> Msp430ClockC.Init;
 }

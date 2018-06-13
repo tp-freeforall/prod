@@ -12,11 +12,21 @@
  * Dummy implementation to support the null platform.
  */
 
-module PlatformC { 
+module PlatformC {
   provides interface Init;
+  provides interface Platform;
 }
 implementation {
   command error_t Init.init() {
     return SUCCESS;
+  }
+
+  async command uint32_t Platform.localTime()      { return 0; }
+  async command uint32_t Platform.usecsRaw()       { return 0; }
+  async command uint32_t Platform.usecsRawSize()   { return 0; }
+  async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  async command uint32_t Platform.jiffiesRawSize() { return 0; }
+  async command bool     Platform.set_unaligned_traps(bool on_off) {
+    return FALSE;
   }
 }

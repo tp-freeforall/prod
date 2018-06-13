@@ -34,19 +34,17 @@
 /**
  * @author Joe Polastre and Cory Sharp
  */
+
 #include "hardware.h"
 
-configuration PlatformC
-{
+configuration PlatformC {
   provides interface Init;
+  provides interface Platform;
 }
-implementation
-{
-  components PlatformP
-    , Msp430ClockC
-    ;
+implementation {
+  components PlatformP, Msp430ClockC;
 
-  Init = PlatformP;
+  Init     = PlatformP;
+  Platform = PlatformP;
   PlatformP.Msp430ClockInit -> Msp430ClockC.Init;
 }
-

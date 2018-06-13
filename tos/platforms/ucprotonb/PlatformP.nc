@@ -34,10 +34,6 @@
 
 #include "hardware.h"
 
-module PlatformP @safe()
-{
-	provides interface Init;
-
 	uses
 	{
 		interface Init as McuInit;
@@ -48,6 +44,9 @@ module PlatformP @safe()
 		interface GeneralIO as SpiSSN;
 		interface GeneralIO as RadioCS;
 	}
+module PlatformP @safe() {
+  provides interface Init;
+  provides interface Platform;
 }
 
 implementation
@@ -65,6 +64,14 @@ implementation
 		
 		return ok;
 	}
+  async command uint32_t Platform.localTime()      { return 0; }
+  async command uint32_t Platform.usecsRaw()       { return 0; }
+  async command uint32_t Platform.usecsRawSize()   { return 0; }
+  async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  async command uint32_t Platform.jiffiesRawSize() { return 0; }
+  async command bool     Platform.set_unaligned_traps(bool on_off) {
+    return FALSE;
+  }
 
 	default command error_t LedsInit.init()
 	{

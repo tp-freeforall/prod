@@ -35,15 +35,16 @@
  */
 #include "hardware.h"
 
-configuration PlatformC
-{
+configuration PlatformC {
   provides interface Init;
+  provides interface Platform;
 }
 implementation
 {
   components PlatformP, MotePlatformC, MoteClockC;
 
-  Init = PlatformP;
+  Init     = PlatformP;
+  Platform = PlatformP;
   PlatformP.MoteClockInit -> MoteClockC;
   PlatformP.MoteInit -> MotePlatformC;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, 2013-2014, 2017 Eric B. Decker
+ * Copyright (c) 2010-2011, 2013-2014, 2017-2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,6 +65,7 @@ module PlatformP {
     interface Init as PlatformClock;
     interface Init as MoteInit;
     interface Init as PeripheralInit;
+    interface LocalTime<TMilli>;
     interface Stack;
   }
 }
@@ -128,6 +129,7 @@ implementation {
   }
 
 
+  async command uint32_t Platform.localTime()      { return call LocalTime.get(); }
   async command uint32_t Platform.usecsRaw()       { return USEC_REG; }
   async command uint32_t Platform.usecsRawSize()   { return 16; }
   async command uint32_t Platform.jiffiesRaw()     { return JIFFIES_REG; }

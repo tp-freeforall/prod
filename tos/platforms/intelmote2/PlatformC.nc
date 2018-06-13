@@ -32,19 +32,18 @@
  */
 #include "hardware.h"
 
-configuration PlatformC
-{
+configuration PlatformC {
   provides interface Init;
+  provides interface Platform;
   provides interface PlatformReset;
-
 }
-
 implementation
 {
   components PlatformP,PMICC;
   components HplPXA27xOSTimerC;
 
-  Init = PlatformP;
+  Init          = PlatformP;
+  Platform      = PlatformP;
   PlatformReset = PlatformP;
 
   PlatformP.PMICInit -> PMICC.Init;

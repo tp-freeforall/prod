@@ -43,9 +43,10 @@
 #include "hardware.h"
 #include "rv8564.h"
 
-module PlatformP
-{
+module PlatformP {
   provides interface Init;
+  provides interface Platform;
+
   uses interface Init as SubInit;
   uses interface M16c60Control;
   uses interface StopModeControl;
@@ -58,10 +59,8 @@ module PlatformP
 #endif
 }
 
-implementation
-{
-  command error_t Init.init()
-  {
+implementation {
+  command error_t Init.init() {
     error_t ok = SUCCESS;
 
     ok = call M16c60Control.init();
@@ -75,6 +74,16 @@ implementation
     ok = ecombine(ok, call SubInit.init());
 
     return SUCCESS;
+  }
+
+
+  async command uint32_t Platform.localTime()      { return 0; }
+  async command uint32_t Platform.usecsRaw()       { return 0; }
+  async command uint32_t Platform.usecsRawSize()   { return 0; }
+  async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  async command uint32_t Platform.jiffiesRawSize() { return 0; }
+  async command bool     Platform.set_unaligned_traps(bool on_off) {
+    return FALSE;
   }
 
 

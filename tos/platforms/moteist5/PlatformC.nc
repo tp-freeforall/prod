@@ -42,6 +42,7 @@
 #include "hardware.h"
 
 configuration PlatformC {
+  provides interface Platform;
   provides interface Init as PlatformInit;
   uses interface Init as PeripheralInit;
 }
@@ -50,6 +51,7 @@ implementation {
 
   components PlatformP;
   PlatformInit = PlatformP;
+  Platform     = PlatformP;
   PeripheralInit = PlatformP.PeripheralInit;
 
   components PlatformPinsC;

@@ -1,5 +1,3 @@
-// $Id: PlatformP.nc,v 1.3 2010-06-29 22:07:52 scipio Exp $
-
 /*
  * Copyright (c) 2004-2008 The Regents of the University of
  * California.  All rights reserved.
@@ -38,11 +36,13 @@
  *
  * @author Prabal Dutta <prabal@cs.berkeley.edu>
  */
+
 #include "hardware.h"
 
 module PlatformP {
   provides {
     interface Init;
+    interface Platform;
   }
   uses {
     interface Init as MoteClockInit;
@@ -57,6 +57,15 @@ implementation {
     call MoteInit.init();
     call LedsInit.init();
     return SUCCESS;
+  }
+
+  async command uint32_t Platform.localTime()      { return 0; }
+  async command uint32_t Platform.usecsRaw()       { return 0; }
+  async command uint32_t Platform.usecsRawSize()   { return 0; }
+  async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  async command uint32_t Platform.jiffiesRawSize() { return 0; }
+  async command bool     Platform.set_unaligned_traps(bool on_off) {
+    return FALSE;
   }
 
   default command error_t LedsInit.init() {

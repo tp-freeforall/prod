@@ -39,12 +39,11 @@
 
 #include "hardware.h"
 
-module PlatformP @safe()
-{
+module PlatformP @safe() {
   provides interface Init;
+  provides interface Platform;
   uses interface Init as MoteInit;
   uses interface Init as MeasureClock;
-
 }
 implementation
 {
@@ -60,3 +59,12 @@ implementation
   }
 }
 
+  async command uint32_t Platform.localTime()      { return 0; }
+  async command uint32_t Platform.usecsRaw()       { return 0; }
+  async command uint32_t Platform.usecsRawSize()   { return 0; }
+  async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  async command uint32_t Platform.jiffiesRawSize() { return 0; }
+  async command bool     Platform.set_unaligned_traps(bool on_off) {
+    return FALSE;
+  }
+}
