@@ -111,6 +111,7 @@ implementation {
   } trace_task_t;
 
   trace_task_t task_trace[TRACE_TASKS_ENTRIES];
+  uint32_t     task_trace_max[NUM_TASKS];
   norace uint16_t nxt_tt;
 
   uint32_t trace_usecsRaw() {
@@ -139,6 +140,8 @@ implementation {
   void trace_task_end(uint16_t num, uint32_t delta) {
     trace_add_entry(num, TT_END,   trace_usecsRaw());
     trace_add_entry(num, TT_DELTA, delta);
+    if (delta > task_trace_max[num])
+      task_trace_max[num] = delta;
   }
 
 #else
