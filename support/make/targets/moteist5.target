@@ -1,9 +1,10 @@
 #-*-Makefile-*- vim:syntax=make
 
-PLATFORM = moteist5
+TARGET = moteist5
 MSP_MCU = msp430f5438a
 
-$(call TOSMake_include_platform,msp)
+$(call TOSMake_include_platform,moteist5)
+$(call TOSMake_include_make_platform,msp)
 
 moteist5: $(BUILD_DEPS)
         @:
