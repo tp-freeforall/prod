@@ -54,7 +54,6 @@ module SchedulerBasicP @safe() {
   provides interface Scheduler;
   provides interface TaskBasic[uint8_t id];
   uses interface McuSleep;
-//  uses interface Platform;
 }
 implementation {
   enum {
@@ -68,14 +67,37 @@ implementation {
   uint8_t lastTask;
 
 #ifdef  TRACE_TASKS
+  /*
+   * Task Tracing.
+   *
+   * trace buffer that logs the following events:
+   *
+   * POST       task postage, with low level uSec stamp
+   * RUN:       when the task actually starts to run (usecs)
+   * END:       when the task completes.  (usecs)
+   * DELTA:     how long in usecs the task ran.
+   *
+   * Tasks are too low level to plumb in using Platform
+   * timing routines.  It tickles a problem on some platforms
+   * (in particular the ARM based platforms).
+   *
+   * If a platform wants to use task tracing, ie. TRACE_TASKS
+   * is defined, it must also supply TRACE_TASK_USECS.  This
+   * define supplies a linkage to a platform provided routine
+   * that yields a usec time stamp for tracing functions.
+   */
+
+#if !defined(TRACE_TASKS_USECS)
+#error TRACE_TASKS defined but _USECS missing.
+#define TRACE_TASKS_USECS 0
+#endif
 
 #ifndef TRACE_TASKS_ENTRIES
 #define TRACE_TASKS_ENTRIES (NUM_TASKS * 4)
 #endif
 
   typedef enum {
-    TT_POST_LT = 1,                     /* Tmilli */
-    TT_POST_USECS,                      /* usecs  */
+    TT_POST = 1,                        /* usecs  */
     TT_RUN,                             /* usecs  */
     TT_END,                             /* usecs  */
     TT_DELTA,                           /* delta usecs */
@@ -92,13 +114,7 @@ implementation {
   norace uint16_t nxt_tt;
 
   uint32_t trace_usecsRaw() {
-//    return call Platform.usecsRaw();
-    return 0;
-  }
-
-  uint32_t trace_msecsRaw() {
-//    return call Platform.localTime();
-    return 0;
+    return TRACE_TASKS_USECS;
   }
 
   void trace_add_entry(uint16_t num, tt_t ttype, uint32_t val) {
@@ -113,8 +129,7 @@ implementation {
   }
 
   void trace_post_task(uint16_t num) {
-    trace_add_entry(num, TT_POST_LT,    trace_msecsRaw());
-    trace_add_entry(num, TT_POST_USECS, trace_usecsRaw());
+    trace_add_entry(num, TT_POST, trace_usecsRaw());
   }
 
   void trace_task_start(uint16_t num) {
@@ -128,14 +143,7 @@ implementation {
 
 #else
 
-  uint32_t trace_usecsRaw() {
-    return 0;
-  }
-
-  uint32_t trace_msecsRaw() {
-    return 0;
-  }
-
+  uint32_t trace_usecsRaw() { return 0; }
   void trace_post_task(uint16_t num)  { }
   void trace_task_start(uint16_t num) { }
   void trace_task_end(uint16_t num, uint32_t delta) { }
