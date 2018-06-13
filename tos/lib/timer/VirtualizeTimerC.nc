@@ -53,4 +53,7 @@ implementation {
   components new VirtualizeTimerImplP(precision_tag, max_timers) as VT;
   Timer     = VT.Timer;
   TimerFrom = VT.TimerFrom;
+
+  components PlatformC;
+  VT.Platform -> PlatformC;
 }
