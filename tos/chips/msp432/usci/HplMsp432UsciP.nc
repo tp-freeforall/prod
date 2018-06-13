@@ -255,13 +255,32 @@ implementation {
 
 
   async command bool	 Usci.isTxComplete() {
-    if (!_t) return (APTR(up)->IFG & EUSCI_A_IFG_TXCPTIFG);
+    if (_t) return 0;
+    else    return (APTR(up)->IFG & EUSCI_A_IFG_TXCPTIFG);
   }
 
 
   async command void	 Usci.clrTxComplete() {
-    if (!_t) BITBAND_PERI(APTR(up)->IFG, EUSCI_A_IFG_TXCPTIFG_OFS) = 0;
+    if (_t) return;
+    else    BITBAND_PERI(APTR(up)->IFG, EUSCI_A_IFG_TXCPTIFG_OFS) = 0;
   }
+
+  async command void	 Usci.setTxComplete() {
+    if (_t) return;
+    else    BITBAND_PERI(APTR(up)->IFG, EUSCI_A_IFG_TXCPTIFG_OFS) = 1;
+  }
+
+  async command void	 Usci.disableTxCompleteIntr() {
+    if (_t) return;
+    else    BITBAND_PERI(APTR(up)->IE, EUSCI_A_IE_TXCPTIE_OFS) = 0;
+  }
+
+  async command void	 Usci.enableTxCompleteIntr() {
+    if (_t) return;
+    else    BITBAND_PERI(APTR(up)->IE, EUSCI_A_IE_TXCPTIE_OFS) = 1;
+  }
+
+
 
   async command uint16_t Usci.getIv() {
     if (_t) return BPTR(up)->IV;

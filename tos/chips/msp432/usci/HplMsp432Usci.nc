@@ -178,10 +178,19 @@ interface HplMsp432Usci {
    * TI fixed this for UARTs on the MSP432 but adding the TXCPT (transmit complete)
    * interrupt.  They also added STT (Start bit in UART mode) so one can wake up
    * and get a head start when a new char is coming in.
+   *
+   * However, in both Rev C and Rev D msp432p401r silicon, TxCpt is broken and gets
+   * asserted after each stop bit on each byte sent.  In addition there seems to
+   * be a condition where the TxIfg gets lost or not asserted properly and it
+   * looks like this can be replaced by the improper TxCpt behaviour.  Go figure :-)
    */
   async command bool isBusy();
+
   async command bool isTxComplete();
   async command void clrTxComplete();
+  async command void setTxComplete();
+  async command void disableTxCompleteIntr();
+  async command void enableTxCompleteIntr();
 
 
   /**
