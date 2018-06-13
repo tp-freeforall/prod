@@ -65,8 +65,7 @@ implementation {
 
   components PlatformClockC;
   PlatformP.PlatformClock -> PlatformClockC;
-  
+
   components ADG715C;
   PlatformP.AnalogSwitches -> ADG715C;
-  
 }

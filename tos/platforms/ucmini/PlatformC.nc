@@ -40,8 +40,7 @@ configuration PlatformC {
   }
   uses interface Init as LedsInit;
 }
-implementation
-{
+implementation {
   //initialization
   components PlatformP, McuInitC, MeasureClockC;
   Init     = PlatformP;

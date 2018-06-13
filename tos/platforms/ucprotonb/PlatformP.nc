@@ -34,36 +34,31 @@
 
 #include "hardware.h"
 
-	uses
-	{
-		interface Init as McuInit;
-		interface Init as LedsInit;
-		interface Init as Stm25pInit;
-		interface Init as RF212Init;
-		interface Init as BoardInit;
-		interface GeneralIO as SpiSSN;
-		interface GeneralIO as RadioCS;
-	}
 module PlatformP @safe() {
   provides interface Init;
   provides interface Platform;
+  uses {
+    interface Init as McuInit;
+    interface Init as LedsInit;
+    interface Init as Stm25pInit;
+    interface Init as RF212Init;
+    interface Init as BoardInit;
+    interface GeneralIO as SpiSSN;
+    interface GeneralIO as RadioCS;
+  }
 }
+implementation {
+  command error_t Init.init() {
+    error_t ok;
 
-implementation
-{
+    ok = call McuInit.init();
+    ok = ecombine(ok, call LedsInit.init());
+    ok = ecombine(ok, call Stm25pInit.init());
+    ok = ecombine(ok, call RF212Init.init());
+    ok = ecombine(ok, call BoardInit.init());
 
-	command error_t Init.init()
-	{
-		error_t ok;
+  }
 
-		ok = call McuInit.init();
-		ok = ecombine(ok, call LedsInit.init());
-		ok = ecombine(ok, call Stm25pInit.init());
-		ok = ecombine(ok, call RF212Init.init());
-		ok = ecombine(ok, call BoardInit.init());
-		
-		return ok;
-	}
   async command uint32_t Platform.localTime()      { return 0; }
   async command uint32_t Platform.usecsRaw()       { return 0; }
   async command uint32_t Platform.usecsRawSize()   { return 0; }
@@ -73,8 +68,7 @@ implementation
     return FALSE;
   }
 
-	default command error_t LedsInit.init()
-	{
-		return SUCCESS;
-	}
+  default command error_t LedsInit.init() {
+    return SUCCESS;
+  }
 }

@@ -53,12 +53,14 @@
  * @date   January 17 2005
  */
 
+#ifdef GO_GATE
 /*
  * go gate.  debugging code.  Prevent a running image from taking off
  * and changing our state while we are debugging.  Set the default
  * to 1 to stop at the gate.
  */
 volatile bool gg_wait = 0;
+#endif
 
 module RealMainP @safe() {
   provides interface Boot;
@@ -68,11 +70,12 @@ module RealMainP @safe() {
 }
 implementation {
   int main() @C() @spontaneous() {
-    atomic
-      {
+    atomic {
+#ifdef GO_GATE
         while (gg_wait) {
-          nop();
+          nop();                        /* BRK */
         }
+#endif
 
 	/* First, initialize the Scheduler so components can post
 	   tasks. Initialize all of the very hardware specific stuff, such

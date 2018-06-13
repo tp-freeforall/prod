@@ -34,35 +34,26 @@
 
 #include "hardware.h"
 
-	uses
-	{
-		interface Init as McuInit;
-		interface Init as LedsInit;
-		interface Init as Stm25pInit;
-	}
 module PlatformP @safe() {
   provides interface Init;
   provides interface Platform;
+  uses {
+    interface Init as McuInit;
+    interface Init as LedsInit;
+    interface Init as Stm25pInit;
+  }
 }
 
-implementation
-{
+implementation {
+  command error_t Init.init() {
+    error_t ok;
 
-	command error_t Init.init()
-	{
-		error_t ok;
-
-		ok = call McuInit.init();
-		ok = ecombine(ok, call LedsInit.init());
+    ok = call McuInit.init();
+    ok = ecombine(ok, call LedsInit.init());
     ok = ecombine(ok, call Stm25pInit.init());
-		
-		return ok;
-	}
+    return ok;
+  }
 
-	default command error_t LedsInit.init()
-	{
-		return SUCCESS;
-	}
   async command uint32_t Platform.localTime()      { return 0; }
   async command uint32_t Platform.usecsRaw()       { return 0; }
   async command uint32_t Platform.usecsRawSize()   { return 0; }
@@ -72,4 +63,7 @@ implementation
     return FALSE;
   }
 
+  default command error_t LedsInit.init() {
+    return SUCCESS;
+  }
 }

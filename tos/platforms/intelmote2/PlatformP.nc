@@ -52,16 +52,16 @@ implementation {
   //void enableICache() @C();
   command error_t Init.init() {
 
-    // Enable clocks to critical components 
+    // Enable clocks to critical components
     CKEN = (CKEN22_MEMC | CKEN20_IMEM | CKEN15_PMI2C | CKEN9_OST);
     // Set the arbiter to something meaningful for this platform
-    ARB_CNTL = (ARB_CNTL_CORE_PARK | 
+    ARB_CNTL = (ARB_CNTL_CORE_PARK |
 		ARB_CNTL_LCD_WT(0) | ARB_CNTL_DMA_WT(1) | ARB_CNTL_CORE_WT(4));
 
 
     OSCC = (OSCC_OON);
     while ((OSCC & OSCC_OOK) == 0);
-    
+
     TOSH_SET_PIN_DIRECTIONS();
 
     // Enable access to CP6 (Interrupt Controller processor)
@@ -80,7 +80,7 @@ implementation {
 
 #else
     // Place PXA27x into 104/104 MHz mode
-    CCCR = CCCR_L(8) | CCCR_2N(2) | CCCR_A; 
+    CCCR = CCCR_L(8) | CCCR_2N(2) | CCCR_A;
     asm volatile (
 		  "mcr p14,0,%0,c6,c0,0\n\t"
 		  :
@@ -95,8 +95,8 @@ implementation {
     MSC2 = MSC2 | MSC_RBW024;
     MECR = 0;
     // PXA271 Required initialization settings
-    MDCNFG = (MDCNFG_SETALWAYS | MDCNFG_DTC2(0x3) | 
-	      MDCNFG_STACK0 | MDCNFG_DTC0(0x3) | MDCNFG_DNB0 | 
+    MDCNFG = (MDCNFG_SETALWAYS | MDCNFG_DTC2(0x3) |
+	      MDCNFG_STACK0 | MDCNFG_DTC0(0x3) | MDCNFG_DNB0 |
 	      MDCNFG_DRAC0(0x2) | MDCNFG_DCAC0(0x1) | MDCNFG_DWID0 /* |
 								      MDCNFG_DE0 */);
     MDREFR = (MDREFR & ~(MDREFR_K0DB4 | MDREFR_K0DB2)) | MDREFR_K0DB2;
@@ -131,7 +131,7 @@ implementation {
     return; // Should never get here.
   }
 
-  async event void OST0M3.fired() 
+  async event void OST0M3.fired()
   {
     call OST0M3.setOIERbit(FALSE);
     call OST0M3.clearOSSRbit();
@@ -144,4 +144,3 @@ implementation {
   default command error_t InitL3.init() { return SUCCESS; }
 
 }
-

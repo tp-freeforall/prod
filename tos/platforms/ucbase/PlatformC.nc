@@ -36,27 +36,30 @@ configuration PlatformC {
   provides interface Init;
   provides interface Platform;
 
+  // TODO: this should be moved to McuInit, but HplAtm128UartC wants it here
+  provides interface Atm128Calibrate;
+  uses interface Init as LedsInit;
 }
-implementation
-{
-	components PlatformP, McuInitC, MeasureClockC, Stm25pOffC;
+implementation {
+  components PlatformP, McuInitC, MeasureClockC, Stm25pOffC;
   components HplStm25pPinsC;
   components HplAtm128GeneralIOC as GPIO;
-	Atm128Calibrate = MeasureClockC;
 
-	LedsInit = PlatformP.LedsInit;
-	PlatformP.McuInit -> McuInitC;
   Init     = PlatformP;
   Platform = PlatformP;
+  Atm128Calibrate = MeasureClockC;
 
-	PlatformP.Stm25pInit -> Stm25pOffC;
+  LedsInit = PlatformP.LedsInit;
+  PlatformP.McuInit -> McuInitC;
 
-  #ifndef DISABLE_SERIAL_AUTO
-    #warning SERIAL AUTO CONTROL ENABLED!
-    components SerialAutoControlC;
-  #endif
-  #ifndef DISABLE_SERIAL_RESET
-    #warning SERIAL RESET ENABLED!
-    components SerialResetC;
-  #endif
+  PlatformP.Stm25pInit -> Stm25pOffC;
+
+#ifndef DISABLE_SERIAL_AUTO
+#warning SERIAL AUTO CONTROL ENABLED!
+  components SerialAutoControlC;
+#endif
+#ifndef DISABLE_SERIAL_RESET
+#warning SERIAL RESET ENABLED!
+  components SerialResetC;
+#endif
 }

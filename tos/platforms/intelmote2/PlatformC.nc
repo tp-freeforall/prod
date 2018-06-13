@@ -37,9 +37,8 @@ configuration PlatformC {
   provides interface Platform;
   provides interface PlatformReset;
 }
-implementation
-{
-  components PlatformP,PMICC;
+implementation {
+  components PlatformP, PMICC;
   components HplPXA27xOSTimerC;
 
   Init          = PlatformP;

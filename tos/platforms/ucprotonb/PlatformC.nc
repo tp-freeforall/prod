@@ -32,34 +32,35 @@
  * Author: Miklos Maroti
  */
 
-	// TODO: this should be moved to McuInit, but HplAtm128UartC wants it here
-	provides interface Atm128Calibrate;
-	uses interface Init as LedsInit;
 configuration PlatformC {
   provides interface Init;
   provides interface Platform;
-}
-implementation
-{
-	components PlatformP, McuInitC, MeasureClockC, Stm25pOffC, RF212OffC;
-	components BoardInitC;
-  
-	Atm128Calibrate = MeasureClockC;
 
-	LedsInit = PlatformP.LedsInit;
-	PlatformP.McuInit -> McuInitC;
+  // TODO: this should be moved to McuInit, but HplAtm128UartC wants it here
+  provides interface Atm128Calibrate;
+  uses interface Init as LedsInit;
+}
+implementation {
+  components PlatformP, McuInitC, MeasureClockC, Stm25pOffC, RF212OffC;
+  components BoardInitC;
+
   Init     = PlatformP;
   Platform = PlatformP;
+  Atm128Calibrate = MeasureClockC;
 
-	PlatformP.Stm25pInit -> Stm25pOffC;
-	PlatformP.RF212Init -> RF212OffC;
-	PlatformP.BoardInit -> BoardInitC;
-  #ifndef DISABLE_SERIAL_AUTO
-    #warning SERIAL AUTO CONTROL ENABLED!
-    components SerialAutoControlC;
-  #endif
-  #ifndef DISABLE_SERIAL_RESET
-    #warning SERIAL RESET ENABLED!
-    components SerialResetC;
-  #endif
+  LedsInit = PlatformP.LedsInit;
+  PlatformP.McuInit -> McuInitC;
+
+  PlatformP.Stm25pInit -> Stm25pOffC;
+  PlatformP.RF212Init -> RF212OffC;
+  PlatformP.BoardInit -> BoardInitC;
+
+#ifndef DISABLE_SERIAL_AUTO
+#warning SERIAL AUTO CONTROL ENABLED!
+  components SerialAutoControlC;
+#endif
+#ifndef DISABLE_SERIAL_RESET
+#warning SERIAL RESET ENABLED!
+  components SerialResetC;
+#endif
 }

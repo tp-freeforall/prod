@@ -1,6 +1,6 @@
 #include "hardware.h"
 
-module PlatformP{
+module PlatformP {
   provides interface Init;
   provides interface Platform;
   uses interface Init as MoteClockInit;

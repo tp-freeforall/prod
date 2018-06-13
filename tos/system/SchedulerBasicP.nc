@@ -129,11 +129,11 @@ implementation {
     for (;;) {
       atomic {
 	while ((lastTask = popTask()) == NO_TASK) {
-          nop();
+//          nop();                        /* BRK */
 	  call McuSleep.sleep();
 	}
       }
-      nop();
+//      nop();                            /* BRK */
       signal TaskBasic.runTask[lastTask]();
     }
   }

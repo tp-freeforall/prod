@@ -40,22 +40,22 @@ module PlatformP @safe() {
   uses {
     interface Init as McuInit;
     interface Init as LedsInit;
-    interface Init as Stm25pInit; 
-    #ifndef DISABLE_BATTERY_CHECK
+    interface Init as Stm25pInit;
+#ifndef DISABLE_BATTERY_CHECK
     interface Init as BatteryWarning;
-    #endif
+#endif
   }
 }
-
-implementation
-{
-  command error_t Init.init()
-  {
+implementation {
+  command error_t Init.init() {
     error_t ok;
 
     ok = call McuInit.init();
     ok = ecombine(ok, call LedsInit.init());
-    DPDS0 |= 3<<PDDRV0; //increases the driver strength on PortD to supply the flash. TODO: this should have proper interfaces in atm128rfa1
+
+    // increase driver strength on PortD to supply the flash.
+    // TODO: this should have proper interfaces in atm128rfa1
+    DPDS0 |= 3<<PDDRV0;
     ok = ecombine(ok, call Stm25pInit.init());
     #ifndef DISABLE_BATTERY_CHECK
     ok = ecombine(ok, call BatteryWarning.init());

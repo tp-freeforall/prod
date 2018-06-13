@@ -43,8 +43,7 @@ configuration PlatformC {
   }
   uses interface Init as SubInit;
 }
-implementation
-{
+implementation {
   components PlatformP, MotePlatformC, MeasureClockC;
 
   Init     = PlatformP;

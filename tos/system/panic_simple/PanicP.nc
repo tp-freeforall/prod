@@ -76,16 +76,16 @@ implementation {
     while ((call Platform.usecsRaw() - t0) < WIGGLE_DELAY) ;
     WIGGLE_EXC; WIGGLE_EXC; WIGGLE_EXC; WIGGLE_EXC;     /* 4 */
 
-    nop();                              /* BRK */
-    ROM_DEBUG_BREAK(0xf0);
+//    nop();                              /* BRK */
+//    ROM_DEBUG_BREAK(0xf0);
     while(1) {
-      nop();
+//      nop();
     }
   }
 #else
   void debug_break(parg_t arg)  __attribute__ ((noinline)) {
     _arg = arg;
-    ROM_DEBUG_BREAK(0xf0);
+//    ROM_DEBUG_BREAK(0xf0);              /* BRK */
   }
 #endif
 
@@ -125,9 +125,8 @@ implementation {
       signal Panic.hook();
     } else
       m_in_panic |= 0x80;               /* flag a double */
-    ROM_DEBUG_BREAK(1);
     while (1) {
-      nop();
+//      nop();
     }
   }
 

@@ -1,4 +1,5 @@
-/* Copyright (c) 2000-2005 The Regents of the University of California.  
+/* Copyright (c) 2000-2005 The Regents of the University of California.
+ * Copyright (c) 2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -7,10 +8,12 @@
  *
  * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
+ *
  * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
+ *
  * - Neither the name of the copyright holder nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
@@ -31,16 +34,15 @@
 
 /**
  * @author Joe Polastre and Cory Sharp
- * @version $Revision: 1.2 $ $Date: 2010-06-29 22:07:55 $
  */
+
 #include "hardware.h"
 
 configuration PlatformC {
   provides interface Init;
   provides interface Platform;
 }
-implementation
-{
+implementation {
   components PlatformP, MotePlatformC, MoteClockC;
 
   Init     = PlatformP;

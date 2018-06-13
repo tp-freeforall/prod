@@ -38,36 +38,33 @@
 module PlatformP {
   provides {
         interface Init;
-	uses
-	{
-		interface Init as LedsInit;
-        interface Init as MoteClockInit;
-        interface Init as IRQInit;
-        interface Init as MoteTimerInit;
-        interface Sam3LowPower;
-	}
         interface Platform;
   }
+  uses {
+    interface Init as LedsInit;
+    interface Init as MoteClockInit;
+    interface Init as IRQInit;
+    interface Init as MoteTimerInit;
+    interface Sam3LowPower;
+  }
 }
-
-implementation
-{
-	command error_t Init.init()
-	{
-		/* I/O pin configuration, clock calibration, and LED configuration
-		 * (see TEP 107)
-		 */
-		call IRQInit.init();
+implementation {
+  command error_t Init.init() {
+    /*
+     * I/O pin configuration, clock calibration, and LED configuration
+     * (see TEP 107)
+     */
+    call IRQInit.init();
     call MoteClockInit.init();
     call MoteTimerInit.init();
-		call LedsInit.init();
+    call LedsInit.init();
+    return SUCCESS;
+  }
 
-		return SUCCESS;
-	}
+  async event void Sam3LowPower.customizePio() {
+    // currently not optimized for sam3s-ek
+  }
 
-    async event void Sam3LowPower.customizePio() {
-        // currently not optimized for sam3s-ek
-    }
   async command uint32_t Platform.localTime()      { return 0; }
   async command uint32_t Platform.usecsRaw()       { return 0; }
   async command uint32_t Platform.usecsRawSize()   { return 0; }
@@ -77,8 +74,7 @@ implementation
     return FALSE;
   }
 
-	default command error_t LedsInit.init()
-	{
-		return SUCCESS;
-	}
+  default command error_t LedsInit.init() {
+    return SUCCESS;
+  }
 }

@@ -1,27 +1,30 @@
-/*
- * Copyright (c) 2009 Communication Group and Eislab at
+/* Copyright (c) 2009 Communication Group and Eislab at
  * Lulea University of Technology
+ *
+ * Copyright (c) 2018 Eric B. Decker
  *
  * Contact: Laurynas Riliskis, LTU
  * Mail: laurynas.riliskis@ltu.se
  * All rights reserved.
  *
- *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
+ *
  * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
+ *
  * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
+ *
  * - Neither the name of Communication Group at Lulea University of Technology
  *   nor the names of its contributors may be used to endorse or promote
- *    products derived from this software without specific prior written permission.
+ *   products derived from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
  * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL STANFORD
  * UNIVERSITY OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -58,7 +61,6 @@ module PlatformP {
   uses interface StdControl as DS2782Control;
 #endif
 }
-
 implementation {
   command error_t Init.init() {
     error_t ok = SUCCESS;
@@ -90,26 +92,23 @@ implementation {
 #ifdef ENABLE_STOP_MODE
   task void enableStopMode();
 
-  command error_t StopModeInit.init()
-  {
-    // The task is needed so we can be sure that all underlying components 
+  command error_t StopModeInit.init() {
+    // The task is needed so we can be sure that all underlying components
     // have been initialized, for example the I2C resource.
     post enableStopMode();
   }
 
-  task void enableStopMode()
-  {
+  task void enableStopMode() {
     call StopModeControl.allowStopMode(true);
     // Allow the DS2782 to enter sleep
     call DS2782Control.start();
     call HplDS2782.allowSleep(true);
     // Activate the RTC and set it to output 1024 tics on the CLKOUT pin
     call RTC.enableCLKOUT();
-    call RTC.writeRegister(RV8564_CLKF, 0x81);  
+    call RTC.writeRegister(RV8564_CLKF, 0x81);
   }
 
-  task void stopDS2782()
-  {
+  task void stopDS2782() {
     call DS2782Control.stop();
   }
 

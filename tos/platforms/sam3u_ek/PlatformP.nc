@@ -1,16 +1,19 @@
-/*
- * Copyright (c) 2009 Stanford University.
+/* Copyright (c) 2009 Stanford University.
+ * Copyright (c) 2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
+ *
  * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
+ *
  * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
+ *
  * - Neither the name of the Stanford University nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
@@ -35,39 +38,36 @@
 
 #include "hardware.h"
 
-	uses
-	{
-		interface Init as LedsInit;
-        interface Init as MoteClockInit;
-        interface Init as IRQInit;
-        interface Init as MoteTimerInit;
-        interface Sam3LowPower;
-	}
 module PlatformP {
   provides {
     interface Init;
     interface Platform;
   }
+  uses {
+    interface Init as LedsInit;
+    interface Init as MoteClockInit;
+    interface Init as IRQInit;
+    interface Init as MoteTimerInit;
+    interface Sam3LowPower;
+  }
 }
+implementation {
+  command error_t Init.init() {
+    /*
+     * I/O pin configuration, clock calibration, and LED configuration
+     * (see TEP 107)
+     */
+    call IRQInit.init();
+    call MoteClockInit.init();
+    call MoteTimerInit.init();
+    call LedsInit.init();
+    return SUCCESS;
+  }
 
-implementation
-{
-	command error_t Init.init()
-	{
-		/* I/O pin configuration, clock calibration, and LED configuration
-		 * (see TEP 107)
-		 */
-		call IRQInit.init();
-        call MoteClockInit.init();
-        call MoteTimerInit.init();
-		call LedsInit.init();
+  async event void Sam3LowPower.customizePio() {
+    // currently not optimized for sam3u-ek
+  }
 
-		return SUCCESS;
-	}
-
-    async event void Sam3LowPower.customizePio() {
-        // currently not optimized for sam3u-ek
-    }
   async command uint32_t Platform.localTime()      { return 0; }
   async command uint32_t Platform.usecsRaw()       { return 0; }
   async command uint32_t Platform.usecsRawSize()   { return 0; }
@@ -77,8 +77,7 @@ implementation
     return FALSE;
   }
 
-	default command error_t LedsInit.init()
-	{
-		return SUCCESS;
-	}
+  default command error_t LedsInit.init() {
+    return SUCCESS;
+  }
 }
