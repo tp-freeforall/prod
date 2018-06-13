@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2016, 2017 Eric B. Decker
+ * Copyright (c) 2012, 2016, 2017-2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,6 +49,20 @@
  */
 
 interface Platform {
+  /*
+   * Platform provided timing.
+   *
+   * localTime: 32 bits of ms (mis or ms) provided by the platform
+   *    for time stamps (trace or debug).
+   *
+   * usecsRaw: micro sec timing provided by the platform.
+   *
+   * jiffiesRaw: 32KiHz (or other platform dependent timing)
+   *    timing provided by the platfrom.
+   */
+
+  async command uint32_t localTime();
+
   /*
    * platforms provide a low level usec timing element.
    * usecsRaw returns a raw value for this timing element.
