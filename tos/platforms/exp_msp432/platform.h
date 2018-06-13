@@ -7,6 +7,12 @@
 #define REQUIRE_PLATFORM
 #define REQUIRE_PANIC
 
+#define TRACE_VTIMERS
+#define TRACE_TASKS
+#define TRACE_TASKS_USECS __platform_usecs_raw()
+
+extern uint32_t __platform_usecs_raw();
+
 /*
  * define PLATFORM_TAn_ASYNC TRUE if the timer is being clocked
  * asyncronously with respect to the main system clock

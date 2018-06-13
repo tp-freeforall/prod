@@ -78,6 +78,11 @@ implementation {
   async command uint32_t Platform.jiffiesRawSize() { return 16; }
 
 
+  uint32_t __platform_usecs_raw() @C() @spontaneous() {
+    return -(TIMER32_1->VALUE);
+  }
+
+
   async command bool     Platform.set_unaligned_traps(bool set_on) {
     bool unaligned_on;
 
