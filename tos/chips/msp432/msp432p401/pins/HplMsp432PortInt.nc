@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Eric B. Decker
+ * Copyright (c) 2016, 2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,19 +37,21 @@
  */
 
 interface HplMsp432PortInt {
-  /** 
+  /**
    * Enable/disable MSP432 hardware interrupt on a particular port bit
+   * isEnabled returns true if the interrupt is enabled on the port bit
    */
   async command void enable();
   async command void disable();
+  async command bool isEnabled();
 
-  /** 
+  /**
    * Clears the MSP430 Interrupt Pending Flag for a particular port.
    * in general this is a bad idea.
    */
   async command void clear();
 
-  /** 
+  /**
    * Gets the current state of the bit in question.
    *
    * @return TRUE if the pin is set high, FALSE if it is set low.

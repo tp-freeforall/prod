@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Eric B. Decker
+ * Copyright (c) 2016-2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -115,6 +115,13 @@ implementation {
     if (!_p) return;
     if (_t) BITBAND_PERI(ODD->IE,  portbit)  = 0;
     else    BITBAND_PERI(EVEN->IE, portbit)  = 0;
+  }
+
+  async command bool Int.isEnabled[uint8_t portpin]() {
+    PORTINT_ENTRY(portpin);
+    if (!_p) return FALSE;
+    if (_t)  return BITBAND_PERI(ODD->IE,  portbit);
+    else     return BITBAND_PERI(EVEN->IE, portbit);
   }
 
   async command void Int.clear[uint8_t portpin]() {
