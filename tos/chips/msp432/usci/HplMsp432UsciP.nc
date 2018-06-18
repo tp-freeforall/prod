@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Eric B. Decker
+ * Copyright (c) 2016-2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -411,13 +411,25 @@ implementation {
   }
 
 
-  async command void Usci.enableModuleInterrupt() {
+  async command void Usci.enableModuleInt() {
     NVIC_EnableIRQ(irqn);
   }
 
-
-  async command void Usci.disableModuleInterrupt() {
+  async command void Usci.disableModuleInt() {
     NVIC_DisableIRQ(irqn);
+  }
+
+  async command bool Usci.isModuleIntEnabled() {
+    uint32_t enable_word = NVIC->ISER[(irqn >> 5UL)];
+    return (enable_word & ((uint32_t)(1UL << (irqn & 0x1FUL)))) ? 1 : 0;
+  }
+
+  async command void Usci.setModuleIntPriority(int prio) {
+    NVIC_SetPriority(irqn, prio);
+  }
+
+  async command int Usci.getModuleIntPriority() {
+    return NVIC_GetPriority(irqn);
   }
 
 

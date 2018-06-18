@@ -1218,14 +1218,7 @@ nack_abort:
 
   command error_t Init.init() {
     configure_(call Msp432UsciConfigure.getConfiguration());
-    call Usci.enableModuleInterrupt();
-    return SUCCESS;
-  }
-
-
-  command error_t Init.init() {
-    configure_(call Msp432UsciConfigure.getConfiguration());
-    call Usci.enableModuleInterrupt();
+    call Usci.enableModuleInt();
     return SUCCESS;
   }
 

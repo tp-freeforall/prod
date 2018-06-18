@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Eric B. Decker
+ * Copyright (c) 2016-2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -265,6 +265,17 @@ interface HplMsp432Usci {
    */
   async command msp432_usci_mode_t currentMode();
 
-  async command void enableModuleInterrupt();
-  async command void disableModuleInterrupt();
+  /**
+   * control interface to the Nested Vector Interrupt Controller for this
+   * module.
+   *
+   * enableModuleInt sets the Module Int Priority and enables the NVIC.
+   *   it call Platform.getIntPriority(irqn) to determine what priority
+   *   should be used.
+   */
+  async command void enableModuleInt();
+  async command void disableModuleInt();
+  async command bool isModuleIntEnabled();
+  async command void setModuleIntPriority(int prio);
+  async command int  getModuleIntPriority();
 }
