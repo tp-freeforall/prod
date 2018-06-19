@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Eric B. Decker
+ * Copyright (c) 2016, 2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,9 +46,10 @@ configuration Msp432DmaC {
 }
 implementation {
   components Msp432DmaP;
-  Init = Msp432DmaP; 
+  Init = Msp432DmaP;
   Dma  = Msp432DmaP;
 
-  components PanicC;
-  Msp432DmaP.Panic -> PanicC;
+  components PanicC, PlatformC;
+  Msp432DmaP.Panic    -> PanicC;
+  Msp432DmaP.Platform -> PlatformC;
 }

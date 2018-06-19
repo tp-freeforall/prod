@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Eric B. Decker
+ * Copyright (c) 2016-2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -93,6 +93,7 @@ generic module Msp432TimerP(uint32_t timer_ptr, uint32_t irqn, bool isAsync) {
     interface Msp432TimerEvent  as Overflow;
     interface HplMsp432TimerInt as TimerVec_0;
     interface HplMsp432TimerInt as TimerVec_N;
+    interface Platform;
     interface Panic;
   }
 }
@@ -130,6 +131,9 @@ implementation {
    * See system_init -> __core_clk_init -> __ta_init (startup.c)
    */
   command error_t Init.init() {
+    NVIC_SetPriority(irqn,     call Platform.getIntPriority(irqn));
+    NVIC_SetPriority(irqn + 1, call Platform.getIntPriority(irqn));
+
     if ((irqn >> 5) == ((irqn + 1) >> 5)) {
       NVIC->ISER[irqn >> 5] = 1 << (irqn & 0x1f) | 1 << ((irqn +1) & 0x1f);
     } else {

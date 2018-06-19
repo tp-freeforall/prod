@@ -114,4 +114,16 @@ interface Platform {
    */
 
   async command bool set_unaligned_traps(bool on_off);
+
+
+  /************************************************************************
+   *
+   * Platform configuration
+   *
+   * o Interrupt priority assignment.
+   *   modern computer hardware allows the assignment of different priorities
+   *   to interrupt sources.  This is inherently a platform thing.
+   */
+
+  async command int getIntPriority(int irq_number);
 }

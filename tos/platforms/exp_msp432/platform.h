@@ -7,6 +7,8 @@
 #define REQUIRE_PLATFORM
 #define REQUIRE_PANIC
 
+#define IRQ_DEFAULT_PRIORITY    4
+
 #define TRACE_VTIMERS
 #define TRACE_TASKS
 #define TRACE_TASKS_USECS __platform_usecs_raw()

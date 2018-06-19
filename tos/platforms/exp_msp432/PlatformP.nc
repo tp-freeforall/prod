@@ -100,6 +100,20 @@ implementation {
   }
 
 
+  /**
+   * Platform.getInterruptPriority
+   * Interrupt priority assignment
+   *
+   * The mm6a/dev6a are based on the ti msp432/cortex-4mf which have 3 bits
+   * of interrupt priority.  0 is the highest, 7 the lowest.
+   *
+   * platform.h defines IRQ_DEFAULT_PRIORITY, the IRQNs, and their priorities.
+   */
+  async command int Platform.getIntPriority(int irq_number) {
+    return IRQ_DEFAULT_PRIORITY;
+  }
+
+
   /***************** Defaults ***************/
   default command error_t PeripheralInit.init() {
     return SUCCESS;

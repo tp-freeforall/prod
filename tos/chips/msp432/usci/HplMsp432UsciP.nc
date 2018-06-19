@@ -74,6 +74,7 @@ generic module HplMsp432UsciP(uint32_t up, uint32_t irqn, uint8_t USCI_ID, uint8
     interface HplMsp432UsciInt    as Interrupt;
   }
   uses interface HplMsp432UsciInt as RawInterrupt;
+  uses interface Platform;
 }
 implementation {
 
@@ -412,6 +413,7 @@ implementation {
 
 
   async command void Usci.enableModuleInt() {
+    NVIC_SetPriority(irqn, call Platform.getIntPriority(irqn));
     NVIC_EnableIRQ(irqn);
   }
 

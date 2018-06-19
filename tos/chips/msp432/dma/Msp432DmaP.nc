@@ -47,6 +47,7 @@ module Msp432DmaP {
     interface Msp432Dma as Dma[uint8_t chan];
   }
   uses interface Panic;
+  uses interface Platform;
 }
 implementation {
 
@@ -71,6 +72,8 @@ implementation {
   void dma_init(void * table) {
     BITBAND_PERI(DMA_Control->CFG, DMA_CFG_MASTEN_OFS) = 1;
     DMA_Control->CTLBASE = (uint32_t) table;
+    NVIC_SetPriority(DMA_INT0_IRQn,
+               call Platform.getIntPriority(DMA_INT0_IRQn));
   }
 
   command error_t Init.init() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Eric B. Decker
+ * Copyright (c) 2016, 2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,4 +68,7 @@ implementation {
   Usci         = HplUsciP;
   UsciInt      = HplUsciP.Interrupt;
   RawInterrupt = HplUsciP.RawInterrupt;
+
+  components PlatformC;
+  HplUsciP.Platform -> PlatformC;
 }
