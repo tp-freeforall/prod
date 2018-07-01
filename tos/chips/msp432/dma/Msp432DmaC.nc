@@ -40,14 +40,14 @@
 
 configuration Msp432DmaC {
   provides {
-    interface Init;
+    interface AsyncInit;
     interface Msp432Dma as Dma[uint8_t chan];
   }
 }
 implementation {
   components Msp432DmaP;
-  Init = Msp432DmaP;
-  Dma  = Msp432DmaP;
+  AsyncInit = Msp432DmaP;
+  Dma       = Msp432DmaP;
 
   components PanicC, PlatformC;
   Msp432DmaP.Panic    -> PanicC;

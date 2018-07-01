@@ -43,7 +43,7 @@
 
 module Msp432DmaP {
   provides {
-    interface Init;
+    interface AsyncInit;
     interface Msp432Dma as Dma[uint8_t chan];
   }
   uses interface Panic;
@@ -76,7 +76,7 @@ implementation {
                call Platform.getIntPriority(DMA_INT0_IRQn));
   }
 
-  command error_t Init.init() {
+  async command error_t AsyncInit.init() {
     dma_init(ControlTable);
     return SUCCESS;
   }
