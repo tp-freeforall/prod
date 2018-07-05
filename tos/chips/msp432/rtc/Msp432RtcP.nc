@@ -70,9 +70,27 @@ implementation {
    * high order bit is outside this range.
    *
    *** must be inside an atomic ***
+   *
+   * WARNING: RTC (in particular, PS) is being clocked async to
+   * the processor.  Any reads of the PS register must be done
+   * with a majority element because it could be rippling.  This
+   * can also effect the other upper registers but this is handled
+   * by !RDY code that calls grab_time (see Rtc.getTime()).
    */
   void grab_time(msp432_rtc_t *rtcp) {
-    rtcp->ps     = RTC_C->PS & 0x7fff;  /* lose high order bit */
+    uint16_t ps0, ps1;
+
+    do {
+      ps0 = RTC_C->PS;
+      ps1 = RTC_C->PS;
+      if (ps0 == ps1)
+        break;
+      ps0 = RTC_C->PS;
+      if (ps0 == ps1)
+        break;
+      ps0 = RTC_C->PS;
+    } while (0);
+    rtcp->ps     = ps0 & 0x7fff;        /* lose high order bit */
     rtcp->minsec = RTC_C->TIM0;
     rtcp->dowhr  = RTC_C->TIM1;
     rtcp->monday = RTC_C->DATE;
