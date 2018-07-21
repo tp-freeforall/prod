@@ -10,14 +10,19 @@ Contents:
 - Guidelines
 
 
+For an overview of Git and how we use it start with Further Reading.
+
+
 * GitHub
 
 * We use github to host the repository.   And they have very good help files
   that will assist you in getting set up.
 
 * Go to github.com and get yourself a logon.  Choose your login name
-  carefully.   You can rename it once (but only once).
-  
+  carefully.   You can rename it once (but only once).  See
+  https://git-scm.com/book/en/v2/GitHub-Account-Setup-and-Configuration
+  for details.
+
   Once you are logged in, You'll be presented a start up page which
   includes things like "Set Up Git", "Create a Repository", "Fork a
   Repository", etc.   We will be using existing repositories.
@@ -39,10 +44,6 @@ Contents:
 
    $ git config --global user.name "Firsname Lastname"
    $ git config --global user.email "your_email@youremail.com"
-
- o Set your GitHub token.
-
-   Follow the instructions on the github help page (Set Up Git).
 
 
 * Other things to put into your git config.   (global for the user,
@@ -75,12 +76,12 @@ Contents:
     $ git ci                  # same as git commit
 
 
-An example ~/.gitconfig looks like:  (Its mine with the github token
-redacted)...
+An example ~/.gitconfig looks like:
+(Be sure to change the name and email)
 
 [user]
-	name = Eric B. Decker
-	email = cire831@gmail.com
+	name  = ChangeMePlease
+	email = changemeplease@example.com
 [core]
 	editor = emacsclient
 	autocrlf = input
@@ -104,9 +105,6 @@ redacted)...
 	threads = 0
 [push]
 	default = current
-[github]
-	user = cire831
-	token = xxxxxxxxxx
 
 
 * Set up your working repository
@@ -138,6 +136,20 @@ redacted)...
 
 * Further Reading
 
+  o A distributed Git Branching Model:
+    (https://nvie.com/posts/a-successful-git-branching-model/)
+
+  o Basic Git
+    - Visual: (https://marklodato.github.io/visual-git-guide/index-en.html)
+    - Visualizing Git Concepts: (http://onlywei.github.io/explain-git-with-d3/)
+    - Pro-Git book: see next entry, very good.
+
+  o A good place to start:  (Advanced Beginners)
+    (http://think-like-a-git.net/)
+
+  o Pro Git book.
+    (https://git-scm.com/book/en/v2)
+
   o GitHub Help
     (http://help.github.com)
 
@@ -146,32 +158,30 @@ redacted)...
     that in mind when working through the examples.
 
   o Main Git Site, Documentation
-    (http://git-scm.com/documentation)
-
-  o Git Reference
-    (http://gitref.org)
-
-  o Git from the bottom up.
-    (http://ftp.newartisans.com/pub/git.from.bottom.up.pdf)
-
-    Is an easy to understand description of how git works from the bottom up.
-
-  o Pro Git is a book about git that is very good.
-    (http://progit.org)
+    (https://git-scm.com)
+    (https://git-scm.com/doc)
 
   o Distributed Git
-    (http://progit.org/book/ch5-0.html)
+    (https://git-scm.com/book/en/v2/Distributed-Git-Distributed-Workflows)
 
     This chapter talks about using Git as part of a distributed workflow.  It
     gives a good foundation about how we are managing the TinyProd repository.
 
-    In particular, please read Integration-Manger Workflow (its what we are
+    In particular, please read Integration-Manager Workflow (its what we are
     using).   And we have added one more repository to the left of the
     Blessed Repository which is VeryBlessed.  :-)   [VeryBlessed is the
     gh:TinyProd/prod repository].
 
     Also please read, Contributing to a Project.   Some of what is written there
     is also summarized in the Guidelines section below.
+
+
+
+
+  o Git from the bottom up.  (Technical details)
+    (http://ftp.newartisans.com/pub/git.from.bottom.up.pdf)
+
+    Is an easy to understand description of how git works from the bottom up.
 
 
 * Guidelines
@@ -222,11 +232,11 @@ redacted)...
   the front.
 
   A template for this copyright can be found in $(TOSROOT)/licenses/bsd.txt.
-  
 
-* coding style.   These are suggestions.   There isn't a style nazi.
 
-    TinyProd is directly downstream from the academic TinyOS SVN trunk.  As such
+* coding style.   These are suggestions.   There isn't a style czar.
+
+    TinyProd is directly downstream from the academic tinyos-main git trunk.  As such
     most of the coding style is adapted to be consistent with that repository.
     Some changes have been made to keep the code as compact as possible.
 
