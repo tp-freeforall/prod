@@ -55,10 +55,21 @@ typedef struct {
 
 
 module Msp432RtcP {
-  provides interface Rtc;
-  uses     interface Panic;
+  provides {
+    interface Rtc;
+    interface RtcAlarm;
+    interface RtcEvent;
+  }
+  uses {
+    interface RtcHWInterrupt;
+    interface Panic;
+  }
 }
 implementation {
+         rtctime_t  m_last_time;        /* last sec, event, or alarm */
+         rtctime_t  m_alarm_time;
+  norace uint32_t   m_alarm_fields;     /* checked */
+  norace rtcevent_t m_rtc_event;
 
   /**
    * grab_time(): grab time from the msp432 RTC registers
@@ -366,34 +377,161 @@ implementation {
   }
 
 
-  async command error_t Rtc.requestTime(uint32_t event_code) {
-    return FAIL;
+  /*********************************************************************
+   *
+   * RtcAlarm
+   *
+   */
+
+  async command error_t RtcAlarm.setAlarm(rtctime_t *timep,
+                                          uint32_t field_set) {
+    uint16_t aminhr, adowday;
+
+    /*
+     * always, start out disabled
+     *
+     * don't mess with any data structures until after the disable of AIE.
+     */
+    RTC_C->CTL0 = (RTC_C->CTL0 & ~(RTC_C_CTL0_KEY_MASK |
+                                   RTC_C_CTL0_AIE      |
+                                   RTC_C_CTL0_AIFG))
+                        | RTC_C_KEY;
+    RTC_C->CTL0 = 0;                            /* close lock */
+    aminhr = adowday = 0;
+    m_alarm_fields = 0;                         /* disabled. */
+    call Rtc.clearTime(&m_alarm_time);
+    RTC_C->AMINHR  = aminhr  = 0;               /* turn all alarm enables off */
+    RTC_C->ADOWDAY = adowday = 0;
+    if (timep == NULL || field_set == 0)        /* nothing to do. */
+      return EOFF;
+    do {
+      /* validity check but only for those items that are requested. */
+      if ((field_set & (RTC_ALARM_YEAR | RTC_ALARM_MON)))
+        break;                          /* oops panic */
+      if (field_set & RTC_ALARM_DAY) {
+        if (timep->day > 31)
+          break;                        /* oops panic */
+        /* day is the high order, ti's names are stupid */
+        adowday |= (timep->day << 8) | RTC_C_ADOWDAY_DAYAE;
+      }
+      if (field_set & RTC_ALARM_DOW) {
+        if (timep->dow > 6)
+          break;                        /* oops panic */
+        adowday |= timep->dow << 8 | RTC_C_ADOWDAY_DOWAE;
+      }
+      if (field_set & RTC_ALARM_HOUR) {
+        if (timep->hr > 23)
+          break;                        /* oops panic */
+        aminhr |= (timep->hr << 8) | RTC_C_AMINHR_HOURAE;
+      }
+      if (field_set & RTC_ALARM_MINUTE) {
+        if (timep->min > 59)
+          break;                        /* oops.  panic */
+        aminhr |= timep->min | RTC_C_AMINHR_MINAE;
+      }
+      /*
+       * lookin good.
+       *
+       * o remember, time and fields
+       * o set the hw alarm registers (not protected)
+       * o enable interrupt (protected)
+       */
+      call Rtc.copyTime(&m_alarm_time, timep);
+      m_alarm_fields = field_set;
+      RTC_C->AMINHR  = aminhr;
+      RTC_C->ADOWDAY = adowday;
+      RTC_C->CTL0 = (RTC_C->CTL0 & ~RTC_C_CTL0_KEY_MASK) |
+                RTC_C_KEY | RTC_C_CTL0_AIE;
+      RTC_C->CTL0 = 0;                  /* close lock */
+      return SUCCESS;
+    } while (0);
+    call Panic.panic(PANIC_TIME, 3, (parg_t) timep, field_set, aminhr, adowday);
+    return EINVAL;
   }
 
 
-  async command error_t Rtc.setEventMode(RtcEvent_t event_mode) {
-    return FAIL;
+  async command uint32_t RtcAlarm.getAlarm(rtctime_t **timepp) {
+    *timepp = &m_alarm_time;
+    return     m_alarm_fields;
   }
 
 
-  async command RtcEvent_t Rtc.getEventMode() {
-    return RTC_EVENT_NONE;
+  default async event void RtcAlarm.rtcAlarm(rtctime_t *timep,
+                                             uint32_t field_set) { }
+
+
+  async event void RtcHWInterrupt.alarmInterrupt() {
+    call Rtc.getTime(&m_last_time);
+    signal RtcAlarm.rtcAlarm(&m_last_time, m_alarm_fields);
   }
 
 
-  async command error_t Rtc.setAlarm(rtctime_t *timep, uint32_t field_set) {
-    return FAIL;
+  /*********************************************************************
+   *
+   * RtcEvent
+   *
+   */
+
+  async command void RtcEvent.setEventMode(rtcevent_t event_mode) {
+    uint16_t tev;
+
+    /* start out disabled */
+    RTC_C->CTL0 = (RTC_C->CTL0 & ~(RTC_C_CTL0_KEY_MASK |
+                                   RTC_C_CTL0_TEVIE    |
+                                   RTC_C_CTL0_RDYIE    |
+                                   RTC_C_CTL0_TEVIFG   |
+                                   RTC_C_CTL0_RDYIFG))
+                        | RTC_C_KEY;
+    RTC_C->CTL0 = 0;                    /* close lock */
+    m_rtc_event = event_mode;
+    switch (event_mode) {
+      case RTC_EVENT_NONE:
+        return;
+
+      case RTC_EVENT_SEC:
+        RTC_C->CTL0 = (RTC_C->CTL0 & ~RTC_C_CTL0_KEY_MASK) |
+                       RTC_C_CTL0_RDYIE    |
+                       RTC_C_KEY;
+        RTC_C->CTL0 = 0;                /* close lock */
+        return;
+
+      case RTC_EVENT_MIN:       tev = 0; break;
+      case RTC_EVENT_HOUR:      tev = 1; break;
+      case RTC_EVENT_0000:      tev = 2; break;
+      case RTC_EVENT_1200:      tev = 3; break;
+
+      default:
+        call Panic.panic(PANIC_TIME, 4, event_mode, 0, 0, 0);
+        return;
+    }
+    /* unlock */
+    RTC_C->CTL0 = (RTC_C->CTL0 & ~RTC_C_CTL0_KEY_MASK) | RTC_C_KEY;
+    RTC_C->CTL13 = (RTC_C->CTL13 & ~RTC_C_CTL13_TEV_MASK) | tev;
+    RTC_C->CTL0 = (RTC_C->CTL0 & ~RTC_C_CTL0_KEY_MASK) |
+                   RTC_C_CTL0_TEVIE                    |
+                   RTC_C_KEY;
+    RTC_C->CTL0 = 0;                /* close lock */
   }
 
 
-  async command uint32_t Rtc.getAlarm(rtctime_t *timep) {
-    return 0;
+  async command rtcevent_t RtcEvent.getEventMode() {
+    return m_rtc_event;
   }
 
 
-  default async event void Rtc.currentTime(rtctime_t *timep,
-                                           uint32_t reason_set) { }
-  async event void Panic.hook() { }
+  default async event void RtcEvent.rtcEvent(rtctime_t *timep,
+                                             rtcevent_t rtc_event) { }
+
+
+  async event void RtcHWInterrupt.secInterrupt() {
+    call Rtc.getTime(&m_last_time);
+    signal RtcEvent.rtcEvent(&m_last_time, RTC_EVENT_SEC);
+  }
+
+  async event void RtcHWInterrupt.eventInterrupt() {
+    call Rtc.getTime(&m_last_time);
+    signal RtcEvent.rtcEvent(&m_last_time, m_rtc_event);
+  }
 
 
   /*************************************************************************
@@ -421,4 +559,6 @@ implementation {
     return call Rtc.compareTimes(time0p, time1p);
   }
 
+
+  async event void Panic.hook() { }
 }
