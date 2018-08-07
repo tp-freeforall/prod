@@ -45,7 +45,9 @@ generic configuration Msp430UsciArbA1C() {
     interface Resource;			/* parameterized */
     interface ResourceRequested;	/* parameterized */
     interface ArbiterInfo;
-    interface HplMsp430UsciA;
+    interface HplMsp430Usci;
+    interface HplMsp430UsciUart;
+    interface HplMsp430UsciSpi;
     interface HplMsp430UsciInterrupts;	/* parameterized */
   }
   uses interface ResourceConfigure;	/* parameterized */
@@ -65,5 +67,7 @@ implementation {
   HplMsp430UsciInterrupts = UsciArbP.Interrupts[ CLIENT_ID ];
 
   components HplMsp430UsciA1C as HplUsciC;
-  HplMsp430UsciA = HplUsciC;
+  HplMsp430Usci = HplUsciC;
+  HplMsp430UsciUart = HplUsciC;
+  HplMsp430UsciSpi = HplUsciC;
 }

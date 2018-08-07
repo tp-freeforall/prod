@@ -49,7 +49,8 @@ generic module Msp430SpiNoDmaP() {
   uses {
     interface Resource as UsciResource[ uint8_t id ];
     interface Msp430SpiConfigure[ uint8_t id ];
-    interface HplMsp430UsciB as Usci;
+    interface HplMsp430Usci as Usci;
+    interface HplMsp430UsciSpi as Spi;
     interface HplMsp430UsciInterrupts as UsciInterrupts;
   }
 }
@@ -85,12 +86,12 @@ implementation {
   }
 
   async command void ResourceConfigure.configure[ uint8_t id ]() {
-    call Usci.setModeSpi(call Msp430SpiConfigure.getConfig[id]());
+    call Spi.setModeSpi(call Msp430SpiConfigure.getConfig[id]());
   }
 
   async command void ResourceConfigure.unconfigure[ uint8_t id ]() {
     call Usci.resetUsci_n();
-    call Usci.disableSpi();
+    call Spi.disableSpi();
     /* leave in reset */
   }
 
