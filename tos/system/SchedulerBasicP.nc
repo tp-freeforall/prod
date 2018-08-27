@@ -97,6 +97,7 @@ implementation {
 #endif
 
   typedef enum {
+    TT_NONE = 0,                        /* no entry */
     TT_POST = 1,                        /* usecs  */
     TT_RUN,                             /* usecs  */
     TT_END,                             /* usecs  */
