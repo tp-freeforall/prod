@@ -451,7 +451,8 @@ implementation {
 
 
   async command uint32_t RtcAlarm.getAlarm(rtctime_t **timepp) {
-    *timepp = &m_alarm_time;
+    if (timepp)
+      *timepp = &m_alarm_time;
     return     m_alarm_fields;
   }
 
