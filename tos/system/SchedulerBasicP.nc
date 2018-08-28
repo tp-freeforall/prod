@@ -75,7 +75,6 @@ implementation {
    * POST       task postage, with low level uSec stamp
    * RUN:       when the task actually starts to run (usecs)
    * END:       when the task completes.  (usecs)
-   * DELTA:     how long in usecs the task ran.
    *
    * Tasks are too low level to plumb in using Platform
    * timing routines.  It tickles a problem on some platforms
@@ -101,7 +100,6 @@ implementation {
     TT_POST = 1,                        /* usecs  */
     TT_RUN,                             /* usecs  */
     TT_END,                             /* usecs  */
-    TT_DELTA,                           /* delta usecs */
     TT_16 = 0xffff,                     /* make sure 2 bytes */
   } tt_t;
 
@@ -139,8 +137,7 @@ implementation {
   }
 
   void trace_task_end(uint16_t num, uint32_t delta) {
-    trace_add_entry(num, TT_END,   trace_usecsRaw());
-    trace_add_entry(num, TT_DELTA, delta);
+    trace_add_entry(num, TT_END, trace_usecsRaw());
     if (delta > task_trace_max[num])
       task_trace_max[num] = delta;
   }
