@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Eric B. Decker
+ * Copyright (c) 2016, 2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -72,13 +72,12 @@ mcu_power_t mcombine(mcu_power_t m1, mcu_power_t m2) @safe() {
 }
 
 typedef enum {
-  MSP432_POWER_ACTIVE = 0,
+  MSP432_POWER_NO_VAL = 0,      /* uninitialized */
+  MSP432_POWER_ACTIVE,          /* full power, normal */
   MSP432_POWER_AM_LOW,          /* low power, slower, Vcore0 */
-  MSP432_POWER_AM_HIGH,         /* high power, fast, Vcore1 */
-  MSP432_POWER_SLEEP,           /* LPM0 */
-  MSP432_POWER_LPM0,            /* no cpu clocks */
-  MSP432_POWER_DEEP_SLEEP,      /* LPM3 */
-  MSP432_POWER_LPM3,            /* only RTC/WDT active, 32KiHz , configured SRAM banks */
+  MSP432_POWER_AM_HIGH,         /* high power, fast, Vcore1  */
+  MSP432_POWER_SLEEP,           /* LPM0, normal sleep, cpu clks off */
+  MSP432_POWER_DEEP_SLEEP,      /* LPM3, only RTC/WDT active, 32KiHz, SRAM banks */
   MSP432_POWER_LPM35,           /* LPM3 but only Bank0 SRAM, Vcore0 only */
   MSP432_POWER_LPM4,            /* RTC & WDT disabled */
   MSP432_POWER_LPM45            /* Vcore off */
