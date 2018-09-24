@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Eric B. Decker
+ * Copyright (c) 2016, 2018 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,14 +41,24 @@ module McuSleepC {
     interface McuSleep;
     interface McuPowerState;
   }
+  uses interface McuPowerOverride;
 }
-implementation{
+implementation {
+  norace mcu_power_t m_power_state;
+
   async command void McuSleep.sleep() {
+    m_power_state = call McuPowerOverride.lowestState();
+    if (m_power_state < MSP432_POWER_DEEP_SLEEP)
+      SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
     __nesc_enable_interrupt();
     __DSB();
     __WFE();
     asm volatile("" : : : "memory");
     __nesc_disable_interrupt();
+  }
+
+  default async command mcu_power_t McuPowerOverride.lowestState() {
+    return MSP432_POWER_SLEEP;
   }
 
   async command void McuSleep.irq_preamble()  { }
