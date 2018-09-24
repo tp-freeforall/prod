@@ -45,10 +45,8 @@ module McuSleepC {
 implementation{
   async command void McuSleep.sleep() {
     __nesc_enable_interrupt();
-
-    __asm volatile ("wfe");
-
-    call McuSleep.irq_preamble();
+    __DSB();
+    __WFE();
     asm volatile("" : : : "memory");
     __nesc_disable_interrupt();
   }
