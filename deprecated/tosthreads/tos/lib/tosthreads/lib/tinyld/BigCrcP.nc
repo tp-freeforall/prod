@@ -1,6 +1,6 @@
 module BigCrcP {
   provides interface BigCrc;
-  uses interface Crc;
+  uses interface Crc<uint16_t> as Crc16;
 }
 
 implementation {
@@ -16,7 +16,7 @@ implementation {
     if (inlen < 0xFF) {
       len = inlen;
     }
-    computedCrc = call Crc.seededCrc16(computedCrc, inbuf + pos, len);
+    computedCrc = call Crc16.seededCrc(computedCrc, inbuf + pos, len);
     inlen -= len;
     pos += len;
     

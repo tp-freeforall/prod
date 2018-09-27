@@ -3,10 +3,7 @@ configuration BigCrcC {
 }
 
 implementation {
-  components CrcC,
-             BigCrcP;
-  
+  components Crc16C, BigCrcP;
   BigCrc = BigCrcP;
-  
-  BigCrcP.Crc -> CrcC;
+  BigCrcP.Crc16 -> Crc16C;
 }

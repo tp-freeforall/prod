@@ -41,10 +41,7 @@ configuration MemoryStorageC
 
 implementation
 {
-  components MemoryStorageP,
-             CrcC;
-  
+  components MemoryStorageP, Crc16C;
   BlockRead = MemoryStorageP;
-  
-  MemoryStorageP.Crc -> CrcC;
+  MemoryStorageP.Crc16 -> Crc16C;
 }

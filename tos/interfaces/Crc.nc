@@ -1,5 +1,4 @@
-/*                                                                      
- *
+/* Copyright (c) 2018, Eric B. Decker, Daniel J. Maltbie
  * Copyright (c) 2000-2007 The Regents of the University of
  * California.  All rights reserved.
  *
@@ -29,35 +28,35 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 /**
- * Compute the CRC-16 value of a byte array.
+ * CRC routines for byte arrays.
  *
  * @author Jonathan Hui <jwhui@cs.berkeley.edu>
  * @author David Moss
+ * @author Daniel J. Maltbie <dmaltbie@daloma.org>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
-interface Crc {
+
+interface Crc<size_type> {
+  /**
+   * Compute a CRC value of a byte array.
+   *
+   * @param   'uint8_t * COUNT(len) buf' A pointer to the buffer over which to compute CRC.
+   * @param   len The length of the buffer over which to compute CRC.
+   * @return  The CRC value.  returns a <size_type> datum.
+   */
+  async command size_type crc(uint8_t *buf, uint8_t len);
 
   /**
-   * Compute the CRC-16 value of a byte array.
+   * Compute a generic CRC using a given seed.  Used to compute CRC's
+   * of discontiguous data.
    *
-   * @param   'void* COUNT(len) buf' A pointer to the buffer over which to compute CRC.
-   * @param   len The length of the buffer over which to compute CRC.
-   * @return  The CRC-16 value.
-   */
-  async command uint16_t crc16(void* buf, uint8_t len);
-  
-  /**
-   * Compute a generic CRC-16 using a given seed.  Used to compute CRC's
-   * of discontinuous data.
-   * 
    * @param startCrc An initial CRC value to begin with
-   * @param 'void* COUNT(len) buf' A pointer to a buffer of data
+   * @param 'uint8_t * COUNT(len) buf' A pointer to a buffer of data
    * @param len The length of the buffer
-   * @return The CRC-16 value.
+   * @return The CRC value.
    */
-  async command uint16_t seededCrc16(uint16_t startCrc, void *buf, uint8_t len);
-  
+  async command size_type seededCrc(size_type startCrc, uint8_t *buf, uint8_t len);
 }

@@ -49,7 +49,6 @@ module NetProgM {
   }
   uses {
     interface InternalFlash as IFlash;
-    interface Crc;
     interface Leds;
     async command void initAmAddress(am_group_t myGroup, am_addr_t myAddr);
   }

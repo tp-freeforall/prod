@@ -1,6 +1,7 @@
-/* Copyright (c) 2007 Johns Hopkins University.
-*  All rights reserved.
-*
+/* Copyright (c) 2018, Eric B. Decker, Daniel J. Maltbie
+ * Copyright (c) 2007 Johns Hopkins University.
+ * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -32,6 +33,8 @@
 /**
  * @author Chieh-Jan Mike Liang <cliang4@cs.jhu.edu>
  * @author Razvan Musaloiu-E. <razvanm@cs.jhu.edu>
+ * @author Daniel J. Maltbie <dmaltbie@daloma.com>
+ * @author Eric B. Decker <cire831@gmail.com>
  */
 
 #include "DelugePageTransfer.h"
@@ -50,13 +53,13 @@ configuration ObjectTransferC
 implementation
 {
   components ObjectTransferP, DelugePageTransferC;
-  components CrcC;
-  
+  components Crc16C;
+
   ObjectTransfer = ObjectTransferP;
   DelugePageTransferC.BlockRead = BlockRead;
   DelugePageTransferC.BlockWrite = BlockWrite;
   ObjectTransferP.DelugePageTransfer -> DelugePageTransferC.DelugePageTransfer;
-  ObjectTransferP.Crc -> CrcC.Crc;
+  ObjectTransferP.Crc16 -> Crc16C;
   
   components new AMSenderC(AM_DELUGEADVMSG) as SendAdvMsg, 
              new AMReceiverC(AM_DELUGEADVMSG) as ReceiveAdvMsg,

@@ -41,7 +41,7 @@ module ChipconActiveMessageP @safe() {
 		interface Receive as SubReceive;
 		interface AMPacket;
 		interface PacketMetadata;
-		interface Crc;
+		interface Crc<uint16_t> as Crc16;
 	}
 }
 
@@ -119,7 +119,7 @@ implementation {
 		uint8_t len = sizeof(message_header_t) + TOSH_DATA_LENGTH + sizeof(message_footer_t);
 #endif
 		
-		return call Crc.crc16(msg, len);
+		return call Crc16.crc((void *) msg, len);
 	}
 	
 	command error_t AMSend.send[am_id_t id](am_addr_t addr, message_t* msg, uint8_t len) {

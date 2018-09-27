@@ -53,8 +53,7 @@ configuration ChipconActiveMessageC {
 }
 
 implementation {
-	components ActiveMessageAddressC, ChipconPacketC, PacketMetadataC, ChipconActiveMessageP as AM, CrcC;
-	
+	components ActiveMessageAddressC, ChipconPacketC, PacketMetadataC, ChipconActiveMessageP as AM, Crc16C;
 	components PacketTimeStampC;
 
 #ifdef LOW_POWER_LISTENING
@@ -84,7 +83,7 @@ implementation {
 	AM.SubControl -> LPL;
 	AM.SubSend -> LPL;
 	AM.SubReceive -> LPL;
-	AM.Crc -> CrcC;
+	AM.Crc16 -> Crc16C;
 	
 	LPL.SubControl -> AckC;
 	LPL.SubSend -> AckC;

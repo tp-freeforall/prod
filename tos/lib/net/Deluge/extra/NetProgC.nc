@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2005 The Regents of the University  of California.  
+ * Copyright (c) 2000-2005 The Regents of the University  of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,19 +51,18 @@ configuration NetProgC {
 
 implementation {
 
-  components MainC, InternalFlashC as IFlash, CrcC;
+  components MainC, InternalFlashC as IFlash;
   components NetProgM, ReprogramGuardC;
 
   NetProg = NetProgM;
 
   MainC.SoftwareInit -> NetProgM.Init;
   NetProgM.IFlash -> IFlash;
-  NetProgM.Crc -> CrcC;
   NetProgM.ReprogramGuard -> ReprogramGuardC;
 
   components LedsC;
   NetProgM.Leds -> LedsC;
-  
+
   components ActiveMessageAddressC;
   NetProgM.initAmAddress -> ActiveMessageAddressC;
 

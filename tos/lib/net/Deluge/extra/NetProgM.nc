@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2000-2005 The Regents of the University  of California.  
+/* Copyright (c) 2018, Daniel J. Maltbie, Eric B. Decker
+ * Copyright (c) 2000-2005 The Regents of the University  of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@
  *
  * Copyright (c) 2007 Johns Hopkins University.
  * All rights reserved.
- *
  */
 
 /**
@@ -49,7 +48,6 @@ module NetProgM {
   }
   uses {
     interface InternalFlash as IFlash;
-    interface Crc;
     interface Leds;
 #if !defined(PLATFORM_TINYNODE) && !defined(PLATFORM_MULLE)
     interface CC2420Config;

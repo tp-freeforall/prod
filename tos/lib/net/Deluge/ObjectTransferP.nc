@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2004 The Regents of the University  of California.  
+ * Copyright (c) 2000-2004 The Regents of the University  of California.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,8 +49,8 @@ module ObjectTransferP
     interface Random;
     interface Timer<TMilli> as Timer;
     interface DelugePageTransfer;
-    interface Crc;
-    
+    interface Crc<uint16_t> as Crc16;
+
     interface AMSend as SendAdvMsg;
     interface Receive as ReceiveAdvMsg;
     
@@ -129,7 +129,7 @@ implementation
   
   bool isObjDescValid(DelugeObjDesc* tmpObjDesc)
   {
-    return (tmpObjDesc->crc == call Crc.crc16(tmpObjDesc, sizeof(object_id_t) + sizeof(page_num_t))
+    return (tmpObjDesc->crc == call Crc16.crc((void *) tmpObjDesc, sizeof(object_id_t) + sizeof(page_num_t))
 	    && tmpObjDesc->crc != 0);
   }
   
@@ -165,8 +165,8 @@ implementation
     curObjDesc.objid = new_objid;
     curObjDesc.numPgs = ((new_size - 1) / DELUGET2_BYTES_PER_PAGE) + 1;   // Number of pages to transmit
     curObjDesc.numPgsComplete = curObjDesc.numPgs;   // Publisher doesn't really care about this
-    curObjDesc.crc = call Crc.crc16(&curObjDesc, sizeof(object_id_t) + sizeof(page_num_t));
-    
+    curObjDesc.crc = call Crc16.crc((void *) &curObjDesc, sizeof(object_id_t) + sizeof(page_num_t));
+
     if (state == S_INITIALIZING_PUB) {
       resetTimer();
     }
@@ -186,8 +186,8 @@ implementation
     curObjDesc.objid = cont_receive_new_objid;
     curObjDesc.numPgs = ((cont_receive_new_size - 1) / DELUGET2_BYTES_PER_PAGE) + 1;   // Number of pages to receive
     curObjDesc.numPgsComplete = 0;
-    curObjDesc.crc = call Crc.crc16(&curObjDesc, sizeof(object_id_t) + sizeof(page_num_t));
-    
+    curObjDesc.crc = call Crc16.crc((void *) &curObjDesc, sizeof(object_id_t) + sizeof(page_num_t));
+
     if (state == S_INITIALIZING_RECV) {
       resetTimer();
     }
@@ -239,7 +239,7 @@ implementation
 //    printf("R: %08lx %d\n", new_objid, new_pgNum);
     if (new_objid == curObjDesc.objid && new_pgNum == curObjDesc.numPgsComplete) {
       curObjDesc.numPgsComplete++;
-      curObjDesc.crc = call Crc.crc16(&curObjDesc, sizeof(object_id_t) + sizeof(page_num_t));
+      curObjDesc.crc = call Crc16.crc((void *) &curObjDesc, sizeof(object_id_t) + sizeof(page_num_t));
       if (curObjDesc.numPgsComplete < curObjDesc.numPgs) {
         setNextPage();
       } else {

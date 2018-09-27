@@ -1,7 +1,7 @@
 module MemoryStorageP
 {
   provides interface BlockRead;
-  uses interface Crc;
+  uses interface Crc<uint16_t> as Crc16;
 }
 
 implementation
@@ -39,7 +39,7 @@ implementation
   
   command error_t BlockRead.computeCrc(storage_addr_t addr, storage_len_t len, uint16_t crc)
   {
-    retCrc = call Crc.seededCrc16(crc, (void *)addr, len);
+    retCrc = call Crc16.seededCrc(crc, (void *)addr, len);
     retAddr = addr;
     retLen = len;
     post taskCrcDone();

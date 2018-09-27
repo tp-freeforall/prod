@@ -51,13 +51,12 @@ configuration NetProgC {
 
 implementation {
 
-  components MainC, InternalFlashC as IFlash, CrcC, NetProgM;
+  components MainC, InternalFlashC as IFlash, NetProgM;
 
   NetProg = NetProgM;
 
   MainC.SoftwareInit -> NetProgM.Init;
   NetProgM.IFlash -> IFlash;
-  NetProgM.Crc -> CrcC;
 
   components LedsC;
   NetProgM.Leds -> LedsC;

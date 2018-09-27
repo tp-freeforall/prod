@@ -1,5 +1,4 @@
-/*                                                                      
- *
+/* Copyright (c) 2018, Eric B. Decker, Daniel J. Multbie
  * Copyright (c) 2000-2007 The Regents of the University of
  * California.  All rights reserved.
  *
@@ -42,8 +41,8 @@
  
 #include <crc.h>
 
-module CrcC {
-  provides interface Crc;
+module Crc16C {
+  provides interface Crc<uint16_t> as Crc16;
 }
 
 implementation {
@@ -55,8 +54,8 @@ implementation {
    * @param   len The length of the buffer over which to compute CRC.
    * @return  The CRC-16 value.
    */
-  async command uint16_t Crc.crc16(void *buf, uint8_t len) {
-    return call Crc.seededCrc16(0, buf, len);
+  async command uint16_t Crc16.crc(uint8_t *buf, uint8_t len) {
+    return call Crc16.seededCrc(0, buf, len);
   }
   
   /**
@@ -68,11 +67,11 @@ implementation {
    * @param len The length of the buffer
    * @return The CRC-16 value.
    */
-  async command uint16_t Crc.seededCrc16(uint16_t startCrc, void *buf, uint8_t len) {
-    uint8_t *tmp = (uint8_t *) buf;
+  async command uint16_t Crc16.seededCrc(uint16_t startCrc, uint8_t *buf, uint8_t len) {
     uint16_t crc;
+
     for (crc = startCrc; len > 0; len--) {
-      crc = crcByte(crc, *tmp++);
+      crc = crcByte(crc, *buf++);
     }
     return crc;
   }
