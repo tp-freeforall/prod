@@ -38,7 +38,7 @@
  * @author Jonathan Hui <jwhui@cs.berkeley.edu>
  * @author David Moss
  */
- 
+
 #include <crc.h>
 
 module Crc16C {
@@ -57,11 +57,11 @@ implementation {
   async command uint16_t Crc16.crc(uint8_t *buf, uint8_t len) {
     return call Crc16.seededCrc(0, buf, len);
   }
-  
+
   /**
    * Compute a generic CRC-16 using a given seed.  Used to compute CRC's
    * of discontinuous data.
-   * 
+   *
    * @param startCrc An initial CRC value to begin with
    * @param buf A pointer to a buffer of data
    * @param len The length of the buffer

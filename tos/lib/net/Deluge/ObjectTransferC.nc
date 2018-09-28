@@ -60,14 +60,14 @@ implementation
   DelugePageTransferC.BlockWrite = BlockWrite;
   ObjectTransferP.DelugePageTransfer -> DelugePageTransferC.DelugePageTransfer;
   ObjectTransferP.Crc16 -> Crc16C;
-  
-  components new AMSenderC(AM_DELUGEADVMSG) as SendAdvMsg, 
+
+  components new AMSenderC(AM_DELUGEADVMSG) as SendAdvMsg,
              new AMReceiverC(AM_DELUGEADVMSG) as ReceiveAdvMsg,
-             new AMSenderC(AM_DELUGEREQMSG) as SendReqMsg, 
+             new AMSenderC(AM_DELUGEREQMSG) as SendReqMsg,
              new AMReceiverC(AM_DELUGEREQMSG) as ReceiveReqMsg,
-             new AMSenderC(AM_DELUGEDATAMSG) as SendDataMsg, 
+             new AMSenderC(AM_DELUGEDATAMSG) as SendDataMsg,
              new AMReceiverC(AM_DELUGEDATAMSG) as ReceiveDataMsg;
-  
+
   ObjectTransferP.SendAdvMsg -> SendAdvMsg;
   ObjectTransferP.ReceiveAdvMsg -> ReceiveAdvMsg;
   DelugePageTransferC.SendReqMsg -> SendReqMsg;
@@ -76,13 +76,13 @@ implementation
   DelugePageTransferC.ReceiveDataMsg -> ReceiveDataMsg;
   DelugePageTransferC.AMPacket -> SendDataMsg;
   DelugePageTransferC.Leds = Leds;
-  
+
   ObjectTransferP.BlockWrite = BlockWrite;
-  
+
   components RandomC, new TimerMilliC() as Timer;
   ObjectTransferP.Random -> RandomC;
   ObjectTransferP.Timer -> Timer;
-  
+
   // For collecting statistics
 //  components StatsCollectorC;
 //  ObjectTransferP.StatsCollector -> StatsCollectorC.StatsCollector;

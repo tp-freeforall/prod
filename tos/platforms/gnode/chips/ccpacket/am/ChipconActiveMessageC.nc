@@ -61,7 +61,7 @@ implementation {
 #else
 	components NoLowPowerListeningC as LPL;
 #endif
-	
+
 	components AckC;
 	components SendReceiveC;
 
@@ -70,27 +70,27 @@ implementation {
 	AMSend = AM;
 	Receive = AM.Receive;
 	Snoop = AM.Snoop;
-	
+
 	Packet = ChipconPacketC;
 	AMPacket = ChipconPacketC;
 	PacketAcknowledgements = ChipconPacketC;
 	LowPowerListening = LPL;
 	PacketTimeStampMilli = PacketTimeStampC;
 	PacketTimeStamp32khz = PacketTimeStampC;
-	
+
 	AM.AMPacket -> ChipconPacketC;
 	AM.PacketMetadata -> PacketMetadataC;
 	AM.SubControl -> LPL;
 	AM.SubSend -> LPL;
 	AM.SubReceive -> LPL;
 	AM.Crc16 -> Crc16C;
-	
+
 	LPL.SubControl -> AckC;
 	LPL.SubSend -> AckC;
 	LPL.SubReceive -> AckC;
-	
+
 	AckC.SubControl -> SendReceiveC;
 	AckC.SubSend -> SendReceiveC;
 	AckC.SubReceive -> SendReceiveC;
-		
+
 }

@@ -53,9 +53,9 @@ module ObjectTransferP
 
     interface AMSend as SendAdvMsg;
     interface Receive as ReceiveAdvMsg;
-    
+
     interface BlockWrite[uint8_t img_num];
-    
+
     interface Leds;
 //  interface StatsCollector;
   }
@@ -72,33 +72,33 @@ implementation
     S_STARTED,
     S_STOPPED,
   };
-  
+
   DelugeAdvTimer advTimers;
   uint8_t state = S_STOPPED;
-  
+
   object_id_t cont_receive_new_objid;
   object_size_t cont_receive_new_size;
   uint8_t cont_receive_img_num;
-  
+
   message_t pMsgBuf;
   bool isBusy_pMsgBuf = FALSE;
   DelugeObjDesc curObjDesc;
-  
+
   void updateTimers()
   {
     //advTimers.timer = 0;
   }
-  
+
   void setupAdvTimer()
   {
     advTimers.timer = (uint32_t)0x1 << (advTimers.periodLog2 - 1);
     advTimers.timer += call Random.rand16() & (advTimers.timer - 1);
     advTimers.overheard = 0;
-    
+
     call Timer.stop();
     call Timer.startOneShot(advTimers.timer);
   }
-  
+
   void resetTimer()
   {
     if (advTimers.periodLog2 != DELUGE_MIN_ADV_PERIOD_LOG2) {
@@ -106,17 +106,17 @@ implementation
       setupAdvTimer();
     }
   }
-  
+
   task void signalObjRecvDone()
   {
     signal ObjectTransfer.receiveDone(SUCCESS);
   }
-  
+
   void setNextPage()
   {
     if (curObjDesc.numPgsComplete < curObjDesc.numPgs) {
       call DelugePageTransfer.setWorkingPage(curObjDesc.objid, curObjDesc.numPgsComplete);
-      advTimers.newAdvs = DELUGE_NUM_NEWDATA_ADVS_REQUIRED;    
+      advTimers.newAdvs = DELUGE_NUM_NEWDATA_ADVS_REQUIRED;
       advTimers.overheard = 0;
       resetTimer();
     } else {
@@ -126,13 +126,13 @@ implementation
       call BlockWrite.sync[cont_receive_img_num]();
     }
   }
-  
+
   bool isObjDescValid(DelugeObjDesc* tmpObjDesc)
   {
     return (tmpObjDesc->crc == call Crc16.crc((void *) tmpObjDesc, sizeof(object_id_t) + sizeof(page_num_t))
 	    && tmpObjDesc->crc != 0);
   }
-  
+
   void sendAdvMsg(uint16_t addr)
   {
     DelugeAdvMsg *pMsg = (DelugeAdvMsg *)(call SendAdvMsg.getPayload(&pMsgBuf, sizeof(DelugeAdvMsg)));
@@ -143,16 +143,16 @@ implementation
       pMsg->sourceAddr = TOS_NODE_ID;
       pMsg->version = DELUGE_VERSION;
       pMsg->type = DELUGE_ADV_NORMAL;
-     
+
       memcpy(&(pMsg->objDesc), &curObjDesc, sizeof(DelugeObjDesc));
-      
+
       if (call SendAdvMsg.send(addr, &pMsgBuf, sizeof(DelugeAdvMsg)) == SUCCESS) {
 //call StatsCollector.msg_bcastReq();
         isBusy_pMsgBuf = TRUE;
       }
     }
   }
-  
+
   /**
    * Starts publisher
    */
@@ -160,7 +160,7 @@ implementation
   {
     call ObjectTransfer.stop();
 //call StatsCollector.startStatsCollector();
-    
+
     state = S_INITIALIZING_PUB;
     curObjDesc.objid = new_objid;
     curObjDesc.numPgs = ((new_size - 1) / DELUGET2_BYTES_PER_PAGE) + 1;   // Number of pages to transmit
@@ -171,13 +171,13 @@ implementation
       resetTimer();
     }
     state = S_STARTED;
-    
+
     call DelugePageTransfer.setImgNum(img_num);
     call DelugePageTransfer.setWorkingPage(curObjDesc.objid, curObjDesc.numPgs);
-    
+
     return SUCCESS;
   }
-  
+
   /**
    * Resumes the process of preparing the receiver after the target volume is erased
    */
@@ -192,48 +192,48 @@ implementation
       resetTimer();
     }
     state = S_STARTED;
-    
+
     call DelugePageTransfer.setImgNum(cont_receive_img_num);
     setNextPage();
   }
-  
+
   /**
    * Starts receiver
    */
   command error_t ObjectTransfer.receive(object_id_t new_objid, object_size_t new_size, uint8_t img_num)
   {
     error_t error;
-    
+
     call ObjectTransfer.stop();
 //call StatsCollector.startStatsCollector();
-    
+
     cont_receive_new_objid = new_objid;
     cont_receive_new_size = new_size;
     cont_receive_img_num = img_num;
-    
+
     error = call BlockWrite.erase[cont_receive_img_num]();
     if (error == SUCCESS) {
       state = S_ERASE;
     }
-    
+
     return error;
   }
-  
+
   command error_t ObjectTransfer.stop()
   {
     call Timer.stop();
     call DelugePageTransfer.stop();
     state = S_STOPPED;
 //call StatsCollector.stopStatsCollector();
-    
+
     curObjDesc.objid = DELUGE_INVALID_OBJID;
     curObjDesc.numPgs = DELUGE_INVALID_PGNUM;
     curObjDesc.numPgsComplete = DELUGE_INVALID_PGNUM;
     advTimers.periodLog2 = 0;
-    
+
     return SUCCESS;
   }
-  
+
   event void DelugePageTransfer.receivedPage(object_id_t new_objid, page_num_t new_pgNum)
   {
 //    printf("R: %08lx %d\n", new_objid, new_pgNum);
@@ -251,40 +251,40 @@ implementation
       }
     }
   }
-  
+
   event void BlockWrite.syncDone[uint8_t img_num](error_t error)
   {
     if (state == S_SYNC) {
       post signalObjRecvDone();
     }
   }
-  
+
   event void DelugePageTransfer.suppressMsgs(object_id_t new_objid)
   {
     if (new_objid == curObjDesc.objid) {
       advTimers.overheard = 1;
     }
   }
-  
+
   event void SendAdvMsg.sendDone(message_t* msg, error_t error)
   {
     isBusy_pMsgBuf = FALSE;
   }
-  
+
   event message_t* ReceiveAdvMsg.receive(message_t* msg, void* payload, uint8_t len)
   {
     DelugeAdvMsg *rxAdvMsg = (DelugeAdvMsg*)payload;
     DelugeObjDesc *cmpObjDesc = &(rxAdvMsg->objDesc);
     bool isEqual = FALSE;
- 
+
     if (cmpObjDesc->objid != curObjDesc.objid) {
       return msg;
     }
-    
+
     if (rxAdvMsg->version != DELUGE_VERSION || state != S_STARTED) {
       return msg;
     }
-    
+
     if (isObjDescValid(&(rxAdvMsg->objDesc)) && state == S_STARTED) {
       // Their image is larger (They have something we need)
       if (cmpObjDesc->numPgsComplete > curObjDesc.numPgsComplete) {
@@ -295,45 +295,45 @@ implementation
       // Their image is smaller (They need something we have)
       else if (cmpObjDesc->numPgsComplete < curObjDesc.numPgsComplete) {
         advTimers.newAdvs = DELUGE_NUM_NEWDATA_ADVS_REQUIRED;
-      }      
+      }
       // image is the same
       else {
         advTimers.overheard = 1;
         isEqual = TRUE;
       }
-      
+
       if (!isEqual) {
         resetTimer();
       }
     }
-    
+
     return msg;
   }
-    
+
   event void Timer.fired()
-  {    
+  {
     updateTimers();
-    
+
     if (advTimers.overheard == 0) {
       sendAdvMsg(AM_BROADCAST_ADDR);
     }
-    
+
     if (call DelugePageTransfer.isTransferring())
       advTimers.newAdvs = DELUGE_NUM_NEWDATA_ADVS_REQUIRED;
     else if (advTimers.newAdvs > 0)
       advTimers.newAdvs--;
-    
+
     if (advTimers.newAdvs == 0 &&
         advTimers.periodLog2 < DELUGE_MAX_ADV_PERIOD_LOG2) {
       advTimers.periodLog2++;
     }
-    
+
     setupAdvTimer();
   }
-  
+
   default command error_t BlockWrite.erase[uint8_t img_num]() { return FAIL; }
   default command error_t BlockWrite.sync[uint8_t img_num]() { return FAIL; }
-  
+
   event void BlockWrite.writeDone[uint8_t img_num](storage_addr_t addr, void* buf, storage_len_t len, error_t error) {}
   event void BlockWrite.eraseDone[uint8_t img_num](error_t error)
   {

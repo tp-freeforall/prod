@@ -74,10 +74,10 @@ implementation {
 #if !defined(PLATFORM_TINYNODE) && !defined(PLATFORM_MULLE)
     call CC2420Config.setShortAddr(bootArgs.address);
     call CC2420Config.sync();
-#endif    
+#endif
     return SUCCESS;
   }
-  
+
   command error_t NetProg.reboot()
   {
     BootArgs bootArgs;
@@ -94,7 +94,7 @@ implementation {
 
     return FAIL;
   }
-  
+
   command error_t NetProg.programImageAndReboot(uint32_t imgAddr)
   {
     reprogramImgAddr = imgAddr;
@@ -112,7 +112,7 @@ implementation {
 
     atomic {
       call IFlash.read(TCAST(uint8_t* COUNT(sizeof(bootArgs)),TOSBOOT_ARGS_ADDR), &bootArgs, sizeof(bootArgs));
-      
+
       bootArgs.imageAddr = reprogramImgAddr;
       bootArgs.gestureCount = 0xff;
       bootArgs.noReprogram = FALSE;

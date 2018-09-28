@@ -34,7 +34,7 @@ module ChipconActiveMessageP @safe() {
 		interface Receive[am_id_t id];
 		interface Receive as Snoop[am_id_t id];
 	}
-	
+
 	uses {
 		interface StdControl as SubControl;
 		interface Send as SubSend;
@@ -46,18 +46,18 @@ module ChipconActiveMessageP @safe() {
 }
 
 implementation {
-	
+
 	bool txBusy;
 	uint16_t crc;	// for checking whether what goes in also comes out
-	
+
 	task void started() {
 		signal SplitControl.startDone(SUCCESS);
 	}
-	
+
 	task void stopped() {
 		signal SplitControl.stopDone(SUCCESS);
 	}
-	
+
 	command error_t SplitControl.start() {
 		error_t error = call SubControl.start();
 		dbg("ActiveMessageP", "%s N%u: %s: Started with error %u\n", sim_time_string(), TOS_NODE_ID, __FUNCTION__, error);
@@ -72,9 +72,9 @@ implementation {
 		return error;
 	}
 
-	// While StdControl is convenient, other components may depend on the SplitControl events. 
+	// While StdControl is convenient, other components may depend on the SplitControl events.
 	// CtpForwardingEngine looks for startDone/stopDone events to know whether the radio is on.
-	
+
 	command error_t StdControl.start() {
 		error_t error = call SubControl.start();
 		dbg("ActiveMessageP", "%s N%u: %s: Started with error %u\n", sim_time_string(), TOS_NODE_ID, __FUNCTION__, error);
@@ -88,28 +88,28 @@ implementation {
 		if (error == SUCCESS) signal SplitControl.stopDone(SUCCESS);
 		return error;
 	}
-	
+
 #ifdef DEBUG_CHIPCON_AM
 	void print(message_t* msg, uint8_t len, char* NTS s, bool rx) {
 		uint8_t i;
 		uint8_t* payload = (uint8_t*) call SubSend.getPayload(msg, len);
-		
+
 		platform_printf("AM: %s: src=" DOTTED_QUAD_FORMAT ", dst=" DOTTED_QUAD_FORMAT ", am=%u, len=%u,",
 				s, DOTTED_QUAD(call AMPacket.source(msg)), DOTTED_QUAD(call AMPacket.destination(msg)),
 				call AMPacket.type(msg), len);
-		
+
 		if (rx) {
 			platform_printf(" rssi=%d, lqi=%u,", call PacketMetadata.getRssi(msg), call PacketMetadata.getLqi(msg));
 		}
-		
+
 		for (i=0; i < len; i++) {
 			platform_printf(" %02X", payload[i]);
 		}
-		
+
 		platform_printf("\n");
 	}
 #endif
-	
+
 	uint16_t crcMessage(message_t* msg) {
 #ifdef AM_TIMESYNCMSG
 		// time sync messages have their time stamp changed, so only check the header
@@ -118,14 +118,14 @@ implementation {
 		// metadata is allowed to change, so don't include that in the checksum
 		uint8_t len = sizeof(message_header_t) + TOSH_DATA_LENGTH + sizeof(message_footer_t);
 #endif
-		
+
 		return call Crc16.crc((void *) msg, len);
 	}
-	
+
 	command error_t AMSend.send[am_id_t id](am_addr_t addr, message_t* msg, uint8_t len) {
 		error_t error;
 		if (txBusy) return EBUSY;
-		
+
 		call AMPacket.setType(msg, id);
 		call AMPacket.setDestination(msg, addr);
 		call AMPacket.setSource(msg, call AMPacket.address());
@@ -159,16 +159,16 @@ implementation {
 
 	event void SubSend.sendDone(message_t* msg, error_t result) {
 		dbg("ActiveMessageP", "%s N%u: %s: Radio sendDone %u (msg type %u, dest %u)\n", sim_time_string(), TOS_NODE_ID, __FUNCTION__, result, call AMPacket.type(msg), call AMPacket.destination(msg));
-		
+
 #ifdef DEBUG_CHIPCON_AM
 		if (crc != crcMessage(msg)) {
 			uint8_t len = sizeof(message_header_t) + TOSH_DATA_LENGTH + sizeof(message_footer_t);
 			print(msg, len, "msg", FALSE);
 		}
 #endif
-		
+
 		assertEquals(crc, crcMessage(msg), ASSERT_CC_AM_MODIFIED);
-		
+
 		txBusy = FALSE;
 		signal AMSend.sendDone[call AMPacket.type(msg)](msg, result);
 	}
@@ -184,7 +184,7 @@ implementation {
 			return signal Snoop.receive[call AMPacket.type(msg)](msg, payload, len);
 		}
 	}
-	
+
 	default event void SplitControl.startDone(error_t error) {}
 	default event void SplitControl.stopDone(error_t error) {}
 
@@ -197,5 +197,5 @@ implementation {
 	}
 
 	default event void AMSend.sendDone[am_id_t id](message_t* msg, error_t err) {}
-	
+
 }
