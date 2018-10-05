@@ -23,21 +23,20 @@ def timer_name(timer_id):
     return t_name
 
 
-start_format = '{:4d}  start {:8x}'
-stop_format  = '{:4d}  stop  {:8x}'
-usecs_format = '{:4d}        {:8x}'
-fired_format = '{:4d}                    fired    {:8x}'
-end_format   = '{:4d}                    end      {:8x}'
-delta_format = '{:4d}                    delta    {:8x}'
-oops_format  = '{:4d}  oops  {:8x}  {:s}'
-
-
 class TimerTrace(gdb.Command):
     """Display TinyOS Virtual Timer Trace buffers."""
     def __init__ (self):
         super(TimerTrace, self).__init__("timerTrace", gdb.COMMAND_USER)
 
     def invoke (self, args, from_tty):
+        start_format = '{:4d}  start {:8x}'
+        stop_format  = '{:4d}  stop  {:8x}'
+        usecs_format = '{:4d}        {:8x}'
+        fired_format = '{:4d}                    fired    {:8x}'
+        end_format   = '{:4d}                    end      {:8x}'
+        delta_format = '{:4d}                    delta    {:8x}'
+        oops_format  = '{:4d}  oops  {:8x}  {:s}'
+
         START_LT    = int(gdb.parse_and_eval('VirtualizeTimerImplP__0__TVT_START_LT'))
         START_USECS = int(gdb.parse_and_eval('VirtualizeTimerImplP__0__TVT_START_USECS'))
         STOPPED     = int(gdb.parse_and_eval('VirtualizeTimerImplP__0__TVT_STOPPED'))

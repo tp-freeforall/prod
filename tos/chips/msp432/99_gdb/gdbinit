@@ -16,6 +16,8 @@ set mem inaccessible-by-default off
 
 add-symbol-file symbols_hw 0
 source ../../.gdb_msp432
+source ../../.gdb_tasks.py
+source ../../.gdb_timers.py
 
 set disassemble-next-line on
 
@@ -48,37 +50,32 @@ ie. pc 2   yields new pc of pc+2
 end
 
 define tq
-printf "taskq: head: %d  tail %d\n", SchedulerBasicP__m_head, SchedulerBasicP__m_tail
-output/d SchedulerBasicP__m_next
+taskQueue
 printf "\n"
+#printf "taskq: head: %d  tail %d\n", SchedulerBasicP__m_head, SchedulerBasicP__m_tail
+#output/d SchedulerBasicP__m_next
 end
 document tq
 display task queue
 end
 
-define __p_timers
-# arg0: num_timers, arg1: pointer to first timer
-set $_num_timers = $arg0
-set $_tptr = $arg1
-set $_idx = 0
-printf "    t   state       t0           dt\n"
-while $_idx < $_num_timers
-  printf "    %2d    %c%c  %8x(x)  %8x(x)\n", $_idx, \
-    ($_tptr[$_idx]->isoneshot ? 'O' : 'o'), \
-    ($_tptr[$_idx]->isrunning ? 'R' : 'r'), \
-    $_tptr[$_idx]->t0, $_tptr[$_idx]->dt
-  set $_idx++
-end
-end
-
 define timers
+#
+# transitioning to hwTMilli python code.
+#   and dispTimers
+#
+# see mm/tools/00_gdb/gdbinit
+#
+
+# first part is superseeded by hwTMilli.
 set $_upper=TransformCounterC__0__m_upper << 0d11
 set $_lower = $ta1->R >> 5
 printf "\n       TA1->R: %04x  CCR[0]: %04x    (%04x)    t_milli: %08x\n", \
   $ta1->R, $ta1->CCR[0], ($ta1->CCR[0])>>5, $_upper | $_lower
 printf "Alarm[0]:  t0: %04x      dt: %04x    Counter[0]: upper: %04x\n\n", \
   TransformAlarmC__0__m_t0, TransformAlarmC__0__m_dt, TransformCounterC__0__m_upper
-__p_timers VirtualizeTimerC__0__NUM_TIMERS  &VirtualizeTimerC__0__m_timers[0]
+printf "\n"
+dispTimers
 end
 
 define gg

@@ -19,20 +19,19 @@ def task_name(task_id):
     return t_name
 
 
-post_spaces  = 40
-post_format  = '{:3d}{}{:08x} {:5s} {}'
-run_format   = '{:3d}   {:08x}  {:5s}  {}'
-end_format   = '{:3d}   {:08x}  {:5s}  {:18s}  0x{:x} ({}, {:5.3f})'
-oops_format  = '{:3d}   {:08x}  {:5s}  {} oops'
-
-
 class TaskTrace(gdb.Command):
     """Display the TinyOS Task Trace."""
     def __init__ (self):
-        super(TaskTrace, self).__init__("task_trace", gdb.COMMAND_USER)
+        super(TaskTrace, self).__init__("taskTrace", gdb.COMMAND_USER)
 
     def invoke (self, args, from_tty):
         last_run = 0
+
+        post_spaces  = 40
+        post_format  = '{:3d}{}{:08x} {:5s} {}'
+        run_format   = '{:3d}   {:08x}  {:5s}  {}'
+        end_format   = '{:3d}   {:08x}  {:5s}  {:18s}  0x{:x} ({}, {:5.3f})'
+        oops_format  = '{:3d}   {:08x}  {:5s}  {} oops'
 
         POST  = int(gdb.parse_and_eval('SchedulerBasicP__TT_POST'))
         RUN   = int(gdb.parse_and_eval('SchedulerBasicP__TT_RUN'))
@@ -82,4 +81,26 @@ class TaskTrace(gdb.Command):
             if cur >= xmax:
                 cur = 0
 
+
+class TaskQueue(gdb.Command):
+    """Display the TinyOS Task Queue."""
+    def __init__ (self):
+        super(TaskQueue, self).__init__("taskQueue", gdb.COMMAND_USER)
+
+    def invoke (self, args, from_tty):
+        NO_TASK   = int(gdb.parse_and_eval('SchedulerBasicP__NO_TASK'))
+        NUM_TASKS = int(gdb.parse_and_eval('SchedulerBasicP__NUM_TASKS'))
+        head      = int(gdb.parse_and_eval('SchedulerBasicP__m_head'))
+        tail      = int(gdb.parse_and_eval('SchedulerBasicP__m_tail'))
+        m_next    = gdb.parse_and_eval('SchedulerBasicP__m_next')
+        print('taskQ:  h: {:03d}  t: {:03d}'.format(head, tail))
+        cur = head
+        if (cur != NO_TASK):
+            print('  {:2d}'.format(cur), end = '')
+            cur = int(m_next[cur])
+        while (cur != NO_TASK):
+            print(' -> {:d}'.format(cur))
+            cur = int(m_next[cur])
+
 TaskTrace()
+TaskQueue()
