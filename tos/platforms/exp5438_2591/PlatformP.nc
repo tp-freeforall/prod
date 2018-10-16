@@ -138,6 +138,9 @@ implementation {
   async command bool     Platform.set_unaligned_traps(bool set_on) {
     return FALSE;
   }
+  async command int      Platform.getIntPriority(int irq_number) {
+    return 0;
+  }
 
 
   /***************** Defaults ***************/

@@ -62,6 +62,9 @@ implementation {
   async command bool     Platform.set_unaligned_traps(bool on_off) {
     return FALSE;
   }
+  async command int      Platform.getIntPriority(int irq_number) {
+    return 0;
+  }
 
   default command error_t LedsInit.init() {
     return SUCCESS;

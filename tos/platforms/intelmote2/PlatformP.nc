@@ -123,6 +123,9 @@ implementation {
   async command bool     Platform.set_unaligned_traps(bool on_off) {
     return FALSE;
   }
+  async command int      Platform.getIntPriority(int irq_number) {
+    return 0;
+  }
 
   async command void PlatformReset.reset() {
     call OST0M3.setOSMR(call OST0M3.getOSCR() + 1000);
