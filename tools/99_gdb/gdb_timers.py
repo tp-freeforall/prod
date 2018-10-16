@@ -29,12 +29,12 @@ class TimerTrace(gdb.Command):
         super(TimerTrace, self).__init__("timerTrace", gdb.COMMAND_USER)
 
     def invoke (self, args, from_tty):
-        start_format = '{:4d}  start {:8x}'
-        stop_format  = '{:4d}  stop  {:8x}'
-        usecs_format = '{:4d}        {:8x}'
-        fired_format = '{:4d}                    fired    {:8x}'
-        end_format   = '{:4d}                    end      {:8x}'
-        delta_format = '{:4d}                    delta    {:8x}'
+        start_format = '{:4d}  start {:8x}                       {:s}'
+        stop_format  = '{:4d}  stop  {:8x}                       {:s}'
+        usecs_format = '{:4d}        {:8x}                       {:s}'
+        fired_format = '{:4d}                    fired    {:8x}  {:s}'
+        end_format   = '{:4d}                    end      {:8x}  {:s}'
+        delta_format = '{:4d}                    delta    {:8x}  {:s}'
         oops_format  = '{:4d}  oops  {:8x}  {:s}'
 
         START_LT    = int(gdb.parse_and_eval('VirtualizeTimerImplP__0__TVT_START_LT'))
@@ -64,19 +64,20 @@ class TimerTrace(gdb.Command):
             val        = int(vtp['val'])
 
             if ttype == START_LT:
-                print(start_format.format(timer_num, val))
+                print(start_format.format(timer_num, val, timer_name(timer_num)))
             elif ttype == START_USECS:
-                print(usecs_format.format(timer_num, val))
+                print(usecs_format.format(timer_num, val, timer_name(timer_num)))
             elif ttype == STOPPED:
-                print(stop_format.format(timer_num, val))
+                print(stop_format.format(timer_num, val, timer_name(timer_num)))
             elif ttype == FIRED:
-                print(fired_format.format(timer_num, val))
+                print(fired_format.format(timer_num, val, timer_name(timer_num)))
             elif ttype == END:
-                print(end_format.format(timer_num, val))
+                print(end_format.format(timer_num, val, timer_name(timer_num)))
             elif ttype == DELTA:
-                print(delta_format.format(timer_num, val))
+                print(delta_format.format(timer_num, val, timer_name(timer_num)))
             else:
-                print(oops_format.format(timer_num, val, ttype_name))
+                print(oops_format.format(timer_num, val, ttype_name,
+                                         timer_name(timer_num)))
 
             if cur == last:
                 break
