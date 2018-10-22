@@ -534,32 +534,5 @@ implementation {
     signal RtcEvent.rtcEvent(&m_last_time, m_rtc_event);
   }
 
-
-  /*************************************************************************
-   *
-   * low level functions are callable by startup routines.
-   */
-
-  void __rtc_rtcStart() @C() @spontaneous() {
-    call Rtc.rtcStart();
-  }
-
-  void __rtc_setTime(rtctime_t *timep) @C() @spontaneous() {
-    call Rtc.setTime(timep);
-  }
-
-  void __rtc_getTime(rtctime_t *timep) @C() @spontaneous() {
-    call Rtc.getTime(timep);
-  }
-
-  bool __rtc_rtcValid(rtctime_t *timep) @C() @spontaneous() {
-    return call Rtc.rtcValid(timep);
-  }
-
-  int __rtc_compareTimes(rtctime_t *time0p, rtctime_t *time1p) @C() @spontaneous() {
-    return call Rtc.compareTimes(time0p, time1p);
-  }
-
-
   async event void Panic.hook() { }
 }
