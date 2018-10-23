@@ -83,6 +83,10 @@ typedef enum {
   MSP432_POWER_LPM45            /* Vcore off */
 } msp432_power_state_t;
 
+#define POWER_ACTIVE     MSP432_POWER_ACTIVE
+#define POWER_SLEEP      MSP432_POWER_SLEEP
+#define POWER_DEEP_SLEEP MSP432_POWER_DEEP_SLEEP
+
 
 /*
  * Floating-point network-type support.
