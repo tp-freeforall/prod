@@ -59,4 +59,8 @@ implementation {
   VirtualizeTimerC.TimerFrom  -> AlarmToTimerC;
   AlarmToTimerC.Alarm         -> AlarmMilli32C;
   CounterToLocalTimeC.Counter -> CounterMilli32C;
+
+  /* all msp432 based platforms exports TimeSkew */
+  components PlatformC;
+  VirtualizeTimerC.TimeSkew   -> PlatformC;
 }

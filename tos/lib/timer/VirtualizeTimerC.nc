@@ -42,17 +42,27 @@
  * @param max_timers Number of virtual timers to create.
  *
  * @author Eric B. Decker <cire831@gmail.com>
+ *
+ * TimeSkew is optional.  A Platform will export TimeSkew if it supports
+ * updating underlying time h/w.  Advanced topic.
+ *
+ * If a platform doesn't export TimeSkew, there is no impact on the operation
+ * inside VirtualizeTimerImpl.  The Platform is responsible for wiring to
+ * TimeSkew.  For example, the exp_msp432 Platform exports TimeSkew which
+ * is wired by tos/chips/msp432/timer/HilTimerMilliC.nc.
  */
 
 generic configuration VirtualizeTimerC(typedef precision_tag,
                                        int max_timers) @safe() {
   provides interface Timer<precision_tag> as Timer[uint8_t num];
   uses     interface Timer<precision_tag> as TimerFrom;
+  uses     interface TimeSkew;
 }
 implementation {
   components new VirtualizeTimerImplP(precision_tag, max_timers) as VT;
   Timer     = VT.Timer;
   TimerFrom = VT.TimerFrom;
+  TimeSkew  = VT.TimeSkew;
 
   components PlatformC;
   VT.Platform -> PlatformC;

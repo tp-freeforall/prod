@@ -64,6 +64,7 @@ generic module VirtualizeTimerImplP(typedef precision_tag,
   uses {
     interface Timer<precision_tag> as TimerFrom;
     interface Platform;
+    interface TimeSkew;
   }
 }
 implementation {
@@ -216,6 +217,12 @@ implementation {
         call TimerFrom.startOneShotAt(now, min_remaining);
     }
   }
+
+
+  async event void TimeSkew.skew(int32_t skew) {
+    post updateFromTimer();
+  }
+
 
   event void TimerFrom.fired() {
     fireTimers(call TimerFrom.getNow());

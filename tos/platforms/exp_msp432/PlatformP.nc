@@ -47,6 +47,7 @@ module PlatformP {
   provides {
     interface Init;
     interface Platform;
+    interface TimeSkew;
   }
   uses {
     interface Init as PlatformPins;
@@ -118,4 +119,6 @@ implementation {
   default command error_t PeripheralInit.init() {
     return SUCCESS;
   }
+
+  default async event void TimeSkew.skew(int32_t skew) { }
 }

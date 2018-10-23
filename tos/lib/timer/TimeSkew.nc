@@ -1,4 +1,5 @@
-/* Copyright (c) 2016, 2018 Eric B. Decker
+/*
+ * Copyright (c) 2018, Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,40 +33,31 @@
  */
 
 /**
- * @author Eric B. Decker <cire831@gmail.com>
+ * The TinyOS timing system is based on various layers, ultimately
+ * tying to the underlying timing h/w.  Under various circumstances
+ * adjustments may be made by this underlying timing that can result
+ * in time skew.
+ *
+ * Typically this can occur when the RTC (Real Time Clock) subsystem
+ * has had its time adjusted for example via a GPS providing synchronized
+ * time.  If this skew is below a reasonable threshold (platform dependent)
+ * TimeSkew.skew(skew_val) will be signalled.  Beyond that threshold
+ * it might be better to reboot and reestablish reasonable time via
+ * those mechanisms.
+ *
+ * @author Eric B.Decker <cire831@gmail.com>
  */
 
-#include "hardware.h"
-
-configuration PlatformC {
-  provides {
-    interface Init as PlatformInit;
-    interface Platform;
-    interface TimeSkew;
-  }
-  uses interface Init as PeripheralInit;
-}
-
-implementation {
-  components PlatformP, StackC;
-  Platform = PlatformP;
-  PlatformInit = PlatformP;
-  PeripheralInit = PlatformP.PeripheralInit;
-  TimeSkew = PlatformP.TimeSkew;
-
-  PlatformP.Stack -> StackC;
-
-  components PlatformLedsC;
-  PlatformP.PlatformLeds -> PlatformLedsC;
-
-  components PlatformUsciMapC;
-  components PlatformPinsC;
-
-  components T32BlinkC;         /* initial blinky light */
-                                /* from T32_2 interrupt */
-
-  /* clocks are initilized by startup */
-
-  components LocalTimeMilliC;
-  PlatformP.LocalTime -> LocalTimeMilliC;
+interface TimeSkew {
+  /**
+   * Signaled when the underlying timing system has detected timing
+   * skew.
+   *
+   * @param skew    estimated skew computed.  in millisecs (units platform
+   *                dependent, typically binary millisecs).
+   *                > 0, time has been moved into the future (we were slow).
+   *                < 0, time has been shifted backwards, (we were fast).
+   *                = 0, skew is beyond platform limits.
+   */
+  async event void skew(int32_t skew);
 }
