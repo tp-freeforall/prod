@@ -114,4 +114,26 @@ interface Rtc {
    *                     1, time0  > time1
    */
   async command int compareTimes(rtctime_t *time0p, rtctime_t *time1p);
+
+
+  /**
+   * Convert an rtctime to an epoch time.
+   *
+   * Compute the number of microseconds since 1970-1-1 00:00:00.000000 UTC.
+   * The Unix epoch.
+   */
+  async command uint64_t rtc2epoch(rtctime_t *timep);
+
+
+  /**
+   * subsec2micro():
+   * micro2subsec():
+   *
+   * Convert subsec units (jiffies) to microseconds.
+   * Convert microseconds to subsec units (jiffies).
+   *
+   * 1 jiffy is 1/32768 secs ~30.5 usecs (decimal usecs).
+   */
+  async command uint32_t subsec2micro(uint16_t jiffies);
+  async command uint16_t micro2subsec(uint32_t micros);
 }

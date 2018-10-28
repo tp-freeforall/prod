@@ -377,6 +377,162 @@ implementation {
   }
 
 
+  /*
+   * return true if year is a leap year.
+   *
+   * Implements the following common Gregorian leap year calculations:
+   *
+   * 1) if year is evenly divisible by 400, always a leap year.
+   * 2) if year is evenly divisible by 100, never a leap year.
+   * 3) if year is evenly divisible by 4, leap year.
+   * 4) not a leap year.
+   *
+   * Not valid for BC or BCE year numbering.  We use it for years post 1970.
+   */
+  bool leapyear(uint32_t year) {
+    if (year % 400 == 0) return TRUE;
+    if (year % 100 == 0) return FALSE;
+    if (year % 4   == 0) return TRUE;
+    return FALSE;
+  }
+
+  /*
+   * number of accumulated days upto the 1st day of the month
+   * indexed by (mon - 1).
+   */
+  const uint16_t accum_days[] =
+   /* J   F   M   A    M    J    J    A    S    O    N    D */
+    { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
+
+  /*
+   * return number of days from the beginning of the year to passed in date.
+   *
+   * Only report full days up to the current day passed in.
+   */
+  uint32_t datedays(rtctime_t *timep) {
+    uint32_t mon;
+    uint32_t days;
+
+    if (!timep)
+      call Panic.panic(PANIC_TIME, 0, 0, 0, 0, 0);
+    if (timep->year != 1970 && !call Rtc.rtcValid(timep))
+      call Panic.panic(PANIC_TIME, 1, timep->year, timep->mon, timep->day, 0);
+    mon = timep->mon - 1;
+    days = accum_days[mon] + timep->day - 1;
+    if (mon < 2)                /* january or february*/
+      return days;
+    if (leapyear(timep->year))
+      days++;
+    return days;
+  }
+
+
+  /**
+   * rtc2epoch: convert an RTC time to a unix epoch.
+   * usefull when comparing times or looking at deltas.
+   *
+   * return is computed since 1970-01-01T00:00:00.000000
+   *
+   * The return is a fixed point integer.  The upper 32 bits of the return
+   * is the number of seconds since 1970-01-01T00:00:00.  While the lower
+   * 32 bits is the number of microseconds since the last second.
+   *
+   * Returns: -1.-1      if time is < 1970.
+   *
+   * Implements the epoch conversion using unix struct tm algorithm.  See...
+   * http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/
+   *    V1_chap04.html#tag_04_15  or ...
+   *
+   * WARNING: we use 32 bit arithmetic for this computation.  It has been
+   * tested through 2099 which is the same range that the TI RTC hardware
+   * works over.
+   */
+  async command uint64_t Rtc.rtc2epoch(rtctime_t *timep) {
+    uint32_t rtn;
+    uint32_t micros;
+    uint32_t year;
+
+    if (!timep)
+      call Panic.panic(PANIC_TIME, 0, 0, 0, 0, 0);
+    if (timep->year < 1970)
+      return -1ULL;
+    year = timep->year - 1900;
+    rtn = (year - 70) * 31536000    +   /* secs/year */
+      ((year - 69) /4)   * 86400    +   /* number of modulo 4 leaps */
+      ((year + 299)/400) * 86400        /* modulo 400 leaps */
+    - ((year - 1)/100)   * 86400    +   /* sub off modulo 100 leaps */
+      datedays(timep)    * 86400    +   /* number of days since year start */
+      timep->hr          * 3600     +   /* number of secs due to hours */
+      timep->min         * 60       +   /* number of secs due to minutes */
+      timep->sec;
+    micros = call Rtc.subsec2micro(timep->sub_sec);
+    return (uint64_t) rtn << 32 | micros;
+  }
+
+
+  /**
+   * subsec2micro():
+   * Convert subsec units (jiffies) to microseconds.
+   *
+   * 1 jiffy is 1/32768 secs ~30.5 usecs (decimal usecs).
+   *
+   * To maintain 32 bit math, we reduce incoming jiffies by appropriate
+   * powers of 2 until jiffies is < 4096.  The calculation for 4095 is
+   * 4095 * 1000000 = 4095000000 which is less than 4294967296.  This
+   * makes the calulation for the remainder.
+   */
+  async command uint32_t Rtc.subsec2micro(uint16_t jiffies) {
+    uint32_t micros;
+
+    micros = 0;
+    jiffies &= 0x7fff;                  /* clamp to 32767 */
+    if (jiffies > 16383) {
+      jiffies  -= 16384;
+      micros    = 500000;
+    }
+    if (jiffies > 8191) {
+      jiffies  -= 8192;
+      micros   += 250000;
+    }
+    if (jiffies > 4095) {
+      jiffies  -= 4096;
+      micros   += 125000;
+    }
+    micros += (1000000UL * jiffies)/32768;
+    return micros;
+  }
+
+
+  /**
+   * micro2subsec():
+   * Convert microseconds to subsec units (jiffies).
+   *
+   * similarily to subsec2micro() we reduce jiffies until
+   * 32 bit math works.
+   */
+  async command uint16_t Rtc.micro2subsec(uint32_t micros) {
+    uint32_t jiffies;
+
+    if (micros > 999999)                /* sec or greater ? */
+      return 32767;                     /* return max value */
+    jiffies = 0;
+    if (micros > 499999) {
+      micros  -= 500000;
+      jiffies += 16384;
+    }
+    if (micros > 249999) {
+      micros  -= 250000;
+      jiffies += 8192;
+    }
+    if (micros > 124999) {
+      micros  -= 125000;
+      jiffies += 4096;
+    }
+    jiffies += ((32768 * (micros + 16))/1000000);
+    return jiffies;
+  }
+
+
   /*********************************************************************
    *
    * RtcAlarm
