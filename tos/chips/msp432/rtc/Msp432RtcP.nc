@@ -179,6 +179,19 @@ implementation {
   }
 
 
+  /**
+   * Rtc.setTime() and Rtc.syncSetTime() both do the same thing.
+   * Rtc is a low level h/w interface and that is why it is async.
+   *
+   * Under special circumstances, we want to call setTime synchronously.
+   * So ...  even though they do the same thing, we provide both.  Typical
+   * use is via async setTime().
+   */
+  command void Rtc.syncSetTime(rtctime_t *timep) {
+    call Rtc.setTime(timep);
+  }
+
+
   async command void Rtc.setTime(rtctime_t *timep) {
     bool running;
 

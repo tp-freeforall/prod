@@ -73,7 +73,11 @@ interface Rtc {
    *
    * its hardware, can't fail.  If it fails, the driver panics.
    * null pointers are also caught by 0 panics.
+   *
+   * we provide both sync and async versions.   Normally the async
+   * version is used.  Sync is a special case.
    */
+        command void syncSetTime(rtctime_t *timep);
   async command void setTime(rtctime_t *timep);
 
 
