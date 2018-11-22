@@ -40,9 +40,9 @@
  * not is determined by how the chip is packaged.  There is no way to
  * determine from the chip header what is actually there.  Essentially
  * it is a platform thing.
- * 
+ *
  * TA0 is a Tmicro (usec) and TA1 is a Tmilli (msec, 32KiHz ticked).
- * 
+ *
  * All timer modules are the same, each has 5 capture registers and
  * the main Register (TAn->R).  The TAn_0 interrupt fires from the
  * CCR0 interrupt, and TAn_N interrupts for all other CCR registers
@@ -52,7 +52,7 @@
  * vector register.  They are prioritized and when IV is read the
  * highest priority interrupt is cleared.  The value from IV tells
  * which interrupt we should signal.
- * 
+ *
  * Interrupts on TAn_0 come from TAn->CCTL0.CCIFG (CCIE must be set)
  * and are NOT automatically cleared.  This must be done manually in
  * the interrupt handler.
@@ -61,7 +61,7 @@
  * must be set.  This happens else where.  Also when a module is enabled
  * its TAx->CTL.IE (TAIE) should be enabled.  This turns on wrap interrupts.
  * The NVIC enable and TAIE enable happen together.
- * 
+ *
  * This module is the connector from the interrupt to the actual driver.
  */
 
