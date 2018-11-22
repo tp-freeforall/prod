@@ -57,6 +57,7 @@
 
 module HplMsp432PortIntP {
   provides interface HplMsp432PortInt as Int[uint8_t portpin];
+  uses     interface McuSleep;
 }
 
 implementation {
@@ -169,31 +170,37 @@ implementation {
 
   void PORT1_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     uint8_t n = P1-> IV;
+    call McuSleep.irq_preamble();
     port_handler(0x10, n);
   }
 
   void PORT2_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     uint8_t n = P2-> IV;
+    call McuSleep.irq_preamble();
     port_handler(0x20, n);
   }
 
   void PORT3_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     uint8_t n = P3-> IV;
+    call McuSleep.irq_preamble();
     port_handler(0x30, n);
   }
 
   void PORT4_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     uint8_t n = P4-> IV;
+    call McuSleep.irq_preamble();
     port_handler(0x40, n);
   }
 
   void PORT5_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     uint8_t n = P5-> IV;
+    call McuSleep.irq_preamble();
     port_handler(0x50, n);
   }
 
   void PORT6_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     uint8_t n = P6-> IV;
+    call McuSleep.irq_preamble();
     port_handler(0x60, n);
   }
 }

@@ -1,8 +1,7 @@
 /*
  * DO NOT MODIFY: This file cloned from HplMsp432UsciIntA0P.nc for B0
 */
-/*
- * Copyright (c) 2016, Eric B. Decker
+/* Copyright (c) 2016, 2018, Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,9 +40,11 @@
 
 module HplMsp432UsciIntB0P {
   provides interface HplMsp432UsciInt as UsciInt;
+  uses     interface McuSleep;
 }
 implementation {
   void EUSCIB0_Handler() @C() @spontaneous() __attribute__((interrupt)) {
+    call McuSleep.irq_preamble();
     signal UsciInt.interrupted(EUSCI_B0->IV);
   }
 }

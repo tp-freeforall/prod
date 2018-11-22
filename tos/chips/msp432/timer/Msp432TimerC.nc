@@ -207,6 +207,9 @@ implementation {
   components PanicC, PlatformC;
   components HplMsp432TimerIntP as TimerInts;
 
+  components McuSleepC;
+  TimerInts.McuSleep -> McuSleepC;
+
   components new Msp432TimerP((uint32_t) TIMER_A0, TA0_0_IRQn,
                               PLATFORM_TA0_ASYNC) as TA0;
 

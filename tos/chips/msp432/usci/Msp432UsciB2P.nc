@@ -13,4 +13,7 @@ implementation {
 
   components HplMsp432UsciIntB2P as IsrP;
   Interrupt = IsrP;
+
+  components McuSleepC;
+  IsrP.McuSleep -> McuSleepC;
 }

@@ -1,5 +1,4 @@
-/*
- * Copyright (c) 2016, Eric B. Decker
+/* Copyright (c) 2016, 2018, Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,45 +72,54 @@ module HplMsp432TimerIntP {
     interface HplMsp432TimerInt as TimerAInt_0[uint8_t instance];
     interface HplMsp432TimerInt as TimerAInt_N[uint8_t instance];
   }
+  uses interface McuSleep;
 }
 implementation {
   void TA0_0_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     BITBAND_PERI(TIMER_A0->CCTL[0], TIMER_A_CCTLN_CCIFG_OFS) = 0;
+    call McuSleep.irq_preamble();
     signal TimerAInt_0.interrupt[0](0);
   }
 
   void TA0_N_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     uint8_t v = (TIMER_A0->IV) >> 1;
+    call McuSleep.irq_preamble();
     signal TimerAInt_N.interrupt[0](v);
   }
 
   void TA1_0_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     BITBAND_PERI(TIMER_A1->CCTL[0], TIMER_A_CCTLN_CCIFG_OFS) = 0;
+    call McuSleep.irq_preamble();
     signal TimerAInt_0.interrupt[1](0);
   }
 
   void TA1_N_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     uint8_t v = (TIMER_A1->IV) >> 1;
+    call McuSleep.irq_preamble();
     signal TimerAInt_N.interrupt[1](v);
   }
 
   void TA2_0_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     BITBAND_PERI(TIMER_A2->CCTL[0], TIMER_A_CCTLN_CCIFG_OFS) = 0;
+    call McuSleep.irq_preamble();
     signal TimerAInt_0.interrupt[2](0);
   }
 
   void TA2_N_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     uint8_t v = (TIMER_A2->IV) >> 1;
+    call McuSleep.irq_preamble();
     signal TimerAInt_N.interrupt[2](v);
   }
 
   void TA3_0_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     BITBAND_PERI(TIMER_A3->CCTL[0], TIMER_A_CCTLN_CCIFG_OFS) = 0;
+    call McuSleep.irq_preamble();
     signal TimerAInt_0.interrupt[3](0);
   }
 
   void TA3_N_Handler() @C() @spontaneous() __attribute__((interrupt)) {
     uint8_t v = (TIMER_A3->IV) >> 1;
+    call McuSleep.irq_preamble();
     signal TimerAInt_N.interrupt[3](v);
   }
 
