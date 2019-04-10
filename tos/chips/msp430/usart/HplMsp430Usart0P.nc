@@ -66,19 +66,25 @@ module HplMsp430Usart0P @safe() {
 
 implementation
 {
+#if defined(__msp430x12x2)
+  MSP430REG_NORACE(IE2);
+  MSP430REG_NORACE(ME2);
+  MSP430REG_NORACE(IFG2);
+#else
   MSP430REG_NORACE(IE1);
   MSP430REG_NORACE(ME1);
   MSP430REG_NORACE(IFG1);
+#endif
   MSP430REG_NORACE(U0TCTL);
   MSP430REG_NORACE(U0RCTL);
   MSP430REG_NORACE(U0TXBUF);
   
-  TOSH_SIGNAL(UART0RX_VECTOR) {
+  TOSH_SIGNAL(USART0RX_VECTOR) {
     uint8_t temp = U0RXBUF;
     signal Interrupts.rxDone(temp);
   }
   
-  TOSH_SIGNAL(UART0TX_VECTOR) {
+  TOSH_SIGNAL(USART0TX_VECTOR) {
     if ( call HplI2C.isI2C() )
       signal I2CInterrupts.fired();
     else
@@ -139,25 +145,25 @@ implementation
 
   async command bool Usart.isSpi() {
     atomic {
-      return (U0CTL & SYNC) && (ME1 & USPIE0);
+      return (U0CTL & SYNC) && (U0ME & USPIE0);
     }
   }
 
   async command bool Usart.isUart() {
     atomic {
-      return !(U0CTL & SYNC) && ((ME1 & UTXE0) && (ME1 & URXE0));
+      return !(U0CTL & SYNC) && ((U0ME & UTXE0) && (U0ME & URXE0));
     }
   }
 
   async command bool Usart.isUartTx() {
     atomic {
-      return !(U0CTL & SYNC) && (ME1 & UTXE0);
+      return !(U0CTL & SYNC) && (U0ME & UTXE0);
     }
   }
 
   async command bool Usart.isUartRx() {
     atomic {
-      return !(U0CTL & SYNC) && (ME1 & URXE0);
+      return !(U0CTL & SYNC) && (U0ME & URXE0);
     }
   }
 
@@ -181,12 +187,12 @@ implementation
       call UTXD.selectModuleFunc();
       call URXD.selectModuleFunc();
     }
-    ME1 |= (UTXE0 | URXE0);   // USART0 UART module enable
+    U0ME |= (UTXE0 | URXE0);   // USART0 UART module enable
   }
 
   async command void Usart.disableUart() {
     atomic {
-      ME1 &= ~(UTXE0 | URXE0);   // USART0 UART module enable
+      U0ME &= ~(UTXE0 | URXE0);   // USART0 UART module enable
       call UTXD.selectIOFunc();
       call URXD.selectIOFunc();
     }
@@ -195,22 +201,22 @@ implementation
 
   async command void Usart.enableUartTx() {
     call UTXD.selectModuleFunc();
-    ME1 |= UTXE0;   // USART0 UART Tx module enable
+    U0ME |= UTXE0;   // USART0 UART Tx module enable
   }
 
   async command void Usart.disableUartTx() {
-    ME1 &= ~UTXE0;   // USART0 UART Tx module enable
+    U0ME &= ~UTXE0;   // USART0 UART Tx module enable
     call UTXD.selectIOFunc();
 
   }
 
   async command void Usart.enableUartRx() {
     call URXD.selectModuleFunc();
-    ME1 |= URXE0;   // USART0 UART Rx module enable
+    U0ME |= URXE0;   // USART0 UART Rx module enable
   }
 
   async command void Usart.disableUartRx() {
-    ME1 &= ~URXE0;  // USART0 UART Rx module disable
+    U0ME &= ~URXE0;  // USART0 UART Rx module disable
     call URXD.selectIOFunc();
 
   }
@@ -221,12 +227,12 @@ implementation
       call SOMI.selectModuleFunc();
       call UCLK.selectModuleFunc();
     }
-    ME1 |= USPIE0;   // USART0 SPI module enable
+    U0ME |= USPIE0;   // USART0 SPI module enable
   }
 
   async command void Usart.disableSpi() {
     atomic {
-      ME1 &= ~USPIE0;   // USART0 SPI module disable
+      U0ME &= ~USPIE0;   // USART0 SPI module disable
       call SIMO.selectIOFunc();
       call SOMI.selectIOFunc();
       call UCLK.selectIOFunc();
@@ -291,7 +297,7 @@ implementation
   }
 
   async command bool Usart.isTxIntrPending(){
-    if (IFG1 & UTXIFG0){
+    if (U0IFG & UTXIFG0){
       return TRUE;
     }
     return FALSE;
@@ -305,54 +311,54 @@ implementation
   }
 
   async command bool Usart.isRxIntrPending(){
-    if (IFG1 & URXIFG0){
+    if (U0IFG & URXIFG0){
       return TRUE;
     }
     return FALSE;
   }
 
   async command void Usart.clrTxIntr(){
-    IFG1 &= ~UTXIFG0;
+    U0IFG &= ~UTXIFG0;
   }
 
   async command void Usart.clrRxIntr() {
-    IFG1 &= ~URXIFG0;
+    U0IFG &= ~URXIFG0;
   }
 
   async command void Usart.clrIntr() {
-    IFG1 &= ~(UTXIFG0 | URXIFG0);
+    U0IFG &= ~(UTXIFG0 | URXIFG0);
   }
 
   async command void Usart.disableRxIntr() {
-    IE1 &= ~URXIE0;
+    U0IE &= ~URXIE0;
   }
 
   async command void Usart.disableTxIntr() {
-    IE1 &= ~UTXIE0;
+    U0IE &= ~UTXIE0;
   }
 
   async command void Usart.disableIntr() {
-      IE1 &= ~(UTXIE0 | URXIE0);
+      U0IE &= ~(UTXIE0 | URXIE0);
   }
 
   async command void Usart.enableRxIntr() {
     atomic {
-      IFG1 &= ~URXIFG0;
-      IE1 |= URXIE0;
+      U0IFG &= ~URXIFG0;
+      U0IE |= URXIE0;
     }
   }
 
   async command void Usart.enableTxIntr() {
     atomic {
-      IFG1 &= ~UTXIFG0;
-      IE1 |= UTXIE0;
+      U0IFG &= ~UTXIFG0;
+      U0IE |= UTXIE0;
     }
   }
 
   async command void Usart.enableIntr() {
     atomic {
-      IFG1 &= ~(UTXIFG0 | URXIFG0);
-      IE1 |= (UTXIE0 | URXIE0);
+      U0IFG &= ~(UTXIFG0 | URXIFG0);
+      U0IE |= (UTXIE0 | URXIE0);
     }
   }
 
