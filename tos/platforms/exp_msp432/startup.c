@@ -41,12 +41,69 @@
 #include <stdint.h>
 #include <msp432.h>
 
+#ifndef nop
+#define nop() __asm volatile("nop")
+#endif
+
 /*
- * msp432.h find the right chip header (msp432p401r.h) which also pulls in
- * the correct cmsis header (core_cm4.h).
+ * The following defines control low level hw init.
+ *
+ * MSP432_DCOCLK       16777216 | 33554432 | 48000000   dcoclk
+ * MSP432_VCORE:       0 or 1                           core voltage
+ * MSP432_FLASH_WAIT:  number of wait states, [0-3]     needed wait states
+ * MSP432_T32_DIV      (1 | 2 | 3)                      correction for t32
+ * MSP432_T32_ONE_SEC  1048576 | 2097152 | 3000000      ticks for one sec (t32)
+ * MSP432_TA_IDEX_DIV  1 | 2 | 3                        extra ta divisor
+ */
+
+#ifdef notdef
+#define MSP432_DCOCLK      48000000UL
+#define MSP432_VCORE       1
+#define MSP432_FLASH_WAIT  1
+#define MSP432_T32_DIV     3
+#define MSP432_T32_ONE_SEC 3000000UL
+#define MSP432_TA_IDEX_DIV 3
+#endif
+
+#ifdef notdef
+#define MSP432_DCOCLK      33554432UL
+#define MSP432_VCORE       1
+#define MSP432_FLASH_WAIT  1
+#define MSP432_T32_DIV     2
+#define MSP432_T32_ONE_SEC 2097152
+#define MSP432_TA_IDEX_DIV 2
+#endif
+
+#ifdef notdef
+/* not quite right, can't get the divisors right */
+#define MSP432_DCOCLK      24000000UL
+#define MSP432_VCORE       1
+#define MSP432_FLASH_WAIT  0
+#define MSP432_T32_DIV     1
+#define MSP432_T32_ONE_SEC 1500000UL
+#define MSP432_TA_IDEX_DIV 1
+#endif
+
+/* default 16MiHz */
+#define MSP432_DCOCLK      16777216UL
+#define MSP432_VCORE       0
+#define MSP432_FLASH_WAIT  1
+#define MSP432_T32_DIV     1
+#define MSP432_T32_ONE_SEC 1048576UL
+#define MSP432_TA_IDEX_DIV 1
+
+
+/*
+ * msp432.h finds the right chip header (msp432p401r.h) which also pulls in
+ * the correct cmsis header (core_cm4.h).  The variables DEVICE and
+ * __MSP432P401R__ result in pulling in the appropriate files.
+.* See <TINYOS_ROOT_DIR>/support/make/msp432/msp432.rules.
  *
  * If __MSP432_DVRLIB_ROM__ is defined driverlib calls will be made to
  * the ROM copy on board the msp432 chip.
+ *
+ * use "add-symbol-file symbols_hw 0" in GDB to add various h/w register
+ * structure definitions.
  */
 
 extern uint32_t __data_load__;
@@ -55,42 +112,6 @@ extern uint32_t __data_end__;
 extern uint32_t __bss_start__;
 extern uint32_t __bss_end__;
 extern uint32_t __StackTop__;
-
-/* pull in the type definitions.  won't allocate any space */
-SCB_Type                    *__scb;
-SCnSCB_Type                 *__scnscb;
-SysTick_Type                *__systick;
-NVIC_Type                   *__nvic;
-ITM_Type                    *__itm;
-DWT_Type                    *__dwt;
-TPI_Type                    *__tpi;
-CoreDebug_Type              *__cd;
-MPU_Type                    *__mpu;
-FPU_Type                    *__fpu;
-
-RSTCTL_Type                 *__rstctl;
-SYSCTL_Type                 *__sysctl;
-SYSCTL_Boot_Type            *__sysboot;
-CS_Type                     *__cs;
-PSS_Type                    *__pss;
-PCM_Type                    *__pcm;
-FLCTL_Type                  *__flctl;
-DMA_Channel_Type            *__dmachn;
-DMA_Control_Type            *__dmactl;
-PMAP_COMMON_Type            *__pmap;
-PMAP_REGISTER_Type          *__p1map;
-CRC32_Type                  *__crc32;
-AES256_Type                 *__aes256;
-WDT_A_Type                  *__wdt;
-Timer32_Type                *__t32;
-Timer_A_Type                *__ta0;
-RTC_C_Type                  *__rtc;
-REF_A_Type                  *__ref;
-ADC14_Type                  *__adc14;
-EUSCI_A_Type                *_uca0;
-EUSCI_B_Type                *_ucb0;
-FL_BOOTOVER_MAILBOX_Type    *__bomb;
-TLV_Type                    *__tlv;
 
 
 int  main();                    /* main() symbol defined in RealMainP */
@@ -412,8 +433,12 @@ void __debug_init() {
     CoreDebug_DEMCR_VC_MMERR_Msk        |
     CoreDebug_DEMCR_VC_CORERESET_Msk);
 
-  /* disable default write buffering.  change all busfaults into precise */
-  SCnSCB->ACTLR |= SCnSCB_ACTLR_DISDEFWBUF_Msk;
+  /*
+   * disable out of order floating point, no intermixing with integer instructions
+   * disable default write buffering.  change all busfaults into precise
+   */
+  SCnSCB->ACTLR |= SCnSCB_ACTLR_DISOOFP_Pos |
+    SCnSCB_ACTLR_DISDEFWBUF_Msk;
 
   SYSCTL->PERIHALT_CTL =
     SYSCTL_PERIHALT_CTL_HALT_T16_0      |       /* TA0 TMicro */
@@ -440,6 +465,49 @@ void __ram_init() {
 }
 
 
+#define AMR_AM_LDO_VCORE0 PCM_CTL0_AMR_0
+#define AMR_AM_LDO_VCORE1 PCM_CTL0_AMR_1
+
+#ifndef MSP432_VCORE
+#warning MSP432_VCORE not defined, defaulting to 0
+#define AMR_VCORE AMR_AM_LDO_VCORE0
+#elif (MSP432_VCORE == 0)
+#define AMR_VCORE AMR_AM_LDO_VCORE0
+#elif (MSP432_VCORE == 1)
+#define AMR_VCORE AMR_AM_LDO_VCORE1
+#else
+#warning MSP432_VCORE bad value, defaulting to 0
+#define AMR_VCORE AMR_AM_LDO_VCORE0
+#endif
+
+void __pwr_init() {
+  while (PCM->CTL1 & PCM_CTL1_PMR_BUSY);
+  PCM->CTL0 = PCM_CTL0_KEY_VAL | AMR_VCORE;
+  while (PCM->CTL1 & PCM_CTL1_PMR_BUSY);
+}
+
+
+/*
+ * BANK0_WAIT_n and BANK1_WAIT_n are the same.
+ */
+#define __FW_0 FLCTL_BANK0_RDCTL_WAIT_0
+#define __FW_1 FLCTL_BANK0_RDCTL_WAIT_1
+#define __FW_2 FLCTL_BANK0_RDCTL_WAIT_2
+
+#ifndef MSP432_FLASH_WAIT
+#warning MSP432_FLASH_WAIT not defined, defaulting to 0
+#define __FW __FW_0
+#elif (MSP432_FLASH_WAIT == 0)
+#define __FW __FW_0
+#elif (MSP432_FLASH_WAIT == 1)
+#define __FW __FW_1
+#elif (MSP432_FLASH_WAIT == 2)
+#define __FW __FW_2
+#else
+#warning MSP432_FLASH_WAIT bad value, defaulting to 0
+#define __FW __FW_0
+#endif
+
 void __flash_init() {
   /*
    * For now turn off buffering, (FIXME) check to see if buffering makes
@@ -447,6 +515,8 @@ void __flash_init() {
    */
   FLCTL->BANK0_RDCTL &= ~(FLCTL_BANK0_RDCTL_BUFD | FLCTL_BANK0_RDCTL_BUFI);
   FLCTL->BANK1_RDCTL &= ~(FLCTL_BANK1_RDCTL_BUFD | FLCTL_BANK1_RDCTL_BUFI);
+  FLCTL->BANK0_RDCTL = (FLCTL->BANK0_RDCTL & ~FLCTL_BANK0_RDCTL_WAIT_MASK) | __FW;
+  FLCTL->BANK1_RDCTL = (FLCTL->BANK1_RDCTL & ~FLCTL_BANK1_RDCTL_WAIT_MASK) | __FW;
 }
 
 
@@ -466,7 +536,7 @@ void __t32_init() {
    * Using Ty as a 1 second ticker.
    */
   tp = TIMER32_2;
-  tp->LOAD = 1048576;           /* 1 MiHz, 1/sec */
+  tp->LOAD = MSP432_T32_ONE_SEC;        /* ticks in a seconds */
   tp->CONTROL = T32_DIV_16 | T32_ENABLE | T32_32BITS | T32_PERIODIC;
 }
 
@@ -478,8 +548,18 @@ void __t32_init() {
  * ACLK:        LFXTCLK/1       32768
  * BCLK:        LFXTCLK/1       32768
  * SMCLK:       DCO/2           8MiHz
- * HSMCLK:      DCO/1           16MiHz
+ * HSMCLK:      DCO/2           8MiHz
  * MCLK:        DCO/1           16MiHz
+ *
+ * technically, Vcore0 is only good up to 16MHz with 0 flash wait
+ * states.  We have seen it work but it is ~5% overclocked and it
+ * isn't a good idea.  If you want 16MiHz you need 1 flash wait
+ * state or run with Vcore1.  We do Vcore0 and the 1 flash wait
+ * state.  That is 1 memory bus clock extra.  The main cpu does
+ * instruction fetchs in lines of 16 bytes and the extra wait state
+ * probably overlaps in the pipeline.
+ *
+ * Flash wait states and power manipulation happens before core_clk_init.
  *
  * LFXTDRIVE:   3 max (default).
  *
@@ -515,7 +595,29 @@ void __t32_init() {
  * DCORSEL is 10us and t_start is 5 us so we should be good.
  */
 
+#ifndef MSP432_DCOCLK
+#warning MSP432_DCOCLK not defined, defaulting to 16777216
+#define MSP432_DCOCLK 16777216
+#endif
+
+#if MSP432_DCOCLK == 16777216
+#define CLK_DCORSEL CS_CTL0_DCORSEL_3
 #define CLK_DCOTUNE 152
+#elif MSP432_DCOCLK == 24000000
+#define CLK_DCORSEL CS_CTL0_DCORSEL_4
+#define CLK_DCOTUNE 0
+#elif MSP432_DCOCLK == 33554432
+#define CLK_DCORSEL CS_CTL0_DCORSEL_4
+#define CLK_DCOTUNE 155
+#elif MSP432_DCOCLK == 48000000
+#define CLK_DCORSEL CS_CTL0_DCORSEL_5
+#define CLK_DCOTUNE 0
+#else
+#warning MSP432_DCOCLK illegal value, defaulting to 16777216
+#define CLK_DCORSEL CS_CTL0_DCORSEL_3
+#define CLK_DCOTUNE 152
+#endif
+
 
 uint32_t lfxt_startup_time;
 
@@ -529,12 +631,12 @@ void __core_clk_init() {
    * it always stays 1).
    */
   CS->KEY = CS_KEY_VAL;
-  CS->CTL0 = CS_CTL0_DCORSEL_3 | CS_CTL0_DCORES | CLK_DCOTUNE;
-  CS->CTL1 = CS_CTL1_SELS__DCOCLK  | CS_CTL1_DIVS__2 | CS_CTL1_DIVHS__1 |
+  CS->CTL0 = CLK_DCORSEL | CS_CTL0_DCORES | CLK_DCOTUNE;
+  CS->CTL1 = CS_CTL1_SELS__DCOCLK  | CS_CTL1_DIVS__2 | CS_CTL1_DIVHS__2 |
              CS_CTL1_SELA__LFXTCLK | CS_CTL1_DIVA__1 |
              CS_CTL1_SELM__DCOCLK  | CS_CTL1_DIVM__1;
   /*
-   * turn on the t32s running off MCLK (16Mihz/16 -> 1MiHz) so we can
+   * turn on the t32s running off MCLK (mclk/16 -> (1MiHz | 3MHz) so we can
    * time the turn on of the remainder of the system.
    */
   __t32_init();                   /* rawUsecs */
@@ -562,7 +664,7 @@ void __core_clk_init() {
     BITBAND_PERI(CS->CLRIFG,CS_CLRIFG_CLR_LFXTIFG_OFS) = 1;
   }
   CS->KEY = 0;                  /* lock module */
-  lfxt_startup_time = -TIMER32_1->VALUE;
+  lfxt_startup_time = (-TIMER32_1->VALUE)/MSP432_T32_DIV;
 }
 
 
@@ -571,8 +673,19 @@ void __core_clk_init() {
 #define TA_ACLK1        (TIMER_A_CTL_SSEL__ACLK  | TIMER_A_CTL_ID__1)
 #define TA_SMCLK8       (TIMER_A_CTL_SSEL__SMCLK | TIMER_A_CTL_ID__8)
 
-void __ta_init(Timer_A_Type * tap, uint32_t clkdiv) {
-  tap->EX0 = TIMER_A_EX0_IDEX__1;
+#if MSP432_TA_IDEX_DIV == 1
+#define MSP432_TA_EX (TIMER_A_EX0_IDEX__1)
+#elif MSP432_TA_IDEX_DIV == 2
+#define MSP432_TA_EX (TIMER_A_EX0_IDEX__2)
+#elif MSP432_TA_IDEX_DIV == 3
+#define MSP432_TA_EX (TIMER_A_EX0_IDEX__3)
+#else
+#warning MSP432_TA_IDEX_DIV bad value, using default of 1
+#define MSP432_TA_EX (TIMER_A_EX0_IDEX__1)
+#endif
+
+void __ta_init(Timer_A_Type * tap, uint32_t clkdiv, uint32_t ex_div) {
+  tap->EX0 = ex_div;
   tap->CTL = TA_FREERUN | TA_CLR | clkdiv;
   tap->R = 0;
 }
@@ -601,7 +714,7 @@ void __start_timers() {
 
   /* restart the 32 bit 1MiHz tickers */
   TIMER32_1->LOAD = 0xffffffff;
-  TIMER32_2->LOAD = 1000000;
+  TIMER32_2->LOAD = MSP432_T32_ONE_SEC;
 }
 
 
@@ -628,20 +741,21 @@ void __start_timers() {
  * TMicro <-  TA0 <- SMCLK/8 <- DCO/2 (1MiHz)
  * TMilli <-  TA1 <- ACLK/1 (32KiHz)
  * rawUsecs<- T32_1 <- MCLK/16 <- DCO/1 32 bit raw usecs
- * rawJiffies<- TA0 <- ACLK/1 (32KiHz) 16 bits wide
+ * rawJiffies<- TA1 <- ACLK/1 (32KiHz) 16 bits wide
  */
 
 void __system_init(void) {
   __exception_init();
   __debug_init();
   __ram_init();
+  __pwr_init();
   __flash_init();
   BITBAND_PERI(P1->OUT, 0) = 1;
   __core_clk_init();
   BITBAND_PERI(P1->OUT, 0) = 0;
 
-  __ta_init(TIMER_A0, TA_SMCLK8); /* Tmicro */
-  __ta_init(TIMER_A1, TA_ACLK1);  /* Tmilli */
+  __ta_init(TIMER_A0, TA_SMCLK8, MSP432_TA_EX);         /* Tmicro */
+  __ta_init(TIMER_A1, TA_ACLK1,  TIMER_A_EX0_IDEX__1);  /* Tmilli */
   __rtc_init();
   __start_timers();
 }

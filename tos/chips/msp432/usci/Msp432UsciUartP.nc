@@ -161,9 +161,7 @@ implementation {
      * but kicking reset turns off the interrupt enables.
      */
     call Usci.enterResetMode_();
-    call RXD.makeInput();
     call RXD.setFunction(MSP432_GPIO_IO);
-    call TXD.makeOutput();
     call TXD.setFunction(MSP432_GPIO_IO);
   }
 
@@ -188,16 +186,13 @@ implementation {
      */
     atomic {
       call Usci.configure(config, TRUE);
-      call RXD.makeInput();
-      call TXD.setFunction(MSP432_GPIO_MOD);
-      call TXD.makeOutput();
+      call RXD.setFunction(MSP432_GPIO_MOD);
       call TXD.setFunction(MSP432_GPIO_MOD);
 
       /*
        * all configured.  before leaving reset and turning on interrupts
        * reset the state variables about where we are in the buffer.
        */
-      m_tx_buf = m_rx_buf = 0;		/* really?  do we want to do this? */
       call Usci.leaveResetMode_();
 
       /* any IE bits are cleared on reset, turn on RX interrupt */
@@ -236,7 +231,7 @@ implementation {
 
 	tx_buf = m_tx_buf;
 	tx_len = m_tx_len;
-        m_tx_buf = 0;
+        m_tx_buf = NULL;
         signal UartStream.sendDone(tx_buf, tx_len, SUCCESS);
       }
     }
@@ -348,11 +343,8 @@ implementation {
 
   /*
    * Check to see if space is available for another transmit byte to go out.
-   *
-   * If something goes wrong, just return FALSE (no space is available).
    */
   async command bool UartByte.sendAvail() {
-    /* isTxIntrPending returns TRUE if space is available */
     return call Usci.isTxIntrPending();
   }
 
@@ -404,12 +396,9 @@ implementation {
 
   /*
    * Check to see if another Rx byte is available.
-   *
-   * If something goes wrong, just return FALSE (no byte is available).
    */
   async command bool UartByte.receiveAvail() {
-    /* isRxIntrPending returns TRUE if another rx byte is available */
-    return (call Usci.isRxIntrPending());
+    return call Usci.isRxIntrPending();
   }
 
 
@@ -439,7 +428,7 @@ implementation {
           if (m_rx_len == m_rx_pos) {
             rx_buf = m_rx_buf;
             rx_len = m_rx_len;
-            m_rx_buf = 0;
+            m_rx_buf = NULL;
             signal UartStream.receiveDone(rx_buf, rx_len, SUCCESS);
           }
         } else
@@ -468,14 +457,16 @@ implementation {
   async event void Panic.hook() { }
 
 #ifndef REQUIRE_PLATFORM
-  default async command uint32_t Platform.usecsRaw()   { return 0; }
-  default async command uint32_t Platform.jiffiesRaw() { return 0; }
+  default async command uint32_t Platform.usecsRaw()       { return 0; }
+  default async command uint32_t Platform.usecsRawSize()   { return 0; }
+  default async command uint32_t Platform.jiffiesRaw()     { return 0; }
+  default async command uint32_t Platform.jiffiesRawSize() { return 0; }
 #endif
 
 #ifndef REQUIRE_PANIC
-  default async command void Panic.panic(uint8_t pcode, uint8_t where, uint16_t arg0,
-					 uint16_t arg1, uint16_t arg2, uint16_t arg3) { }
-  default async command void  Panic.warn(uint8_t pcode, uint8_t where, uint16_t arg0,
-					 uint16_t arg1, uint16_t arg2, uint16_t arg3) { }
+  default async command void Panic.panic(uint8_t pcode, uint8_t where,
+        parg_t arg0, parg_t arg1, parg_t arg2, parg_t arg3) { }
+  default async command void  Panic.warn(uint8_t pcode, uint8_t where,
+        parg_t arg0, parg_t arg1, parg_t arg2, parg_t arg3) { }
 #endif
 }
