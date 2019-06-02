@@ -263,10 +263,13 @@ implementation
 		return SUCCESS;
 	}
 
-	/* true if space for outgoing tx byte */
-	async command bool UartByte.sendAvail() {
-		return (call HplSam3UartStatus.isTransmitterReady());
-	}
+        /*
+         * Check to see if space is available for another transmit byte to go out.
+         */
+        async command bool UartByte.sendAvail() {
+          return call HplSam3UartStatus.isTransmitterReady();
+        }
+
 
 	async command error_t UartByte.receive(uint8_t *byte, uint8_t timeout)
 	{
@@ -282,9 +285,13 @@ implementation
 		return SUCCESS;
 	}
 
-	async command bool UartByte.receiveAvail() {
-		return (call HplSam3UartStatus.isReceiverReady());
-	}
+        /*
+         * Check to see if another Rx byte is available.
+         */
+        async command bool UartByte.receiveAvail() {
+          return call HplSam3UartStatus.isReceiverReady();
+        }
+
 
 	default async event void UartStream.sendDone(uint8_t *buffer, uint16_t length, error_t error) {}
 	default async event void UartStream.receivedByte(uint8_t byte) {}

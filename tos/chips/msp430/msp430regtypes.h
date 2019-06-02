@@ -185,6 +185,7 @@
 #define TYPE_DMA2DA uint16_t
 #define TYPE_DMA2SA uint16_t
 #endif
+
 #define TYPE_DCOCTL uint8_t
 #define TYPE_DMA0CTL uint16_t
 #define TYPE_DMA0DAL uint16_t

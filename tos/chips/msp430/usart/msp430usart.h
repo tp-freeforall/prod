@@ -40,9 +40,9 @@
 #endif
 
 #define MSP430_HPLUSART0_RESOURCE "Msp430Usart0.Resource"
-#define MSP430_SPIO_BUS "Msp430Spi0.Resource"
+#define MSP430_SPI0_BUS "Msp430Spi0.Resource"
 #define MSP430_UARTO_BUS "Msp430Uart0.Resource"
-#define MSP430_I2CO_BUS "Msp430I2C0.Resource"
+#define MSP430_I2C0_BUS "Msp430I2C0.Resource"
 
 #define MSP430_HPLUSART1_RESOURCE "Msp430Usart1.Resource"
 #define MSP430_SPI1_BUS "Msp430Spi1.Resource"

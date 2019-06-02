@@ -195,11 +195,16 @@ implementation {
     return SUCCESS;
   }
 
-  async command bool UartByte.sendAvail[ uint8_t id ]() {
+
+  /*
+   * Check to see if space is available for another transmit byte to go out.
+   */
+  async command bool UartByte.sendAvail[uint8_t id]() {
     if (call UsciResource.isOwner[id]() == FALSE)
       return FALSE;
-    return (call Usci.isTxIntrPending());
+    return call Usci.isTxIntrPending();
   }
+
 
   async command error_t UartByte.receive[ uint8_t id ]( uint8_t* byte, uint8_t timeout ) {
     uint16_t timeout_micro = m_byte_time * timeout + 1;
@@ -216,11 +221,16 @@ implementation {
     return SUCCESS;
   }
 
-  async command bool UartByte.receiveAvail[ uint8_t id ]() {
+
+  /*
+   * Check to see if another Rx byte is available.
+   */
+  async command bool UartByte.receiveAvail[uint8_t id]() {
     if (call UsciResource.isOwner[id]() == FALSE)
       return FALSE;
-    return (call Usci.isRxIntrPending());
+    return call Usci.isRxIntrPending();
   }
+
 
   async event void Counter.overflow() {}
 

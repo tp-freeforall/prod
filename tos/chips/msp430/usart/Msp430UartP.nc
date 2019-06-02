@@ -189,11 +189,15 @@ implementation {
     return SUCCESS;
   }
   
-  async command bool UartByte.sendAvail[ uint8_t id ]() {
+  /*
+   * Check to see if space is available for another transmit byte to go out.
+   */
+  async command bool UartByte.sendAvail[uint8_t id]() {
     if (call UsartResource.isOwner[id]() == FALSE)
       return FALSE;
-    return (call Usart.isTxIntrPending());
+    return call Usart.isTxIntrPending();
   }
+
 
   async command error_t UartByte.receive[ uint8_t id ]( uint8_t* byte, uint8_t timeout ) {
     
@@ -213,11 +217,15 @@ implementation {
 
   }
   
-  async command bool UartByte.receiveAvail[ uint8_t id ]() {
+  /*
+   * Check to see if another Rx byte is available.
+   */
+  async command bool UartByte.receiveAvail[uint8_t id]() {
     if (call UsartResource.isOwner[id]() == FALSE)
       return FALSE;
-    return (call Usart.isRxIntrPending());
+    return call Usart.isRxIntrPending();
   }
+
 
   async event void Counter.overflow() {}
   

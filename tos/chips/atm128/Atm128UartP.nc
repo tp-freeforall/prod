@@ -198,8 +198,11 @@ implementation{
     return SUCCESS;
   }
   
+  /*
+   * Check to see if space is available for another transmit byte to go out.
+   */
   async command bool UartByte.sendAvail() {
-    return (call HplUart.isTxEmpty());
+    return call HplUart.isTxEmpty();
   }
 
   async command error_t UartByte.receive( uint8_t * byte, uint8_t timeout){
@@ -221,9 +224,13 @@ implementation{
     
   }
   
+  /*
+   * Check to see if another Rx byte is available.
+   */
   async command bool UartByte.receiveAvail() {
-    return (!call HplUart.isRxEmpty());
+    return !call HplUart.isRxEmpty();
   }
+
 
   async event void Counter.overflow() {}
 

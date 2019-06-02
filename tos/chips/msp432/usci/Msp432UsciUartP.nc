@@ -342,11 +342,8 @@ implementation {
 
   /*
    * Check to see if space is available for another transmit byte to go out.
-   *
-   * If something goes wrong, just return FALSE (no space is available).
    */
   async command bool UartByte.sendAvail() {
-    /* isTxIntrPending returns TRUE if space is available */
     return call Usci.isTxIntrPending();
   }
 
@@ -398,12 +395,9 @@ implementation {
 
   /*
    * Check to see if another Rx byte is available.
-   *
-   * If something goes wrong, just return FALSE (no byte is available).
    */
   async command bool UartByte.receiveAvail() {
-    /* isRxIntrPending returns TRUE if another rx byte is available */
-    return (call Usci.isRxIntrPending());
+    return call Usci.isRxIntrPending();
   }
 
 

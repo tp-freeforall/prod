@@ -134,11 +134,11 @@ download()
     [[ -a ${GMP}.tar.bz2 ]] \
 	|| wget http://ftp.gnu.org/gnu/gmp/${GMP}.tar.bz2
     [[ -a ${MPC}.tar.gz ]] \
-	|| wget http://www.multiprecision.org/mpc/download/${MPC}.tar.gz
+	|| wget http://www.multiprecision.org/downloads/${MPC}.tar.gz
 
     echo "  ... ${MSPGCC} patches"
     [[ -a ${MSPGCC}.tar.bz2 ]] \
-	|| wget http://sourceforge.net/projects/mspgcc/files/mspgcc/${MSPGCC_DIR}${MSPGCC}.tar.bz2
+	|| wget https://downloads.sourceforge.net/project/mspgcc/mspgcc/${MSPGCC_DIR}${MSPGCC}.tar.bz2
 
     # We need to unpack this in order to find what libc to download
     [[ -d ${MSPGCC} ]] \
@@ -149,7 +149,7 @@ download()
     echo "      (mcu)  ${MSP430MCU}"
 
     [[ -a ${MSP430MCU}.tar.bz2 ]] \
-	|| wget http://sourceforge.net/projects/mspgcc/files/msp430mcu/${MSP430MCU}.tar.bz2
+	|| wget https://sourceforge.net/projects/mspgcc/files/msp430mcu/${MSP430MCU}.tar.bz2
 
     MSP430LIBC_VER=$(cat ${MSPGCC}/msp430-libc.version)
     MSP430LIBC=msp430-libc-${MSP430LIBC_VER}
@@ -179,7 +179,7 @@ patch_dirs()
     set -e
     (
 	cd ${BINUTILS}
-	echo -e "\n***" mspgcc ${BINUTILS} patch
+	echo -e "\n***" mspgcc ${BINUTILS} patch: ../${MSPGCC}/msp430-binutils-${BINUTILS_VER}a-*.patch
 	cat ../${MSPGCC}/msp430-binutils-${BINUTILS_VER}a-*.patch | patch -p1
 #	echo -e "\n***" LTS binutils bugfix patches...
 #	cat ../msp430-binutils-*.patch | patch -p1
@@ -252,6 +252,7 @@ build_binutils()
     (
 	cd ${BINUTILS}
 	../${BINUTILS}/configure \
+            --disable-werror   \
 	    --prefix=${PREFIX} \
 	    --target=msp430
 	make ${MAKE_J}

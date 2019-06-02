@@ -48,6 +48,7 @@ module PlatformP {
     interface Init;
     interface Platform;
     interface TimeSkew;
+    interface StdControl;
   }
   uses {
     interface Init as PlatformPins;
@@ -71,6 +72,19 @@ implementation {
 
 
   async command uint32_t Platform.localTime()      { return call LocalTime.get(); }
+
+
+  /*
+   * dummy StdControl for PlatformSerial.
+   */
+  command error_t StdControl.start() {
+    return SUCCESS;
+  }
+
+  command error_t StdControl.stop() {
+    return SUCCESS;
+  }
+
 
   /* T32 is a count down so negate it */
   async command uint32_t Platform.usecsRaw()       { return -(TIMER32_1->VALUE); }

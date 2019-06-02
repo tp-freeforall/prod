@@ -85,7 +85,7 @@
 #include <driverlib.h>
 
 /*
- * SPI Configuration Parameters 
+ * SPI Configuration Parameters
  *
  * Master: spi mode 0, change on rising, capture on falling, inactive low,
  *         MSB first, 8 bit, Master, SMCLK/2
@@ -212,7 +212,7 @@ int main(void) {
       dmaRxData[i] = 0x8f;
     }
 
-    /* 
+    /*
      * configure masterRdy/slaveRdy for Slave
      *
      * on reset all ports are inputs and set to port,  2.6 is masterRdy
@@ -253,7 +253,7 @@ int main(void) {
       dmaRxData[i] = 0xf8;
     }
 
-    /* 
+    /*
      * configure masterRdy/slaveRdy for Master.
      *
      * on reset all ports are inputs and set to port,  2.6 is masterRdy

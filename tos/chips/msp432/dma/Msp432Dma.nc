@@ -87,6 +87,7 @@ interface Msp432Dma {
    */
   async command void dma_clear_int();
 
+
   /*
    * signal from the DMA interrupt handler to the client.
    *

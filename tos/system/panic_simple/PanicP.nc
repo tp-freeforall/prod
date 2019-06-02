@@ -85,7 +85,7 @@ implementation {
 #else
   void debug_break(parg_t arg)  __attribute__ ((noinline)) {
     _arg = arg;
-//    ROM_DEBUG_BREAK(0xf0);              /* BRK */
+    ROM_DEBUG_BREAK(0xf0);              /* BRK */
   }
 #endif
 
