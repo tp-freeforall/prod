@@ -80,7 +80,7 @@ enum {
 
 generic module Msp432UsciSpiP () @safe() {
   provides {
-    interface Init;
+    interface Init as PeriphInit;
     interface SpiPacket;
     interface SpiBlock;
     interface SpiByte;
@@ -380,7 +380,7 @@ implementation {
 
 
   /* interrupts should be off */
-  command error_t Init.init() {
+  command error_t PeriphInit.init() {
     configure_(call Msp432UsciConfigure.getConfiguration());
     call Usci.enableModuleInt();
     return SUCCESS;

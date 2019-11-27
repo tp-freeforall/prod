@@ -49,24 +49,24 @@
  *
  * Interfaces implemented:
  *
- * Init                     module use initilization
+ * Init                     h/w initilization when module used.
  * Msp432Timer              controls core Timer (TAx->CTL)
  * Msp432TimerCCTL          controls Capture/Compare Register (CCR) [n]
  * Msp432TimerCompare       controls one CCR module for compare func
  * Msp432TimerCaptureV2     controls one CCR module for capture func
  *
- * We export Init to allow initilization functions to happen if a module
- * is actually used.  The reference should wire in PlatformC.PeripheralInit
- * to cause this initilization to be invoked
+ * We export Init for each timer which allows initilization of the h/w
+ * module when a module is used.  The reference should wire in
+ * PlatformC.PeripheralInit to cause this initilization to be invoked
  *
  * Most h/w timer initilization happens during startup (startup.c) when
- * the clocks are initilized.  This is because how the timers are clocked
- * is inherently platform dependent and tied to how the clocks are set up.
+ * the clocks are initilized.  This is because timers and clocks are
+ * inherently platform dependent.
  *
  * However, we don't want to enable the NVIC interrupt unless the actual
- * timer has been wired in.  Init allows this to happen on a per invocation
- * basis.  When a module is instantiated, we also turn on the core wrap
- * interrupt.
+ * timer has been wired in.  PeriphInit allows this to happen on a per
+ * invocation basis.  When a module is instantiated, we also turn on the
+ * core wrap interrupt.
  *
  * @author Eric B. Decker <cire831@gmail.com>
  *
