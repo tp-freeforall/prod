@@ -3,6 +3,10 @@
 # copy gdb_tasks.py to <app>/.gdb_tasks.py
 # and add "source .gdb/.gdb_tasks.py" to the <app>/.gdbinit file.
 #
+# The task_dict determines the mapping between task id and task name.
+# These mappings can be found by examining app.c (translator output).
+# Look for SchedulerBasicP__TaskBasic__runTask... and then build
+# the dictionary from the switch statement.
 
 from __future__ import print_function
 from binascii   import hexlify

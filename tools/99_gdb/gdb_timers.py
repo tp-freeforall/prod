@@ -3,6 +3,10 @@
 # copy gdb_timers.py to <app>/.gdb_timers.py
 # and add "source .gdb/.gdb_timers.py" to the <app>/.gdbinit file.
 #
+# The timer_dict determines the mapping between timer id and timer name.
+# These mappings can be found by examining app.c (translator output).
+# Look for VirtualzeTimerImplP__0__Timer_fired... and then build
+# the dictionary from the switch statement.
 
 from __future__ import print_function
 from binascii   import hexlify
