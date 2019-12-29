@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Eric B. Decker
+ * Copyright (c) 2017, 2019 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,25 +56,45 @@
 interface SpiReg {
   /*
    * read               read one or more bytes from a single address.
-   * read_multiple      read one or more bytes from a sequence of registers.
+   *                    issue the addr and then read len bytes.
+   * readMultiple       read one or more bytes from a sequence of registers.
+   *                    After each byte read will autoincrement the address
+   *                    being referenced (ie. register address).  The chip
+   *                    may have h/w assist for this function.
    *
    * input:	reg_addr starting register address
    *		*buf	 pointer to where to store incoming bytes
    *            len      how many bytes to read.
    */
   command void read(uint8_t reg_addr, uint8_t *buf, uint8_t len);
-  command void read_multiple(uint8_t reg_addr, uint8_t *buf,
-                                   uint8_t len);
+  command void readMultiple(uint8_t reg_addr, uint8_t *buf, uint8_t len);
+
+  /*
+   * readOne    read one byte from the specified address.
+   *
+   * input:	reg_addr starting register address
+   * return:    byte
+   */
+  command uint8_t readOne(uint8_t reg_addr);
 
   /*
    * write              write one or more bytes from a single address.
-   * write_multiple     write one or more bytes from a sequence of registers.
+   * writeMultiple      write one or more bytes from a sequence of registers.
+   *
+   * similar to write and writeMultiple
    *
    * input:	reg_addr starting register address
    *		*buf     pointer to where to stash incoming bytes
    *            len      how many bytes to write.
    */
   command void write(uint8_t reg_addr, uint8_t *buf, uint8_t len);
-  command void write_multiple(uint8_t reg_addr, uint8_t *buf,
-                                    uint8_t len);
+  command void writeMultiple(uint8_t reg_addr, uint8_t *buf, uint8_t len);
+
+  /*
+   * writeOne   write one byte to the specified address.
+   *
+   * input:	reg_addr starting register address
+   *            data     data to write.
+   */
+  command void writeOne(uint8_t reg_addr, uint8_t data);
 }
