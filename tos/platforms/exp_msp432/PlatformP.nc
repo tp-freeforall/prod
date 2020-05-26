@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2018 Eric B. Decker
+ * Copyright (c) 2016-2018, 2020 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -89,14 +89,32 @@ implementation {
   /* T32 is a count down so negate it */
   async command uint32_t Platform.usecsRaw()       { return -(TIMER32_1->VALUE); }
   async command uint32_t Platform.usecsRawSize()   { return 32; }
+
+  async command uint32_t Platform.usecsExpired(uint32_t t_base, uint32_t limit) {
+    uint32_t t_new;
+
+    t_new = call Platform.usecsRaw();
+    if (t_new - t_base > limit)
+      return t_new;
+    return 0;
+  }
+
   async command uint32_t Platform.jiffiesRaw()     { return (TIMER_A0->R); }
   async command uint32_t Platform.jiffiesRawSize() { return 16; }
 
+  async command uint32_t Platform.jiffiesExpired(uint32_t t_base,
+                                                 uint32_t limit) {
+    uint32_t t_new;
+
+    t_new = call Platform.jiffiesRaw();
+    if (t_new - t_base > limit)
+      return t_new;
+    return 0;
+  }
 
   uint32_t __platform_usecs_raw() @C() @spontaneous() {
     return -(TIMER32_1->VALUE);
   }
-
 
   async command bool     Platform.set_unaligned_traps(bool set_on) {
     bool unaligned_on;
@@ -126,6 +144,23 @@ implementation {
    */
   async command int Platform.getIntPriority(int irq_number) {
     return IRQ_DEFAULT_PRIORITY;
+  }
+
+
+  /**
+   * Platform.node_id
+   *
+   * return a pointer to a 6 byte random number that we can
+   * use as both our serial_number as well as our network node_id.
+   *
+   * The msp432 provides a 128 bit (we use the first 48 bits, 6 bytes)
+   * random number.  This shows up at address 0x0020_1120 but we
+   * reference it using the definitions from the processor header.
+   */
+  async command uint8_t *Platform.node_id(unsigned int *lenp) {
+    if (lenp)
+      *lenp = PLATFORM_SERIAL_NUM_SIZE;
+    return (uint8_t *) &TLV->RANDOM_NUM_1;
   }
 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2016, 2017-2018 Eric B. Decker
+ * Copyright (c) 2012, 2016, 2017-2018, 2020 Eric B. Decker
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,6 +79,23 @@ interface Platform {
   async command uint32_t usecsRawSize();
 
   /*
+   * usecsExpired: check for raw time expired.  Low level.
+   *
+   * input:  t_base     base time in microsecs
+   *         limit      limit in usecs that should be checked.
+   *
+   * output: uint32_t   0 if not expired
+   *                    current time in usecs if expired.
+   *
+   * usecsExpired will use Platform.usecsRaw() to obtain the current time
+   * in usecs.  This number will be compared to t_base and if t_new-t_base
+   * > limit it will return t_new indicating expiration.   If not
+   * expired it will return 0.
+   */
+  async command uint32_t usecsExpired(uint32_t t_base, uint32_t limit);
+
+
+  /*
    * platforms provide a longer term timing element.
    *
    * typically 32768 Hz (32 KiHz).  For lack of a better name
@@ -90,6 +107,23 @@ interface Platform {
    */
   async command uint32_t jiffiesRaw();
   async command uint32_t jiffiesRawSize();
+
+
+  /*
+   * jiffiesExpired: check for raw time expired.  Low level.
+   *
+   * input:  t_base     base time in jiffies
+   *         limit      limit in jiffies that should be checked.
+   *
+   * output: uint32_t   0 if not expired
+   *                    current time in jiffies if expired.
+   *
+   * jiffiesExpired will use Platform.jiffiesRaw() to obtain the current time
+   * in jiffies.  This number will be compared to t_base and if t_new-t_base
+   * > limit it will return t_new indicating expiration.   If not
+   * expired it will return 0.
+   */
+  async command uint32_t jiffiesExpired(uint32_t t_base, uint32_t limit);
 
 
   /*
@@ -126,4 +160,24 @@ interface Platform {
    */
 
   async command int getIntPriority(int irq_number);
+
+  /**
+   * Platform dependent node id.
+   *
+   * Get a Platform defined node id.  This will typically be a serial number
+   * or mac address.
+   *
+   * Platform define PLATFORM_SERIAL_NUM_SIZE determines the
+   * size.  If not defined defaults to 4 bytes (uint32_t).  But platforms
+   * really should define it to be clear.  (see platform.h)
+   *
+   * input:  *lenp      pointer where to place the length of the number.
+   *
+   * output: *lenp      length filled in if non-null.
+   * return: *uint8_t   pointer to the serial_num or NULL.
+   *
+   * a Node Id is assumed to be a sequence of bytes starting with the
+   * msb first.
+   */
+  async command uint8_t *node_id(unsigned int *lenp);
 }

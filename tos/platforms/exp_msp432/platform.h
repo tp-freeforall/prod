@@ -4,6 +4,9 @@
  * (see TEP 107)
  */
 
+#ifndef __PLATFORM_H__
+#define __PLATFORM_H__
+
 #define REQUIRE_PLATFORM
 #define REQUIRE_PANIC
 
@@ -25,3 +28,8 @@ extern uint32_t __platform_usecs_raw();
  * TA1 is Tmilli, clocked by ACLK 32KiHz (async)
  */
 #define PLATFORM_TA1_ASYNC TRUE
+
+/* we use 6 bytes from the random number the msp432 provides */
+#define PLATFORM_SERIAL_NUM_SIZE 6
+
+#endif // __PLATFORM_H__

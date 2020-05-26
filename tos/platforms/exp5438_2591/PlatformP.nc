@@ -132,9 +132,14 @@ implementation {
   async command uint32_t Platform.localTime()      { return call LocalTime.get(); }
   async command uint32_t Platform.usecsRaw()       { return USEC_REG; }
   async command uint32_t Platform.usecsRawSize()   { return 16; }
+  async command uint32_t Platform.usecsExpired(uint32_t t_base, uint32_t limit) {
+    return (uint32_t) -1;
+  }
   async command uint32_t Platform.jiffiesRaw()     { return JIFFIES_REG; }
   async command uint32_t Platform.jiffiesRawSize() { return 16; }
-
+  async command uint32_t Platform.jiffiesExpired(uint32_t t_base, uint32_t limit) {
+    return (uint32_t) -1;
+  }
   async command bool     Platform.set_unaligned_traps(bool set_on) {
     return FALSE;
   }
@@ -142,6 +147,9 @@ implementation {
     return 0;
   }
 
+  async command uint8_t *Platform.node_id(unsigned int *lenp) {
+    return NULL;
+  }
 
   /***************** Defaults ***************/
   default command error_t PeripheralInit.init() {
