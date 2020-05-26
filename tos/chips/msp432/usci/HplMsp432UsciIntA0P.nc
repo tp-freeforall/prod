@@ -44,4 +44,6 @@ implementation {
     call McuSleep.irq_preamble();
     signal UsciInt.interrupted(EUSCI_A0->IV);
   }
+
+  default async event void UsciInt.interrupted(uint8_t iv) { }
 }
