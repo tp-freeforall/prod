@@ -85,7 +85,6 @@ implementation {
   };
 
   void port_handler(uint8_t port_id, uint8_t n) {
-    // call McuSleep.irq_preamble();
     switch(n) {
       default:
       case 0:   { break; }
@@ -98,7 +97,6 @@ implementation {
       case 14:  { signal Int.fired[6+port_id](); break; }
       case 16:  { signal Int.fired[7+port_id](); break; }
     }
-    // call McuSleep.irq_postamble();
   }
 
   default async event void Int.fired[uint8_t portpin]() {ROM_DEBUG_BREAK(1);}
